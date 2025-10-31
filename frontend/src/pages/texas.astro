@@ -66,20 +66,23 @@ try {
       </div>
     )}
 
+    {searchQuery && (
+      <div class="search-results-info">
+        <p>Showing results for "{searchQuery}". <a href="/texas">Show all spots</a></p>
+      </div>
+    )}
+
     <div class="filters">
-      <input
-        type="text"
-        id="county-filter"
-        placeholder="Filter by county..."
-        class="filter-input"
-      />
       <select id="type-filter" class="filter-select">
-        <option value="">All Types</option>
+        <option value="">All Spot Types</option>
         <option value="boat_ramp">Boat Ramps</option>
         <option value="pier">Piers</option>
         <option value="bank_fishing">Bank Fishing</option>
         <option value="state_park">State Parks</option>
       </select>
+      <div class="filter-hint">
+        Use the search box above to search by county, lake name, or location
+      </div>
     </div>
 
     <div class="spots-grid" id="spots-container">
@@ -305,6 +308,33 @@ try {
     color: #666;
   }
 
+  .search-results-info {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+  }
+
+  .search-results-info p {
+    margin: 0;
+    color: #2c5530;
+  }
+
+  .search-results-info a {
+    color: #4caf50;
+    text-decoration: underline;
+  }
+
+  .filter-hint {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
   @media (max-width: 768px) {
     .spots-grid {
       grid-template-columns: 1fr;
@@ -321,28 +351,19 @@ try {
 </style>
 
 <script>
-  // Client-side filtering
-  const countyFilter = document.getElementById('county-filter');
+  // Client-side type filtering
   const typeFilter = document.getElementById('type-filter');
   const spotCards = document.querySelectorAll('.spot-card');
 
-  function filterSpots() {
-    const countyValue = countyFilter.value.toLowerCase();
+  typeFilter?.addEventListener('change', () => {
     const typeValue = typeFilter.value.toLowerCase();
 
     spotCards.forEach((card) => {
-      const cardText = card.textContent.toLowerCase();
-      const matchesCounty = !countyValue || cardText.includes(countyValue);
-      const matchesType = !typeValue || cardText.includes(typeValue);
-
-      if (matchesCounty && matchesType) {
+      if (!typeValue || card.textContent.toLowerCase().includes(typeValue)) {
         card.style.display = 'flex';
       } else {
         card.style.display = 'none';
       }
     });
-  }
-
-  countyFilter?.addEventListener('input', filterSpots);
-  typeFilter?.addEventListener('change', filterSpots);
+  });
 </script>
