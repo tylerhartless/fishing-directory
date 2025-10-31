@@ -58,7 +58,7 @@ import Layout from '../layouts/Layout.astro';
   </section>
 </Layout>
 
-<style>
+<style is:global>
   .page-header {
     background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
     color: white;
@@ -355,6 +355,7 @@ import Layout from '../layouts/Layout.astro';
     const container = document.getElementById('spots-container');
     const noResults = document.getElementById('no-results');
 
+
     if (spots.length === 0) {
       container.innerHTML = '';
       noResults.style.display = 'block';
@@ -363,10 +364,14 @@ import Layout from '../layouts/Layout.astro';
 
     noResults.style.display = 'none';
 
-    container.innerHTML = spots.map(spot => `
+    container.innerHTML = spots.map(spot => {
+      // Remove slug identifier from name (e.g., "(anderson001)")
+      const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
+
+      return `
       <a href="/spot/${spot.slug}" class="spot-card">
         <div class="spot-header">
-          <h3>${spot.name}</h3>
+          <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
         </div>
         <div class="spot-details">
@@ -382,7 +387,8 @@ import Layout from '../layouts/Layout.astro';
           </span>
         </div>
       </a>
-    `).join('');
+      `;
+    }).join('');
   }
 
   function showError(message) {
