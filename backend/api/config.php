@@ -7,10 +7,11 @@
  */
 
 // Database connection settings
-define('DB_HOST', 'your-hostinger-mysql-host.com');
-define('DB_USER', 'your_database_user');
-define('DB_PASS', 'your_database_password');
-define('DB_NAME', 'fishing_directory');
+// Use Docker settings for local development, Hostinger settings for production
+define('DB_HOST', getenv('DB_HOST') ?: 'mysql');
+define('DB_USER', getenv('DB_USER') ?: 'fishing_user');
+define('DB_PASS', getenv('DB_PASS') ?: 'fishing_password');
+define('DB_NAME', getenv('DB_NAME') ?: 'fishing_directory');
 
 // CORS settings - update with your frontend domain
 $allowed_origins = [
