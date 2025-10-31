@@ -1,0 +1,244 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Public Fishing Directory - Find Free Fishing Access Nationwide"
+  description="Discover thousands of free public fishing access points. Boat ramps, bank fishing, piers, and more with GPS coordinates and amenities."
+>
+  <section class="hero">
+    <div class="container">
+      <h1>Find Your Next Fishing Spot</h1>
+      <p class="subtitle">
+        Free public access to boat ramps, fishing piers, and bank fishing locations nationwide
+      </p>
+
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search by location, lake, county, or state..."
+          id="search-input"
+        />
+        <button>Search</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <strong>10,000+</strong>
+          <span>Fishing Spots</span>
+        </div>
+        <div class="stat">
+          <strong>Growing</strong>
+          <span>Nationwide</span>
+        </div>
+        <div class="stat">
+          <strong>100%</strong>
+          <span>Free Access</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <h2>Browse by State</h2>
+    <div class="grid">
+      <a href="/texas" class="card state-card active">
+        <div class="flag">🇺🇸</div>
+        <h3>Texas</h3>
+        <p>10,000+ spots across 254 counties</p>
+        <span class="badge">Available Now</span>
+      </a>
+      <div class="card state-card coming-soon">
+        <div class="flag">🚧</div>
+        <h3>More States Coming Soon</h3>
+        <p>Florida, California, Louisiana & more</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container features">
+    <h2>Why Use Our Directory?</h2>
+    <div class="grid">
+      <div class="feature">
+        <h3>📍 GPS Coordinates</h3>
+        <p>Exact locations for every fishing spot</p>
+      </div>
+      <div class="feature">
+        <h3>🎣 Verified Data</h3>
+        <p>Official government and user-verified information</p>
+      </div>
+      <div class="feature">
+        <h3>🚤 Amenities Listed</h3>
+        <p>Parking, restrooms, boat ramps, and more</p>
+      </div>
+      <div class="feature">
+        <h3>📊 Fishing Reports</h3>
+        <p>Real catches from real anglers</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin: 0 0 1rem 0;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+  }
+
+  .search-box {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    gap: 0.5rem;
+  }
+
+  .search-box input {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+  }
+
+  .search-box button {
+    padding: 1rem 2rem;
+    background: #ff6b35;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .search-box button:hover {
+    background: #e55a2b;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat strong {
+    font-size: 2.5rem;
+    display: block;
+  }
+
+  .stat span {
+    opacity: 0.8;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover:not(.coming-soon) {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .state-card {
+    text-align: center;
+    position: relative;
+  }
+
+  .state-card .flag {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .state-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2c5530;
+  }
+
+  .state-card.coming-soon {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .state-card .badge {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: #4caf50;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+  }
+
+  .features {
+    background: #f9f9f9;
+    padding: 3rem 1rem;
+  }
+
+  .feature h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .feature p {
+    margin: 0;
+    color: #666;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2rem;
+    }
+
+    .stats {
+      gap: 2rem;
+    }
+
+    .stat strong {
+      font-size: 1.75rem;
+    }
+  }
+</style>

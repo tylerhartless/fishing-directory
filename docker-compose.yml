@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: fishing_directory_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: fishing_root_password
+      MYSQL_DATABASE: fishing_directory
+      MYSQL_USER: fishing_user
+      MYSQL_PASSWORD: fishing_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - fishing_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pfishing_root_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # phpMyAdmin (for database management)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: fishing_directory_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: fishing_user
+      PMA_PASSWORD: fishing_password
+    ports:
+      - "8080:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - fishing_network
+
+  # PHP API Server
+  php:
+    image: php:8.2-apache
+    container_name: fishing_directory_api
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend/api:/var/www/html
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - fishing_network
+    command: >
+      bash -c "docker-php-ext-install mysqli pdo pdo_mysql
+      && apache2-foreground"
+
+  # Astro Frontend Dev Server (optional - can run separately)
+  # Uncomment when ready to develop frontend
+  # astro:
+  #   image: node:18-alpine
+  #   container_name: fishing_directory_frontend
+  #   working_dir: /app
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "4321:4321"
+  #   command: sh -c "npm install && npm run dev -- --host"
+  #   networks:
+  #     - fishing_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  fishing_network:
+    driver: bridge

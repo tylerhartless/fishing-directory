@@ -1,0 +1,357 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getSpots, generateMapUrl, type FishingSpot } from '../../../lib/database';
+
+// This function generates all static paths at build time
+export async function getStaticPaths() {
+  const spots = await getSpots();
+
+  return spots.map((spot: FishingSpot) => ({
+    params: {
+      county: spot.county.toLowerCase().replace(/\s+/g, '-'),
+      slug: spot.slug
+    },
+    props: { spot }
+  }));
+}
+
+const { spot } = Astro.props;
+const mapUrl = generateMapUrl(spot.latitude, spot.longitude);
+
+// Schema.org structured data for SEO
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Place",
+  "name": spot.name,
+  "description": spot.description,
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": spot.latitude,
+    "longitude": spot.longitude
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "TX",
+    "addressLocality": spot.county + " County"
+  }
+};
+---
+
+<Layout
+  title={spot.meta_title || `${spot.name} - Public Fishing in ${spot.county} County, TX`}
+  description={spot.meta_description || `Free public fishing access at ${spot.name}. GPS coordinates, amenities, and fishing reports.`}
+>
+  <article class="spot-detail" data-spot-id={spot.id}>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/texas">Texas</a> /
+        <a href={`/texas/${spot.county.toLowerCase()}`}>{spot.county} County</a> /
+        {spot.name}
+      </div>
+
+      <h1>{spot.name}</h1>
+
+      {spot.is_verified && (
+        <div class="badge verified">✓ Verified by TPWD</div>
+      )}
+
+      <div class="spot-grid">
+        <div class="main-content">
+          <!-- Static Map Image (SEO-friendly, loads fast) -->
+          <div class="map-container">
+            <img
+              src={mapUrl}
+              alt={`Map of ${spot.name}`}
+              width="600"
+              height="400"
+              loading="eager"
+            />
+            <div class="map-overlay">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${spot.latitude},${spot.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-primary"
+              >
+                Open in Google Maps
+              </a>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <section class="description">
+            <h2>About This Spot</h2>
+            {spot.description ? (
+              <p>{spot.description}</p>
+            ) : (
+              <p>Public fishing access in {spot.county} County, Texas.</p>
+            )}
+          </section>
+
+          <!-- Amenities -->
+          {spot.amenities && (
+            <section class="amenities">
+              <h2>Amenities</h2>
+              <ul class="amenity-list">
+                {spot.amenities.parking && <li>🅿️ Parking Available</li>}
+                {spot.amenities.restrooms && <li>🚻 Restrooms</li>}
+                {spot.amenities.lighting && <li>💡 Lighting</li>}
+                {spot.amenities.fish_cleaning && <li>🔪 Fish Cleaning Station</li>}
+                {spot.amenities.boat_trailer_parking && <li>🚤 Boat Trailer Parking</li>}
+                {spot.amenities.camping && <li>⛺ Camping</li>}
+                {spot.amenities.fishing_pier && <li>🎣 Fishing Pier</li>}
+              </ul>
+            </section>
+          )}
+
+          <!-- Dynamic Content: Fishing Reports -->
+          <section class="fishing-reports">
+            <h2>Recent Fishing Reports</h2>
+            <div id="reports-container">
+              <p class="loading">Loading recent catches...</p>
+            </div>
+
+            <button class="btn-secondary" id="add-report-btn">
+              Add Your Fishing Report
+            </button>
+          </section>
+
+          <!-- Dynamic Content: Fish Species Votes -->
+          <section class="fish-votes">
+            <h2>What Fish Are Here?</h2>
+            <p>Help other anglers by voting on what species you've caught here:</p>
+            <div id="fish-votes-container">
+              <p class="loading">Loading...</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="info-box">
+            <h3>Quick Info</h3>
+            <dl>
+              <dt>Type:</dt>
+              <dd>{spot.spot_type.replace(/_/g, ' ')}</dd>
+
+              <dt>County:</dt>
+              <dd>{spot.county}</dd>
+
+              {spot.water_body_name && (
+                <>
+                  <dt>Water Body:</dt>
+                  <dd>{spot.water_body_name}</dd>
+                </>
+              )}
+
+              <dt>Coordinates:</dt>
+              <dd>
+                {spot.latitude.toFixed(6)}, {spot.longitude.toFixed(6)}
+                <button class="copy-coords" data-coords={`${spot.latitude},${spot.longitude}`}>
+                  Copy
+                </button>
+              </dd>
+            </dl>
+          </div>
+
+          {spot.spot_type === 'state_park' && (
+            <div class="info-box highlight">
+              <h3>⭐ Free Fishing!</h3>
+              <p>No fishing license required at Texas State Parks</p>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  </article>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Load dynamic content -->
+  <script src="/js/load-spot-content.js"></script>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .breadcrumb {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .breadcrumb a {
+    color: #2c5530;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+  }
+
+  .verified {
+    background: #4caf50;
+    color: white;
+  }
+
+  .spot-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .map-container {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .map-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .map-overlay {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .btn-primary {
+    display: block;
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+    background: #ff6b35;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .btn-primary:hover {
+    background: #e55a2b;
+  }
+
+  .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background: #2c5530;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  section {
+    margin: 2rem 0;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2c5530;
+  }
+
+  .amenity-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .amenity-list li {
+    padding: 0.5rem;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 2rem;
+    align-self: start;
+  }
+
+  .info-box {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-box h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+  }
+
+  .info-box.highlight {
+    background: #fff9e6;
+    border-color: #ffd700;
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  dt {
+    font-weight: bold;
+    margin-top: 0.5rem;
+  }
+
+  dd {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .copy-coords {
+    margin-left: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .loading {
+    color: #999;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .spot-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: static;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+    }
+  }
+</style>
