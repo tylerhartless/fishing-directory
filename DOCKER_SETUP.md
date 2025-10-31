@@ -1,6 +1,6 @@
 # Docker Development Setup
 
-Complete guide to running the fishing directory with Docker Compose.
+Complete guide to running the **entire** fishing directory stack with Docker Compose.
 
 ## Prerequisites
 
@@ -11,258 +11,295 @@ Complete guide to running the fishing directory with Docker Compose.
 4. Verify installation:
    ```bash
    docker --version
-   docker-compose --version
+   docker compose version
    ```
 
 ---
 
-## Quick Start (3 Commands)
+## 🚀 Quick Start (One Command!)
 
 ```bash
-# 1. Start all services
-docker-compose up -d
+# Start everything
+docker compose up -d
 
-# 2. Wait ~30 seconds for MySQL to initialize
+# Wait ~60 seconds for all services to initialize
 
-# 3. Access phpMyAdmin
-# Open browser: http://localhost:8080
+# Access the site
+# Frontend: http://localhost:4321
+# phpMyAdmin: http://localhost:8080
+# API: http://localhost:8000
 ```
 
-That's it! Your database is ready.
+**That's it!** Everything runs in Docker now.
 
 ---
 
-## What Docker Compose Gives You
+## What You Get
 
-When you run `docker-compose up -d`, you get:
+When you run `docker compose up -d`, you get **4 services**:
 
-✅ **MySQL 8.0** - Running on `localhost:3306`
-✅ **phpMyAdmin** - Running on `http://localhost:8080`
-✅ **PHP 8.2 + Apache** - Running on `http://localhost:8000`
-✅ **Auto-imported schema** - Database ready to use!
+| Service | URL | Purpose |
+|---------|-----|---------|
+| **MySQL 8.0** | `localhost:3306` | Database |
+| **phpMyAdmin** | http://localhost:8080 | Database GUI |
+| **PHP API** | http://localhost:8000 | Backend API |
+| **Astro Dev Server** | http://localhost:4321 | Frontend |
+
+All services auto-start and connect to each other!
 
 ---
 
 ## Step-by-Step Setup
 
-### 1. Start Docker Services
+### 1. Start All Services
 
 ```bash
-cd c:\Users\tyash\Desktop\fishing-directory
-docker-compose up -d
+cd fishing-directory
+docker compose up -d
 ```
 
-**What this does:**
-- Downloads MySQL and PHP images (first time only)
-- Creates `fishing_directory` database
-- Auto-imports `database/schema.sql`
-- Starts all services in background (`-d` = detached)
+**First time startup:**
+- Downloads images (~2GB, one-time)
+- Creates database
+- Imports schema
+- Installs npm packages
+- Takes ~2-3 minutes
+
+**Subsequent startups:** ~10 seconds
 
 **Expected output:**
 ```
-Creating network "fishing-directory_fishing_network" ... done
-Creating volume "fishing-directory_mysql_data" ... done
-Creating fishing_directory_db ... done
-Creating fishing_directory_phpmyadmin ... done
-Creating fishing_directory_api ... done
+[+] Running 5/5
+ ✔ Network fishing-directory_fishing_network  Created
+ ✔ Container fishing_directory_db             Started
+ ✔ Container fishing_directory_phpmyadmin     Started
+ ✔ Container fishing_directory_api            Started
+ ✔ Container fishing_directory_frontend       Started
 ```
 
-### 2. Wait for MySQL Initialization
+### 2. Check Service Status
 
-First startup takes ~30 seconds for MySQL to initialize.
-
-**Check if ready:**
 ```bash
-docker-compose logs mysql
+docker compose ps
 ```
 
-Look for: `MySQL init process done. Ready for start up.`
+**All services should show "Up":**
+```
+NAME                          STATUS
+fishing_directory_db          Up (healthy)
+fishing_directory_phpmyadmin  Up
+fishing_directory_api         Up
+fishing_directory_frontend    Up
+```
 
-### 3. Access phpMyAdmin
+### 3. Access Services
 
-**URL:** http://localhost:8080
+**Frontend (Astro):**
+- URL: http://localhost:4321
+- Auto-reloads on file changes
+- Full hot module replacement (HMR)
 
-**Login:**
+**phpMyAdmin:**
+- URL: http://localhost:8080
 - Username: `fishing_user`
 - Password: `fishing_password`
+- Verify `fishing_directory` database exists
 
-**Verify:**
-- Click `fishing_directory` database in left sidebar
-- You should see 4 tables:
-  - fishing_spots
-  - fish_habitat_structures
-  - fishing_reports
-  - spot_votes
+**API:**
+- URL: http://localhost:8000/spots.php?limit=10
+- Should return JSON (may be empty until you import data)
 
 ---
 
-## Configure Python Environment
+## Import Data (Python Still Runs on Host)
 
-### 1. Set up Python .env file
+The database runs in Docker, but Python scripts run on your host machine:
+
+### 1. Set up Python environment
 
 ```bash
 cd data-pipeline
+
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Mac/Linux
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Configure connection
+
+```bash
 copy .env.docker .env
 ```
 
-Your `.env` file now has:
+Your `.env` should have:
 ```env
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=fishing_user
 DB_PASSWORD=fishing_password
 DB_NAME=fishing_directory
 ```
 
-### 2. Create Python virtual environment
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 3. Test database connection
+### 3. Test connection
 
 ```bash
 python db_utils.py
 ```
 
-**Expected output:**
+Expected:
 ```
 ✓ Connected to MySQL database: fishing_directory
 Database connection test successful!
 ```
 
----
-
-## Import Your Boat Ramps Data
-
-Now you're ready to import!
+### 4. Import data
 
 ```bash
-# Make sure your CSV is in raw-data folder
+# Import boat ramps (requires data file)
+python process_boat_ramps.py
+
+# Or test with sample
+python adapters/texas_tpwd_adapter.py
+```
+
+---
+
+## Development Workflow
+
+### Daily Startup
+
+```bash
+docker compose up -d
+```
+
+All services start automatically. No need to run npm install or start dev servers manually!
+
+### View Logs
+
+```bash
+# All services
+docker compose logs -f
+
+# Specific service
+docker compose logs -f astro
+docker compose logs -f mysql
+docker compose logs -f php
+```
+
+### Work on Frontend
+
+Just edit files in `frontend/` - changes auto-reload thanks to HMR!
+
+```bash
+# No need to run npm manually, Docker handles it!
+# Just edit files in frontend/src/
+```
+
+### Work on Backend API
+
+Edit files in `backend/api/` - changes are instant (PHP doesn't need restart)
+
+### Work on Data Pipeline
+
+```bash
 cd data-pipeline
+venv\Scripts\activate
 python process_boat_ramps.py
 ```
 
-**Expected output:**
+### Check Database
+
+Two options:
+1. **phpMyAdmin:** http://localhost:8080 (visual GUI)
+2. **MySQL CLI:**
+   ```bash
+   docker exec -it fishing_directory_db mysql -u fishing_user -pfishing_password fishing_directory
+   ```
+
+### End of Day
+
+```bash
+# Stop all services (keeps data)
+docker compose down
+
+# Or stop and remove everything (⚠️ deletes database!)
+docker compose down -v
 ```
-Reading data from: ../raw-data/tpwd_boat_ramps.csv
-Found 2547 boat ramps to process
-✓ Inserted 2547 rows into fishing_spots
-
-==================================================
-SUCCESS: Imported 2547 boat ramps
-==================================================
-```
-
-### Verify in phpMyAdmin
-
-1. Go to http://localhost:8080
-2. Click `fishing_directory` → `fishing_spots`
-3. Click "Browse"
-4. You should see 2,547+ rows!
 
 ---
 
-## Test the PHP API
+## Useful Commands
 
-### 1. The API is already running!
+### Restart a Service
 
-**Base URL:** http://localhost:8000
-
-### 2. Test endpoints
-
-**Get fishing reports:**
-```
-http://localhost:8000/reports.php?spot_id=1
-```
-
-**Get votes:**
-```
-http://localhost:8000/get-votes.php?spot_id=1
-```
-
-**Note:** For Docker, the API uses `config.docker.php` instead of `config.php`
-
----
-
-## Useful Docker Commands
-
-### View running containers
 ```bash
-docker-compose ps
+# Restart Astro (if it crashes)
+docker compose restart astro
+
+# Restart all
+docker compose restart
 ```
 
-### View logs
+### Rebuild a Service
+
+If you change docker-compose.yml:
+
 ```bash
-# All services
-docker-compose logs
-
-# Specific service
-docker-compose logs mysql
-docker-compose logs php
-
-# Follow logs (real-time)
-docker-compose logs -f
+docker compose up -d --build
 ```
 
-### Stop services
+### View Container Details
+
 ```bash
-docker-compose down
+# See what's running
+docker compose ps
+
+# See resource usage
+docker stats
 ```
 
-### Stop and remove all data (⚠️ deletes database!)
-```bash
-docker-compose down -v
-```
+### Access Container Shell
 
-### Restart a service
 ```bash
-docker-compose restart mysql
-docker-compose restart php
-```
-
-### Access MySQL CLI
-```bash
+# MySQL shell
 docker exec -it fishing_directory_db mysql -u fishing_user -pfishing_password fishing_directory
+
+# Astro container shell
+docker exec -it fishing_directory_frontend sh
+
+# API container shell
+docker exec -it fishing_directory_api bash
 ```
 
-Then run SQL:
-```sql
-SELECT COUNT(*) FROM fishing_spots;
-SELECT * FROM fishing_spots LIMIT 5;
-```
+### Run Migrations
 
----
+```bash
+# Run SQL migration
+docker exec -i fishing_directory_db mysql -u fishing_user -pfishing_password fishing_directory < data-pipeline/migrations/001_add_state_fields.sql
 
-## Project Structure with Docker
-
-```
-fishing-directory/
-├── docker-compose.yml        # Docker configuration
-├── data-pipeline/
-│   ├── .env                  # DB config (uses localhost:3306)
-│   └── *.py                  # Python connects to Docker MySQL
-├── backend/api/
-│   ├── config.php            # For production
-│   └── config.docker.php     # For Docker (uses 'mysql' host)
-├── frontend/
-│   └── ...                   # Run with npm (or add to docker-compose)
-└── database/
-    └── schema.sql            # Auto-imported on first start
+# Or via MySQL CLI
+docker exec -it fishing_directory_db mysql -u fishing_user -pfishing_password fishing_directory
+# Then paste SQL commands
 ```
 
 ---
 
 ## Troubleshooting
 
-### Port 3306 already in use
+### Port Already in Use
 
-**Solution:** Change MySQL port in `docker-compose.yml`:
+**Error:** `Bind for 0.0.0.0:3306 failed: port is already allocated`
+
+**Solution:** Change port in `docker-compose.yml`:
+
 ```yaml
-ports:
-  - "3307:3306"  # Changed from 3306:3306
+mysql:
+  ports:
+    - "3307:3306"  # Changed from 3306
 ```
 
 Then update `.env`:
@@ -270,135 +307,220 @@ Then update `.env`:
 DB_HOST=localhost:3307
 ```
 
-### Port 8080 already in use (phpMyAdmin)
+Common port conflicts:
+- 3306 (MySQL) → use 3307
+- 8080 (phpMyAdmin) → use 8081
+- 8000 (PHP API) → use 8001
+- 4321 (Astro) → use 4322
 
-**Solution:** Change port in `docker-compose.yml`:
-```yaml
-phpmyadmin:
-  ports:
-    - "8081:80"  # Changed from 8080:80
-```
-
-Then access: http://localhost:8081
-
-### Database not initializing
+### Astro Won't Start
 
 **Check logs:**
 ```bash
-docker-compose logs mysql
+docker compose logs astro
 ```
 
-**Force recreate:**
+**Common issues:**
+- npm install failed → Fix package.json errors
+- Port 4321 in use → Change port in docker-compose.yml
+- Out of memory → Increase Docker Desktop RAM (Settings → Resources)
+
+**Force rebuild:**
 ```bash
-docker-compose down -v
-docker-compose up -d
+docker compose down
+docker compose up -d --build astro
 ```
 
-### Can't connect from Python
+### MySQL Not Initializing
 
-**Check MySQL is running:**
+**Check logs:**
 ```bash
-docker-compose ps
+docker compose logs mysql
 ```
 
-**Verify .env settings:**
+**Look for:** `MySQL init process done. Ready for start up.`
+
+**If stuck:**
+```bash
+docker compose down -v  # ⚠️ Deletes data!
+docker compose up -d
+```
+
+### Can't Connect from Python
+
+**Verify Docker is running:**
+```bash
+docker compose ps
+```
+
+**Check .env file:**
 ```env
-DB_HOST=localhost  # NOT "mysql" - that's for inside Docker
-DB_USER=fishing_user
-DB_PASSWORD=fishing_password
+DB_HOST=localhost  # NOT "mysql"!
+DB_PORT=3306       # Match docker-compose.yml
 ```
 
-### PHP API not working
-
-**Check config file:**
-Make sure you're using the Docker config:
+**Test connection:**
 ```bash
-cd backend/api
-copy config.docker.php config.php
+docker exec -it fishing_directory_db mysqladmin ping -u fishing_user -pfishing_password
+```
+
+### Astro Shows Blank Page
+
+**Check API connection:**
+- Astro tries to fetch from `http://localhost:8000`
+- Make sure PHP container is running: `docker compose ps`
+- Check API works: http://localhost:8000/spots.php?limit=5
+
+**Check browser console:**
+- Open DevTools (F12)
+- Look for CORS or fetch errors
+- API should allow localhost:4321
+
+### Out of Disk Space
+
+Docker images and volumes can take space.
+
+**Clean up:**
+```bash
+# Remove unused images
+docker image prune -a
+
+# Remove unused volumes (⚠️ careful!)
+docker volume prune
+
+# Nuclear option (removes EVERYTHING not running)
+docker system prune -a --volumes
 ```
 
 ---
 
-## Development Workflow
+## File Structure with Docker
 
-### Daily startup:
-```bash
-docker-compose up -d
+```
+fishing-directory/
+├── docker-compose.yml          # All services defined here
+├── frontend/
+│   ├── src/                    # Edit these, auto-reloads
+│   ├── package.json
+│   └── node_modules/           # In Docker container, not on host
+├── backend/api/
+│   ├── *.php                   # Edit these, instant changes
+│   └── config.php              # Uses 'mysql' hostname
+├── data-pipeline/
+│   ├── .env                    # Points to localhost:3306
+│   └── *.py                    # Run on host, connects to Docker MySQL
+├── database/
+│   └── schema.sql              # Auto-imported on first start
+└── raw-data/
+    └── *.csv                   # Your source data files
 ```
 
-### Work on data:
-```bash
-cd data-pipeline
-venv\Scripts\activate
-python process_boat_ramps.py
-python process_state_parks.py
+---
+
+## Advantages of Full Docker Setup
+
+✅ **One command** - Start everything with `docker compose up -d`
+✅ **No manual installs** - No need to install Node, PHP, MySQL separately
+✅ **Consistent** - Same environment on any machine
+✅ **Isolated** - Doesn't conflict with other projects
+✅ **Quick reset** - `docker compose down -v` starts fresh
+✅ **Production-like** - Mimics real deployment
+✅ **Auto-restart** - Containers restart if they crash
+✅ **Hot reload** - Frontend changes auto-update
+
+---
+
+## Performance Tips
+
+### Speed Up npm install
+
+On Windows, npm in Docker can be slow. The `node_modules` volume helps, but you can also:
+
+**Option 1: Keep node_modules in container (current setup)**
+```yaml
+volumes:
+  - ./frontend:/app
+  - /app/node_modules  # Don't sync node_modules
 ```
 
-### Check database:
-- phpMyAdmin: http://localhost:8080
+**Option 2: Run npm on host instead**
+If Docker npm is too slow, you can still run Astro on host:
+```bash
+# In docker-compose.yml, remove the astro service
+# Then run manually:
+cd frontend && npm run dev
+```
 
-### Test API:
-- Visit: http://localhost:8000/reports.php?spot_id=1
+### Reduce Memory Usage
 
-### Work on frontend:
+Edit Docker Desktop settings:
+- Settings → Resources → Memory: 4GB minimum (8GB recommended)
+- Settings → Resources → Swap: 1GB
+
+### Speed Up Database
+
+If importing large datasets is slow, increase MySQL buffer:
+
+```yaml
+mysql:
+  command: --innodb-buffer-pool-size=512M
+```
+
+---
+
+## Production Deployment
+
+When ready to deploy:
+
+**1. Build static frontend:**
 ```bash
 cd frontend
-npm run dev
-# Runs on http://localhost:4321
+npm run build
+# Outputs to: frontend/dist/
 ```
 
-### End of day:
-```bash
-docker-compose down
-```
+**2. Upload to Hostinger:**
+- Upload `frontend/dist/*` to `public_html/`
+- Upload `backend/api/` to `public_html/api/`
+- Update `backend/api/config.php` with Hostinger credentials
 
----
+**3. Database:**
+- Export from Docker: `docker exec fishing_directory_db mysqldump -u fishing_user -pfishing_password fishing_directory > backup.sql`
+- Import to Hostinger via phpMyAdmin
 
-## Advantages of Docker Setup
-
-✅ **Isolated** - Doesn't conflict with other software
-✅ **Consistent** - Same environment everywhere
-✅ **Easy cleanup** - `docker-compose down -v` removes everything
-✅ **Version controlled** - `docker-compose.yml` documents your setup
-✅ **Quick setup** - One command to start everything
-✅ **Production-like** - Similar to Hostinger environment
+Docker → Hostinger migration is seamless!
 
 ---
 
 ## Next Steps
 
-1. ✅ Start Docker: `docker-compose up -d`
-2. ✅ Verify phpMyAdmin: http://localhost:8080
-3. ✅ Configure Python `.env`
-4. ✅ Test connection: `python db_utils.py`
-5. ✅ Import boat ramps: `python process_boat_ramps.py`
-6. ✅ View data in phpMyAdmin
-7. 🚀 Start building!
+**First time setup:**
+1. ✅ `docker compose up -d`
+2. ✅ Wait for services to start
+3. ✅ Visit http://localhost:4321
+4. ✅ Visit http://localhost:8080 (phpMyAdmin)
+5. ✅ Set up Python: `cd data-pipeline && python -m venv venv`
+6. ✅ Configure: `copy .env.docker .env`
+7. ✅ Import data: `python process_boat_ramps.py`
+8. 🎉 Start developing!
 
----
-
-## When Ready to Deploy
-
-Your Docker setup perfectly mirrors production:
-
-**Local (Docker):**
-- MySQL in container
-- PHP in container
-- Python connects to `localhost:3306`
-
-**Production (Hostinger):**
-- MySQL on Hostinger
-- PHP on Hostinger
-- Just change `.env` credentials
-
-Same code, different config! 🎉
-
----
-
-Ready to start? Run:
-
+**Daily workflow:**
 ```bash
-docker-compose up -d
+# Morning
+docker compose up -d
+
+# Work on frontend
+# Just edit files in frontend/src/
+
+# Work on data
+cd data-pipeline
+venv\Scripts\activate
+python script.py
+
+# Evening
+docker compose down
 ```
 
-Then let me know when you see the containers running!
+---
+
+**Everything in Docker. One command. Always works.** 🐳

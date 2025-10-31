@@ -27,26 +27,28 @@ fishing-directory/
 
 ### Prerequisites
 - Docker Desktop
-- Python 3.8+
-- Node.js 18+
+- Python 3.8+ (for data import scripts)
 
-### 1. Start Development Environment
+### 1. Start Everything with One Command
 
 ```bash
 # Clone repository
 git clone https://github.com/tylerhartless/fishing-directory.git
 cd fishing-directory
 
-# Start Docker containers (MySQL, PHP, phpMyAdmin)
+# Start all services (MySQL, PHP, phpMyAdmin, Astro)
 docker compose up -d
+
+# Wait ~60 seconds for first-time setup
 ```
 
-**Services:**
-- MySQL: `localhost:3306`
-- PHP API: `http://localhost:8000`
-- phpMyAdmin: `http://localhost:8080`
+**All services running:**
+- Frontend: `http://localhost:4321` (Astro dev server with HMR)
+- MySQL: `localhost:3306` (database)
+- PHP API: `http://localhost:8000` (backend API)
+- phpMyAdmin: `http://localhost:8080` (database GUI)
 
-### 2. Import Data
+### 2. Import Data (Python runs on host)
 
 ```bash
 cd data-pipeline
@@ -67,15 +69,17 @@ cp .env.docker .env
 python process_boat_ramps.py
 ```
 
-### 3. Start Frontend
+### 3. Done!
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Visit http://localhost:4321 - everything is running!
 
-Visit http://localhost:4321
+**No need to manually:**
+- Install Node.js or npm
+- Run `npm install` or `npm run dev`
+- Install PHP or MySQL
+- Configure databases
+
+Docker handles all of it. Just edit files and they auto-reload!
 
 ## Adding New States
 
