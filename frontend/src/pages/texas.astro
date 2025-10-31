@@ -6,11 +6,26 @@ const API_URL = 'http://localhost:8000';
 let spots = [];
 let error = null;
 
+// Get search query from URL
+const searchQuery = Astro.url.searchParams.get('q') || '';
+
 try {
-  const response = await fetch(`${API_URL}/spots.php?limit=50`);
+  // Load all spots (2234 boat ramps)
+  const response = await fetch(`${API_URL}/spots.php?limit=3000`);
   const data = await response.json();
   if (data.success) {
     spots = data.spots;
+
+    // Filter by search query if provided
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      spots = spots.filter(spot =>
+        spot.name.toLowerCase().includes(query) ||
+        spot.county.toLowerCase().includes(query) ||
+        spot.water_body_name.toLowerCase().includes(query) ||
+        spot.description.toLowerCase().includes(query)
+      );
+    }
   }
 } catch (e) {
   error = 'Failed to load fishing spots';
@@ -26,8 +41,21 @@ try {
     <div class="container">
       <h1>Texas Fishing Spots</h1>
       <p class="subtitle">
-        {spots.length}+ verified public fishing access points
+        {searchQuery ? `${spots.length} results for "${searchQuery}"` : `${spots.length} verified public fishing access points`}
       </p>
+
+      <form class="search-box" action="/texas" method="get">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search by location, lake, county..."
+          value={searchQuery}
+        />
+        <button type="submit">Search</button>
+        {searchQuery && (
+          <a href="/texas" class="clear-search">Clear</a>
+        )}
+      </form>
     </div>
   </section>
 
@@ -101,7 +129,51 @@ try {
   .subtitle {
     font-size: 1.1rem;
     opacity: 0.9;
-    margin: 0;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .search-box {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: 0.5rem;
+  }
+
+  .search-box input {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+  }
+
+  .search-box button {
+    padding: 0.75rem 1.5rem;
+    background: #ff6b35;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .search-box button:hover {
+    background: #e55a2b;
+  }
+
+  .clear-search {
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .clear-search:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .container {
