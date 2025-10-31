@@ -1,125 +1,166 @@
 # Public Fishing Directory
 
-A comprehensive, SEO-optimized directory of public fishing access points, starting with Texas and expanding nationwide.
-
-## 🎣 Overview
-
-This platform aggregates government fishing data (boat ramps, state parks, community fishing lakes) and user-submitted content into a searchable, fast-loading directory optimized for organic search traffic.
-
-**Live Data:** 10,000+ fishing spots (and growing)
-**Tech Stack:** Astro (SSG) + PHP API + MySQL + Python ETL
-**Target:** 50,000+ monthly visitors via SEO
+A comprehensive directory of public fishing access points across the United States. Built with a scalable ETL pipeline for importing data from multiple states and sources.
 
 ## Tech Stack
 
-- **Frontend:** Astro (Static Site Generation)
-- **Backend:** PHP + MySQL (Hostinger)
-- **Data Processing:** Python ETL scripts
-- **Maps:** Mapbox API
-- **Hosting:** Hostinger (backend) + Netlify/Vercel (frontend)
+- **Frontend:** Astro (Static Site Generation) with client-side search
+- **Backend API:** PHP + MySQL
+- **Data Pipeline:** Python with adapter pattern for multi-state support
+- **Development:** Docker Compose for local environment
 
 ## Project Structure
 
 ```
 fishing-directory/
-├── data-pipeline/          # Python ETL scripts for processing government data
-├── frontend/               # Astro static site
-├── backend/                # PHP API endpoints
-├── raw-data/               # Downloaded CSV/GIS files (not in git)
-├── processed-data/         # Cleaned data ready for import
-└── database/               # SQL schema and migration scripts
+├── frontend/              # Astro static site
+├── backend/               # PHP API endpoints
+├── data-pipeline/         # Python ETL framework
+│   ├── adapters/          # State-specific data adapters
+│   ├── migrations/        # Database schema updates
+│   └── SCALING_GUIDE.md   # Guide for adding new states
+├── raw-data/              # Source data files (gitignored)
+└── docker-compose.yml     # Local development environment
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker Desktop
 - Python 3.8+
 - Node.js 18+
 
-### Setup (5 minutes)
+### 1. Start Development Environment
 
 ```bash
-# 1. Clone the repository
+# Clone repository
 git clone https://github.com/tylerhartless/fishing-directory.git
 cd fishing-directory
 
-# 2. Start Docker services
+# Start Docker containers (MySQL, PHP, phpMyAdmin)
 docker compose up -d
+```
 
-# 3. Set up Python environment
+**Services:**
+- MySQL: `localhost:3306`
+- PHP API: `http://localhost:8000`
+- phpMyAdmin: `http://localhost:8080`
+
+### 2. Import Data
+
+```bash
 cd data-pipeline
-cp .env.docker .env
+
+# Set up Python environment
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Mac/Linux
+
 pip install -r requirements.txt
 
-# 4. Import data (requires downloading TPWD data first)
+# Configure for Docker
+cp .env.docker .env
+
+# Import Texas boat ramps (example)
+# First, download data from https://tpwd.texas.gov/gis/resources/boat-access.phtml
+# Save as: raw-data/tpwd_boat_ramps.csv
 python process_boat_ramps.py
-python process_state_parks.py
+```
 
-# 5. Export for Astro
-python export_for_astro.py
+### 3. Start Frontend
 
-# 6. Start frontend dev server
-cd ../frontend
+```bash
+cd frontend
 npm install
 npm run dev
 ```
 
-**Access:**
-- Frontend: http://localhost:4321
-- phpMyAdmin: http://localhost:8080
-- API: http://localhost:8000
+Visit http://localhost:4321
 
-## Data Sources
+## Adding New States
 
-- TPWD Boat Ramps: https://tpwd.texas.gov/gis/resources/boat-access.phtml
-- Community Fishing Lakes (CFL)
-- River Access (RACA)
-- Fish Habitat Structures
-- Texas State Parks
+The ETL pipeline is designed to scale to all 50 states. See [data-pipeline/SCALING_GUIDE.md](data-pipeline/SCALING_GUIDE.md) for details.
 
-## Development Roadmap
+### Quick Example - Generic CSV:
 
-- [x] Phase 1: Foundation & Data Pipeline (Week 1-3)
-- [ ] Phase 2: Frontend with Astro (Week 3-5)
-- [ ] Phase 3: PHP Mini-API (Week 5-6)
-- [ ] Phase 4: User Submissions (Week 7)
-- [ ] Phase 5: SEO & Content (Week 8-9)
-- [ ] Phase 6: Launch (Week 10+)
+```python
+from adapters import GenericCSVAdapter
 
-## Environment Variables
+column_map = {
+    'name': 'Site_Name',
+    'latitude': 'Lat',
+    'longitude': 'Lon',
+    'county': 'County',
+    'water_body': 'Waterbody'
+}
 
-Create `.env` files in respective directories:
-
-**data-pipeline/.env:**
-```
-DB_HOST=your-hostinger-host
-DB_USER=your-db-user
-DB_PASSWORD=your-db-password
-DB_NAME=fishing_directory
+adapter = GenericCSVAdapter("Colorado_Parks", "CO", column_map)
+adapter.process_and_import('colorado_fishing.csv')
 ```
 
-**frontend/.env:**
+No custom code required for simple CSV files!
+
+## Key Features
+
+### Scalable ETL Pipeline
+- **Adapter Pattern:** Add new states without code duplication
+- **Standardized Format:** All data transformed to common structure
+- **Flexible Input:** Supports CSV, JSON, APIs, web scraping
+- **Error Handling:** Validates data, skips bad rows, logs issues
+
+### Frontend
+- **Static Site Generation:** Fast page loads, great SEO
+- **Client-Side Search:** Filter 2,000+ spots instantly
+- **Responsive Design:** Mobile-friendly spot cards
+- **Dynamic Rendering:** JavaScript-based for static hosting
+
+### API
+- **RESTful Endpoints:** JSON responses for spot data
+- **CORS Enabled:** Works with any frontend
+- **Optimized Queries:** Indexed for performance
+
+## Documentation
+
+- **[DOCKER_SETUP.md](DOCKER_SETUP.md)** - Docker configuration details
+- **[DATA_SOURCES.md](DATA_SOURCES.md)** - Where to find state fishing data
+- **[data-pipeline/SCALING_GUIDE.md](data-pipeline/SCALING_GUIDE.md)** - Complete guide for adding states
+
+## Current Data
+
+- **Texas:** 2,234 boat ramps from TPWD
+- **More states:** Ready to add with adapter framework
+
+## Development Workflow
+
+1. **Find Data Source** - State wildlife agency CSV/JSON
+2. **Create/Configure Adapter** - Map columns or write custom adapter
+3. **Import Data** - Run Python script to load into MySQL
+4. **Test Frontend** - Verify spots display correctly
+5. **Deploy** - Build static site and push to production
+
+## Database Schema
+
+Run migrations to add new fields:
+
+```bash
+cd data-pipeline
+mysql -u fishing_user -p fishing_directory < migrations/001_add_state_fields.sql
 ```
-MAPBOX_TOKEN=your-mapbox-token
-API_BASE_URL=https://yourdomain.com/api
-```
 
-## 📖 Documentation
+## Contributing
 
-- **[GETTING_STARTED.md](GETTING_STARTED.md)** - Complete setup guide
-- **[DOCKER_SETUP.md](DOCKER_SETUP.md)** - Docker development instructions
-- **[DATA_SOURCES.md](DATA_SOURCES.md)** - Where to get fishing data
-- **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** - Business plan & architecture
+To add a new state:
 
-## 📄 License
+1. Find the state's fishing access data source
+2. Create an adapter in `data-pipeline/adapters/`
+3. Import the data
+4. Add state page in `frontend/src/pages/`
+5. Update homepage with new state
+
+## License
 
 Copyright (c) 2025 - All Rights Reserved
 
-See [LICENSE](LICENSE) for details.
-
 ---
 
-**Built for scale. Optimized for SEO. Designed to win.** 🎣
+**Built for scale. Optimized for SEO.** 🎣
