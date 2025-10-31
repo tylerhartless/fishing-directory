@@ -5,9 +5,12 @@ import mysql.connector
 from mysql.connector import Error
 from config import DB_CONFIG
 
-def get_connection():
+def get_connection(silent=False):
     """
     Create and return a MySQL database connection
+
+    Args:
+        silent (bool): If True, suppress connection success message
 
     Returns:
         mysql.connector.connection.MySQLConnection: Database connection
@@ -15,10 +18,11 @@ def get_connection():
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
         if conn.is_connected():
-            print(f"✓ Connected to MySQL database: {DB_CONFIG['database']}")
+            if not silent:
+                print(f"[OK] Connected to MySQL database: {DB_CONFIG['database']}")
             return conn
     except Error as e:
-        print(f"✗ Error connecting to MySQL: {e}")
+        print(f"[ERROR] Error connecting to MySQL: {e}")
         raise
 
 def execute_query(query, params=None, fetch=False):
@@ -44,10 +48,10 @@ def execute_query(query, params=None, fetch=False):
             return results
         else:
             conn.commit()
-            print(f"✓ Query executed successfully. Rows affected: {cursor.rowcount}")
+            print(f"[OK] Query executed successfully. Rows affected: {cursor.rowcount}")
 
     except Error as e:
-        print(f"✗ Query error: {e}")
+        print(f"[ERROR] Query error: {e}")
         conn.rollback()
         raise
     finally:
@@ -67,10 +71,11 @@ def bulk_insert(table, columns, data):
         int: Number of rows inserted
     """
     if not data:
-        print("⚠ No data to insert")
+        print("[WARNING] No data to insert")
         return 0
 
-    conn = get_connection()
+    print(f"Connecting to database...")
+    conn = get_connection(silent=False)
     cursor = conn.cursor()
 
     # Build INSERT query
@@ -82,11 +87,11 @@ def bulk_insert(table, columns, data):
         cursor.executemany(query, data)
         conn.commit()
         rows_inserted = cursor.rowcount
-        print(f"✓ Inserted {rows_inserted} rows into {table}")
+        print(f"[OK] Inserted {rows_inserted} rows into {table}")
         return rows_inserted
 
     except Error as e:
-        print(f"✗ Bulk insert error: {e}")
+        print(f"[ERROR] Bulk insert error: {e}")
         conn.rollback()
         raise
     finally:
@@ -103,9 +108,16 @@ def check_duplicate_slug(slug):
     Returns:
         bool: True if exists, False otherwise
     """
-    query = "SELECT COUNT(*) as count FROM fishing_spots WHERE slug = %s"
-    result = execute_query(query, (slug,), fetch=True)
-    return result[0]['count'] > 0
+    conn = get_connection(silent=True)  # Silent connection
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT COUNT(*) as count FROM fishing_spots WHERE slug = %s", (slug,))
+        result = cursor.fetchone()
+        return result['count'] > 0
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == "__main__":
     # Test database connection

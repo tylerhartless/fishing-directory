@@ -86,26 +86,42 @@ def process_boat_ramps(csv_filename='tpwd_boat_ramps.csv'):
     data_to_insert = []
 
     for idx, row in df.iterrows():
-        # Generate slug
-        name = row.get('RAMP_NAME', row.get('NAME', f'Boat Ramp {idx}'))
-        county = row.get('COUNTY', 'Unknown')
-        slug = generate_unique_slug(name, county)
+        # Extract name from TPWAID (e.g., 'anderson001' -> 'Anderson 001')
+        tpwaid = str(row.get('TPWAID', f'unknown{idx}'))
+
+        # Parse county from TPWAID (part before number)
+        import re
+        county_match = re.match(r'([a-zA-Z]+)', tpwaid)
+        county = county_match.group(1).title() if county_match else 'Unknown'
+
+        # Get water body and access type
+        water_body = row.get('AccessTypeDescription', 'Local Waters')
+        access_type = row.get('AccessType', 'Unknown')
+
+        # Create a readable name with TPWAID for uniqueness
+        name = f"{water_body} - {county} County Access ({tpwaid})"
+
+        # Generate unique slug using TPWAID to ensure uniqueness
+        slug = slugify(f"{water_body}-{county}-{tpwaid}")
+
+        # Create description
+        description = f"Public {access_type.lower()} access at {water_body} in {county} County, Texas. TPWD public access point."
 
         # Extract data
         record = (
             name,
             slug,
-            float(row.get('LATITUDE', row.get('LAT', 0))),
-            float(row.get('LONGITUDE', row.get('LON', row.get('LONG', 0)))),
+            float(row.get('Latitude', 0)),
+            float(row.get('Longitude', 0)),
             county,
-            row.get('WATERBODY', row.get('WATER_BODY', None)),
+            water_body,
             'boat_ramp',
-            row.get('DESCRIPTION', f'Public boat ramp access on {row.get("WATERBODY", "local waters")}'),
+            description,
             clean_amenities(row),
             'TPWD_Boat_Ramps',
             True,  # is_verified (official TPWD data)
-            f"{name} - Boat Ramp in {county} County, Texas",  # meta_title
-            f"Public boat ramp access in {county} County. Free parking and lake access. GPS coordinates and amenities."  # meta_description
+            f"{water_body} Public Access - {county} County, Texas",  # meta_title
+            f"Public fishing access at {water_body} in {county} County. Free {access_type.lower()} access point with GPS coordinates."  # meta_description
         )
 
         data_to_insert.append(record)
