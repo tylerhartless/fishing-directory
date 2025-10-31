@@ -39,8 +39,6 @@ import Layout from '../layouts/Layout.astro';
       <select id="type-filter" class="filter-select">
         <option value="">All Spot Types</option>
         <option value="boat_ramp">Boat Ramps</option>
-        <option value="pier">Piers</option>
-        <option value="bank_fishing">Bank Fishing</option>
         <option value="state_park">State Parks</option>
       </select>
       <div class="filter-hint">
@@ -369,7 +367,7 @@ import Layout from '../layouts/Layout.astro';
       const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
 
       return `
-      <a href="/spot/${spot.slug}" class="spot-card">
+      <a href="/spot/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}">
         <div class="spot-header">
           <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
@@ -416,11 +414,12 @@ import Layout from '../layouts/Layout.astro';
   // Handle type filter
   const typeFilter = document.getElementById('type-filter');
   typeFilter?.addEventListener('change', () => {
-    const typeValue = typeFilter.value.toLowerCase();
+    const typeValue = typeFilter.value;
     const spotCards = document.querySelectorAll('.spot-card');
 
     spotCards.forEach((card) => {
-      if (!typeValue || card.textContent.toLowerCase().includes(typeValue)) {
+      const cardType = card.getAttribute('data-spot-type');
+      if (!typeValue || cardType === typeValue) {
         card.style.display = 'flex';
       } else {
         card.style.display = 'none';

@@ -42,11 +42,30 @@ class TexasTPWDAdapter(BaseDataAdapter):
         county_match = re.match(r'([a-zA-Z]+)', tpwaid)
         county = county_match.group(1).title() if county_match else 'Unknown'
 
-        # Get water body name
-        water_body = row.get('AccessTypeDescription', 'Local Waters')
+        # Get water body name - handle bad data
+        water_body_raw = str(row.get('AccessTypeDescription', 'Local Waters')).strip()
 
         # Get access type for description
         access_type = row.get('AccessType', 'River/Stream')
+
+        # Check if AccessTypeDescription is empty or looks like facility info
+        # Bad patterns: empty, whitespace, "boat ramp", "day use", "fishing pier", etc.
+        facility_keywords = ['boat ramp', 'day use', 'fishing pier', 'habitat', 'parking']
+        is_empty = not water_body_raw or water_body_raw == ''
+        is_facility_desc = any(keyword in water_body_raw.lower() for keyword in facility_keywords)
+
+        # Use generic name if AccessTypeDescription is empty or contains facility info
+        if is_empty or is_facility_desc:
+            if 'Lake' in access_type or 'Reservoir' in access_type:
+                water_body = f"{county} County Lake"
+            elif 'River' in access_type or 'Stream' in access_type:
+                water_body = f"{county} County Waterway"
+            elif 'Bay' in access_type or 'Beach' in access_type:
+                water_body = f"{county} County Coastal Access"
+            else:
+                water_body = f"{county} County Public Waters"
+        else:
+            water_body = water_body_raw
 
         # Validate coordinates
         try:

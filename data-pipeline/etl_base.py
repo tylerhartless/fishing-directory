@@ -15,7 +15,7 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 import pandas as pd
 from slugify import slugify
-from db_utils import bulk_insert, check_duplicate_slug
+from db_utils import bulk_insert, check_duplicate_slug, find_nearby_spots, update_spot_if_better
 import json
 
 
@@ -49,17 +49,21 @@ class BaseDataAdapter(ABC):
     specific data format into our standardized FishingSpotData format.
     """
 
-    def __init__(self, data_source_name: str, state_code: str):
+    def __init__(self, data_source_name: str, state_code: str, dedup_radius_meters: int = 100):
         """
         Initialize adapter
 
         Args:
             data_source_name: Name of data source (e.g., "TPWD_Boat_Ramps")
             state_code: Two-letter state code (e.g., "TX")
+            dedup_radius_meters: Radius in meters to check for duplicates (default 100m)
         """
         self.data_source_name = data_source_name
         self.state_code = state_code
+        self.dedup_radius_meters = dedup_radius_meters
         self.spots_processed = 0
+        self.spots_updated = 0
+        self.spots_skipped = 0
         self.errors = []
 
     @abstractmethod
@@ -114,6 +118,59 @@ class BaseDataAdapter(ABC):
 
         return slug
 
+    def check_for_duplicate(self, spot: FishingSpotData) -> Optional[Dict]:
+        """
+        Check if a similar spot already exists nearby
+
+        Args:
+            spot: FishingSpotData to check
+
+        Returns:
+            Existing spot record if duplicate found, None otherwise
+        """
+        nearby_spots = find_nearby_spots(
+            spot.latitude,
+            spot.longitude,
+            self.dedup_radius_meters
+        )
+
+        if nearby_spots:
+            # Return the closest match
+            return nearby_spots[0]
+
+        return None
+
+    def should_update_existing(self, existing: Dict, new_spot: FishingSpotData) -> bool:
+        """
+        Determine if new data is better than existing
+
+        Args:
+            existing: Existing database record
+            new_spot: New FishingSpotData
+
+        Returns:
+            True if should update, False if should skip
+        """
+        # Update if new source has higher priority
+        source_priority = {
+            'Texas_State_Parks': 3,
+            'Texas_Community_Lakes': 2,
+            'TPWD_Boat_Ramps': 1,
+        }
+
+        existing_priority = source_priority.get(existing.get('data_source'), 0)
+        new_priority = source_priority.get(self.data_source_name, 0)
+
+        # Update if new source is higher priority
+        if new_priority > existing_priority:
+            return True
+
+        # Update if new has richer data (more amenities, better description)
+        if new_spot.amenities and len(new_spot.amenities) > 0:
+            return True
+
+        return False
+
     def to_database_record(self, spot: FishingSpotData, slug: str) -> Tuple:
         """
         Convert FishingSpotData to database tuple
@@ -166,7 +223,7 @@ class BaseDataAdapter(ABC):
         print(f"      Found {len(df)} records")
 
         # Transform
-        print(f"\n[2/3] Transforming data...")
+        print(f"\n[2/3] Transforming and checking for duplicates...")
         data_to_insert = []
 
         for idx, row in df.iterrows():
@@ -176,6 +233,33 @@ class BaseDataAdapter(ABC):
                 if spot is None:
                     continue  # Skip this row
 
+                # Check for nearby duplicates
+                existing = self.check_for_duplicate(spot)
+
+                if existing:
+                    # Found a duplicate - decide whether to update or skip
+                    if self.should_update_existing(existing, spot):
+                        # Update existing record with better data
+                        import json as json_lib
+                        update_data = {
+                            'name': spot.name,
+                            'description': spot.description,
+                            'amenities': json_lib.dumps(spot.amenities) if spot.amenities else None,
+                            'data_source': self.data_source_name,
+                            'spot_type': spot.spot_type,
+                        }
+                        if update_spot_if_better(existing['id'], update_data):
+                            self.spots_updated += 1
+                            if (idx + 1) % 100 == 0:
+                                print(f"      Updated duplicate: {spot.name} (within {existing['distance_meters']:.0f}m of existing)")
+                    else:
+                        # Skip - existing record is good enough
+                        self.spots_skipped += 1
+                        if (idx + 1) % 100 == 0:
+                            print(f"      Skipped duplicate: {spot.name}")
+                    continue
+
+                # No duplicate - add to insert list
                 slug = self.generate_slug(spot)
                 record = self.to_database_record(spot, slug)
                 data_to_insert.append(record)
@@ -189,7 +273,9 @@ class BaseDataAdapter(ABC):
                 self.errors.append(error_msg)
                 print(f"      ⚠️  Error: {error_msg}")
 
-        print(f"      Transformed {self.spots_processed} records")
+        print(f"      New records to insert: {self.spots_processed}")
+        print(f"      Existing records updated: {self.spots_updated}")
+        print(f"      Duplicates skipped: {self.spots_skipped}")
 
         # Load
         print(f"\n[3/3] Inserting into database...")
@@ -206,8 +292,9 @@ class BaseDataAdapter(ABC):
         print(f"\n{'='*60}")
         print(f"ETL Complete: {self.data_source_name}")
         print(f"{'='*60}")
-        print(f"✓ Records processed: {self.spots_processed}")
-        print(f"✓ Records inserted:  {rows_inserted}")
+        print(f"✓ New records inserted: {rows_inserted}")
+        print(f"✓ Existing records updated: {self.spots_updated}")
+        print(f"  Duplicates skipped: {self.spots_skipped}")
         if self.errors:
             print(f"⚠  Errors encountered: {len(self.errors)}")
             print(f"   (Check logs for details)")

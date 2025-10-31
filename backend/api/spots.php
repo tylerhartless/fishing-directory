@@ -40,7 +40,7 @@ if ($county) {
     $types .= 's';
 }
 
-$query .= " ORDER BY id ASC LIMIT ?";
+$query .= " ORDER BY name ASC LIMIT ?";
 $params[] = $limit;
 $types .= 'i';
 
