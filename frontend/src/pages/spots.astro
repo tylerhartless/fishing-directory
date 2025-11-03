@@ -446,15 +446,35 @@ import Layout from '../layouts/Layout.astro';
   }
 
   function filterAndDisplaySpots() {
-    // Apply search filter
+    // Apply search filter with improved matching
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filteredSpots = allSpots.filter(spot =>
-        (spot.name || '').toLowerCase().includes(query) ||
-        (spot.county || '').toLowerCase().includes(query) ||
-        (spot.water_body_name || '').toLowerCase().includes(query) ||
-        (spot.description || '').toLowerCase().includes(query)
-      );
+      const query = searchQuery.toLowerCase().trim();
+
+      // Split query into words for better matching
+      const queryWords = query.split(/\s+/).filter(word => word.length > 0);
+
+      filteredSpots = allSpots.filter(spot => {
+        // Combine all searchable fields into one string
+        const searchableText = [
+          spot.name || '',
+          spot.county || '',
+          spot.water_body_name || '',
+          spot.description || '',
+          spot.spot_type ? spot.spot_type.replace('_', ' ') : '',
+          spot.state || ''
+        ].join(' ').toLowerCase();
+
+        // Match if ANY word is found (OR logic)
+        // This makes "lake travis" match spots with either "lake" OR "travis"
+        const anyWordMatches = queryWords.some(word =>
+          searchableText.includes(word)
+        );
+
+        // Also check if the exact phrase appears
+        const exactMatch = searchableText.includes(query);
+
+        return anyWordMatches || exactMatch;
+      });
     } else {
       filteredSpots = allSpots;
     }
