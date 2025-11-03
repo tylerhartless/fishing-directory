@@ -53,4 +53,4 @@ backup/
 
 # Docker volumes (don't commit database data)
 .docker/
-mysql-data/
+mysql-data/data-pipeline/osm/*.osm.pbf

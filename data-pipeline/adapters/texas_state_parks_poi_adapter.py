@@ -21,22 +21,22 @@ from etl_base import BaseDataAdapter, FishingSpotData
 class TexasStateParksFromPOIAdapter(BaseDataAdapter):
     """Adapter for Texas State Parks from point_of_interest.csv"""
 
-    def __init__(self):
+    def __init__(self, amenities_path: str = None):
         super().__init__(
             data_source_name="Texas_State_Parks",
             state_code="TX"
         )
         self.amenities_data = None
+        self.amenities_path = amenities_path
         # Transformer to convert Web Mercator (EPSG:3857) to WGS84 (EPSG:4326)
         self.transformer = Transformer.from_crs("EPSG:3857", "EPSG:4326", always_xy=True)
 
-    def load_data(self, poi_path: str, amenities_path: str = None) -> pd.DataFrame:
+    def load_data(self, poi_path: str) -> pd.DataFrame:
         """
         Load POI data and aggregate by park, optionally merge amenities
 
         Args:
             poi_path: Path to point_of_interest.csv
-            amenities_path: Path to public_building_structure.csv (optional)
         """
         df_poi = pd.read_csv(poi_path)
         print(f"Loaded {len(df_poi)} POI records")
@@ -54,8 +54,8 @@ class TexasStateParksFromPOIAdapter(BaseDataAdapter):
         print(f"Aggregated to {len(df_parks)} unique parks with fishing")
 
         # Load amenities if provided
-        if amenities_path and os.path.exists(amenities_path):
-            self.amenities_data = pd.read_csv(amenities_path)
+        if self.amenities_path and os.path.exists(self.amenities_path):
+            self.amenities_data = pd.read_csv(self.amenities_path)
             print(f"Loaded {len(self.amenities_data)} amenity records")
 
         return df_parks
@@ -142,6 +142,36 @@ class TexasStateParksFromPOIAdapter(BaseDataAdapter):
         # For now, we'll leave it as 'Unknown' or try to geocode
         county = 'Texas'  # Placeholder - ideally reverse geocode
 
+        # Infer water body from park name
+        # Many parks are named after the lake/river they're on
+
+        # First, check if we have a known mapping for this park
+        # This handles cases where we have verified the correct water body name
+        # Only add parks here if you're certain of the lake/river name
+        known_water_bodies = {
+            'Buescher': 'Buescher Lake',
+            'Choke Canyon': 'Choke Canyon Reservoir',
+            'Fort Boggy': 'Sullivan Lake',
+            'Tyler': 'Park Waters',  # Tyler SP has its own small lake, use generic
+            # Add more verified water bodies as needed
+        }
+
+        # Clean up park name first (remove unit designations)
+        import re
+        cleaned_park_name = park_name
+        cleaned_park_name = re.sub(r'\s*-\s*[A-Za-z\s]+Unit\s*$', '', cleaned_park_name)
+        cleaned_park_name = re.sub(r'\s*-\s*[A-Za-z\s]+$', '', cleaned_park_name)
+
+        # Check if we have a verified mapping
+        if cleaned_park_name in known_water_bodies:
+            water_body = known_water_bodies[cleaned_park_name]
+        elif park_name in known_water_bodies:
+            water_body = known_water_bodies[park_name]
+        else:
+            # For all other parks, use generic "Park Waters"
+            # Don't try to extract from park name - too many edge cases and errors
+            water_body = 'Park Waters'
+
         # Build description
         description = (
             f"{park_name} State Park offers fishing access with no fishing license required. "
@@ -167,7 +197,7 @@ class TexasStateParksFromPOIAdapter(BaseDataAdapter):
             latitude=latitude,
             longitude=longitude,
             county=county,
-            water_body_name='Park waters',
+            water_body_name=water_body,
             spot_type='state_park',
             description=description,
             state='TX',
@@ -178,76 +208,10 @@ class TexasStateParksFromPOIAdapter(BaseDataAdapter):
             meta_description=f"Fish at {park_name} State Park without a fishing license. Texas State Parks waive license requirements for all visitors."
         )
 
-    def process_and_import(self, poi_path: str, amenities_path: str = None) -> int:
-        """Process and import state parks"""
-        print(f"\n{'='*60}")
-        print(f"Starting ETL: {self.data_source_name}")
-        print(f"{'='*60}\n")
-
-        # Load data
-        df = self.load_data(poi_path, amenities_path)
-
-        if len(df) == 0:
-            print("❌ No parks with fishing found!")
-            return 0
-
-        # Transform and load
-        data_to_insert = []
-
-        print(f"\n[2/3] Transforming data...")
-        for idx, row in df.iterrows():
-            try:
-                spot = self.transform_row(row, idx)
-                if spot is None:
-                    continue
-
-                slug = self.generate_slug(spot)
-                record = self.to_database_record(spot, slug)
-                data_to_insert.append(record)
-                self.spots_processed += 1
-
-            except Exception as e:
-                error_msg = f"Row {idx}: {str(e)}"
-                self.errors.append(error_msg)
-                print(f"      ⚠️  Error: {error_msg}")
-
-        print(f"      Transformed {self.spots_processed} parks")
-
-        if len(data_to_insert) == 0:
-            print("❌ No valid parks to insert!")
-            return 0
-
-        # Insert
-        print(f"\n[3/3] Inserting into database...")
-
-        from db_utils import bulk_insert
-
-        columns = [
-            'name', 'slug', 'latitude', 'longitude', 'county', 'water_body_name',
-            'spot_type', 'description', 'amenities', 'data_source', 'is_verified',
-            'meta_title', 'meta_description', 'state', 'address', 'zip_code'
-        ]
-
-        rows_inserted = bulk_insert('fishing_spots', columns, data_to_insert)
-
-        print(f"\n{'='*60}")
-        print(f"ETL Complete: {self.data_source_name}")
-        print(f"{'='*60}")
-        print(f"✓ Parks processed: {self.spots_processed}")
-        print(f"✓ Parks inserted:  {rows_inserted}")
-        if self.errors:
-            print(f"⚠  Errors: {len(self.errors)}")
-        print(f"{'='*60}\n")
-
-        return rows_inserted
-
-
 def main():
     """Run the adapter"""
     from config import RAW_DATA_DIR
     import os
-
-    adapter = TexasStateParksFromPOIAdapter()
 
     poi_path = os.path.join(RAW_DATA_DIR, 'point_of_interest.csv')
     amenities_path = os.path.join(RAW_DATA_DIR, 'public_building_structure.csv')
@@ -260,7 +224,11 @@ def main():
         print(f"⚠️  Amenities file not found, will skip detailed amenities")
         amenities_path = None
 
-    rows_inserted = adapter.process_and_import(poi_path, amenities_path)
+    # Create adapter with amenities path
+    adapter = TexasStateParksFromPOIAdapter(amenities_path=amenities_path)
+
+    # Use base class process_and_import which includes deduplication
+    rows_inserted = adapter.process_and_import(poi_path)
     print(f"\n✅ Complete! {rows_inserted} state parks imported.")
 
 

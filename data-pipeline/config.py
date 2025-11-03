@@ -21,8 +21,8 @@ DB_CONFIG = {
 MAPBOX_TOKEN = os.getenv('MAPBOX_TOKEN', '')
 
 # Data source paths
-RAW_DATA_DIR = '../raw-data'
-PROCESSED_DATA_DIR = '../processed-data'
+RAW_DATA_DIR = '../../raw-data'
+PROCESSED_DATA_DIR = '../../processed-data'
 
 # Validate required config
 def validate_config():

@@ -1,0 +1,255 @@
+{
+  "version": "1.0",
+  "description": "Centralized corrections to apply after raw data import",
+  "corrections": {
+    "name_fixes": {
+      "description": "Source-specific name corrections based on local knowledge",
+      "entries": [
+        {
+          "source": "Texas_Community_Lakes",
+          "old_name": "Addicks",
+          "county": "Harris",
+          "new_name": "Bear Creek Pioneers Park",
+          "new_water_body": "Bear Creek Pioneers Park",
+          "new_description": "Large county park with fishing ponds near Addicks Reservoir.",
+          "reason": "Coordinates point to the park, not Addicks Reservoir flood control area"
+        },
+        {
+          "source": "Texas_Community_Lakes",
+          "old_name": "Nassau",
+          "county": "Harris",
+          "new_name": "Nassau Bay",
+          "new_water_body": "Nassau Bay",
+          "reason": "Incomplete name in source data"
+        },
+        {
+          "source": "Texas_Community_Lakes",
+          "old_name": "Double",
+          "county": "San Jacinto",
+          "new_name": "Double Lake",
+          "reason": "Truncated name in source data"
+        },
+        {
+          "source": "Texas_Community_Lakes",
+          "old_name": "Burke-Crenshaw Lake",
+          "county": "Harris",
+          "new_name": "Burke-Crenshaw Park",
+          "new_water_body": "Burke-Crenshaw Lake",
+          "reason": "Park is the location, Lake is the water body. Consolidates with 'Burke Crenshaw Park' (no hyphen) at 106m distance."
+        }
+      ]
+    },
+    "duplicate_deletions": {
+      "description": "Known duplicates that dedup logic doesn't catch - delete these",
+      "entries": [
+        {
+          "name": "Burke Crenshaw Park",
+          "county": "Harris",
+          "source": "Texas_Neighborhood_Fishin",
+          "reason": "Duplicate of Burke-Crenshaw Park (missing hyphen), 106m away",
+          "keep_instead": {
+            "name": "Burke-Crenshaw Park",
+            "source": "Texas_Community_Lakes"
+          }
+        },
+        {
+          "name": "Raven",
+          "county": "Walker",
+          "spot_type": "public_water",
+          "source": "Texas_Community_Lakes",
+          "reason": "Exact duplicate of Lake Raven (lake type) - lake takes priority",
+          "keep_instead": {
+            "name": "Lake Raven",
+            "spot_type": "lake",
+            "source": "Texas_Major_Lakes"
+          }
+        },
+        {
+          "name": "Lake Sheldon",
+          "county": "Harris",
+          "source": "Texas_Major_Lakes",
+          "reason": "Doesn't exist - duplicate of Sheldon Lake State Park",
+          "keep_instead": {
+            "name": "Sheldon Lake State Park and Environmental Learning Center",
+            "spot_type": "state_park"
+          }
+        },
+        {
+          "name": "Sheldon Lake State Park",
+          "county": "Harris",
+          "source": "Texas_State_Parks",
+          "coords": "~29.85, -95.17",
+          "reason": "Old state park entry - duplicate of combined entry",
+          "note": "Keep the 'Sheldon Lake State Park and Environmental Learning Center' entry instead"
+        }
+      ]
+    },
+    "numbered_pond_groups": {
+      "description": "Numbered ponds that should be consolidated into parent entries",
+      "entries": [
+        {
+          "base_name": "Bates Allen Park",
+          "county": "Fort Bend",
+          "numbered_entries": ["Bates Allen Park Pond 1", "Bates Allen Park Pond 2"],
+          "create_parent": true,
+          "water_body": "Bates Allen Park"
+        },
+        {
+          "base_name": "Davidson Creek",
+          "county": "Burleson",
+          "numbered_entries": ["Davidson Creek 1", "Davidson Creek 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Engeling WMA",
+          "county": "Anderson",
+          "numbered_entries": ["Engeling WMA Pond 1", "Engeling WMA Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Evergreen Pond",
+          "county": "Harris",
+          "numbered_entries": ["Evergreen Pond 1", "Evergreen Pond 2", "Evergreen Pond 3"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Fischer Park",
+          "county": "Comal",
+          "numbered_entries": ["Fischer Park Pond 1", "Fischer Park Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Green-Dickson Municipal Park",
+          "county": "Lavaca",
+          "numbered_entries": ["Green-Dickson Municipal Park Pond 1", "Green-Dickson Municipal Park Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Greenbelt Stilling Basin",
+          "county": "Donley",
+          "numbered_entries": ["Greenbelt Stilling Basin 1", "Greenbelt Stilling Basin 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Hackberry Park",
+          "county": "Harris",
+          "numbered_entries": [
+            "Hackberry Park Pond 1",
+            "Hackberry Park Pond 2",
+            "Hackberry Park Pond 3",
+            "Hackberry Park Pond 4",
+            "Hackberry Park Pond 5"
+          ],
+          "create_parent": true,
+          "water_body": "Hackberry Park",
+          "description": "Public park with 5 fishing ponds."
+        },
+        {
+          "base_name": "Hemphill County Pond",
+          "county": "Hemphill",
+          "numbered_entries": ["Hemphill County Pond 1", "Hemphill County Pond 2", "Hemphill County Pond 3"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Hubbard City Pond",
+          "county": "Hill",
+          "numbered_entries": [
+            "Hubbard City Pond 1",
+            "Hubbard City Pond 2",
+            "Hubbard City Pond 3",
+            "Hubbard City Pond 4"
+          ],
+          "create_parent": true
+        },
+        {
+          "base_name": "Jones Lake",
+          "county": "Montgomery",
+          "numbered_entries": ["Jones Lake 1", "Jones Lake 2", "Jones Lake 3"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Little Chocolate Bayou Park",
+          "county": "Calhoun",
+          "numbered_entries": ["Little Chocolate Bayou Park Pond 1", "Little Chocolate Bayou Park Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Matador Pond",
+          "county": "Cottle",
+          "numbered_entries": ["Matador Pond 1", "Matador Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Mexia State School Pond",
+          "county": "Limestone",
+          "numbered_entries": ["Mexia State School Pond 1", "Mexia State School Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Pearland Parkway Pond",
+          "county": "Brazoria",
+          "numbered_entries": ["Pearland Parkway Pond 1", "Pearland Parkway Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Pedigo Park",
+          "county": "Polk",
+          "numbered_entries": ["Pedigo Park Pond 1", "Pedigo Park Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Southwest Nature Preserve",
+          "county": "Tarrant",
+          "numbered_entries": ["Southwest Nature Preserve Pond 1", "Southwest Nature Preserve Pond 2"],
+          "create_parent": true
+        },
+        {
+          "base_name": "Willow Waterhole Greenway",
+          "county": "Harris",
+          "numbered_entries": [
+            "Willow Waterhole Unit 2",
+            "Willow Waterhole Unit 3",
+            "Willow Waterhole Unit 4",
+            "Willow Waterhole Unit 5"
+          ],
+          "create_parent": true,
+          "water_body": "Willow Waterhole Greenway",
+          "description": "Public greenway with 4 fishing lakes (Willow, Prairie, Triangle, and Westbury)."
+        },
+        {
+          "base_name": "Wolfe City Pond",
+          "county": "Hunt",
+          "numbered_entries": ["Wolfe City Pond 1", "Wolfe City Pond 2"],
+          "create_parent": true
+        }
+      ]
+    },
+    "sheldon_lake_consolidation": {
+      "description": "Complex consolidation for Sheldon Lake State Park",
+      "parent": {
+        "name": "Sheldon Lake State Park and Environmental Learning Center",
+        "spot_type": "state_park",
+        "county": "Harris",
+        "source": "Texas_State_Parks_Combined"
+      },
+      "children": [
+        "Sheldon Children's Pond 1",
+        "Sheldon Children's Pond 2",
+        "Sheldon Children's Pond 6",
+        "Sheldon Prairie Pond",
+        "Sheldon"
+      ],
+      "delete": [
+        {
+          "name": "Lake Sheldon",
+          "reason": "Doesn't exist"
+        },
+        {
+          "name": "Sheldon Lake State Park",
+          "coords": "~29.85, -95.17",
+          "reason": "Old entry, use combined entry instead"
+        }
+      ]
+    }
+  }
+}

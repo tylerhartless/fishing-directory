@@ -147,6 +147,7 @@ def find_nearby_spots(latitude, longitude, radius_meters=100):
             longitude,
             spot_type,
             data_source,
+            amenities,
             (
                 6371000 * 2 * ASIN(SQRT(
                     POWER(SIN((latitude - %s) * PI()/180 / 2), 2) +
@@ -162,6 +163,46 @@ def find_nearby_spots(latitude, longitude, radius_meters=100):
 
     try:
         cursor.execute(query, (latitude, latitude, longitude, radius_meters))
+        results = cursor.fetchall()
+        return results
+    finally:
+        cursor.close()
+        conn.close()
+
+def find_exact_name_match(name, county):
+    """
+    Find existing fishing spots with exact same name and county
+
+    Args:
+        name (str): Spot name to search for
+        county (str): County to search in
+
+    Returns:
+        list: List of matching spots
+    """
+    conn = get_connection(silent=True)
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            county,
+            spot_type,
+            data_source,
+            address,
+            amenities,
+            description
+        FROM fishing_spots
+        WHERE name = %s AND county = %s
+        ORDER BY id ASC
+    """
+
+    try:
+        cursor.execute(query, (name, county))
         results = cursor.fetchall()
         return results
     finally:

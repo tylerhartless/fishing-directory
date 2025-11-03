@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
   title="Texas Fishing Spots - Public Access Directory"
-  description="Browse 2,000+ public fishing access points across Texas. Find boat ramps, piers, and bank fishing locations with GPS coordinates."
+  description="Browse 1,100+ public fishing spots across Texas. Find lakes, parks, state parks, and river access points with GPS coordinates."
 >
   <section class="page-header">
     <div class="container">
@@ -35,14 +35,31 @@ import Layout from '../layouts/Layout.astro';
       <p><span id="search-query-text"></span>. <a href="/texas">Show all spots</a></p>
     </div>
 
+    <div class="filter-notice" id="filter-notice">
+      <p>
+        🎣 <strong>Showing fishing spots only</strong> (boat ramps hidden by default).
+        <label class="inline-toggle">
+          <input type="checkbox" id="boat-ramp-toggle" />
+          <span>Include 2,188 boat ramps</span>
+        </label>
+      </p>
+    </div>
+
     <div class="filters">
-      <select id="type-filter" class="filter-select">
-        <option value="">All Spot Types</option>
-        <option value="boat_ramp">Boat Ramps</option>
-        <option value="state_park">State Parks</option>
-      </select>
+      <div class="filter-controls">
+        <label for="type-filter">Filter by type:</label>
+        <select id="type-filter">
+          <option value="">All types</option>
+          <option value="lake">Lakes</option>
+          <option value="public_water">Public Waters</option>
+          <option value="state_park">State Parks</option>
+          <option value="river_access">River Access</option>
+          <option value="fishing_pier">Fishing Piers</option>
+        </select>
+      </div>
       <div class="filter-hint">
-        Use the search box above to search by county, lake name, or location
+        Use the search box above to search by county, lake name, or location.
+        Looking for boat ramps? <a href="/boat-ramps" class="inline-link">Visit our boat ramp locator</a>
       </div>
     </div>
 
@@ -134,27 +151,99 @@ import Layout from '../layouts/Layout.astro';
     color: #c33;
   }
 
-  .filters {
+  .filter-notice {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+  }
+
+  .filter-notice p {
+    margin: 0;
+    color: #2c5530;
+    font-size: 1rem;
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .inline-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    background: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #c8e6c9;
+    transition: background 0.2s;
+  }
+
+  .inline-toggle:hover {
+    background: #f1f8f4;
+  }
+
+  .inline-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .inline-toggle span {
+    user-select: none;
+    font-size: 0.95rem;
+  }
+
+  .filters {
     margin-bottom: 2rem;
   }
 
-  .filter-select {
-    padding: 0.75rem;
-    border: 2px solid #ddd;
+  .filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-controls label {
+    font-weight: 500;
+    color: #2c5530;
+  }
+
+  .filter-controls select {
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #e0e0e0;
     border-radius: 4px;
     font-size: 1rem;
+    background: white;
+    cursor: pointer;
     min-width: 200px;
   }
 
+  .filter-controls select:hover {
+    border-color: #4a7c59;
+  }
+
+  .filter-controls select:focus {
+    outline: none;
+    border-color: #4a7c59;
+    box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+  }
+
   .filter-hint {
-    flex: 1;
-    display: flex;
-    align-items: center;
     color: #666;
     font-size: 0.9rem;
-    font-style: italic;
+  }
+
+  .inline-link {
+    color: #4a7c59;
+    text-decoration: underline;
+  }
+
+  .inline-link:hover {
+    color: #2c5530;
   }
 
   .spots-grid {
@@ -250,6 +339,34 @@ import Layout from '../layouts/Layout.astro';
     font-family: monospace;
   }
 
+  .address {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .distance {
+    font-size: 0.9rem;
+    color: #2c5530;
+    font-weight: 500;
+  }
+
+  .amenities-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .amenity-badge {
+    background: #e8f5e9;
+    color: #2c5530;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    border: 1px solid #c8e6c9;
+    white-space: nowrap;
+  }
+
   .no-results {
     text-align: center;
     padding: 3rem;
@@ -279,38 +396,83 @@ import Layout from '../layouts/Layout.astro';
       grid-template-columns: 1fr;
     }
 
-    .filters {
+    .filter-options {
       flex-direction: column;
-    }
-
-    .filter-select {
-      width: 100%;
+      align-items: flex-start;
+      gap: 1rem;
     }
   }
 </style>
 
 <script>
-  const API_URL = 'http://localhost:8000';
+  // Use current hostname for API (works with localhost and Tailscale)
+  const API_URL = `http://${window.location.hostname}:8000`;
   let allSpots = [];
   let filteredSpots = [];
 
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const searchQuery = urlParams.get('q') || '';
+  const includeBoatRamps = urlParams.get('include_boat_ramps') === 'true';
+  const userLat = urlParams.get('lat') ? parseFloat(urlParams.get('lat')) : null;
+  const userLon = urlParams.get('lon') ? parseFloat(urlParams.get('lon')) : null;
 
-  // Update search input with query
+  // Update search input with query or location
   const searchInput = document.getElementById('search-input');
   if (searchQuery && searchInput) {
     searchInput.value = searchQuery;
     document.getElementById('clear-btn').style.display = 'flex';
     document.getElementById('search-info').style.display = 'block';
     document.getElementById('search-query-text').textContent = `Showing results for "${searchQuery}"`;
+  } else if (userLat && userLon) {
+    document.getElementById('clear-btn').style.display = 'flex';
+    document.getElementById('search-info').style.display = 'block';
+    document.getElementById('search-query-text').textContent = `Showing results near your location (${userLat.toFixed(4)}, ${userLon.toFixed(4)})`;
+  }
+
+  // Update boat ramp toggle and notice based on URL
+  const boatRampToggle = document.getElementById('boat-ramp-toggle');
+  const filterNotice = document.getElementById('filter-notice');
+
+  if (boatRampToggle) {
+    boatRampToggle.checked = includeBoatRamps;
+  }
+
+  // Update notice text based on boat ramp inclusion
+  if (filterNotice && includeBoatRamps) {
+    filterNotice.innerHTML = `
+      <p>
+        🚤 <strong>Showing fishing spots + boat ramps</strong>.
+        <label class="inline-toggle">
+          <input type="checkbox" id="boat-ramp-toggle-active" checked />
+          <span>Hide boat ramps</span>
+        </label>
+      </p>
+    `;
+
+    // Re-attach event listener for the new toggle
+    const newToggle = document.getElementById('boat-ramp-toggle-active');
+    if (newToggle) {
+      newToggle.addEventListener('change', () => {
+        const currentUrl = new URL(window.location.href);
+        const currentQuery = currentUrl.searchParams.get('q');
+
+        currentUrl.searchParams.delete('include_boat_ramps');
+
+        if (currentQuery) {
+          currentUrl.searchParams.set('q', currentQuery);
+        }
+
+        window.location.href = currentUrl.toString();
+      });
+    }
   }
 
   // Load spots from API
   async function loadSpots() {
     try {
-      const response = await fetch(`${API_URL}/spots.php?limit=3000`);
+      const includeBoatRampsParam = includeBoatRamps ? '&include_boat_ramps=true' : '';
+      const response = await fetch(`${API_URL}/spots.php?limit=3000${includeBoatRampsParam}`);
       const data = await response.json();
 
       if (data.success) {
@@ -325,24 +487,54 @@ import Layout from '../layouts/Layout.astro';
     }
   }
 
+  // Calculate distance between two coordinates (Haversine formula)
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
   function filterAndDisplaySpots() {
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filteredSpots = allSpots.filter(spot =>
-        spot.name.toLowerCase().includes(query) ||
-        spot.county.toLowerCase().includes(query) ||
-        spot.water_body_name.toLowerCase().includes(query) ||
-        spot.description.toLowerCase().includes(query)
+        (spot.name || '').toLowerCase().includes(query) ||
+        (spot.county || '').toLowerCase().includes(query) ||
+        (spot.water_body_name || '').toLowerCase().includes(query) ||
+        (spot.description || '').toLowerCase().includes(query)
       );
     } else {
       filteredSpots = allSpots;
     }
 
+    // If user location is provided, calculate distances and sort by proximity
+    if (userLat && userLon) {
+      filteredSpots = filteredSpots.map(spot => ({
+        ...spot,
+        distance: calculateDistance(userLat, userLon, parseFloat(spot.latitude), parseFloat(spot.longitude))
+      }));
+
+      // Sort by distance (nearest first)
+      filteredSpots.sort((a, b) => a.distance - b.distance);
+
+      // Limit to nearest 50 spots for initial display
+      filteredSpots = filteredSpots.slice(0, 50);
+    }
+
     // Update subtitle
     const subtitle = document.getElementById('subtitle');
     if (subtitle) {
-      subtitle.textContent = `${filteredSpots.length} verified public fishing access points`;
+      if (userLat && userLon) {
+        subtitle.textContent = `Showing ${filteredSpots.length} nearest fishing spots to your location`;
+      } else {
+        subtitle.textContent = `${filteredSpots.length} verified public fishing access points`;
+      }
     }
 
     // Display spots
@@ -366,23 +558,52 @@ import Layout from '../layouts/Layout.astro';
       // Remove slug identifier from name (e.g., "(anderson001)")
       const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
 
+      // Parse amenities if available
+      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+      const amenitiesJson = JSON.stringify(amenities);
+
+      // Build amenity badges for prominent features
+      const prominentAmenities = [];
+      const amenityIcons = {
+        'boat_ramp': '🚤 Boat Ramp',
+        'fishing_pier': '🎣 Pier',
+        'fish_cleaning': '🔪 Cleaning Station',
+        'restrooms': '🚻 Restrooms',
+        'camping': '⛺ Camping',
+        'picnic_area': '🧺 Picnic Area'
+      };
+
+      for (const [key, label] of Object.entries(amenityIcons)) {
+        if (amenities[key] === true) {
+          prominentAmenities.push(`<span class="amenity-badge">${label}</span>`);
+        }
+      }
+
+      const amenitiesHtml = prominentAmenities.length > 0
+        ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
+        : '';
+
       return `
-      <a href="/spot/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}">
+      <a href="/spot/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
         <div class="spot-header">
           <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
         </div>
         <div class="spot-details">
           <p class="location">
-            <strong>📍 ${spot.county} County</strong>
+            <strong>📍 ${spot.county === 'Multiple Counties' ? 'Multiple Counties' : spot.county + ' County'}</strong>
           </p>
           <p class="water-body">🌊 ${spot.water_body_name}</p>
+          ${amenitiesHtml}
           <p class="description">${spot.description}</p>
         </div>
         <div class="spot-footer">
-          <span class="coordinates">
-            ${parseFloat(spot.latitude).toFixed(4)}, ${parseFloat(spot.longitude).toFixed(4)}
-          </span>
+          ${spot.distance
+            ? `<span class="distance">📍 ${spot.distance < 1 ? (spot.distance * 1000).toFixed(0) + ' m' : spot.distance.toFixed(1) + ' km'} away</span>`
+            : spot.address
+              ? `<span class="address">📍 ${spot.address}</span>`
+              : `<span class="coordinates">${parseFloat(spot.latitude).toFixed(4)}, ${parseFloat(spot.longitude).toFixed(4)}</span>`
+          }
         </div>
       </a>
       `;
@@ -411,7 +632,26 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Handle type filter
+  // Handle boat ramp toggle
+  boatRampToggle?.addEventListener('change', () => {
+    const currentUrl = new URL(window.location.href);
+    const currentQuery = currentUrl.searchParams.get('q');
+
+    if (boatRampToggle.checked) {
+      currentUrl.searchParams.set('include_boat_ramps', 'true');
+    } else {
+      currentUrl.searchParams.delete('include_boat_ramps');
+    }
+
+    // Preserve search query if present
+    if (currentQuery) {
+      currentUrl.searchParams.set('q', currentQuery);
+    }
+
+    window.location.href = currentUrl.toString();
+  });
+
+  // Legacy type filter (keep for backwards compatibility)
   const typeFilter = document.getElementById('type-filter');
   typeFilter?.addEventListener('change', () => {
     const typeValue = typeFilter.value;
@@ -419,11 +659,33 @@ import Layout from '../layouts/Layout.astro';
 
     spotCards.forEach((card) => {
       const cardType = card.getAttribute('data-spot-type');
-      if (!typeValue || cardType === typeValue) {
+      const amenitiesStr = card.getAttribute('data-amenities');
+
+      // Show if no filter selected
+      if (!typeValue) {
         card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
+        return;
       }
+
+      // Show if spot_type matches
+      if (cardType === typeValue) {
+        card.style.display = 'flex';
+        return;
+      }
+
+      // Show if amenities contain the filtered type
+      try {
+        const amenities = JSON.parse(amenitiesStr || '{}');
+        if (amenities[typeValue] === true) {
+          card.style.display = 'flex';
+          return;
+        }
+      } catch (e) {
+        // Invalid JSON, ignore
+      }
+
+      // No match found
+      card.style.display = 'none';
     });
   });
 

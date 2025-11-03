@@ -3,34 +3,55 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout
-  title="Public Fishing Directory - Find Free Fishing Access Nationwide"
-  description="Discover thousands of free public fishing access points. Boat ramps, bank fishing, piers, and more with GPS coordinates and amenities."
+  title="Find Fishing Spots Near You - Public Fishing Directory"
+  description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
 >
   <section class="hero">
     <div class="container">
-      <h1>Find Your Next Fishing Spot</h1>
-      <p class="subtitle">
-        Free public access to boat ramps, fishing piers, and bank fishing locations nationwide
-      </p>
+      <h1>Stop Searching "Fishing Spots Near Me"</h1>
+      <p class="tagline">Find your perfect fishing location here!</p>
 
-      <form class="search-box" action="/texas" method="get">
-        <input
-          type="text"
-          name="q"
-          placeholder="Search by location, lake, county, or state..."
-          id="search-input"
-        />
-        <button type="submit">Search</button>
-      </form>
+      <div class="search-container">
+        <div class="location-prompt">
+          <svg class="location-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <p>Enter or select a location to see fishing spots</p>
+        </div>
 
-      <div class="stats">
+        <div class="search-actions">
+          <button type="button" id="use-location-btn" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            Use Current Location
+          </button>
+
+          <div class="search-divider">or</div>
+
+          <form class="search-form" id="location-search-form">
+            <input
+              type="text"
+              id="location-search"
+              placeholder="Enter city, county, or zip code..."
+              autocomplete="off"
+            />
+            <button type="submit" class="btn-search">Search</button>
+          </form>
+
+          <div id="search-suggestions" class="suggestions"></div>
+        </div>
+      </div>
+
+      <div class="quick-stats">
         <div class="stat">
-          <strong>10,000+</strong>
+          <strong>4,200+</strong>
           <span>Fishing Spots</span>
         </div>
         <div class="stat">
-          <strong>Growing</strong>
-          <span>Nationwide</span>
+          <strong>Texas</strong>
+          <span>Available Now</span>
         </div>
         <div class="stat">
           <strong>100%</strong>
@@ -40,41 +61,114 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <section class="container">
-    <h2>Browse by State</h2>
-    <div class="grid">
-      <a href="/texas" class="card state-card active">
-        <div class="flag">🇺🇸</div>
-        <h3>Texas</h3>
-        <p>10,000+ spots across 254 counties</p>
-        <span class="badge">Available Now</span>
+  <section class="container popular-locations">
+    <h2>Popular Fishing Locations</h2>
+    <p class="section-subtitle">Most enriched areas with complete amenity data</p>
+
+    <div class="location-grid">
+      <a href="/texas?county=Harris" class="location-card">
+        <div class="location-header">
+          <h3>Harris County</h3>
+          <span class="spot-count">450+ spots</span>
+        </div>
+        <p>Houston metro area with diverse fishing opportunities</p>
+        <div class="location-features">
+          <span class="feature-badge">📍 GPS Data</span>
+          <span class="feature-badge">🚤 Boat Ramps</span>
+          <span class="feature-badge">🅿️ Parking Info</span>
+        </div>
       </a>
-      <div class="card state-card coming-soon">
-        <div class="flag">🚧</div>
-        <h3>More States Coming Soon</h3>
-        <p>Florida, California, Louisiana & more</p>
+
+      <a href="/texas?county=Travis" class="location-card">
+        <div class="location-header">
+          <h3>Travis County</h3>
+          <span class="spot-count">280+ spots</span>
+        </div>
+        <p>Austin lakes and Colorado River access</p>
+        <div class="location-features">
+          <span class="feature-badge">📍 GPS Data</span>
+          <span class="feature-badge">🎣 Pier Access</span>
+          <span class="feature-badge">🏞️ Parks</span>
+        </div>
+      </a>
+
+      <a href="/texas?county=Tarrant" class="location-card">
+        <div class="location-header">
+          <h3>Tarrant County</h3>
+          <span class="spot-count">220+ spots</span>
+        </div>
+        <p>Fort Worth area urban fishing destinations</p>
+        <div class="location-features">
+          <span class="feature-badge">📍 GPS Data</span>
+          <span class="feature-badge">🌊 Lakes</span>
+          <span class="feature-badge">🎯 Easy Access</span>
+        </div>
+      </a>
+
+      <a href="/texas?county=Bexar" class="location-card">
+        <div class="location-header">
+          <h3>Bexar County</h3>
+          <span class="spot-count">180+ spots</span>
+        </div>
+        <p>San Antonio fishing lakes and rivers</p>
+        <div class="location-features">
+          <span class="feature-badge">📍 GPS Data</span>
+          <span class="feature-badge">🏕️ Recreation</span>
+          <span class="feature-badge">🌳 Nature</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="browse-all">
+      <a href="/texas" class="btn-secondary">Browse All Texas Locations →</a>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="container">
+      <h2>Why Fishermen Love This Directory</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">📍</div>
+          <h3>Exact GPS Coordinates</h3>
+          <p>Navigate directly to every fishing spot with precise location data</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">✅</div>
+          <h3>Verified Information</h3>
+          <p>Official data from state agencies and community-verified details</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🚤</div>
+          <h3>Amenities Listed</h3>
+          <p>Know before you go: parking, restrooms, boat ramps, and facilities</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🆓</div>
+          <h3>100% Free Access</h3>
+          <p>All listed spots are public access - no fees, no memberships</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="container features">
-    <h2>Why Use Our Directory?</h2>
-    <div class="grid">
-      <div class="feature">
-        <h3>📍 GPS Coordinates</h3>
-        <p>Exact locations for every fishing spot</p>
+  <section class="container coverage-section">
+    <h2>Current Coverage</h2>
+    <div class="coverage-info">
+      <div class="coverage-state active">
+        <h3>🎣 Texas</h3>
+        <p><strong>4,200+ spots</strong> across 254 counties</p>
+        <ul>
+          <li>2,188 boat ramps</li>
+          <li>829 fishing piers & parks</li>
+          <li>768 community fishing lakes</li>
+          <li>62 state parks</li>
+        </ul>
       </div>
-      <div class="feature">
-        <h3>🎣 Verified Data</h3>
-        <p>Official government and user-verified information</p>
-      </div>
-      <div class="feature">
-        <h3>🚤 Amenities Listed</h3>
-        <p>Parking, restrooms, boat ramps, and more</p>
-      </div>
-      <div class="feature">
-        <h3>📊 Fishing Reports</h3>
-        <p>Real catches from real anglers</p>
+      <div class="coverage-state coming-soon">
+        <h3>🚧 Coming Soon</h3>
+        <p>Florida, Louisiana, Georgia & more southern states</p>
+        <p class="stay-tuned">Building comprehensive directories with the same attention to detail</p>
       </div>
     </div>
   </section>
@@ -82,58 +176,176 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
   .hero {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    background: linear-gradient(135deg, #1e4d2b 0%, #2d6a3f 50%, #3a8751 100%);
     color: white;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem 4rem;
     text-align: center;
   }
 
   .hero h1 {
     font-size: 3rem;
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.75rem 0;
+    font-weight: 700;
+    line-height: 1.2;
   }
 
-  .subtitle {
-    font-size: 1.25rem;
-    opacity: 0.9;
-    max-width: 800px;
-    margin: 0 auto 2rem auto;
+  .tagline {
+    font-size: 1.5rem;
+    margin: 0 0 3rem 0;
+    opacity: 0.95;
+    font-weight: 500;
   }
 
-  .search-box {
+  .search-container {
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    color: #333;
+  }
+
+  .location-prompt {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .location-icon {
+    color: #2d6a3f;
+    margin-bottom: 1rem;
+  }
+
+  .location-prompt p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .search-actions {
     display: flex;
-    max-width: 600px;
-    margin: 0 auto 3rem auto;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .search-box input {
-    flex: 1;
-    padding: 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 4px;
-  }
-
-  .search-box button {
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
     padding: 1rem 2rem;
     background: #ff6b35;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
   }
 
-  .search-box button:hover {
+  .btn-primary:hover {
     background: #e55a2b;
+    transform: translateY(-2px);
   }
 
-  .stats {
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .search-divider {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    position: relative;
+    margin: 0.5rem 0;
+  }
+
+  .search-divider::before,
+  .search-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #ddd;
+  }
+
+  .search-divider::before {
+    left: 0;
+  }
+
+  .search-divider::after {
+    right: 0;
+  }
+
+  .search-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .search-form input {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .search-form input:focus {
+    outline: none;
+    border-color: #2d6a3f;
+  }
+
+  .btn-search {
+    padding: 1rem 2rem;
+    background: #2d6a3f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-search:hover {
+    background: #1e4d2b;
+  }
+
+  .suggestions {
+    display: none;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .suggestions.active {
+    display: block;
+  }
+
+  .suggestion-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .suggestion-item:hover {
+    background: #f5f5f5;
+  }
+
+  .suggestion-item:last-child {
+    border-bottom: none;
+  }
+
+  .quick-stats {
     display: flex;
     justify-content: center;
     gap: 4rem;
-    margin-top: 2rem;
+    margin-top: 3rem;
   }
 
   .stat {
@@ -145,88 +357,215 @@ import Layout from '../layouts/Layout.astro';
   .stat strong {
     font-size: 2.5rem;
     display: block;
+    font-weight: 700;
   }
 
   .stat span {
-    opacity: 0.8;
+    opacity: 0.9;
+    font-size: 1rem;
   }
 
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 3rem 1rem;
+    padding: 4rem 2rem;
   }
 
   h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
     text-align: center;
+    color: #1e4d2b;
   }
 
-  .grid {
+  .section-subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .popular-locations {
+    background: #f9fafb;
+  }
+
+  .location-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .location-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+
+  .location-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-color: #2d6a3f;
+  }
+
+  .location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .location-header h3 {
+    margin: 0;
+    color: #1e4d2b;
+    font-size: 1.3rem;
+  }
+
+  .spot-count {
+    background: #e8f5e9;
+    color: #2d6a3f;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .location-card > p {
+    color: #666;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+  }
+
+  .location-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .feature-badge {
+    background: #f3f4f6;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #555;
+  }
+
+  .browse-all {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: white;
+    color: #2d6a3f;
+    border: 2px solid #2d6a3f;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background: #2d6a3f;
+    color: white;
+  }
+
+  .features-section {
+    background: white;
+    padding: 4rem 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
   }
 
-  .card {
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 2rem;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .card:hover:not(.coming-soon) {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-
-  .state-card {
+  .feature {
     text-align: center;
-    position: relative;
   }
 
-  .state-card .flag {
+  .feature-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
   }
 
-  .state-card h3 {
-    margin: 0 0 0.5rem 0;
-    color: #2c5530;
-  }
-
-  .state-card.coming-soon {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .state-card .badge {
-    display: inline-block;
-    margin-top: 1rem;
-    padding: 0.25rem 0.75rem;
-    background: #4caf50;
-    color: white;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-weight: bold;
-  }
-
-  .features {
-    background: #f9f9f9;
-    padding: 3rem 1rem;
-  }
-
   .feature h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
+    color: #1e4d2b;
+    font-size: 1.2rem;
   }
 
   .feature p {
     margin: 0;
     color: #666;
+    line-height: 1.6;
+  }
+
+  .coverage-section {
+    background: #f9fafb;
+  }
+
+  .coverage-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .coverage-state {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+  }
+
+  .coverage-state.active {
+    border-color: #2d6a3f;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  }
+
+  .coverage-state h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    text-align: left;
+  }
+
+  .coverage-state p {
+    margin: 0 0 1rem 0;
+    color: #666;
+  }
+
+  .coverage-state ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .coverage-state li {
+    padding: 0.5rem 0;
+    color: #555;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .coverage-state li:last-child {
+    border-bottom: none;
+  }
+
+  .coverage-state.coming-soon {
+    opacity: 0.7;
+  }
+
+  .stay-tuned {
+    font-style: italic;
+    font-size: 0.95rem;
   }
 
   @media (max-width: 768px) {
@@ -234,12 +573,123 @@ import Layout from '../layouts/Layout.astro';
       font-size: 2rem;
     }
 
-    .stats {
-      gap: 2rem;
+    .tagline {
+      font-size: 1.2rem;
+    }
+
+    .search-container {
+      padding: 1.5rem;
+    }
+
+    .quick-stats {
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
     .stat strong {
-      font-size: 1.75rem;
+      font-size: 2rem;
     }
+
+    .location-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Use current location button
+  const useLocationBtn = document.getElementById('use-location-btn');
+  const locationSearch = document.getElementById('location-search') as HTMLInputElement;
+  const searchForm = document.getElementById('location-search-form') as HTMLFormElement;
+
+  useLocationBtn?.addEventListener('click', () => {
+    if ('geolocation' in navigator) {
+      useLocationBtn.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="4" stroke-dasharray="80" stroke-dashoffset="60"/></svg> Getting location...';
+      useLocationBtn.setAttribute('disabled', 'true');
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // Redirect to universal spots page with coordinates
+          window.location.href = `/spots?lat=${latitude}&lon=${longitude}`;
+        },
+        (error) => {
+          alert('Unable to get your location. Please enter it manually.');
+          useLocationBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Use Current Location';
+          useLocationBtn.removeAttribute('disabled');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser');
+    }
+  });
+
+  // Search form handling
+  searchForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const query = locationSearch.value.trim();
+    if (query) {
+      // Redirect to universal spots page with search query
+      window.location.href = `/spots?q=${encodeURIComponent(query)}`;
+    }
+  });
+
+  // Simple autocomplete for common Texas locations
+  const commonLocations = [
+    { name: 'Houston', county: 'Harris' },
+    { name: 'Austin', county: 'Travis' },
+    { name: 'Dallas', county: 'Dallas' },
+    { name: 'Fort Worth', county: 'Tarrant' },
+    { name: 'San Antonio', county: 'Bexar' },
+  ];
+
+  locationSearch?.addEventListener('input', (e) => {
+    const value = (e.target as HTMLInputElement).value.toLowerCase();
+    const suggestions = document.getElementById('search-suggestions');
+
+    if (value.length < 2) {
+      suggestions?.classList.remove('active');
+      return;
+    }
+
+    const matches = commonLocations.filter(loc =>
+      loc.name.toLowerCase().includes(value) ||
+      loc.county.toLowerCase().includes(value)
+    );
+
+    if (matches.length > 0) {
+      suggestions!.innerHTML = matches.map(loc =>
+        `<div class="suggestion-item" data-county="${loc.county}">${loc.name} (${loc.county} County)</div>`
+      ).join('');
+      suggestions?.classList.add('active');
+
+      // Add click handlers
+      suggestions?.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const county = item.getAttribute('data-county');
+          window.location.href = `/texas?county=${county}`;
+        });
+      });
+    } else {
+      suggestions?.classList.remove('active');
+    }
+  });
+
+  // Close suggestions when clicking outside
+  document.addEventListener('click', (e) => {
+    const suggestions = document.getElementById('search-suggestions');
+    if (!(e.target as Element).closest('.search-form')) {
+      suggestions?.classList.remove('active');
+    }
+  });
+</script>
+
+<style>
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>

@@ -15,6 +15,7 @@ header('Content-Type: application/json');
 // Get parameters
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT) ?: 10;
 $county = isset($_GET['county']) ? htmlspecialchars($_GET['county'], ENT_QUOTES, 'UTF-8') : null;
+$includeBoatRamps = isset($_GET['include_boat_ramps']) && $_GET['include_boat_ramps'] === 'true';
 
 $conn = get_db_connection();
 
@@ -26,13 +27,26 @@ $query = "SELECT
     latitude,
     longitude,
     county,
+    state,
     water_body_name,
     spot_type,
-    description
+    address,
+    description,
+    amenities,
+    parent_spot_id,
+    is_parent
 FROM fishing_spots WHERE 1=1";
 
 $params = [];
 $types = '';
+
+// Only show parent spots or spots without parents (hide child spots from main listing)
+$query .= " AND (is_parent = TRUE OR parent_spot_id IS NULL)";
+
+// Exclude boat ramps by default unless explicitly requested
+if (!$includeBoatRamps) {
+    $query .= " AND spot_type != 'boat_ramp'";
+}
 
 if ($county) {
     $query .= " AND county = ?";

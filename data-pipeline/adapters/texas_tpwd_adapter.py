@@ -65,7 +65,9 @@ class TexasTPWDAdapter(BaseDataAdapter):
             else:
                 water_body = f"{county} County Public Waters"
         else:
-            water_body = water_body_raw
+            # Fix inconsistent capitalization in source data
+            # Title case each word properly (handles "copper Breaks Lake" -> "Copper Breaks Lake")
+            water_body = ' '.join(word.capitalize() for word in water_body_raw.split())
 
         # Validate coordinates
         try:

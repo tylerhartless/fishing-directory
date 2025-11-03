@@ -1,0 +1,21 @@
+{
+  "description": "Manual corrections for fishing spot names and water bodies",
+  "corrections": [
+    {
+      "source_id": "0088",
+      "data_source": "Texas_Community_Lakes",
+      "original_name": "Blue",
+      "corrected_name": "Blue Lake",
+      "corrected_water_body": "Blue Lake",
+      "county": "Anderson",
+      "reason": "TPWD data incomplete - actual name is Blue Lake in Blue Lake Park",
+      "applied": true,
+      "date_applied": "2025-11-01"
+    }
+  ],
+  "notes": [
+    "Add corrections here as we discover data quality issues",
+    "Run apply_corrections.py to apply pending corrections to database",
+    "Future: Consider OSM integration for lake name verification"
+  ]
+}

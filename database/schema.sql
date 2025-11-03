@@ -32,7 +32,10 @@ CREATE TABLE fishing_spots (
         'wade_fishing',
         'kayak_launch',
         'fishing_pier',
-        'state_park'
+        'state_park',
+        'lake',
+        'public_water',
+        'river_access'
     ) NOT NULL,
 
     -- Details
