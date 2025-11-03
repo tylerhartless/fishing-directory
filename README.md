@@ -7,7 +7,7 @@ A comprehensive directory of public fishing access points across the United Stat
 - **Frontend:** Astro (Static Site Generation) with client-side search
 - **Backend API:** PHP + MySQL
 - **Data Pipeline:** Python with adapter pattern for multi-state support
-- **Development:** Docker Compose for local environment
+- **Development & Deployment:** Docker Compose (entire stack runs in containers)
 
 ## Project Structure
 
@@ -27,59 +27,55 @@ fishing-directory/
 
 ### Prerequisites
 - Docker Desktop
-- Python 3.8+ (for data import scripts)
+- Python 3.8+ (for running data import scripts outside of Docker)
 
-### 1. Start Everything with One Command
+### 1. Start the Entire Stack with One Command
 
 ```bash
 # Clone repository
 git clone https://github.com/tylerhartless/fishing-directory.git
 cd fishing-directory
 
-# Start all services (MySQL, PHP, phpMyAdmin, Astro)
+# Start all services - everything runs in Docker!
 docker compose up -d
 
 # Wait ~60 seconds for first-time setup
 ```
 
-**All services running:**
-- Frontend: `http://localhost:4321` (Astro dev server with HMR)
+**All services running in containers:**
+- Frontend: `http://localhost:4321` (Astro dev server with hot reload)
 - MySQL: `localhost:3306` (database)
 - PHP API: `http://localhost:8000` (backend API)
 - phpMyAdmin: `http://localhost:8080` (database GUI)
 
-### 2. Import Data (Python runs on host)
+**No manual installation needed!** Node.js, npm, PHP, MySQL - all handled by Docker.
+
+### 2. Import Data (Python scripts run on host machine)
 
 ```bash
 cd data-pipeline
 
-# Set up Python environment
+# Set up Python environment (only needed for import scripts)
 python -m venv venv
 venv\Scripts\activate  # Windows
 # source venv/bin/activate  # Mac/Linux
 
 pip install -r requirements.txt
 
-# Configure for Docker
-cp .env.docker .env
-
-# Import Texas boat ramps (example)
-# First, download data from https://tpwd.texas.gov/gis/resources/boat-access.phtml
-# Save as: raw-data/tpwd_boat_ramps.csv
-python process_boat_ramps.py
+# Run any adapter to import data
+cd adapters
+python texas_lakes_adapter.py
+python texas_state_parks_combined_adapter.py
+# ... etc
 ```
 
 ### 3. Done!
 
-Visit http://localhost:4321 - everything is running!
+Visit `http://localhost:4321` - everything is running!
 
-**No need to manually:**
-- Install Node.js or npm
-- Run `npm install` or `npm run dev`
-- Install PHP or MySQL
-- Configure databases
-
-Docker handles all of it. Just edit files and they auto-reload!
+- Edit frontend files → auto-reloads
+- Edit backend PHP → auto-reloads
+- Everything stays in sync via Docker volumes
 
 ## Adding New States
 
@@ -113,10 +109,11 @@ No custom code required for simple CSV files!
 - **Error Handling:** Validates data, skips bad rows, logs issues
 
 ### Frontend
-- **Static Site Generation:** Fast page loads, great SEO
-- **Client-Side Search:** Filter 2,000+ spots instantly
+- **Search-First Design:** Prominent search bar as main interface
+- **Client-Side Filtering:** Filter 1,000+ Texas fishing spots instantly
 - **Responsive Design:** Mobile-friendly spot cards
-- **Dynamic Rendering:** JavaScript-based for static hosting
+- **Interactive Results:** Scrollable list view with expandable details
+- **Future:** Map integration for visual location browsing
 
 ### API
 - **RESTful Endpoints:** JSON responses for spot data
@@ -131,16 +128,22 @@ No custom code required for simple CSV files!
 
 ## Current Data
 
-- **Texas:** 2,234 boat ramps from TPWD
+- **Texas:** 1,000+ public fishing spots including:
+  - State parks with fishing access
+  - Public lakes and reservoirs
+  - Community fishing lakes
+  - Neighborhood fishing programs
+  - River access points
+  - Boat ramps
 - **More states:** Ready to add with adapter framework
 
 ## Development Workflow
 
-1. **Find Data Source** - State wildlife agency CSV/JSON
+1. **Find Data Source** - State wildlife agency CSV/JSON/API
 2. **Create/Configure Adapter** - Map columns or write custom adapter
-3. **Import Data** - Run Python script to load into MySQL
-4. **Test Frontend** - Verify spots display correctly
-5. **Deploy** - Build static site and push to production
+3. **Import Data** - Run Python script to load into MySQL via Docker
+4. **Test** - Verify spots display correctly at http://localhost:4321
+5. **Deploy** - Push to production (entire stack runs in Docker containers)
 
 ## Database Schema
 

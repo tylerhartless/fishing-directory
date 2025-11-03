@@ -524,7 +524,7 @@ import Layout from '../layouts/Layout.astro';
 
   // Calculate distance between two coordinates (Haversine formula)
   function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Earth's radius in km
+    const R = 3958.8; // Earth's radius in miles
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -646,7 +646,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
         <div class="spot-footer">
           ${spot.distance
-            ? `<span class="distance">📍 ${spot.distance < 1 ? (spot.distance * 1000).toFixed(0) + ' m' : spot.distance.toFixed(1) + ' km'} away</span>`
+            ? `<span class="distance">📍 ${spot.distance < 0.1 ? (spot.distance * 5280).toFixed(0) + ' ft' : spot.distance.toFixed(1) + ' mi'} away</span>`
             : spot.address
               ? `<span class="address">📍 ${spot.address}</span>`
               : `<span class="coordinates">${parseFloat(spot.latitude).toFixed(4)}, ${parseFloat(spot.longitude).toFixed(4)}</span>`

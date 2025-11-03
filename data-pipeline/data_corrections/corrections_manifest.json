@@ -36,6 +36,25 @@
           "new_name": "Burke-Crenshaw Park",
           "new_water_body": "Burke-Crenshaw Lake",
           "reason": "Park is the location, Lake is the water body. Consolidates with 'Burke Crenshaw Park' (no hyphen) at 106m distance."
+        },
+        {
+          "source": "Texas_Neighborhood_Fishin",
+          "old_name": "Kickerillo-Mischer",
+          "county": "Harris",
+          "new_name": "Kickerillo-Mischer Preserve",
+          "new_water_body": "Marshall Lake",
+          "reason": "Preserve is the location, Marshall Lake is the water body"
+        }
+      ]
+    },
+    "county_fixes": {
+      "description": "County name corrections for data quality",
+      "entries": [
+        {
+          "name": "San Angelo State Park",
+          "old_county": "Tomgreen",
+          "new_county": "Tom Green",
+          "reason": "County name should be 'Tom Green' (two words) not 'Tomgreen'"
         }
       ]
     },
@@ -81,6 +100,17 @@
           "coords": "~29.85, -95.17",
           "reason": "Old state park entry - duplicate of combined entry",
           "note": "Keep the 'Sheldon Lake State Park and Environmental Learning Center' entry instead"
+        },
+        {
+          "name": "Kickerillo-Mischer",
+          "county": "Harris",
+          "source": "Texas_City_PDF",
+          "coords": "29.9878830, -95.5718435",
+          "reason": "Duplicate of Kickerillo-Mischer Preserve (ID 2626) - different coordinates but same location",
+          "keep_instead": {
+            "name": "Kickerillo-Mischer Preserve",
+            "source": "Texas_Neighborhood_Fishin"
+          }
         }
       ]
     },
