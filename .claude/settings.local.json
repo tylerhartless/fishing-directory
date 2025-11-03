@@ -14,7 +14,8 @@
       "Bash(. venv/Scripts/activate)",
       "Bash(docker compose:*)",
       "Bash(docker logs:*)",
-      "Bash(tailscale ip:*)"
+      "Bash(tailscale ip:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

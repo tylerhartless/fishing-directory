@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
   title="Texas Fishing Spots - Public Access Directory"
-  description="Browse 1,100+ public fishing spots across Texas. Find lakes, parks, state parks, and river access points with GPS coordinates."
+  description="Browse 1,000+ public fishing spots across Texas. Find lakes, parks, state parks, and river access points with GPS coordinates."
 >
   <section class="page-header">
     <div class="container">
@@ -65,6 +65,15 @@ import Layout from '../layouts/Layout.astro';
 
     <div class="spots-grid" id="spots-container">
       <div class="loading">Loading fishing spots...</div>
+    </div>
+
+    <div class="load-more-container" id="load-more-container" style="display: none; text-align: center; padding: 2rem;">
+      <button id="load-more-btn" class="load-more-btn">
+        Load More Spots
+      </button>
+      <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">
+        Showing <span id="shown-count">0</span> of <span id="total-count">0</span> spots
+      </p>
     </div>
 
     <div class="no-results" id="no-results" style="display: none;">
@@ -391,6 +400,30 @@ import Layout from '../layouts/Layout.astro';
     text-decoration: underline;
   }
 
+  .load-more-btn {
+    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .load-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .load-more-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   @media (max-width: 768px) {
     .spots-grid {
       grid-template-columns: 1fr;
@@ -409,6 +442,8 @@ import Layout from '../layouts/Layout.astro';
   const API_URL = `http://${window.location.hostname}:8000`;
   let allSpots = [];
   let filteredSpots = [];
+  let displayedCount = 0;
+  const ITEMS_PER_PAGE = 10;
 
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search);
@@ -541,20 +576,32 @@ import Layout from '../layouts/Layout.astro';
     displaySpots(filteredSpots);
   }
 
-  function displaySpots(spots) {
+  function displaySpots(spots, append = false) {
     const container = document.getElementById('spots-container');
     const noResults = document.getElementById('no-results');
-
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const shownCount = document.getElementById('shown-count');
+    const totalCount = document.getElementById('total-count');
 
     if (spots.length === 0) {
       container.innerHTML = '';
       noResults.style.display = 'block';
+      loadMoreContainer.style.display = 'none';
       return;
     }
 
     noResults.style.display = 'none';
 
-    container.innerHTML = spots.map(spot => {
+    // If not appending, reset displayed count
+    if (!append) {
+      displayedCount = 0;
+    }
+
+    // Get the next batch of spots to display
+    const spotsToShow = spots.slice(displayedCount, displayedCount + ITEMS_PER_PAGE);
+    displayedCount += spotsToShow.length;
+
+    const spotsHTML = spotsToShow.map(spot => {
       // Remove slug identifier from name (e.g., "(anderson001)")
       const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
 
@@ -608,6 +655,24 @@ import Layout from '../layouts/Layout.astro';
       </a>
       `;
     }).join('');
+
+    // Append or replace HTML
+    if (append) {
+      container.innerHTML += spotsHTML;
+    } else {
+      container.innerHTML = spotsHTML;
+    }
+
+    // Update load more button
+    shownCount.textContent = displayedCount;
+    totalCount.textContent = spots.length;
+
+    if (displayedCount < spots.length) {
+      loadMoreContainer.style.display = 'block';
+      document.getElementById('load-more-btn').disabled = false;
+    } else {
+      loadMoreContainer.style.display = 'none';
+    }
   }
 
   function showError(message) {
@@ -687,6 +752,17 @@ import Layout from '../layouts/Layout.astro';
       // No match found
       card.style.display = 'none';
     });
+  });
+
+  // Handle load more button
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  loadMoreBtn?.addEventListener('click', () => {
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = 'Loading...';
+    setTimeout(() => {
+      displaySpots(filteredSpots, true);
+      loadMoreBtn.textContent = 'Load More Spots';
+    }, 300); // Small delay for smooth UX
   });
 
   // Load spots on page load
