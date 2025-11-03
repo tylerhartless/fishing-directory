@@ -381,8 +381,10 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
-  // Use current hostname for API (works with localhost and Tailscale)
-  const API_URL = `http://${window.location.hostname}:8000`;
+  // API URL - use /api for production, localhost:8000 for local development
+  const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:8000'
+    : `${window.location.protocol}//${window.location.host}/api`;
   let allSpots = [];
   let filteredSpots = [];
 

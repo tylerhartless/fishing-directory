@@ -41,8 +41,22 @@ export interface FishingSpot {
  * 3. Load during build time
  */
 export async function getSpots(): Promise<FishingSpot[]> {
-  // Option 1: Load from static JSON export (for build time)
-  // You would generate this file with a Python script
+  // During build time, read from file system
+  if (import.meta.env.DEV || typeof window === 'undefined') {
+    try {
+      // Node.js environment (build time)
+      const fs = await import('node:fs/promises');
+      const path = await import('node:path');
+      const filePath = path.join(process.cwd(), 'public', 'data', 'fishing-spots.json');
+      const data = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.warn('Could not load fishing spots data:', error);
+      return [];
+    }
+  }
+
+  // Client-side: fetch from network
   const response = await fetch('/data/fishing-spots.json');
 
   if (!response.ok) {
