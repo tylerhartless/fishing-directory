@@ -24,31 +24,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install Python dependencies
-        run: |
-          pip install pymysql
-
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm ci
-
-      - name: Export data for build
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          # This would connect to your production database
-          # For now, we'll use a placeholder since we can't access local DB from GitHub
-          echo "Note: In production, this would export from your database"
-          # python export_for_build.py
 
       - name: Build frontend
         working-directory: ./frontend
@@ -74,7 +52,6 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            data/fishing-spots.json
 
       - name: Deployment complete
         run: |
