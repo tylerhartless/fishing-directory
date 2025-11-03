@@ -16,6 +16,7 @@ define('DB_NAME', getenv('DB_NAME') ?: 'fishing_directory');
 // CORS settings - update with your frontend domain
 $allowed_origins = [
     'http://localhost:4321',  // Astro dev server
+    'http://100.79.50.67:4321',  // Tailscale access
     'https://yourdomain.com',  // Your production domain
     'https://www.yourdomain.com'
 ];
