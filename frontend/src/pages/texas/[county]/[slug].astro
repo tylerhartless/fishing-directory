@@ -4,17 +4,20 @@ import { getSpots, generateMapUrl, type FishingSpot } from '../../../lib/databas
 
 
 export async function getStaticPaths() {
-  // Now, this calls the *updated* getSpots() which fetches from the API
   const spots = await getSpots(); 
 
-  const paths = spots.map((spot: FishingSpot) => ({
-    params: {
-      county: spot.county.toLowerCase().replace(/\s+/g, '-'),
-      slug: spot.slug
-    },
-
-  }));
+  const paths = spots.map((spot: FishingSpot) => {
+    // Return only the object required by Astro for path generation
+    return {
+      params: {
+        county: spot.county.toLowerCase().replace(/\s+/g, '-'),
+        slug: spot.slug
+      }
+      // CRITICALLY: DO NOT include any 'props' or 'spot' data here.
+    };
+  });
   
+  // The final return format is correct.
   return {
     paths,
     fallback: false
