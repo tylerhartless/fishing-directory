@@ -15,10 +15,14 @@ A comprehensive directory of public fishing access points across the United Stat
 fishing-directory/
 ├── frontend/              # Astro static site
 ├── backend/               # PHP API endpoints
+│   └── api/               # RESTful API endpoints
 ├── data-pipeline/         # Python ETL framework
 │   ├── adapters/          # State-specific data adapters
 │   ├── migrations/        # Database schema updates
-│   └── SCALING_GUIDE.md   # Guide for adding new states
+│   └── docs/              # Pipeline documentation
+├── database/              # Database schema
+├── docs/                  # Project documentation
+├── scripts/               # Build and deployment scripts
 ├── raw-data/              # Source data files (gitignored)
 └── docker-compose.yml     # Local development environment
 ```
@@ -122,9 +126,20 @@ No custom code required for simple CSV files!
 
 ## Documentation
 
-- **[DOCKER_SETUP.md](DOCKER_SETUP.md)** - Docker configuration details
-- **[DATA_SOURCES.md](DATA_SOURCES.md)** - Where to find state fishing data
-- **[data-pipeline/SCALING_GUIDE.md](data-pipeline/SCALING_GUIDE.md)** - Complete guide for adding states
+### Setup & Deployment
+- **[docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md)** - Docker configuration details
+- **[docs/QUICK_DEPLOY_GUIDE.md](docs/QUICK_DEPLOY_GUIDE.md)** - Fast deployment instructions
+- **[docs/HOSTINGER_DEPLOYMENT_GUIDE.md](docs/HOSTINGER_DEPLOYMENT_GUIDE.md)** - Production deployment guide
+- **[docs/GITHUB_DEPLOYMENT_SETUP.md](docs/GITHUB_DEPLOYMENT_SETUP.md)** - GitHub Actions CI/CD setup
+
+### Data & Pipeline
+- **[docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)** - Where to find state fishing data
+- **[data-pipeline/docs/](data-pipeline/docs/)** - Complete pipeline documentation
+- **[data-pipeline/SCALING_GUIDE.md](data-pipeline/SCALING_GUIDE.md)** - Guide for adding new states
+
+### Maintenance
+- **[docs/MAINTENANCE.md](docs/MAINTENANCE.md)** - Ongoing maintenance tasks
+- **[docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)** - Planned features and improvements
 
 ## Current Data
 

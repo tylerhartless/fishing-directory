@@ -1,0 +1,254 @@
+# Build & Deployment Scripts
+
+This directory contains Python scripts for building and exporting the application for production deployment.
+
+## Prerequisites
+
+```bash
+pip install pymysql python-dotenv
+```
+
+## Environment Setup
+
+These scripts read database credentials from environment variables. See [../docs/ENVIRONMENT_VARIABLES.md](../docs/ENVIRONMENT_VARIABLES.md) for full details.
+
+**Quick setup:**
+```bash
+# Option 1: Use Docker environment (recommended for local dev)
+# Automatically reads from ../data-pipeline/.env.docker
+
+# Option 2: Create local .env file
+cat > .env << EOF
+DB_HOST=localhost
+DB_USER=fishing_user
+DB_PASSWORD=fishing_password
+DB_NAME=fishing_directory
+DB_PORT=3306
+EOF
+```
+
+## Scripts
+
+### 1. `create_deployment_package.py`
+
+**Purpose:** Creates a complete deployment package ready for upload to web hosting.
+
+**What it does:**
+1. Copies frontend build (`../frontend/dist`) to `deploy/public_html/`
+2. Copies backend PHP API files to `deploy/public_html/api/`
+3. Exports MySQL database to `deploy/database.sql`
+4. Creates root `.htaccess` with security headers and caching
+
+**Usage:**
+```bash
+cd scripts
+python create_deployment_package.py
+```
+
+**Output:**
+```
+deploy/
+├── public_html/           # Upload this to hosting provider
+│   ├── index.html
+│   ├── texas/
+│   ├── api/
+│   └── ...
+└── database.sql          # Import via phpMyAdmin
+```
+
+**Important Notes:**
+- Requires frontend to be built first: `cd ../frontend && npm run build`
+- Does NOT include `config.php` - you must create it manually or use GitHub Actions
+- Reads DB credentials from environment variables (no hardcoded passwords)
+
+**When to use:**
+- Manual deployment to hosting provider
+- Creating backup packages
+- Testing production build locally
+
+---
+
+### 2. `export_db_for_hostinger.py`
+
+**Purpose:** Exports MySQL database to a SQL file optimized for phpMyAdmin import.
+
+**What it does:**
+1. Connects to MySQL database
+2. Exports schema (CREATE TABLE statements)
+3. Exports all data (INSERT statements)
+4. Creates Hostinger-compatible SQL dump
+
+**Usage:**
+```bash
+cd scripts
+python export_db_for_hostinger.py
+```
+
+**Output:**
+- `fishing_directory_export.sql` (or similar)
+
+**When to use:**
+- Manual database backup
+- Migrating database to new hosting
+- Creating database snapshot for deployment
+
+---
+
+### 3. `export_for_build.py`
+
+**Purpose:** Exports fishing spots data to JSON for Astro static site generation.
+
+**What it does:**
+1. Queries `fishing_spots` table
+2. Formats data for frontend consumption
+3. Exports to `processed-data/spots.json`
+
+**Usage:**
+```bash
+cd scripts
+python export_for_build.py
+```
+
+**Output:**
+- `../processed-data/spots.json` - Used by Astro during build
+
+**When to use:**
+- Before building frontend: `cd frontend && npm run build`
+- When database is updated and frontend needs fresh data
+- As part of CI/CD pipeline
+
+---
+
+## Common Workflows
+
+### Full Manual Deployment
+
+```bash
+# 1. Export database
+cd scripts
+python export_db_for_hostinger.py
+
+# 2. Export data for frontend
+python export_for_build.py
+
+# 3. Build frontend
+cd ../frontend
+npm install
+npm run build
+
+# 4. Create deployment package
+cd ../scripts
+python create_deployment_package.py
+
+# 5. Upload
+# - Upload deploy/public_html/* to hosting public_html/
+# - Import deploy/database.sql via phpMyAdmin
+# - Create backend/api/config.php with production credentials
+```
+
+### Quick Database Backup
+
+```bash
+cd scripts
+python export_db_for_hostinger.py
+# Backup created: fishing_directory_export.sql
+```
+
+### Refresh Frontend Data
+
+```bash
+cd scripts
+python export_for_build.py
+cd ../frontend
+npm run build
+```
+
+## Environment Variables
+
+All scripts now use environment variables instead of hardcoded credentials:
+
+```python
+# Old (insecure):
+MYSQL_CONFIG = {
+    'host': 'localhost',
+    'password': 'fishing_password',  # Hardcoded!
+}
+
+# New (secure):
+from dotenv import load_dotenv
+load_dotenv('../data-pipeline/.env.docker')
+load_dotenv()  # Also checks current directory
+
+MYSQL_CONFIG = {
+    'host': os.getenv('DB_HOST', 'localhost'),
+    'password': os.getenv('DB_PASSWORD', 'fishing_password'),  # Fallback only
+}
+```
+
+## Troubleshooting
+
+### Script can't connect to database
+
+**Error:** `pymysql.err.OperationalError: (2003, "Can't connect to MySQL server")`
+
+**Solutions:**
+1. Check Docker is running: `docker compose ps`
+2. Verify database credentials in `.env` or `../data-pipeline/.env.docker`
+3. For Docker, use `DB_HOST=localhost` (not `mysql` - that's for containers only)
+
+### ModuleNotFoundError: No module named 'pymysql'
+
+**Solution:**
+```bash
+pip install pymysql python-dotenv
+```
+
+### "No such file or directory: '../frontend/dist'"
+
+**Solution:** Build frontend first:
+```bash
+cd ../frontend
+npm install
+npm run build
+cd ../scripts
+```
+
+### Script references missing 'config.prod.php'
+
+**Note:** This is expected! The production `config.php` is either:
+- Generated by GitHub Actions workflow during automated deployment
+- Created manually by copying `backend/api/config.example.php`
+
+The scripts now skip this file with a warning message.
+
+## GitHub Actions Alternative
+
+For automated deployments, use GitHub Actions instead of running these scripts manually:
+
+1. Set up GitHub Secrets (see [../docs/ENVIRONMENT_VARIABLES.md](../docs/ENVIRONMENT_VARIABLES.md))
+2. Push to `main` branch
+3. Workflow automatically:
+   - Builds frontend
+   - Generates `config.php` from secrets
+   - Deploys via FTP
+
+See `.github/workflows/deploy-hostinger.yml` for details.
+
+## Security Notes
+
+- ✅ Scripts now read from environment variables
+- ✅ No credentials hardcoded in source
+- ✅ `.env` files are gitignored
+- ⚠️ Never commit database exports to Git (they may contain user data)
+- ⚠️ Generated `config.php` contains credentials - keep it gitignored
+
+## Future Improvements
+
+- [ ] Add retry logic for database connections
+- [ ] Support for incremental database exports (only changed data)
+- [ ] Automated database backup to S3/cloud storage
+- [ ] Verify frontend build exists before creating deployment package
+
+---
+
+**Need help?** See [../docs/ENVIRONMENT_VARIABLES.md](../docs/ENVIRONMENT_VARIABLES.md) for detailed environment setup.

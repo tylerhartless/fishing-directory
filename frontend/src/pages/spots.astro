@@ -565,6 +565,22 @@ const stateSlugLookup = {
     displaySpots(filteredSpots);
   }
 
+  // Helper function to create county slug for URLs
+  function getCountySlug(countyName) {
+    if (!countyName) return '';
+
+    // Handle multi-county entries - use first county
+    if (countyName.includes(',')) {
+      countyName = countyName.split(',')[0].trim();
+    }
+
+    // Remove "County" suffix if present
+    countyName = countyName.replace(/\s+County$/i, '').trim();
+
+    // Convert to lowercase and replace spaces with hyphens
+    return countyName.toLowerCase().replace(/\s+/g, '-');
+  }
+
   function displaySpots(spots) {
     const container = document.getElementById('spots-container');
     const noResults = document.getElementById('no-results');
@@ -605,8 +621,11 @@ const stateSlugLookup = {
         ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
         : '';
 
+      // Get proper county slug for URL
+      const countySlug = getCountySlug(spot.county);
+
       return `
-      <a href="/${stateSlugLookup[spot.state]}/${spot.county.toLowerCase()}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
+      <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
         <div class="spot-header">
           <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
