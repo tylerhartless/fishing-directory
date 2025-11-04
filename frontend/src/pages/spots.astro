@@ -603,7 +603,7 @@ const stateSlugLookup = {
         : '';
 
       return `
-      <a href="/${stateSlugLookup[spot.state]}/${spot.county.toLowerCase}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
+      <a href="/${stateSlugLookup[spot.state]}/${spot.county.toLowerCase()}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
         <div class="spot-header">
           <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
