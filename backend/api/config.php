@@ -21,6 +21,92 @@ $allowed_origins = [
     'https://www.yourdomain.com'
 ];
 
+/*
+ * Maintenance mode
+ * If a file named "MAINTENANCE" exists in one of the candidate locations, the site will return
+ * a 503 and show the maintenance page for non-whitelisted IPs. This works for both API and
+ * browser requests. To whitelist IPs create a file named MAINTENANCE_WHITELIST with one IP
+ * per line (or use Hostinger control panel to allow your IP).
+ */
+function is_whitelisted_ip($ip, $whitelistPaths) {
+    if (!$ip) return false;
+    foreach ($whitelistPaths as $p) {
+        if (!file_exists($p)) continue;
+        $lines = preg_split('/\r?\n/', file_get_contents($p));
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || strpos($line, '#') === 0) continue;
+            if ($line === $ip) return true;
+            // support CIDR? not implemented — exact-match only for safety
+        }
+    }
+    // locally allow CLI and loopback
+    if (php_sapi_name() === 'cli' || in_array($ip, ['127.0.0.1', '::1'])) return true;
+    return false;
+}
+
+// candidate maintenance flag locations (relative and server DOCUMENT_ROOT)
+$candidates = [
+    __DIR__ . '/../MAINTENANCE',                        // backend/MAINTENANCE
+    __DIR__ . '/../../deploy/public_html/MAINTENANCE',  // deploy/public_html/MAINTENANCE
+];
+if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+    $candidates[] = rtrim($_SERVER['DOCUMENT_ROOT'], "\\/") . '/MAINTENANCE';
+}
+
+$maintenance_on = false;
+foreach ($candidates as $c) {
+    if (file_exists($c)) { $maintenance_on = true; break; }
+}
+
+if ($maintenance_on) {
+    $remote_ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    // whitelist file candidates (same search locations)
+    $whitelistPaths = [
+        __DIR__ . '/../MAINTENANCE_WHITELIST',
+        __DIR__ . '/../../deploy/public_html/MAINTENANCE_WHITELIST'
+    ];
+    if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+        $whitelistPaths[] = rtrim($_SERVER['DOCUMENT_ROOT'], "\\/") . '/MAINTENANCE_WHITELIST';
+    }
+
+    if (!is_whitelisted_ip($remote_ip, $whitelistPaths)) {
+        // If it's an API/JSON request, return JSON 503
+        $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($request_uri, '/api/') === 0 || strpos($accept, 'application/json') !== false) {
+            http_response_code(503);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Site is temporarily down for maintenance. Please try again later.']);
+            exit;
+        }
+
+        // Otherwise serve the maintenance HTML if available
+        $htmlCandidates = [
+            __DIR__ . '/../../deploy/public_html/maintenance.html',
+            __DIR__ . '/../maintenance.html',
+        ];
+        if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+            $htmlCandidates[] = rtrim($_SERVER['DOCUMENT_ROOT'], "\\/") . '/maintenance.html';
+        }
+
+        foreach ($htmlCandidates as $h) {
+            if (file_exists($h)) {
+                http_response_code(503);
+                header('Content-Type: text/html');
+                echo file_get_contents($h);
+                exit;
+            }
+        }
+
+        // Fallback plain text
+        http_response_code(503);
+        header('Content-Type: text/plain');
+        echo 'Site is temporarily down for maintenance. Please try again later.';
+        exit;
+    }
+}
+
 // Rate limiting settings
 define('RATE_LIMIT_SUBMISSIONS', 3);  // Max submissions per hour
 define('RATE_LIMIT_VOTES', 10);       // Max votes per hour
