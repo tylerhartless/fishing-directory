@@ -10,22 +10,36 @@ export async function getStaticPaths() {
   const validSpots = spots.filter(spot => spot && spot.county && spot.slug);
 
   const paths = validSpots.map((spot) => {
-    
+
     // 1. Explicitly coerce and clean the county name
     const countyName = String(spot.county || '').toLowerCase();
     const countySlug = countyName.replace(/\s+/g, '-');
-    
+
     // 2. Explicitly coerce the slug
     const spotSlug = String(spot.slug || '');
-    
-    // 3. Return params and pass spot data as props
+
+    // 3. Parse amenities if it's a JSON string
+    let parsedAmenities = spot.amenities;
+    if (typeof spot.amenities === 'string') {
+      try {
+        parsedAmenities = JSON.parse(spot.amenities);
+      } catch (e) {
+        console.error(`Failed to parse amenities for spot ${spot.slug}:`, e);
+        parsedAmenities = null;
+      }
+    }
+
+    // 4. Return params and pass spot data as props
     return {
       params: {
         county: countySlug,
         slug: spotSlug
       },
       props: {
-        spot: spot
+        spot: {
+          ...spot,
+          amenities: parsedAmenities
+        }
       }
     };
   });
