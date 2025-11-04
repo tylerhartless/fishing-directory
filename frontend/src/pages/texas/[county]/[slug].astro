@@ -2,8 +2,6 @@
 import Layout from '../../../layouts/Layout.astro';
 import { getSpots, generateMapUrl, type FishingSpot } from '../../../lib/database';
 
-// This function generates all static paths at build time
-import { getSpots, FishingSpot } from './path/to/this/file'; // Ensure you import it
 
 export async function getStaticPaths() {
   // Now, this calls the *updated* getSpots() which fetches from the API
