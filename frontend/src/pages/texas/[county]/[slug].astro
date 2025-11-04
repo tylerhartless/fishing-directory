@@ -10,28 +10,42 @@ export async function getStaticPaths() {
   const validSpots = spots.filter(spot => spot && spot.county && spot.slug);
 
   const paths = validSpots.map((spot) => {
-    
+
     // 1. Explicitly coerce and clean the county name
     const countyName = String(spot.county || '').toLowerCase();
     const countySlug = countyName.replace(/\s+/g, '-');
-    
+
     // 2. Explicitly coerce the slug
     const spotSlug = String(spot.slug || '');
-    
-    // 3. Return the bare-minimum required structure
+
+    // 3. Parse amenities if it's a JSON string
+    let parsedAmenities = spot.amenities;
+    if (typeof spot.amenities === 'string') {
+      try {
+        parsedAmenities = JSON.parse(spot.amenities);
+      } catch (e) {
+        console.error(`Failed to parse amenities for spot ${spot.slug}:`, e);
+        parsedAmenities = null;
+      }
+    }
+
+    // 4. Return params and pass spot data as props
     return {
       params: {
-        county: countySlug, 
+        county: countySlug,
         slug: spotSlug
+      },
+      props: {
+        spot: {
+          ...spot,
+          amenities: parsedAmenities
+        }
       }
     };
   });
-  
-  // 4. Final return structure is correct
-  return {
-    paths,
-    fallback: false
-  };
+
+  // 4. Return paths array directly (Astro expects an array, not an object)
+  return paths;
 }
 
 const { spot } = Astro.props;
@@ -46,8 +60,8 @@ const schema = {
   "description": spot.description,
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": spot.latitude,
-    "longitude": spot.longitude
+    "latitude": Number(spot.latitude),
+    "longitude": Number(spot.longitude)
   },
   "address": {
     "@type": "PostalAddress",
@@ -114,13 +128,15 @@ const schema = {
             <section class="amenities">
               <h2>Amenities</h2>
               <ul class="amenity-list">
+                {spot.amenities.boat_ramp && <li>🚤 Boat Ramp</li>}
                 {spot.amenities.parking && <li>🅿️ Parking Available</li>}
                 {spot.amenities.restrooms && <li>🚻 Restrooms</li>}
                 {spot.amenities.lighting && <li>💡 Lighting</li>}
                 {spot.amenities.fish_cleaning && <li>🔪 Fish Cleaning Station</li>}
-                {spot.amenities.boat_trailer_parking && <li>🚤 Boat Trailer Parking</li>}
+                {spot.amenities.boat_trailer_parking && <li>🚢 Boat Trailer Parking</li>}
                 {spot.amenities.camping && <li>⛺ Camping</li>}
                 {spot.amenities.fishing_pier && <li>🎣 Fishing Pier</li>}
+                {spot.amenities.picnic_area && <li>🧺 Picnic Area</li>}
               </ul>
             </section>
           )}
@@ -167,7 +183,7 @@ const schema = {
 
               <dt>Coordinates:</dt>
               <dd>
-                {spot.latitude.toFixed(6)}, {spot.longitude.toFixed(6)}
+                {Number(spot.latitude).toFixed(6)}, {Number(spot.longitude).toFixed(6)}
                 <button class="copy-coords" data-coords={`${spot.latitude},${spot.longitude}`}>
                   Copy
                 </button>
