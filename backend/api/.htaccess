@@ -1,4 +1,11 @@
-# Enable CORS
+# ========================================
+# CORS (Cross-Origin Resource Sharing)
+# ========================================
+# Note: This .htaccess sets a permissive CORS policy for Apache.
+# The actual origin validation is handled in config.php via the
+# set_cors_headers() function, which checks against $allowed_origins.
+# This two-layer approach ensures Apache doesn't block requests
+# while PHP can implement stricter domain validation.
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
