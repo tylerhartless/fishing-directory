@@ -12,8 +12,18 @@ export async function getStaticPaths() {
   const paths = validSpots.map((spot) => {
 
     // 1. Explicitly coerce and clean the county name
-    const countyName = String(spot.county || '').toLowerCase();
-    const countySlug = countyName.replace(/\s+/g, '-');
+    let countyName = String(spot.county || '');
+
+    // Handle multi-county entries (e.g., "Harris, Fort Bend") - use only first county
+    if (countyName.includes(',')) {
+      countyName = countyName.split(',')[0].trim();
+    }
+
+    // Remove "County" suffix if present (e.g., "Fort Bend County" -> "Fort Bend")
+    countyName = countyName.replace(/\s+County$/i, '').trim();
+
+    // Create slug: lowercase and replace spaces with hyphens
+    const countySlug = countyName.toLowerCase().replace(/\s+/g, '-');
 
     // 2. Explicitly coerce the slug
     const spotSlug = String(spot.slug || '');
@@ -52,6 +62,17 @@ const { spot } = Astro.props;
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
 const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${spot.longitude},${spot.latitude},14,0/600x400?access_token=${MAPBOX_TOKEN}`;
 
+// Extract primary county for display (handles multi-county entries)
+let primaryCounty = spot.county;
+if (primaryCounty.includes(',')) {
+  primaryCounty = primaryCounty.split(',')[0].trim();
+}
+// Remove "County" suffix if present
+primaryCounty = primaryCounty.replace(/\s+County$/i, '').trim();
+
+// Create county slug for URLs
+const countySlug = primaryCounty.toLowerCase().replace(/\s+/g, '-');
+
 // Schema.org structured data for SEO
 const schema = {
   "@context": "https://schema.org",
@@ -66,13 +87,13 @@ const schema = {
   "address": {
     "@type": "PostalAddress",
     "addressRegion": "TX",
-    "addressLocality": spot.county + " County"
+    "addressLocality": primaryCounty + " County"
   }
 };
 ---
 
 <Layout
-  title={spot.meta_title || `${spot.name} - Public Fishing in ${spot.county} County, TX`}
+  title={spot.meta_title || `${spot.name} - Public Fishing in ${primaryCounty} County, TX`}
   description={spot.meta_description || `Free public fishing access at ${spot.name}. GPS coordinates, amenities, and fishing reports.`}
 >
   <article class="spot-detail" data-spot-id={spot.id}>
@@ -80,7 +101,7 @@ const schema = {
       <div class="breadcrumb">
         <a href="/">Home</a> /
         <a href="/texas">Texas</a> /
-        <a href={`/texas/${spot.county.toLowerCase()}`}>{spot.county} County</a> /
+        <a href={`/texas/${countySlug}`}>{primaryCounty} County</a> /
         {spot.name}
       </div>
 
@@ -119,7 +140,7 @@ const schema = {
             {spot.description ? (
               <p>{spot.description}</p>
             ) : (
-              <p>Public fishing access in {spot.county} County, Texas.</p>
+              <p>Public fishing access in {primaryCounty} County, Texas.</p>
             )}
           </section>
 
