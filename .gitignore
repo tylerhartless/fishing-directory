@@ -68,3 +68,6 @@ deploy_database.sql
 node_modules/
 .env
 *.log
+
+# Ignore the local API config
+/backend/api/config.php
