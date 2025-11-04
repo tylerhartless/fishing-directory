@@ -9,7 +9,10 @@ RewriteEngine On
 # add a SetEnvIf line below, e.g.:
 #   SetEnvIf Remote_Addr "^123\.123\.123\.123$" allow_maintenance=1
 # The app's PHP bootstrap also checks for MAINTENANCE so API endpoints will return 503 as well.
+# Whitelist loopback and admin IPs for maintenance bypass
 SetEnvIf Remote_Addr "^127\.0\.0\.1$" allow_maintenance=1
+SetEnvIf Remote_Addr "^98\.201\.183\.109$" allow_maintenance=1
+SetEnvIf Remote_Addr "^166\.196\.65\.29$" allow_maintenance=1
 # Example: SetEnvIf Remote_Addr "^1\.2\.3\.4$" allow_maintenance=1
 RewriteCond %{DOCUMENT_ROOT}/MAINTENANCE -f
 RewriteCond %{ENV:allow_maintenance} !1
