@@ -54,3 +54,17 @@ backup/
 # Docker volumes (don't commit database data)
 .docker/
 mysql-data/data-pipeline/osm/*.osm.pbf
+
+# Big data files
+*.pbf
+
+# Build output & data folders
+deploy/public_html/
+frontend/public/data/
+deploy/database.sql
+deploy_database.sql
+
+# Common files to ignore
+node_modules/
+.env
+*.log
