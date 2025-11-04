@@ -41,12 +41,10 @@ export interface FishingSpot {
  * 3. Load during build time
  */
 export async function getSpots(): Promise<FishingSpot[]> {
-  // 1. Use the environment variable with the local URL as a fallback.
-  // NOTE: I've added '/api' back to the fallback, assuming it's part of the path.
+  // Use the correct API URL (we assume you have it set as a secret)
   const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api'; 
 
   try {
-    // 2. Fetch the spots data from the API endpoint
     const response = await fetch(`${apiUrl}/spots.php?limit=5000`);
 
     if (!response.ok) {
@@ -54,28 +52,26 @@ export async function getSpots(): Promise<FishingSpot[]> {
       return [];
     }
 
-    // 3. PROCESS THE JSON DATA (The critical change is here)
     const data = await response.json();
     
-    // Check 1: Handle API responses where the array is wrapped in a 'data' property
-    if (data && Array.isArray(data.data)) {
-        console.log('API data successfully unwrapped from "data" property.');
-        return data.data; 
+    // ⭐ THE DEFINITIVE FIX: Check for the array wrapped in the 'spots' key
+    if (data && Array.isArray(data.spots)) {
+        console.log('API data successfully unwrapped from "spots" property.');
+        return data.spots; 
     }
     
-    // Check 2: Fallback to assume the top level is the array
+    // Check 2: Fallback to assume the top level is the array (less likely, but safe)
     if (Array.isArray(data)) {
         console.log('API data is an array at the top level.');
         return data; 
     }
     
-    // Final Fail: If the format is wrong, return an empty array and log the failure
+    // Final Fail: If the format is wrong, return an empty array
     console.error('API response format is incorrect. Could not find array in response.');
     return [];
 
   } catch (error) {
     console.error('An error occurred during API fetch or JSON parsing in getSpots:', error);
-    // Always return an array on error to prevent the build crash
     return [];
   }
 }
