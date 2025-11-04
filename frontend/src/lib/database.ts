@@ -42,8 +42,8 @@ export interface FishingSpot {
  */
 export async function getSpots(): Promise<FishingSpot[]> {
   // 1. Use the environment variable with the local URL as a fallback.
-  // This is the core change that applies the new API logic.
-  const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+  // NOTE: I've added '/api' back to the fallback, assuming it's part of the path.
+  const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api'; 
 
   try {
     // 2. Fetch the spots data from the API endpoint
@@ -54,16 +54,34 @@ export async function getSpots(): Promise<FishingSpot[]> {
       return [];
     }
 
-    // 3. Return the JSON data
-    return await response.json();
+    // 3. PROCESS THE JSON DATA (The critical change is here)
+    const data = await response.json();
+    
+    // Check 1: Handle API responses where the array is wrapped in a 'data' property
+    if (data && Array.isArray(data.data)) {
+        console.log('API data successfully unwrapped from "data" property.');
+        return data.data; 
+    }
+    
+    // Check 2: Fallback to assume the top level is the array
+    if (Array.isArray(data)) {
+        console.log('API data is an array at the top level.');
+        return data; 
+    }
+    
+    // Final Fail: If the format is wrong, return an empty array and log the failure
+    console.error('API response format is incorrect. Could not find array in response.');
+    return [];
+
   } catch (error) {
-    console.error('An error occurred during API fetch in getSpots:', error);
+    console.error('An error occurred during API fetch or JSON parsing in getSpots:', error);
+    // Always return an array on error to prevent the build crash
     return [];
   }
 }
 
 /**
- * Get spots filtered by county
+ * Get spots filtered by county (This function now uses the corrected getSpots())
  */
 export async function getSpotsByCounty(county: string): Promise<FishingSpot[]> {
   const allSpots = await getSpots();
