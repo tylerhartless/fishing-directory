@@ -16,7 +16,8 @@ export async function getStaticPaths() {
 }
 
 const { spot } = Astro.props;
-const mapUrl = generateMapUrl(spot.latitude, spot.longitude);
+const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
+const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${spot.longitude},${spot.latitude},14,0/600x400?access_token=${MAPBOX_TOKEN}`;
 
 // Schema.org structured data for SEO
 const schema = {
