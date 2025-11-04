@@ -128,13 +128,15 @@ const schema = {
             <section class="amenities">
               <h2>Amenities</h2>
               <ul class="amenity-list">
+                {spot.amenities.boat_ramp && <li>🚤 Boat Ramp</li>}
                 {spot.amenities.parking && <li>🅿️ Parking Available</li>}
                 {spot.amenities.restrooms && <li>🚻 Restrooms</li>}
                 {spot.amenities.lighting && <li>💡 Lighting</li>}
                 {spot.amenities.fish_cleaning && <li>🔪 Fish Cleaning Station</li>}
-                {spot.amenities.boat_trailer_parking && <li>🚤 Boat Trailer Parking</li>}
+                {spot.amenities.boat_trailer_parking && <li>🚢 Boat Trailer Parking</li>}
                 {spot.amenities.camping && <li>⛺ Camping</li>}
                 {spot.amenities.fishing_pier && <li>🎣 Fishing Pier</li>}
+                {spot.amenities.picnic_area && <li>🧺 Picnic Area</li>}
               </ul>
             </section>
           )}
