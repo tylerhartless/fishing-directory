@@ -60,7 +60,7 @@ jobs:
           local-dir: ./deploy/public_html/
           # Use the absolute remote path to avoid nested public_html/public_html
           server-dir: /public_html/
-          dangerous-clean-slate: false
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**
