@@ -57,3 +57,22 @@ backup/
 .docker/
 mysql-data/data-pipeline/osm/*.osm.pbf
 
+<<<<<<< HEAD
+=======
+# Big data files
+*.pbf
+
+# Build output & data folders
+deploy/public_html/
+frontend/public/data/
+deploy/database.sql
+deploy_database.sql
+
+# Common files to ignore
+node_modules/
+.env
+*.log
+
+# Ignore the local API config
+/backend/api/config.php
+>>>>>>> 7db2a0a90be3064342fb8eafd1ba7ec82eefbdc2

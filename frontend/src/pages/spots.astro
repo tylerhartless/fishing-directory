@@ -1,5 +1,58 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const stateSlugLookup = {
+  'AL': 'alabama',
+  'AK': 'alaska',
+  'AZ': 'arizona',
+  'AR': 'arkansas',
+  'CA': 'california',
+  'CO': 'colorado',
+  'CT': 'connecticut',
+  'DE': 'delaware',
+  'FL': 'florida',
+  'GA': 'georgia',
+  'HI': 'hawaii',
+  'ID': 'idaho',
+  'IL': 'illinois',
+  'IN': 'indiana',
+  'IA': 'iowa',
+  'KS': 'kansas',
+  'KY': 'kentucky',
+  'LA': 'louisiana',
+  'ME': 'maine',
+  'MD': 'maryland',
+  'MA': 'massachusetts',
+  'MI': 'michigan',
+  'MN': 'minnesota',
+  'MS': 'mississippi',
+  'MO': 'missouri',
+  'MT': 'montana',
+  'NE': 'nebraska',
+  'NV': 'nevada',
+  'NH': 'new-hampshire',
+  'NJ': 'new-jersey',
+  'NM': 'new-mexico',
+  'NY': 'new-york',
+  'NC': 'north-carolina',
+  'ND': 'north-dakota',
+  'OH': 'ohio',
+  'OK': 'oklahoma',
+  'OR': 'oregon',
+  'PA': 'pennsylvania',
+  'RI': 'rhode-island',
+  'SC': 'south-carolina',
+  'SD': 'south-dakota',
+  'TN': 'tennessee',
+  'TX': 'texas',
+  'UT': 'utah',
+  'VT': 'vermont',
+  'VA': 'virginia',
+  'WA': 'washington',
+  'WV': 'west-virginia',
+  'WI': 'wisconsin',
+  'WY': 'wyoming'
+};
 ---
 
 <Layout
@@ -380,7 +433,7 @@ import Layout from '../layouts/Layout.astro';
   }
 </style>
 
-<script>
+<script define:vars={{ stateSlugLookup }}>
   // API URL - use /api for production, localhost:8000 for local development
   const API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:8000'
@@ -550,7 +603,7 @@ import Layout from '../layouts/Layout.astro';
         : '';
 
       return `
-      <a href="/spot/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
+      <a href="/${stateSlugLookup[spot.state]}/${spot.county.toLowerCase()}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
         <div class="spot-header">
           <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
@@ -586,15 +639,65 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('spots-container').innerHTML = '';
   }
 
-  // Search form handling
+  // Search form handling (NOW WITH GEOCODING)
   const searchForm = document.getElementById('search-form');
-  searchForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
+  // 'searchInput' is defined earlier in your script, so this will work.
+  
+  searchForm?.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Stop the form from submitting
+    console.log('Search submitted on /spots page...');
+
     const query = searchInput.value.trim();
-    if (query) {
+    if (!query) return;
+
+    console.log(`Search query: ${query}`);
+
+    // Get the search button to show a loading state
+    const searchButton = searchForm.querySelector('button[type="submit"]');
+    if (searchButton) {
+      searchButton.innerHTML = 'Searching...';
+      searchButton.disabled = true;
+    }
+
+    try {
+      // --- MAKE SURE YOUR EMAIL HERE IS CORRECT ---
+      const email = 'tyler@netlace.xyz'; 
+      
+      // Make the query more specific for better results
+      const specificQuery = query + ', texas'; 
+      const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(specificQuery)}&format=json&limit=1&email=${email}`;
+
+      console.log(`Fetching from: ${apiUrl}`); // 1. DO YOU SEE THIS?
+
+      // Call the API
+      const response = await fetch(apiUrl);
+      
+      if (!response.ok) {
+        console.error('Nominatim API request failed:', response.status, response.statusText);
+        throw new Error(`API response not OK: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Nominatim response:', data); // 2. WHAT DOES THIS SAY?
+
+      // Check for results
+      if (data && data.length > 0) {
+        // Geocoding SUCCESS: Redirect to lat/lon URL
+        const lat = data[0].lat;
+        const lon = data[0].lon;
+        console.log(`Geocoding success: lat=${lat}, lon=${lon}. Redirecting...`);
+        // We are already on /spots, so just reload with new params
+        window.location.href = `/spots?lat=${lat}&lon=${lon}`; 
+      } else {
+        // Geocoding FAILED: Fallback to text search
+        console.log('No results from Nominatim. Falling back to text search.');
+        window.location.href = `/spots?q=${encodeURIComponent(query)}`;
+      }
+    } catch (error) {
+      console.error('Geocoding fetch error:', error);
+      // Error: Fallback to text search
+      console.log('Error during fetch. Falling back to text search.');
       window.location.href = `/spots?q=${encodeURIComponent(query)}`;
-    } else {
-      window.location.href = '/spots';
     }
   });
 
