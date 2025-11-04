@@ -17,8 +17,8 @@ define('DB_NAME', getenv('DB_NAME') ?: 'fishing_directory');
 $allowed_origins = [
     'http://localhost:4321',  // Astro dev server
     'http://100.79.50.67:4321',  // Tailscale access
-    'https://yourdomain.com',  // Your production domain
-    'https://www.yourdomain.com'
+    'https://wherecanifish.com',  // Your production domain
+    'https://www.wherecanifish.com'
 ];
 
 /*
