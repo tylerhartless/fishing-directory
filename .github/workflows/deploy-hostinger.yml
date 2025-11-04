@@ -24,17 +24,21 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Clean previous build cache
+        working-directory: ./frontend
+        run: |
+          rm -rf dist
+          rm -rf node_modules/.astro
+          echo "Previous build artifacts and cache cleaned."
+
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm ci
 
       - name: Create .env file
-        working-directory: ./frontend # Creates the file in the frontend folder
+        working-directory: ./frontend
         run: |
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" > .env.production
-          echo "--- Verifying .env file location ---"
-          ls -la
-          echo "------------------------------------"
 
       - name: Build frontend
         working-directory: ./frontend
