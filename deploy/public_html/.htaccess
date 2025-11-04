@@ -13,6 +13,7 @@ RewriteEngine On
 SetEnvIf Remote_Addr "^127\.0\.0\.1$" allow_maintenance=1
 SetEnvIf Remote_Addr "^98\.201\.183\.109$" allow_maintenance=1
 SetEnvIf Remote_Addr "^166\.196\.65\.29$" allow_maintenance=1
+SetEnvIf Remote_Addr "^2601:2c5:4880:e950:d89:3ce4:4749:fbe1$" allow_maintenance=1
 # Example: SetEnvIf Remote_Addr "^1\.2\.3\.4$" allow_maintenance=1
 RewriteCond %{DOCUMENT_ROOT}/MAINTENANCE -f
 RewriteCond %{ENV:allow_maintenance} !1
