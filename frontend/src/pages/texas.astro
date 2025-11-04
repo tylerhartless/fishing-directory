@@ -633,8 +633,19 @@ import Layout from '../layouts/Layout.astro';
         ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
         : '';
 
+      // Create proper county slug for URL
+      let countyForUrl = spot.county || '';
+      // Handle multi-county entries - use first county
+      if (countyForUrl.includes(',')) {
+        countyForUrl = countyForUrl.split(',')[0].trim();
+      }
+      // Remove "County" suffix if present
+      countyForUrl = countyForUrl.replace(/\s+County$/i, '').trim();
+      // Convert to slug
+      const countySlug = countyForUrl.toLowerCase().replace(/\s+/g, '-');
+
       return `
-      <a href="/spot/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
+      <a href="/texas/${countySlug}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
         <div class="spot-header">
           <h3>${displayName}</h3>
           <span class="spot-type">${spot.spot_type.replace('_', ' ')}</span>
