@@ -28,10 +28,17 @@ jobs:
         working-directory: ./frontend
         run: npm ci
 
+      - name: Create .env file
+        working-directory: ./frontend # Creates the file in the frontend folder
+        run: |
+          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" > .env
+          echo "--- Verifying .env file location ---"
+          ls -la
+          echo "------------------------------------"
+
       - name: Build frontend
         working-directory: ./frontend
-        run: |
-          PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }} npm run build
+        run: npm run build
 
       - name: Prepare deployment files
         run: |
