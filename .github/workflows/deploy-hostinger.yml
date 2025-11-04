@@ -30,9 +30,8 @@ jobs:
 
       - name: Build frontend
         working-directory: ./frontend
-        env:
-          PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
-        run: npm run build
+        run: |
+          PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }} npm run build
 
       - name: Prepare deployment files
         run: |
