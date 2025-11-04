@@ -3,16 +3,24 @@ import Layout from '../../../layouts/Layout.astro';
 import { getSpots, generateMapUrl, type FishingSpot } from '../../../lib/database';
 
 // This function generates all static paths at build time
-export async function getStaticPaths() {
-  const spots = await getSpots();
+import { getSpots, FishingSpot } from './path/to/this/file'; // Ensure you import it
 
-  return spots.map((spot: FishingSpot) => ({
+export async function getStaticPaths() {
+  // Now, this calls the *updated* getSpots() which fetches from the API
+  const spots = await getSpots(); 
+
+  const paths = spots.map((spot: FishingSpot) => ({
     params: {
       county: spot.county.toLowerCase().replace(/\s+/g, '-'),
       slug: spot.slug
     },
     props: { spot }
   }));
+  
+  return {
+    paths,
+    fallback: false
+  };
 }
 
 const { spot } = Astro.props;

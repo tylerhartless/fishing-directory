@@ -39,7 +39,8 @@ jobs:
         working-directory: ./frontend
         run: |
           # Create .env.production, which astro build specifically looks for
-          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" > .env.production
+          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env.production
+          echo "PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }}" >> .env.production
           echo "--- Verifying .env file location ---"
           ls -la
           echo "------------------------------------"

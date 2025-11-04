@@ -41,30 +41,25 @@ export interface FishingSpot {
  * 3. Load during build time
  */
 export async function getSpots(): Promise<FishingSpot[]> {
-  // During build time, read from file system
-  if (import.meta.env.DEV || typeof window === 'undefined') {
-    try {
-      // Node.js environment (build time)
-      const fs = await import('node:fs/promises');
-      const path = await import('node:path');
-      const filePath = path.join(process.cwd(), 'public', 'data', 'fishing-spots.json');
-      const data = await fs.readFile(filePath, 'utf-8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.warn('Could not load fishing spots data:', error);
+  // 1. Use the environment variable with the local URL as a fallback.
+  // This is the core change that applies the new API logic.
+  const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+
+  try {
+    // 2. Fetch the spots data from the API endpoint
+    const response = await fetch(`${apiUrl}/spots.php?limit=5000`);
+
+    if (!response.ok) {
+      console.warn(`Could not load fishing spots data from API: ${response.status} ${response.statusText}`);
       return [];
     }
-  }
 
-  // Client-side: fetch from network
-  const response = await fetch('/data/fishing-spots.json');
-
-  if (!response.ok) {
-    console.warn('Could not load fishing spots data');
+    // 3. Return the JSON data
+    return await response.json();
+  } catch (error) {
+    console.error('An error occurred during API fetch in getSpots:', error);
     return [];
   }
-
-  return await response.json();
 }
 
 /**
