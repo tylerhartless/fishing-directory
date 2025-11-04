@@ -26,12 +26,9 @@ export async function getStaticPaths() {
       }
     };
   });
-  
-  // 4. Final return structure is correct
-  return {
-    paths,
-    fallback: false
-  };
+
+  // 4. Return paths array directly (Astro expects an array, not an object)
+  return paths;
 }
 
 const { spot } = Astro.props;
