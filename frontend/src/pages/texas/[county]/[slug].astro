@@ -46,8 +46,8 @@ const schema = {
   "description": spot.description,
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": spot.latitude,
-    "longitude": spot.longitude
+    "latitude": Number(spot.latitude),
+    "longitude": Number(spot.longitude)
   },
   "address": {
     "@type": "PostalAddress",
@@ -167,7 +167,7 @@ const schema = {
 
               <dt>Coordinates:</dt>
               <dd>
-                {spot.latitude.toFixed(6)}, {spot.longitude.toFixed(6)}
+                {Number(spot.latitude).toFixed(6)}, {Number(spot.longitude).toFixed(6)}
                 <button class="copy-coords" data-coords={`${spot.latitude},${spot.longitude}`}>
                   Copy
                 </button>
