@@ -20,6 +20,8 @@ dist/
 .cache/
 
 # Astro
+/deploy/
+/frontend/dist/
 .astro/
 
 # Data files (too large for git)
@@ -54,3 +56,4 @@ backup/
 # Docker volumes (don't commit database data)
 .docker/
 mysql-data/data-pipeline/osm/*.osm.pbf
+
