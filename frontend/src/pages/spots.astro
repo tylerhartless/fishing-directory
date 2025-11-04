@@ -433,7 +433,7 @@ const stateSlugLookup = {
   }
 </style>
 
-<script>
+<script define:vars={{ stateSlugLookup }}>
   // API URL - use /api for production, localhost:8000 for local development
   const API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:8000'
