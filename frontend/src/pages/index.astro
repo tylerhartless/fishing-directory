@@ -634,12 +634,57 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Search form handling
-  searchForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
+  // Search form handling (NOW WITH GEOCODING)
+  searchForm?.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Stop the form
+    console.log('[INDEX.ASTRO] Search submitted.');
+
+    // This file uses 'locationSearch', which is correct
     const query = locationSearch.value.trim();
-    if (query) {
-      // Redirect to universal spots page with search query
+    if (!query) return;
+
+    // --- MAKE SURE THIS EMAIL IS A REAL, VALID EMAIL ---
+    const email = 'your-real-email@example.com'; 
+    
+    // Make the query more specific for better results
+    const specificQuery = query + ', texas'; 
+    const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(specificQuery)}&format=json&limit=1&email=${email}`;
+
+    console.log(`[INDEX.ASTRO] Fetching: ${apiUrl}`);
+    
+    // Show loading state
+    const searchButton = searchForm.querySelector('button[type="submit"]');
+    if (searchButton) {
+      searchButton.innerHTML = 'Searching...';
+      searchButton.disabled = true;
+    }
+
+    try {
+      const response = await fetch(apiUrl);
+
+      if (!response.ok) {
+        console.error(`[INDEX.ASTRO] Nominatim API request failed: ${response.status}`);
+        throw new Error(`API response not OK: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('[INDEX.ASTRO] Nominatim response:', data);
+
+      if (data && data.length > 0) {
+        // SUCCESS
+        const lat = data[0].lat;
+        const lon = data[0].lon;
+        console.log(`[INDEX.ASTRO] Geocoding success: ${lat}, ${lon}. Redirecting...`);
+        window.location.href = `/spots?lat=${lat}&lon=${lon}`;
+      } else {
+        // FAIL (No results)
+        console.warn('[INDEX.ASTRO] No results from Nominatim. Falling back to text search.');
+        window.location.href = `/spots?q=${encodeURIComponent(query)}`;
+      }
+    } catch (error) {
+      // FAIL (Fetch error)
+      console.error('[INDEX.ASTRO] Geocoding fetch error:', error);
+      console.warn('[INDEX.ASTRO] Error during fetch. Falling back to text search.');
       window.location.href = `/spots?q=${encodeURIComponent(query)}`;
     }
   });
