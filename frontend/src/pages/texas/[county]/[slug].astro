@@ -87,13 +87,13 @@ const schema = {
   "address": {
     "@type": "PostalAddress",
     "addressRegion": "TX",
-    "addressLocality": primaryCounty + " County"
+    "addressLocality": primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + " County"
   }
 };
 ---
 
 <Layout
-  title={spot.meta_title || `${spot.name} - Public Fishing in ${primaryCounty} County, TX`}
+  title={spot.meta_title || `${spot.name} - Public Fishing in ${primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + ' County'}, TX`}
   description={spot.meta_description || `Free public fishing access at ${spot.name}. GPS coordinates, amenities, and fishing reports.`}
 >
   <article class="spot-detail" data-spot-id={spot.id}>
@@ -101,7 +101,11 @@ const schema = {
       <div class="breadcrumb">
         <a href="/">Home</a> /
         <a href="/texas">Texas</a> /
-        <a href={`/texas/${countySlug}`}>{primaryCounty} County</a> /
+        {primaryCounty === 'Multiple Counties' ? (
+          <span>{primaryCounty}</span>
+        ) : (
+          <a href={`/texas/${countySlug}`}>{primaryCounty} County</a>
+        )} /
         {spot.name}
       </div>
 
@@ -140,7 +144,7 @@ const schema = {
             {spot.description ? (
               <p>{spot.description}</p>
             ) : (
-              <p>Public fishing access in {primaryCounty} County, Texas.</p>
+              <p>Public fishing access in {primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + ' County'}, Texas.</p>
             )}
           </section>
 
