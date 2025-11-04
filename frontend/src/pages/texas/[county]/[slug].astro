@@ -5,23 +5,29 @@ import { getSpots, generateMapUrl, type FishingSpot } from '../../../lib/databas
 
 export async function getStaticPaths() {
   const spots = await getSpots(); 
+  
+  // Filter out any spots where the required data (county or slug) might be missing or invalid
+  const validSpots = spots.filter(spot => spot && spot.county && spot.slug);
 
-  const paths = spots.map((spot) => { // Removed type: FishingSpot here just in case
+  const paths = validSpots.map((spot) => {
     
-    // Ensure the county slug is correctly formatted for the URL
-    const countySlug = spot.county.toLowerCase().replace(/\s+/g, '-');
+    // 1. Explicitly coerce and clean the county name
+    const countyName = String(spot.county || '').toLowerCase();
+    const countySlug = countyName.replace(/\s+/g, '-');
     
-    // Return only the mandatory 'params' object
+    // 2. Explicitly coerce the slug
+    const spotSlug = String(spot.slug || '');
+    
+    // 3. Return the bare-minimum required structure
     return {
       params: {
-        county: countySlug, // Key name matches the folder name [county]
-        slug: spot.slug      // Key name matches the file name [slug]
+        county: countySlug, 
+        slug: spotSlug
       }
-      // CRITICAL: Ensure NO 'props' or extra properties are here.
     };
   });
   
-  // The final return must be this specific object structure:
+  // 4. Final return structure is correct
   return {
     paths,
     fallback: false
