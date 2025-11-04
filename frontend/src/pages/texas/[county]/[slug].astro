@@ -18,11 +18,14 @@ export async function getStaticPaths() {
     // 2. Explicitly coerce the slug
     const spotSlug = String(spot.slug || '');
     
-    // 3. Return the bare-minimum required structure
+    // 3. Return params and pass spot data as props
     return {
       params: {
-        county: countySlug, 
+        county: countySlug,
         slug: spotSlug
+      },
+      props: {
+        spot: spot
       }
     };
   });
