@@ -4,8 +4,8 @@
  */
 
 const API_BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost/api'  // Local development
-  : 'https://yourdomain.com/api';  // Production
+  ? 'http://localhost:8000'  // Local development
+  : 'https://wherecanifish.com/api';  // Production
 
 // Get spot ID from data attribute
 const spotId = document.querySelector('[data-spot-id]')?.dataset.spotId;
