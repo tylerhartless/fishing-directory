@@ -31,7 +31,7 @@ jobs:
       - name: Create .env file
         working-directory: ./frontend # Creates the file in the frontend folder
         run: |
-          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" > .env
+          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" > .env.production
           echo "--- Verifying .env file location ---"
           ls -la
           echo "------------------------------------"
