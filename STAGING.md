@@ -174,11 +174,20 @@ The staging environment has these differences from production:
 
 ## Maintenance Mode
 
-To enable maintenance mode on staging:
+The easiest way to toggle maintenance mode on staging:
 
-1. **Create MAINTENANCE file** in `/public_html/` on staging via FTP
-2. **Optional: Create MAINTENANCE_WHITELIST** with allowed IPs (one per line)
-3. **To disable:** Delete the MAINTENANCE file
+**Via GitHub Actions:**
+1. Go to: **GitHub Actions → Toggle Staging Maintenance Mode**
+2. Click **Run workflow**
+3. Select **enable** or **disable**
+4. Click **Run workflow**
+
+**Manual Method:**
+1. Connect to Hostinger File Manager
+2. Navigate to staging's `/public_html/`
+3. Create a file named `MAINTENANCE` (to enable) or delete it (to disable)
+
+See `docs/MAINTENANCE.md` for more details.
 
 ## Next Steps
 

@@ -1,0 +1,68 @@
+name: Toggle Staging Maintenance Mode
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Maintenance mode action'
+        required: true
+        type: choice
+        options:
+          - enable
+          - disable
+        default: 'enable'
+
+jobs:
+  toggle-maintenance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable Maintenance Mode
+        if: ${{ github.event.inputs.action == 'enable' }}
+        run: |
+          # Create empty MAINTENANCE file
+          mkdir -p ./maintenance-toggle
+          touch ./maintenance-toggle/MAINTENANCE
+          echo "Maintenance mode file created"
+
+      - name: Deploy MAINTENANCE file via FTP
+        if: ${{ github.event.inputs.action == 'enable' }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.STAGING_FTP_SERVER }}
+          username: ${{ secrets.STAGING_FTP_USERNAME }}
+          password: ${{ secrets.STAGING_FTP_PASSWORD }}
+          local-dir: ./maintenance-toggle/
+          server-dir: /public_html/
+          dangerous-clean-slate: false
+
+      - name: Disable Maintenance Mode (Delete MAINTENANCE file)
+        if: ${{ github.event.inputs.action == 'disable' }}
+        run: |
+          # Install lftp for FTP operations
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
+          # Delete MAINTENANCE file via FTP
+          lftp -c "
+          open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }}
+          cd /public_html
+          rm -f MAINTENANCE
+          bye
+          "
+          echo "Maintenance mode disabled - MAINTENANCE file deleted"
+
+      - name: Verify Action
+        run: |
+          if [ "${{ github.event.inputs.action }}" == "enable" ]; then
+            echo "✅ Maintenance mode ENABLED on staging.wherecanifish.com"
+            echo "🔧 Staging site is now in maintenance mode"
+            echo "ℹ️  To disable, run this workflow again and select 'disable'"
+          else
+            echo "✅ Maintenance mode DISABLED on staging.wherecanifish.com"
+            echo "🚀 Staging site is now live"
+            echo "ℹ️  To enable, run this workflow again and select 'enable'"
+          fi

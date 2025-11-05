@@ -66,62 +66,44 @@ jobs:
           define('RATE_LIMIT_VOTES', 10);
 
           /*
-           * Maintenance mode logic
+           * Simple maintenance mode check
+           * Create a file named MAINTENANCE in the document root to enable maintenance mode
+           * All requests will receive a 503 response
            */
-          function is_whitelisted_ip(\$ip, \$whitelistPaths) {
-              if (!\$ip) return false;
-              foreach (\$whitelistPaths as \$p) {
-                  if (!file_exists(\$p)) continue;
-                  \$lines = preg_split('/\r?\n/', file_get_contents(\$p));
-                  foreach (\$lines as \$line) {
-                      \$line = trim(\$line);
-                      if (\$line === '' || strpos(\$line, '#') === 0) continue;
-                      if (\$line === \$ip) return true;
-                  }
-              }
-              if (php_sapi_name() === 'cli' || in_array(\$ip, ['127.0.0.1', '::1'])) return true;
-              return false;
-          }
 
-          \$candidates = [
-              __DIR__ . '/../MAINTENANCE',
-          ];
-          if (!empty(\$_SERVER['DOCUMENT_ROOT'])) {
-              \$candidates[] = rtrim(\$_SERVER['DOCUMENT_ROOT'], \"\\\\/\") . '/MAINTENANCE';
-          }
+          // Check for MAINTENANCE file in document root
+          \$maintenance_file = rtrim(\$_SERVER['DOCUMENT_ROOT'] ?? __DIR__ . '/..', \"\\\\/\") . '/MAINTENANCE';
 
-          \$maintenance_on = false;
-          foreach (\$candidates as \$c) {
-              if (file_exists(\$c)) { \$maintenance_on = true; break; }
-          }
+          if (file_exists(\$maintenance_file)) {
+              // Determine if this is an API request or browser request
+              \$accept = \$_SERVER['HTTP_ACCEPT'] ?? '';
+              \$request_uri = \$_SERVER['REQUEST_URI'] ?? '';
 
-          if (\$maintenance_on) {
-              \$remote_ip = \$_SERVER['REMOTE_ADDR'] ?? '';
-              \$whitelistPaths = [
-                  __DIR__ . '/../MAINTENANCE_WHITELIST'
-              ];
-              if (!empty(\$_SERVER['DOCUMENT_ROOT'])) {
-                  \$whitelistPaths[] = rtrim(\$_SERVER['DOCUMENT_ROOT'], \"\\\\/\") . '/MAINTENANCE_WHITELIST';
-              }
-
-              if (!is_whitelisted_ip(\$remote_ip, \$whitelistPaths)) {
-                  \$accept = \$_SERVER['HTTP_ACCEPT'] ?? '';
-                  \$request_uri = \$_SERVER['REQUEST_URI'] ?? '';
-                  if (strpos(\$request_uri, '/api/') === 0 || strpos(\$accept, 'application/json') !== false) {
-                      http_response_code(503);
-                      header('Content-Type: application/json');
-                      echo json_encode(['error' => 'Site is temporarily down for maintenance. Please try again later.']);
-                      exit;
-                  }
-                  \$htmlPath = rtrim(\$_SERVER['DOCUMENT_ROOT'], \"\\\\/\") . '/maintenance.html';
+              if (strpos(\$request_uri, '/api/') === 0 || strpos(\$accept, 'application/json') !== false) {
+                  // API request - return JSON error
+                  http_response_code(503);
+                  header('Content-Type: application/json');
+                  header('Retry-After: 3600'); // Suggest retry in 1 hour
+                  echo json_encode([
+                      'error' => 'Site is temporarily down for maintenance. Please try again later.',
+                      'maintenance' => true
+                  ]);
+                  exit;
+              } else {
+                  // Browser request - show maintenance page
+                  \$htmlPath = rtrim(\$_SERVER['DOCUMENT_ROOT'] ?? __DIR__ . '/..', \"\\\\/\") . '/maintenance.html';
                   if (file_exists(\$htmlPath)) {
                       http_response_code(503);
                       header('Content-Type: text/html');
+                      header('Retry-After: 3600');
                       echo file_get_contents(\$htmlPath);
                       exit;
                   }
+
+                  // Fallback if maintenance.html doesn't exist
                   http_response_code(503);
                   header('Content-Type: text/plain');
+                  header('Retry-After: 3600');
                   echo 'Site is temporarily down for maintenance. Please try again later.';
                   exit;
               }
