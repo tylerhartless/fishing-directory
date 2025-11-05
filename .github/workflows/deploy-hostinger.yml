@@ -226,6 +226,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./deploy/frontend/
           server-dir: /public_html/
+          # Only upload changed files (much faster)
+          # Set to true only if you need to wipe everything and start fresh
           dangerous-clean-slate: false
           exclude: |
             **/.git*

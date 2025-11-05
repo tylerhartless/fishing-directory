@@ -643,11 +643,12 @@ import Layout from '../layouts/Layout.astro';
     const query = locationSearch.value.trim();
     if (!query) return;
 
-    // --- MAKE SURE THIS EMAIL IS A REAL, VALID EMAIL ---
-    const email = 'tyler@netlace.xyz'; 
-    
+    // Nominatim requires a contact email per their usage policy
+    // If you want to use your own email, set PUBLIC_NOMINATIM_EMAIL in your .env file
+    const email = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
+
     // Make the query more specific for better results
-    const specificQuery = query + ', texas'; 
+    const specificQuery = query + ', texas';
     const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(specificQuery)}&format=json&limit=1&email=${email}`;
 
     console.log(`[INDEX.ASTRO] Fetching: ${apiUrl}`);

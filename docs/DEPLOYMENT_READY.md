@@ -27,7 +27,7 @@ deploy/
 
 ## Quick Start (15-20 minutes):
 
-1. **Read the guide**: [HOSTINGER_DEPLOYMENT_GUIDE.md](HOSTINGER_DEPLOYMENT_GUIDE.md)
+1. **Read the guide**: [HOSTINGER_DEPLOYMENT_GUIDE.md](HOSTINGER_DEPLOYMENT_GUIDE.md) (in this docs/ folder)
 2. **Create MySQL database** in Hostinger cPanel
 3. **Edit** `deploy/public_html/api/config.php` with YOUR database credentials
 4. **Upload** `deploy/public_html/*` to Hostinger's public_html folder
