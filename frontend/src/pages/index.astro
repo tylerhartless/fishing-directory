@@ -66,7 +66,7 @@ import Layout from '../layouts/Layout.astro';
     <p class="section-subtitle">Most enriched areas with complete amenity data</p>
 
     <div class="location-grid">
-      <a href="/texas?county=Harris" class="location-card">
+      <a href="/texas/harris" class="location-card">
         <div class="location-header">
           <h3>Harris County</h3>
           <span class="spot-count">450+ spots</span>
@@ -79,7 +79,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </a>
 
-      <a href="/texas?county=Travis" class="location-card">
+      <a href="/texas/travis" class="location-card">
         <div class="location-header">
           <h3>Travis County</h3>
           <span class="spot-count">280+ spots</span>
@@ -92,7 +92,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </a>
 
-      <a href="/texas?county=Tarrant" class="location-card">
+      <a href="/texas/tarrant" class="location-card">
         <div class="location-header">
           <h3>Tarrant County</h3>
           <span class="spot-count">220+ spots</span>
@@ -105,7 +105,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </a>
 
-      <a href="/texas?county=Bexar" class="location-card">
+      <a href="/texas/bexar" class="location-card">
         <div class="location-header">
           <h3>Bexar County</h3>
           <span class="spot-count">180+ spots</span>
@@ -722,7 +722,8 @@ import Layout from '../layouts/Layout.astro';
       suggestions?.querySelectorAll('.suggestion-item').forEach(item => {
         item.addEventListener('click', () => {
           const county = item.getAttribute('data-county');
-          window.location.href = `/texas?county=${county}`;
+          const countySlug = county.toLowerCase().replace(/\s+/g, '-');
+          window.location.href = `/texas/${countySlug}`;
         });
       });
     } else {
