@@ -1,0 +1,339 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getSpots } from '../../../lib/database';
+
+export async function getStaticPaths() {
+  const allSpots = await getSpots();
+  const texasSpots = allSpots.filter(spot => spot.state === 'TX' || spot.state === 'Texas');
+
+  // Get unique counties
+  const counties = new Set<string>();
+
+  texasSpots.forEach(spot => {
+    let countyName = spot.county || '';
+
+    // Handle multi-county entries - use first county
+    if (countyName.includes(',')) {
+      countyName = countyName.split(',')[0].trim();
+    }
+
+    // Remove "County" suffix if present
+    countyName = countyName.replace(/\s+County$/i, '').trim();
+
+    // Skip "Multiple Counties"
+    if (countyName && countyName !== 'Multiple Counties') {
+      counties.add(countyName);
+    }
+  });
+
+  // Generate paths for each county
+  return Array.from(counties).map(countyName => {
+    const countySlug = countyName.toLowerCase().replace(/\s+/g, '-');
+
+    // Get all spots for this county
+    const countySpots = texasSpots.filter(spot => {
+      let spotCounty = spot.county || '';
+
+      // Handle multi-county entries
+      if (spotCounty.includes(',')) {
+        spotCounty = spotCounty.split(',')[0].trim();
+      }
+
+      // Remove "County" suffix
+      spotCounty = spotCounty.replace(/\s+County$/i, '').trim();
+
+      return spotCounty === countyName;
+    });
+
+    return {
+      params: { county: countySlug },
+      props: {
+        countyName,
+        spots: countySpots,
+        totalSpots: countySpots.length
+      }
+    };
+  });
+}
+
+const { countyName, spots, totalSpots } = Astro.props;
+
+// Get unique spot types for filter
+const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
+---
+
+<Layout
+  title={`${countyName} County Fishing Spots - Texas`}
+  description={`Find ${totalSpots} public fishing locations in ${countyName} County, Texas. Boat ramps, piers, and bank fishing spots with GPS coordinates.`}
+>
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="/">Home</a> / <a href="/texas">Texas</a> / {countyName} County
+      </nav>
+      <h1>{countyName} County Fishing Spots</h1>
+      <p class="subtitle">{totalSpots} fishing locations</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="controls">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search by name or water body..."
+        class="search-input"
+      />
+
+      <div class="filter-group">
+        <label for="type-filter">Filter by type:</label>
+        <select id="type-filter" class="filter-select">
+          <option value="">All types</option>
+          {spotTypes.map(type => (
+            <option value={type}>{type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <div class="results-info">
+      Showing <span id="count">{totalSpots}</span> of {totalSpots} spots
+    </div>
+
+    <div id="spots-container" class="spots-grid">
+      {spots.sort((a, b) => a.name.localeCompare(b.name)).map(spot => (
+        <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="spot-card">
+          <h3>{spot.name}</h3>
+          {spot.water_body_name && (
+            <p class="water-body">{spot.water_body_name}</p>
+          )}
+          <div class="spot-meta">
+            <span class="spot-type">
+              {spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    color: white;
+    padding: 2rem 1rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  .breadcrumb a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    margin: 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #4a7c59;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+  }
+
+  .results-info {
+    margin-bottom: 1.5rem;
+    color: #666;
+    font-size: 0.95rem;
+  }
+
+  #count {
+    font-weight: 600;
+    color: #2c5530;
+  }
+
+  .spots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .spot-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+
+  .spot-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #4a7c59;
+  }
+
+  .spot-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2c5530;
+    font-size: 1.1rem;
+  }
+
+  .water-body {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+  }
+
+  .spot-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .spot-type {
+    background: #f0f0f0;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .controls {
+      flex-direction: column;
+    }
+
+    .search-input {
+      min-width: 100%;
+    }
+
+    .spots-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script define:vars={{ spots }}>
+  // Store all spots for filtering
+  let currentSpots = spots;
+
+  // Get DOM elements
+  const searchInput = document.getElementById('search-input');
+  const typeFilter = document.getElementById('type-filter');
+  const spotsContainer = document.getElementById('spots-container');
+  const countDisplay = document.getElementById('count');
+
+  // Filter and display spots
+  function filterAndDisplay() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const typeFilter = document.getElementById('type-filter').value;
+
+    let filtered = currentSpots;
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(spot =>
+        spot.name.toLowerCase().includes(searchTerm) ||
+        (spot.water_body_name && spot.water_body_name.toLowerCase().includes(searchTerm))
+      );
+    }
+
+    // Apply type filter
+    if (typeFilter) {
+      filtered = filtered.filter(spot => spot.spot_type === typeFilter);
+    }
+
+    // Sort alphabetically
+    filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+    // Update display
+    displaySpots(filtered);
+    countDisplay.textContent = filtered.length;
+  }
+
+  // Display spots in the grid
+  function displaySpots(spotsToDisplay) {
+    const countySlug = window.location.pathname.split('/')[2];
+
+    spotsContainer.innerHTML = spotsToDisplay.map(spot => {
+      const waterBody = spot.water_body_name ?
+        `<p class="water-body">${spot.water_body_name}</p>` : '';
+
+      const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+      return `
+        <a href="/texas/${countySlug}/${spot.slug}" class="spot-card">
+          <h3>${spot.name}</h3>
+          ${waterBody}
+          <div class="spot-meta">
+            <span class="spot-type">${typeLabel}</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  // Add event listeners
+  searchInput.addEventListener('input', filterAndDisplay);
+  typeFilter.addEventListener('change', filterAndDisplay);
+</script>
+</Layout>
