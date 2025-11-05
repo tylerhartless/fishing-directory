@@ -42,36 +42,41 @@ export interface FishingSpot {
  */
 export async function getSpots(): Promise<FishingSpot[]> {
   // Use the correct API URL (we assume you have it set as a secret)
-  const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api'; 
+  const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api';
+  const fullUrl = `${apiUrl}/spots.php?limit=5000`;
+
+  console.log(`[getSpots] Fetching from: ${fullUrl}`);
 
   try {
-    const response = await fetch(`${apiUrl}/spots.php?limit=5000`);
+    const response = await fetch(fullUrl);
 
     if (!response.ok) {
-      console.warn(`Could not load fishing spots data from API: ${response.status} ${response.statusText}`);
+      console.error(`[getSpots] API request failed: ${response.status} ${response.statusText}`);
+      console.error(`[getSpots] URL was: ${fullUrl}`);
       return [];
     }
 
     const data = await response.json();
-    
+
     // ⭐ THE DEFINITIVE FIX: Check for the array wrapped in the 'spots' key
     if (data && Array.isArray(data.spots)) {
-        console.log('API data successfully unwrapped from "spots" property.');
-        return data.spots; 
+        console.log(`[getSpots] Successfully loaded ${data.spots.length} spots from API`);
+        return data.spots;
     }
-    
+
     // Check 2: Fallback to assume the top level is the array (less likely, but safe)
     if (Array.isArray(data)) {
-        console.log('API data is an array at the top level.');
-        return data; 
+        console.log(`[getSpots] Successfully loaded ${data.length} spots from API (array format)`);
+        return data;
     }
-    
+
     // Final Fail: If the format is wrong, return an empty array
-    console.error('API response format is incorrect. Could not find array in response.');
+    console.error('[getSpots] API response format is incorrect. Could not find array in response.');
+    console.error('[getSpots] Response data:', data);
     return [];
 
   } catch (error) {
-    console.error('An error occurred during API fetch or JSON parsing in getSpots:', error);
+    console.error('[getSpots] An error occurred during API fetch or JSON parsing:', error);
     return [];
   }
 }
