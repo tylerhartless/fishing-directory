@@ -210,8 +210,7 @@ jobs:
           server-dir: /public_html/
           # Only upload changed files (much faster)
           # Set to true only if you need to wipe everything and start fresh
-          # TEMPORARY: Set to true to fix production after partial deployment
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**
