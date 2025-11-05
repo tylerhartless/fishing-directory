@@ -166,7 +166,7 @@ jobs:
           username: ${{ secrets.STAGING_FTP_USERNAME }}
           password: ${{ secrets.STAGING_FTP_PASSWORD }}
           local-dir: ./deploy/api/
-          server-dir: /public_html/api/
+          server-dir: /public_html/staging/api/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
@@ -210,7 +210,7 @@ jobs:
           username: ${{ secrets.STAGING_FTP_USERNAME }}
           password: ${{ secrets.STAGING_FTP_PASSWORD }}
           local-dir: ./deploy/frontend/
-          server-dir: /public_html/
+          server-dir: /public_html/staging/
           # Only upload changed files (much faster)
           # Set to true only if you need to wipe everything and start fresh
           dangerous-clean-slate: false

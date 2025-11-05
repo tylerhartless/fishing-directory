@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.STAGING_FTP_USERNAME }}
           password: ${{ secrets.STAGING_FTP_PASSWORD }}
           local-dir: ./maintenance-toggle/
-          server-dir: /public_html/
+          server-dir: /public_html/staging/
           dangerous-clean-slate: false
 
       - name: Disable Maintenance Mode (Delete MAINTENANCE file)
@@ -49,7 +49,7 @@ jobs:
           # Delete MAINTENANCE file via FTP
           lftp -c "
           open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }}
-          cd /public_html
+          cd /public_html/staging
           rm -f MAINTENANCE
           bye
           "
