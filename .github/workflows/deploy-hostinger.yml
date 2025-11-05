@@ -31,24 +31,6 @@ jobs:
           rm -rf node_modules/.astro
           echo "Previous build artifacts and cache cleaned."
 
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: npm ci
-
-      - name: Create .env.production file
-        working-directory: ./frontend
-        run: |
-          # Create .env.production, which astro build specifically looks for
-          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env.production
-          echo "PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }}" >> .env.production
-          echo "--- Verifying .env file location ---"
-          ls -la
-          echo "------------------------------------"
-
-      - name: Build frontend
-        working-directory: ./frontend
-        run: npm run build
-
       - name: Create production config.php
         run: |
           # Create the API config file from secrets
@@ -188,20 +170,61 @@ jobs:
           }
           ?>" > ./deploy/public_html/api/config.php
 
-      - name: Prepare deployment files
+      - name: Prepare API deployment
         run: |
-          mkdir -p deploy/public_html
-          cp -r frontend/dist/* deploy/public_html/
+          mkdir -p deploy/api
           # Copy all of backend/api EXCEPT config.php (which we just generated)
-          rsync -av --progress backend/api/ deploy/public_html/api/ --exclude config.php
+          rsync -av --progress backend/api/ deploy/api/ --exclude config.php
+          cp deploy/public_html/api/config.php deploy/api/config.php
 
-      - name: Deploy to Hostinger via FTP
+      - name: Deploy API to Hostinger first
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./deploy/public_html/
+          local-dir: ./deploy/api/
+          server-dir: /public_html/api/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+
+      - name: Wait for API to be ready
+        run: |
+          echo "Waiting 10 seconds for API to be ready..."
+          sleep 10
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Create .env.production file
+        working-directory: ./frontend
+        run: |
+          # Create .env.production, which astro build specifically looks for
+          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env.production
+          echo "PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }}" >> .env.production
+          echo "--- Verifying .env file location ---"
+          ls -la
+          echo "------------------------------------"
+
+      - name: Build frontend (API is now live)
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Prepare frontend deployment
+        run: |
+          mkdir -p deploy/frontend
+          cp -r frontend/dist/* deploy/frontend/
+
+      - name: Deploy frontend to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./deploy/frontend/
           server-dir: /public_html/
           # Only upload changed files (much faster)
           # Set to true only if you need to wipe everything and start fresh
@@ -210,6 +233,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/api/**
 
       - name: Deployment complete
         run: |
