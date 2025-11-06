@@ -89,10 +89,14 @@ const stateSlugLookup = {
       <a href="/" class="new-search-btn">New Search</a>
     </div>
 
-    <div class="data-accuracy-notice">
-      <span class="notice-icon">⚠</span>
-      <p><strong>Data Notice:</strong> Consolidating data from multiple TX agencies revealed some duplicates and naming quirks. We're actively cleaning it up. If something looks fishy, we're debugging it.</p>
-    </div>
+    <details class="data-accuracy-notice">
+      <summary>
+        <span class="notice-icon">⚠</span>
+        <strong>Data Notice</strong>
+        <span class="toggle-arrow">▼</span>
+      </summary>
+      <p>Consolidating data from multiple TX agencies revealed some duplicates and naming quirks. We're actively cleaning it up. If something looks fishy, we're debugging it.</p>
+    </details>
 
     <div class="filters">
       <div class="filter-controls">
@@ -260,7 +264,7 @@ const stateSlugLookup = {
   :global([data-theme="light"]) .terminal-name {
     color: var(--neutral-black);
     text-shadow: none;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .terminal-data {
@@ -305,7 +309,7 @@ const stateSlugLookup = {
 
   :global([data-theme="light"]) .terminal-value {
     color: var(--neutral-black);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .terminal-badge {
@@ -582,11 +586,7 @@ const stateSlugLookup = {
   .data-accuracy-notice {
     background: rgba(184, 92, 58, 0.15);
     border: 2px solid rgba(184, 92, 58, 0.4);
-    padding: 0.75rem 1rem;
     margin-bottom: 1.5rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
     font-family: 'VT323', monospace;
   }
 
@@ -595,26 +595,37 @@ const stateSlugLookup = {
     border: 2px solid var(--earth-rust);
   }
 
+  .data-accuracy-notice summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    list-style: none;
+    user-select: none;
+  }
+
+  .data-accuracy-notice summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .data-accuracy-notice summary:hover {
+    background: rgba(184, 92, 58, 0.08);
+  }
+
+  :global([data-theme="light"]) .data-accuracy-notice summary:hover {
+    background: rgba(184, 92, 58, 0.05);
+  }
+
   .data-accuracy-notice .notice-icon {
     font-size: 1.2rem;
     flex-shrink: 0;
   }
 
-  .data-accuracy-notice p {
-    margin: 0;
-    font-size: 1.05rem;
-    line-height: 1.5;
-    color: #d4a574;
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .data-accuracy-notice p {
-    color: var(--neutral-black);
-  }
-
   .data-accuracy-notice strong {
     font-weight: 400;
     color: #f0e6d2;
+    flex: 1;
     text-shadow:
       0 0 8px rgba(240, 230, 210, 0.5);
   }
@@ -623,6 +634,34 @@ const stateSlugLookup = {
     font-weight: 700;
     color: var(--neutral-black);
     text-shadow: none;
+  }
+
+  .data-accuracy-notice .toggle-arrow {
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+    color: #d4a574;
+  }
+
+  :global([data-theme="light"]) .data-accuracy-notice .toggle-arrow {
+    color: var(--neutral-black);
+  }
+
+  .data-accuracy-notice[open] .toggle-arrow {
+    transform: rotate(180deg);
+  }
+
+  .data-accuracy-notice p {
+    margin: 0;
+    padding: 0 1rem 0.75rem 1rem;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: #d4a574;
+    font-weight: 400;
+  }
+
+  :global([data-theme="light"]) .data-accuracy-notice p {
+    color: var(--neutral-black);
+    font-weight: 600;
   }
 
   @media (max-width: 768px) {
