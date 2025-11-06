@@ -153,34 +153,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     padding: 0;
     box-shadow: none;
     position: relative;
-    overflow: hidden;
-  }
-
-  header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
   }
 
   nav {
     position: relative;
     z-index: 2;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     padding: 3.5rem 0;
+    width: 100%;
   }
 
   .logo {
@@ -189,9 +171,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     align-items: center;
     gap: 0.2rem;
-    margin-left: 0;
-    max-width: 100%;
-    overflow: hidden;
+    justify-content: center;
+    width: 100%;
+    overflow: visible;
   }
 
   .logo-prompt {
@@ -278,9 +260,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   nav .container {
-    padding: 0 1rem;
+    padding: 0;
     margin: 0;
     max-width: none;
+    width: 100%;
   }
 
   main {
@@ -408,7 +391,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     nav .container {
-      padding: 0 0.5rem;
+      padding: 0;
     }
   }
 
@@ -440,7 +423,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     nav .container {
-      padding: 0 0.5rem;
+      padding: 0;
     }
   }
 </style>
