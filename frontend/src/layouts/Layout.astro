@@ -89,7 +89,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
+    padding: 1.5rem 0;
   }
 
   .logo {
@@ -102,7 +102,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   .logo-prompt {
     font-family: 'Press Start 2P', monospace;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 400;
     color: var(--accent-rust);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
@@ -111,34 +111,23 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   .logo-bubble {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: #6db3f2;
     animation: bubble 1.5s ease-in-out infinite;
     position: relative;
-    top: -0.4rem;
+    top: -0.5rem;
     margin-right: 0.1rem;
   }
 
   .logo-text {
     font-family: 'Press Start 2P', monospace;
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: 400;
     letter-spacing: 0.05em;
     color: var(--accent-cream);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     white-space: nowrap;
     position: relative;
-  }
-
-  .logo-text::after {
-    content: '_';
-    color: var(--accent-cream);
-    animation: blink 1s infinite;
-  }
-
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
   }
 
   @keyframes bubble {
@@ -197,11 +186,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   @media (max-width: 640px) {
     .logo-prompt {
-      font-size: 1rem;
+      font-size: 1.3rem;
     }
 
     .logo-text {
-      font-size: 0.7rem;
+      font-size: 0.9rem;
     }
 
     .logo {
@@ -209,8 +198,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo-bubble {
-      font-size: 0.6rem;
-      top: -0.3rem;
+      font-size: 0.7rem;
+      top: -0.35rem;
+    }
+
+    nav {
+      padding: 1.25rem 0;
     }
 
     nav .container {
@@ -220,11 +213,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   @media (max-width: 400px) {
     .logo-prompt {
-      font-size: 0.85rem;
+      font-size: 1.1rem;
     }
 
     .logo-text {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
     }
 
     .logo {
@@ -232,8 +225,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo-bubble {
-      font-size: 0.5rem;
-      top: -0.25rem;
+      font-size: 0.6rem;
+      top: -0.3rem;
     }
   }
 </style>
