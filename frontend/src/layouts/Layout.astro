@@ -79,13 +79,34 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: var(--primary-bg);
+    background: linear-gradient(180deg, #1a1a1a 0%, #0d1f0d 100%);
     color: white;
     padding: 0;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+    position: relative;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 3px
+    );
+    pointer-events: none;
+    z-index: 1;
   }
 
   nav {
+    position: relative;
+    z-index: 2;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -105,16 +126,23 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-family: 'Press Start 2P', monospace;
     font-size: 2.5rem;
     font-weight: 400;
-    color: var(--accent-rust);
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    color: #ff8c42;
+    text-shadow:
+      0 0 10px rgba(255, 140, 66, 0.8),
+      0 0 20px rgba(255, 140, 66, 0.6),
+      0 0 30px rgba(255, 140, 66, 0.4),
+      2px 2px 0 rgba(0,0,0,0.3);
     flex-shrink: 0;
     letter-spacing: -0.15em;
-    line-height: 1.8;
+    line-height: 2.2;
   }
 
   .logo-bubble {
     font-size: 1.2rem;
     color: #6db3f2;
+    text-shadow:
+      0 0 8px rgba(109, 179, 242, 0.9),
+      0 0 15px rgba(109, 179, 242, 0.6);
     animation: bubble 1.5s ease-in-out infinite;
     position: relative;
     top: -0.6rem;
@@ -127,11 +155,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-size: 1.6rem;
     font-weight: 400;
     letter-spacing: 0.05em;
-    color: var(--accent-cream);
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    color: #f0e6d2;
+    text-shadow:
+      0 0 10px rgba(240, 230, 210, 0.7),
+      0 0 20px rgba(240, 230, 210, 0.5),
+      0 0 30px rgba(240, 230, 210, 0.3),
+      2px 2px 0 rgba(0,0,0,0.3);
     white-space: nowrap;
     position: relative;
-    line-height: 1.8;
+    line-height: 2.2;
   }
 
   @keyframes bubble {
@@ -171,6 +203,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   nav .container {
     padding: 0 1rem;
+    margin: 0;
+    max-width: none;
   }
 
   main {
@@ -195,12 +229,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   @media (max-width: 640px) {
     .logo-prompt {
       font-size: 1.6rem;
-      line-height: 1.8;
+      line-height: 2.2;
     }
 
     .logo-text {
       font-size: 1.1rem;
-      line-height: 1.8;
+      line-height: 2.2;
     }
 
     .logo {
@@ -226,12 +260,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   @media (max-width: 400px) {
     .logo-prompt {
       font-size: 1.3rem;
-      line-height: 1.8;
+      line-height: 2.2;
     }
 
     .logo-text {
       font-size: 0.9rem;
-      line-height: 1.8;
+      line-height: 2.2;
     }
 
     .logo {
