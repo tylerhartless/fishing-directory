@@ -137,7 +137,7 @@ const stateSlugLookup = {
       0 0 15px rgba(168, 197, 168, 0.4);
   }
 
-  :global([data-theme="dark"]) .terminal-subtitle {
+  [data-theme="dark"] .terminal-subtitle {
     color: #a8c5a8;
   }
 
@@ -176,7 +176,7 @@ const stateSlugLookup = {
       0 0 6px rgba(212, 165, 116, 0.4);
   }
 
-  :global([data-theme="light"]) .filter-controls label {
+  [data-theme="light"] .filter-controls label {
     color: var(--neutral-black);
     text-shadow: none;
     font-weight: 600;
@@ -224,7 +224,7 @@ const stateSlugLookup = {
       0 0 15px rgba(212, 165, 116, 0.4);
   }
 
-  :global([data-theme="light"]) .terminal-prompt {
+  [data-theme="light"] .terminal-prompt {
     color: var(--neutral-black);
     text-shadow: none;
     font-weight: 700;
@@ -242,7 +242,7 @@ const stateSlugLookup = {
       0 0 12px rgba(168, 197, 168, 0.3);
   }
 
-  :global([data-theme="light"]) .terminal-command {
+  [data-theme="light"] .terminal-command {
     color: var(--earth-forest);
     text-shadow: none;
     font-weight: 700;
@@ -261,8 +261,8 @@ const stateSlugLookup = {
       0 0 20px rgba(240, 230, 210, 0.4);
   }
 
-  :global([data-theme="light"]) .terminal-name {
-    color: var(--neutral-black);
+  [data-theme="light"] .terminal-name {
+    color: var(--neutral-black) !important;
     text-shadow: none;
     font-weight: 700;
   }
@@ -295,7 +295,7 @@ const stateSlugLookup = {
       0 0 10px rgba(184, 148, 78, 0.3);
   }
 
-  :global([data-theme="light"]) .terminal-label {
+  [data-theme="light"] .terminal-label {
     color: var(--neutral-black);
     text-shadow: none;
     font-weight: 700;
@@ -307,7 +307,7 @@ const stateSlugLookup = {
     flex: 1;
   }
 
-  :global([data-theme="light"]) .terminal-value {
+  [data-theme="light"] .terminal-value {
     color: var(--neutral-black);
     font-weight: 700;
   }
@@ -321,7 +321,7 @@ const stateSlugLookup = {
       0 0 6px rgba(168, 197, 168, 0.5);
   }
 
-  :global([data-theme="light"]) .terminal-badge {
+  [data-theme="light"] .terminal-badge {
     background: var(--box-sage);
     border: 2px solid var(--earth-forest);
     color: var(--neutral-black);
@@ -337,7 +337,7 @@ const stateSlugLookup = {
       0 0 12px rgba(212, 165, 116, 0.4);
   }
 
-  :global([data-theme="light"]) .terminal-distance {
+  [data-theme="light"] .terminal-distance {
     color: var(--earth-rust);
     text-shadow: none;
   }
@@ -349,7 +349,7 @@ const stateSlugLookup = {
       0 0 6px rgba(184, 148, 78, 0.5);
   }
 
-  :global([data-theme="light"]) .terminal-coords {
+  [data-theme="light"] .terminal-coords {
     color: var(--neutral-gray);
     text-shadow: none;
   }
@@ -360,7 +360,7 @@ const stateSlugLookup = {
     border-top: 1px solid rgba(212, 165, 116, 0.3);
   }
 
-  :global([data-theme="light"]) .terminal-desc {
+  [data-theme="light"] .terminal-desc {
     border-top-color: rgba(0, 0, 0, 0.1);
   }
 
@@ -374,7 +374,7 @@ const stateSlugLookup = {
     overflow: hidden;
   }
 
-  :global([data-theme="light"]) .terminal-desc .terminal-value {
+  [data-theme="light"] .terminal-desc .terminal-value {
     color: #666;
   }
 
@@ -396,7 +396,7 @@ const stateSlugLookup = {
       0 0 6px rgba(212, 165, 116, 0.4);
   }
 
-  :global([data-theme="light"]) .terminal-field .amenity-badge {
+  [data-theme="light"] .terminal-field .amenity-badge {
     background: var(--box-rust);
     border: 2px solid var(--earth-rust);
     color: var(--neutral-black);
@@ -508,7 +508,7 @@ const stateSlugLookup = {
       0 0 15px rgba(212, 165, 116, 0.3);
   }
 
-  :global([data-theme="light"]) .no-results {
+  [data-theme="light"] .no-results {
     color: var(--neutral-gray);
     text-shadow: none;
     font-weight: 600;
@@ -526,7 +526,7 @@ const stateSlugLookup = {
     font-family: 'VT323', monospace;
   }
 
-  :global([data-theme="light"]) .search-results-info {
+  [data-theme="light"] .search-results-info {
     background: var(--neutral-bg);
     border: 2px solid var(--earth-forest);
   }
@@ -541,7 +541,7 @@ const stateSlugLookup = {
       0 0 6px rgba(168, 197, 168, 0.4);
   }
 
-  :global([data-theme="light"]) .search-results-info p {
+  [data-theme="light"] .search-results-info p {
     color: var(--earth-forest);
     text-shadow: none;
     font-weight: 600;
@@ -562,7 +562,7 @@ const stateSlugLookup = {
       0 0 6px rgba(212, 165, 116, 0.4);
   }
 
-  :global([data-theme="light"]) .new-search-btn {
+  [data-theme="light"] .new-search-btn {
     background: white;
     border: 2px solid var(--neutral-black);
     color: var(--neutral-black);
@@ -578,7 +578,7 @@ const stateSlugLookup = {
       0 0 10px rgba(212, 165, 116, 0.5);
   }
 
-  :global([data-theme="light"]) .new-search-btn:hover {
+  [data-theme="light"] .new-search-btn:hover {
     background: var(--accent-copper);
     box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
   }
@@ -590,7 +590,7 @@ const stateSlugLookup = {
     font-family: 'VT323', monospace;
   }
 
-  :global([data-theme="light"]) .data-accuracy-notice {
+  [data-theme="light"] .data-accuracy-notice {
     background: var(--accent-cream);
     border: 2px solid var(--earth-rust);
   }
@@ -613,7 +613,7 @@ const stateSlugLookup = {
     background: rgba(184, 92, 58, 0.08);
   }
 
-  :global([data-theme="light"]) .data-accuracy-notice summary:hover {
+  [data-theme="light"] .data-accuracy-notice summary:hover {
     background: rgba(184, 92, 58, 0.05);
   }
 
@@ -630,7 +630,7 @@ const stateSlugLookup = {
       0 0 8px rgba(240, 230, 210, 0.5);
   }
 
-  :global([data-theme="light"]) .data-accuracy-notice strong {
+  [data-theme="light"] .data-accuracy-notice strong {
     font-weight: 700;
     color: var(--neutral-black);
     text-shadow: none;
@@ -642,7 +642,7 @@ const stateSlugLookup = {
     color: #d4a574;
   }
 
-  :global([data-theme="light"]) .data-accuracy-notice .toggle-arrow {
+  [data-theme="light"] .data-accuracy-notice .toggle-arrow {
     color: var(--neutral-black);
   }
 
@@ -659,7 +659,7 @@ const stateSlugLookup = {
     font-weight: 400;
   }
 
-  :global([data-theme="light"]) .data-accuracy-notice p {
+  [data-theme="light"] .data-accuracy-notice p {
     color: var(--neutral-black);
     font-weight: 600;
   }
