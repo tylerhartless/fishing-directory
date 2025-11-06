@@ -44,6 +44,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       <nav class="container">
         <a href="/" class="logo">
           <span class="logo-prompt">&gt;&lt;&gt;</span>
+          <span class="logo-bubble">°</span>
           <span class="logo-text">wherecanifish.com</span>
         </a>
       </nav>
@@ -96,7 +97,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.3rem;
   }
 
   .logo-prompt {
@@ -106,6 +107,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     color: var(--accent-rust);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     flex-shrink: 0;
+  }
+
+  .logo-bubble {
+    font-size: 1rem;
+    color: #6db3f2;
+    animation: bubble 1.5s ease-in-out infinite;
+    position: relative;
+    top: -0.5rem;
+    margin-right: 0.1rem;
   }
 
   .logo-text {
@@ -128,6 +138,17 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+  }
+
+  @keyframes bubble {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
   }
 
   nav ul {
@@ -183,7 +204,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo {
-      gap: 0.5rem;
+      gap: 0.25rem;
+    }
+
+    .logo-bubble {
+      font-size: 0.85rem;
+      top: -0.4rem;
     }
 
     nav .container {
@@ -201,7 +227,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo {
-      gap: 0.4rem;
+      gap: 0.2rem;
+    }
+
+    .logo-bubble {
+      font-size: 0.75rem;
+      top: -0.3rem;
     }
   }
 </style>
