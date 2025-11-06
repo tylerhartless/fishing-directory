@@ -202,6 +202,9 @@ jobs:
         run: |
           mkdir -p deploy/frontend
           cp -r frontend/dist/* deploy/frontend/
+          # Explicitly copy .htaccess and maintenance.html (ensure they deploy)
+          cp frontend/public/.htaccess deploy/frontend/.htaccess
+          cp frontend/public/maintenance.html deploy/frontend/maintenance.html
 
       - name: Deploy frontend to Hostinger Staging
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -215,10 +218,13 @@ jobs:
           # Set to true only if you need to wipe everything and start fresh
           dangerous-clean-slate: false
           exclude: |
-            **/.git*
-            **/.git*/**
+            .git/**
+            .github/**
+            .gitignore
             **/node_modules/**
             **/api/**
+            MAINTENANCE
+            MAINTENANCE_WHITELIST
 
       - name: Deployment complete
         run: |

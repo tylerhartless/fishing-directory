@@ -2,6 +2,7 @@
   "name": "frontend",
   "type": "module",
   "version": "0.0.1",
+  "description": "Fishing directory frontend",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
