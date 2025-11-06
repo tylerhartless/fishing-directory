@@ -124,94 +124,137 @@ const stateSlugLookup = {
 
 <style is:global>
   .page-header {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    background: var(--primary-bg);
     color: white;
-    padding: 3rem 2rem;
+    padding: 0;
     text-align: center;
+    position: relative;
+  }
+
+  .page-header::before {
+    content: '';
+    display: block;
+    height: 12px;
+    background: var(--rainbow-gradient);
+  }
+
+  .page-header .container {
+    padding: 2.5rem 2rem;
   }
 
   .page-header h1 {
     font-size: 2.5rem;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
   }
 
   .subtitle {
-    font-size: 1.1rem;
-    opacity: 0.9;
+    font-size: 1.2rem;
+    color: var(--secondary-text);
     margin: 0 0 1.5rem 0;
+    font-weight: 600;
   }
 
   .search-box {
     display: flex;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .search-box input {
     flex: 1;
-    padding: 0.75rem;
+    min-width: 250px;
+    padding: 1rem;
     font-size: 1rem;
-    border: none;
-    border-radius: 4px;
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
+    font-weight: 500;
+    box-sizing: border-box;
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--c64-purple);
+    box-shadow: 0 0 0 3px rgba(159, 78, 159, 0.2);
   }
 
   .search-box button {
-    padding: 0.75rem 1.5rem;
-    background: #ff6b35;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    padding: 1rem 2rem;
+    background: var(--accent-lime);
+    color: var(--neutral-black);
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    transition: all 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .search-box button:hover {
-    background: #e55a2b;
+    background: var(--accent-orange);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
   }
 
   .clear-search {
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    background: var(--box-lavender);
+    color: var(--neutral-black);
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     text-decoration: none;
     display: flex;
     align-items: center;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    transition: all 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .clear-search:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--accent-cyan);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
   }
 
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 2.5rem 2rem;
   }
 
   .error-message {
-    background: #fee;
-    border: 2px solid #c33;
-    border-radius: 8px;
-    padding: 1rem;
+    background: var(--c64-red);
+    border: 4px solid var(--neutral-black);
+    border-radius: 0;
+    padding: 1.5rem;
     margin-bottom: 2rem;
-    color: #c33;
+    color: white;
+    font-weight: 700;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   .filter-notice {
-    background: #e8f5e9;
-    border-left: 4px solid #4caf50;
-    padding: 1rem 1.5rem;
+    background: var(--box-mint);
+    border: 4px solid var(--c64-green);
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border-radius: 4px;
+    border-radius: 0;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   .filter-notice p {
     margin: 0;
-    color: #2c5530;
+    color: var(--neutral-black);
     font-size: 1rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -224,25 +267,30 @@ const stateSlugLookup = {
     gap: 0.5rem;
     cursor: pointer;
     background: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 4px;
-    border: 1px solid #c8e6c9;
-    transition: background 0.2s;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    border: 3px solid var(--neutral-black);
+    transition: all 0.1s;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .inline-toggle:hover {
-    background: #f1f8f4;
+    background: var(--accent-cyan);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
   }
 
   .inline-toggle input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     cursor: pointer;
   }
 
   .inline-toggle span {
     user-select: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .filters {
@@ -254,31 +302,35 @@ const stateSlugLookup = {
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
 
   .filter-controls label {
-    font-weight: 500;
-    color: #2c5530;
+    font-weight: 700;
+    color: var(--neutral-black);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .filter-controls select {
-    padding: 0.5rem 0.75rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 4px;
+    padding: 1rem;
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     font-size: 1rem;
     background: white;
     cursor: pointer;
     min-width: 200px;
+    font-weight: 600;
   }
 
   .filter-controls select:hover {
-    border-color: #4a7c59;
+    border-color: var(--c64-purple);
   }
 
   .filter-controls select:focus {
     outline: none;
-    border-color: #4a7c59;
-    box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+    border-color: var(--c64-purple);
+    box-shadow: 0 0 0 3px rgba(159, 78, 159, 0.2);
   }
 
   .spots-grid {
@@ -291,26 +343,44 @@ const stateSlugLookup = {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem;
-    color: #666;
+    color: var(--neutral-gray);
+    font-weight: 600;
+    font-size: 1.1rem;
   }
 
   .spot-card {
     background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 4px solid;
+    border-radius: 0;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.1s;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .spot-card:nth-child(4n+1) {
+    border-color: var(--box-aqua);
+  }
+
+  .spot-card:nth-child(4n+2) {
+    border-color: var(--box-pink);
+  }
+
+  .spot-card:nth-child(4n+3) {
+    border-color: var(--box-mint);
+  }
+
+  .spot-card:nth-child(4n+4) {
+    border-color: var(--box-peach);
   }
 
   .spot-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: #4a7c59;
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
   }
 
   .spot-header {
@@ -322,19 +392,22 @@ const stateSlugLookup = {
 
   .spot-header h3 {
     margin: 0;
-    font-size: 1.1rem;
-    color: #2c5530;
+    font-size: 1.2rem;
+    color: var(--neutral-black);
+    font-weight: 900;
     flex: 1;
   }
 
   .spot-type {
-    background: #4caf50;
+    background: var(--neutral-black);
     color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0;
     font-size: 0.75rem;
-    text-transform: capitalize;
+    text-transform: uppercase;
     white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: 0.05em;
   }
 
   .spot-details {
@@ -343,46 +416,51 @@ const stateSlugLookup = {
 
   .spot-details p {
     margin: 0.5rem 0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 600;
   }
 
   .location {
-    color: #2c5530;
+    color: var(--neutral-black);
   }
 
   .water-body {
     color: #666;
+    font-weight: 500;
   }
 
   .description {
     color: #666;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    font-weight: 500;
   }
 
   .spot-footer {
-    border-top: 1px solid #eee;
+    border-top: 3px solid var(--neutral-black);
     padding-top: 0.75rem;
   }
 
   .coordinates {
     font-size: 0.85rem;
-    color: #888;
+    color: var(--neutral-gray);
     font-family: monospace;
+    font-weight: 600;
   }
 
   .address {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--neutral-gray);
+    font-weight: 600;
   }
 
   .distance {
-    font-size: 0.9rem;
-    color: #2c5530;
-    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--neutral-black);
+    font-weight: 700;
   }
 
   .amenities-row {
@@ -393,42 +471,82 @@ const stateSlugLookup = {
   }
 
   .amenity-badge {
-    background: #e8f5e9;
-    color: #2c5530;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
+    background: var(--box-mint);
+    color: var(--neutral-black);
+    padding: 0.4rem 0.7rem;
+    border-radius: 0;
     font-size: 0.75rem;
-    border: 1px solid #c8e6c9;
+    border: 2px solid var(--neutral-black);
     white-space: nowrap;
+    font-weight: 700;
   }
 
   .no-results {
     text-align: center;
     padding: 3rem;
-    color: #666;
+    color: var(--neutral-gray);
+    font-weight: 600;
+    font-size: 1.1rem;
   }
 
   .search-results-info {
-    background: #e8f5e9;
-    border-left: 4px solid #4caf50;
-    padding: 1rem;
+    background: var(--box-aqua);
+    border: 4px solid var(--c64-blue);
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border-radius: 4px;
+    border-radius: 0;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   .search-results-info p {
     margin: 0;
-    color: #2c5530;
+    color: var(--neutral-black);
+    font-weight: 700;
   }
 
   .search-results-info a {
-    color: #4caf50;
+    color: var(--neutral-black);
     text-decoration: underline;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
+    .page-header .container {
+      padding: 2rem 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .search-box {
+      flex-direction: column;
+    }
+
+    .search-box input {
+      min-width: 100%;
+    }
+
+    .search-box button {
+      width: 100%;
+    }
+
     .spots-grid {
       grid-template-columns: 1fr;
+    }
+
+    .spot-card {
+      border-width: 3px;
+    }
+
+    .filter-controls {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .filter-controls select {
+      width: 100%;
     }
   }
 </style>
