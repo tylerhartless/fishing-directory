@@ -70,30 +70,14 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     background: #f5f5f5;
   }
 
-  /* Commodore 64 Rainbow Bar */
+  /* Earthy Rainbow Bar */
   .rainbow-bar {
     height: 8px;
-    background: linear-gradient(
-      to right,
-      #9f4e44 0%,      /* Red */
-      #9f4e44 14.28%,
-      #cb7e5f 14.28%,  /* Orange */
-      #cb7e5f 28.56%,
-      #cbcb9f 28.56%,  /* Yellow */
-      #cbcb9f 42.84%,
-      #6d9f6f 42.84%,  /* Green */
-      #6d9f6f 57.12%,
-      #5f7fcb 57.12%,  /* Blue */
-      #5f7fcb 71.4%,
-      #7f5fcb 71.4%,   /* Indigo */
-      #7f5fcb 85.68%,
-      #9f4e9f 85.68%,  /* Purple */
-      #9f4e9f 100%
-    );
+    background: var(--rainbow-gradient);
   }
 
   header {
-    background: #4040a0;
+    background: var(--primary-bg);
     color: white;
     padding: 0;
     box-shadow: 0 2px 0 rgba(0,0,0,0.1);
@@ -134,7 +118,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   nav a:hover {
-    color: #c0c0ff;
+    color: var(--accent-cream);
   }
 
   .container {
@@ -148,23 +132,14 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   footer {
-    background: #4040a0;
+    background: var(--primary-bg);
     padding: 2rem 0;
     margin-top: 2.5rem;
     text-align: center;
     font-size: 0.9rem;
-    color: #c0c0ff;
+    color: var(--secondary-text);
     border-top: 8px solid transparent;
-    border-image: linear-gradient(
-      to right,
-      #9f4e44,
-      #cb7e5f,
-      #cbcb9f,
-      #6d9f6f,
-      #5f7fcb,
-      #7f5fcb,
-      #9f4e9f
-    ) 1;
+    border-image: var(--rainbow-gradient) 1;
   }
 
   footer p {
