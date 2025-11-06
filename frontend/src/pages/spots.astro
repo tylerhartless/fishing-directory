@@ -65,22 +65,21 @@ const stateSlugLookup = {
       <p class="subtitle" id="subtitle">
         Loading fishing spots...
       </p>
-
-      <form class="search-box" id="search-form">
-        <input
-          type="text"
-          name="q"
-          placeholder="Search by location, lake, county..."
-          id="search-input"
-          class="retro-input"
-        />
-        <button type="submit" class="retro-btn retro-btn-search">Search</button>
-        <a href="/" class="retro-btn retro-btn-secondary retro-btn-small clear-search" id="clear-btn" style="display: none;">← Home</a>
-      </form>
     </div>
   </section>
 
   <section class="retro-container">
+    <form class="search-box-top" id="search-form">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search by location, lake, county..."
+        id="search-input"
+        class="retro-input"
+      />
+      <button type="submit" class="retro-btn retro-btn-search">Search</button>
+    </form>
+
     <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
       <p id="error-text"></p>
     </div>
@@ -122,26 +121,21 @@ const stateSlugLookup = {
   /* Page-specific styles only - common styles in retro-common.css */
 
   .subtitle {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     font-size: 0.95rem;
   }
 
-  .search-box {
+  .search-box-top {
     display: flex;
     max-width: 700px;
-    margin: 0 auto;
+    margin: 0 auto 1.5rem;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
 
-  .search-box input {
+  .search-box-top input {
     flex: 1;
     min-width: 250px;
-  }
-
-  .retro-btn-small {
-    padding: 0.6rem 1rem !important;
-    font-size: 0.9rem !important;
   }
 
   .inline-toggle {
@@ -327,25 +321,19 @@ const stateSlugLookup = {
   }
 
   @media (max-width: 768px) {
-    .retro-page-header {
-      padding: 1.5rem 0 1rem;
-    }
-
     .retro-page-header h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 2rem;
     }
 
     .subtitle {
-      font-size: 0.9rem;
-      margin-bottom: 0.75rem;
+      font-size: 1rem;
     }
 
-    .search-box {
+    .search-box-top {
       flex-direction: column;
     }
 
-    .search-box input {
+    .search-box-top input {
       min-width: 100%;
     }
 
@@ -383,11 +371,9 @@ const stateSlugLookup = {
   const searchInput = document.getElementById('search-input');
   if (searchQuery && searchInput) {
     searchInput.value = searchQuery;
-    document.getElementById('clear-btn').style.display = 'flex';
     document.getElementById('search-info').style.display = 'block';
     document.getElementById('search-query-text').textContent = `Showing results for "${searchQuery}"`;
   } else if (userLat && userLon) {
-    document.getElementById('clear-btn').style.display = 'flex';
     document.getElementById('search-info').style.display = 'block';
     document.getElementById('search-query-text').textContent = `Showing results near your location`;
   }
