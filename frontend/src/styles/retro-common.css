@@ -499,6 +499,19 @@
   color: var(--accent-copper);
 }
 
+[data-theme="light"] .retro-breadcrumb a {
+  color: var(--earth-rust);
+}
+
+[data-theme="light"] .retro-breadcrumb a:hover {
+  color: var(--accent-copper);
+}
+
+/* Current page styling in light mode */
+[data-theme="light"] .retro-breadcrumb {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* In page header context */
 .retro-page-header .retro-breadcrumb {
   color: var(--secondary-text);
