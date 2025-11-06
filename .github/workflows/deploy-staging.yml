@@ -219,6 +219,8 @@ jobs:
             **/.git*/**
             **/node_modules/**
             **/api/**
+            MAINTENANCE
+            MAINTENANCE_WHITELIST
 
       - name: Deployment complete
         run: |
