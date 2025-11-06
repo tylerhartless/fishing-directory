@@ -208,7 +208,7 @@ const stateSlugLookup = {
   }
 
   :global([data-theme="light"]) .spot-card.terminal-card {
-    background: white;
+    background: var(--neutral-bg) !important;
     border: 3px solid rgba(212, 165, 116, 0.6);
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
   }
@@ -234,11 +234,11 @@ const stateSlugLookup = {
   :global([data-theme="light"]) .spot-card.terminal-card::before {
     background: repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.03) 0px,
+      rgba(0, 0, 0, 0.01) 0px,
       transparent 1px,
       transparent 2px,
-      rgba(0, 0, 0, 0.03) 3px
-    );
+      rgba(0, 0, 0, 0.01) 3px
+    ) !important;
   }
 
   .spot-card.terminal-card:hover {
