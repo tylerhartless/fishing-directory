@@ -86,27 +86,58 @@ const counties = Object.entries(countyData)
   .county-header h3 {
     margin: 0;
     font-size: 1.3rem;
+    font-family: 'VT323', monospace;
+    color: #f0e6d2;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    flex: 1;
+    text-shadow:
+      0 0 8px rgba(240, 230, 210, 0.5);
+  }
+
+  :global([data-theme="light"]) .county-header h3 {
     color: var(--neutral-black);
     font-weight: 900;
-    flex: 1;
+    text-shadow: none;
   }
 
   .spot-count {
-    background: var(--neutral-black);
-    color: white;
+    background: rgba(168, 197, 168, 0.2);
+    border: 1px solid rgba(168, 197, 168, 0.4);
+    color: #a8c5a8;
     padding: 0.4rem 0.8rem;
     border-radius: 0;
     font-size: 0.8rem;
-    font-weight: 700;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
     white-space: nowrap;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-shadow:
+      0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  :global([data-theme="light"]) .spot-count {
+    background: var(--neutral-black);
+    border: 2px solid var(--neutral-black);
+    color: white;
+    font-weight: 700;
+    text-shadow: none;
   }
 
   .county-link {
-    color: var(--neutral-black);
+    color: #d4a574;
     margin: 0;
     font-size: 0.9rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    text-shadow:
+      0 0 6px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"]) .county-link {
+    color: var(--neutral-black);
     font-weight: 700;
+    text-shadow: none;
   }
 </style>
