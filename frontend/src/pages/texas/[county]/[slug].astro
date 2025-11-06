@@ -276,10 +276,10 @@ const schema = {
       0 0 20px rgba(240, 230, 210, 0.4);
   }
 
-  :global(:global([data-theme="light"])) .retro-heading-lg {
-    color: #2d2d2d !important;
-    font-weight: 700;
-    text-shadow: none;
+  :global([data-theme="light"]) .retro-heading-lg {
+    color: var(--neutral-black) !important;
+    font-weight: 700 !important;
+    text-shadow: none !important;
   }
 
   .verified {
@@ -439,7 +439,7 @@ const schema = {
   }
 
   :global([data-theme="light"]) dt {
-    color: var(--neutral-black);
+    color: var(--earth-rust);
     font-weight: 700;
     text-shadow: none;
     font-size: 0.85rem;
