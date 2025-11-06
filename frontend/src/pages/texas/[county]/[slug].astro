@@ -249,7 +249,7 @@ const schema = {
     text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
   }
 
-  [data-theme="light"] .retro-breadcrumb {
+  :global([data-theme="light"]) .retro-breadcrumb {
     font-weight: 600;
     text-shadow: none;
     color: #444;
@@ -260,7 +260,7 @@ const schema = {
     text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
   }
 
-  [data-theme="light"] .retro-breadcrumb a {
+  :global([data-theme="light"]) .retro-breadcrumb a {
     color: var(--neutral-black);
     text-shadow: none;
   }
@@ -276,7 +276,7 @@ const schema = {
       0 0 20px rgba(240, 230, 210, 0.4);
   }
 
-  [data-theme="light"] .retro-heading-lg {
+  :global([data-theme="light"]) .retro-heading-lg {
     color: var(--neutral-black) !important;
     font-weight: 700 !important;
     text-shadow: none !important;
@@ -296,7 +296,7 @@ const schema = {
       inset 0 0 20px rgba(100, 100, 100, 0.2);
   }
 
-  [data-theme="light"] .verified {
+  :global([data-theme="light"]) .verified {
     background: var(--earth-forest);
     color: white;
     border: 3px solid var(--neutral-black);
@@ -322,7 +322,7 @@ const schema = {
       inset 0 0 30px rgba(100, 100, 100, 0.3);
   }
 
-  [data-theme="light"] .map-container {
+  :global([data-theme="light"]) .map-container {
     border: 4px solid var(--neutral-black);
     box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
   }
@@ -334,7 +334,7 @@ const schema = {
     opacity: 0.9;
   }
 
-  [data-theme="light"] .map-container img {
+  :global([data-theme="light"]) .map-container img {
     opacity: 1;
   }
 
@@ -375,7 +375,7 @@ const schema = {
     color: #b0b0b0;
   }
 
-  [data-theme="light"] .description p {
+  :global([data-theme="light"]) .description p {
     color: var(--neutral-black);
     font-weight: 500;
   }
@@ -402,7 +402,7 @@ const schema = {
     box-shadow: 0 0 8px rgba(168, 197, 168, 0.2);
   }
 
-  [data-theme="light"] .amenity-list li {
+  :global([data-theme="light"]) .amenity-list li {
     background: var(--box-sage);
     border: 2px solid var(--neutral-black);
     color: var(--neutral-black);
@@ -438,7 +438,7 @@ const schema = {
     text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
   }
 
-  [data-theme="light"] dt {
+  :global([data-theme="light"]) dt {
     color: var(--earth-rust) !important;
     font-weight: 700;
     text-shadow: none;
@@ -452,8 +452,8 @@ const schema = {
     font-size: 1.05rem;
   }
 
-  [data-theme="light"] dd {
-    color: var(--neutral-gray) !important;
+  :global([data-theme="light"]) dd {
+    color: var(--neutral-black) !important;
     font-weight: 500;
   }
 
@@ -475,7 +475,7 @@ const schema = {
     transition: all 0.2s;
   }
 
-  [data-theme="light"] .copy-coords {
+  :global([data-theme="light"]) .copy-coords {
     background: var(--neutral-black);
     color: white;
     border: none;
@@ -493,7 +493,7 @@ const schema = {
     box-shadow: 0 0 12px rgba(212, 165, 116, 0.5);
   }
 
-  [data-theme="light"] .copy-coords:hover {
+  :global([data-theme="light"]) .copy-coords:hover {
     background: var(--accent-copper);
     color: var(--neutral-black);
     box-shadow: none;
@@ -508,8 +508,8 @@ const schema = {
     font-size: 1.05rem;
   }
 
-  [data-theme="light"] .loading {
-    color: var(--neutral-gray);
+  :global([data-theme="light"]) .loading {
+    color: var(--neutral-black);
     font-weight: 600;
   }
 
@@ -522,7 +522,7 @@ const schema = {
     text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
   }
 
-  [data-theme="light"] .retro-btn {
+  :global([data-theme="light"]) .retro-btn {
     font-weight: 700;
     text-shadow: none;
   }
@@ -563,14 +563,18 @@ const schema = {
     text-shadow: 0 0 8px rgba(212, 165, 116, 0.6);
   }
 
-  [data-theme="light"] .retro-btn-primary,
-  [data-theme="light"] .retro-btn-secondary {
+  :global([data-theme="light"]) .retro-btn-primary,
+  :global([data-theme="light"]) .retro-btn-secondary {
     box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
     text-shadow: none;
   }
 
-  [data-theme="light"] .retro-btn-primary:hover,
-  [data-theme="light"] .retro-btn-secondary:hover {
+  :global([data-theme="light"]) .retro-btn-secondary {
+    color: var(--neutral-black);
+  }
+
+  :global([data-theme="light"]) .retro-btn-primary:hover,
+  :global([data-theme="light"]) .retro-btn-secondary:hover {
     transform: translate(-2px, -2px);
     box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
