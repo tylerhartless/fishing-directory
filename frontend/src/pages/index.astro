@@ -161,6 +161,11 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     padding: 0;
     text-align: center;
     position: relative;
+    transition: background 0.3s ease;
+  }
+
+  :global([data-theme="dark"]) .hero {
+    background: linear-gradient(180deg, #0d1f0d 0%, #121212 30%, #151515 50%, #181818 70%, #1a1a1a 100%);
   }
 
   .hero::before {
@@ -236,12 +241,13 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   .search-container {
     max-width: 700px;
     margin: 0 auto 1rem;
-    background: #f8f8f8;
-    border: 3px solid rgba(212, 165, 116, 0.4);
+    background: var(--theme-input-bg);
+    border: 3px solid var(--theme-input-border);
     border-radius: 0;
     padding: 2rem;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
-    color: #333;
+    box-shadow: 6px 6px 0 var(--theme-shadow);
+    color: var(--theme-text);
+    transition: all 0.3s ease;
   }
 
   .status-banner {

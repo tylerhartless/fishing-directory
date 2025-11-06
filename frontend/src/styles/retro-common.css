@@ -8,6 +8,11 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .retro-page-header {
+  background: linear-gradient(180deg, #0d1f0d 0%, #121212 30%, #151515 50%, #181818 70%, #1a1a1a 100%);
 }
 
 .retro-page-header::before {
