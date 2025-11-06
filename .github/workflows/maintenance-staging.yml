@@ -23,21 +23,21 @@ jobs:
       - name: Enable Maintenance Mode
         if: ${{ github.event.inputs.action == 'enable' }}
         run: |
-          # Create empty MAINTENANCE file
-          mkdir -p ./maintenance-toggle
-          touch ./maintenance-toggle/MAINTENANCE
-          echo "Maintenance mode file created"
+          # Install lftp for FTP operations
+          sudo apt-get update
+          sudo apt-get install -y lftp
 
-      - name: Deploy MAINTENANCE file via FTP
-        if: ${{ github.event.inputs.action == 'enable' }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.STAGING_FTP_SERVER }}
-          username: ${{ secrets.STAGING_FTP_USERNAME }}
-          password: ${{ secrets.STAGING_FTP_PASSWORD }}
-          local-dir: ./maintenance-toggle/
-          server-dir: /public_html/staging/
-          dangerous-clean-slate: false
+          # Create empty MAINTENANCE file
+          touch MAINTENANCE
+
+          # Upload MAINTENANCE file via FTP (single file upload, no sync)
+          lftp -c "
+          open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }}
+          cd /public_html/staging
+          put MAINTENANCE
+          bye
+          "
+          echo "✅ Maintenance mode file uploaded"
 
       - name: Disable Maintenance Mode (Delete MAINTENANCE file)
         if: ${{ github.event.inputs.action == 'disable' }}
