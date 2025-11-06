@@ -32,6 +32,7 @@ jobs:
 
           # Upload MAINTENANCE file via FTP (single file upload, no sync)
           lftp -c "
+          set ssl:verify-certificate no;
           open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }}
           cd /public_html/staging
           put MAINTENANCE
@@ -48,6 +49,7 @@ jobs:
 
           # Delete MAINTENANCE file via FTP
           lftp -c "
+          set ssl:verify-certificate no;
           open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }}
           cd /public_html/staging
           rm -f MAINTENANCE
