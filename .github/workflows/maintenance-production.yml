@@ -32,6 +32,7 @@ jobs:
 
           # Upload MAINTENANCE file via FTP (single file upload, no sync)
           lftp -c "
+          set ssl:verify-certificate no;
           open ftp://${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}@${{ secrets.FTP_SERVER }}
           cd /public_html
           put MAINTENANCE
@@ -48,6 +49,7 @@ jobs:
 
           # Delete MAINTENANCE file via FTP
           lftp -c "
+          set ssl:verify-certificate no;
           open ftp://${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}@${{ secrets.FTP_SERVER }}
           cd /public_html
           rm -f MAINTENANCE
