@@ -4,15 +4,14 @@
 RewriteEngine On
 
 # --- Maintenance mode ---
-# If a file named MAINTENANCE exists in the document root, redirect all requests
-# to /maintenance.html with a 503 status. The PHP bootstrap also checks for MAINTENANCE
-# so API endpoints will return 503 JSON responses.
+# If a file named MAINTENANCE exists in the document root, show maintenance page
+# The PHP bootstrap also checks for MAINTENANCE so API endpoints return 503 JSON.
 # To enable: Create a file named MAINTENANCE in the document root
 # To disable: Delete the MAINTENANCE file
 RewriteCond %{DOCUMENT_ROOT}/MAINTENANCE -f
 RewriteCond %{REQUEST_URI} !^/maintenance\.html$
 RewriteCond %{REQUEST_URI} !^/api/
-RewriteRule ^.*$ /maintenance.html [R=503,L]
+RewriteRule ^.*$ /maintenance.html [L]
 
 
 # Force HTTPS (uncomment when SSL is setup)
