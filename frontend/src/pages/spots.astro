@@ -201,7 +201,7 @@ const stateSlugLookup = {
     box-shadow:
       0 0 15px rgba(184, 92, 58, 0.3),
       inset 0 0 30px rgba(0, 0, 0, 0.5);
-    padding: 1.25rem;
+    padding: 1rem;
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
@@ -256,8 +256,8 @@ const stateSlugLookup = {
   .terminal-line {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
     position: relative;
     z-index: 2;
     flex-wrap: wrap;
@@ -265,7 +265,7 @@ const stateSlugLookup = {
 
   .terminal-prompt {
     font-family: 'VT323', monospace;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #d4a574;
     font-weight: 400;
     text-shadow:
@@ -280,7 +280,7 @@ const stateSlugLookup = {
 
   .terminal-command {
     font-family: 'VT323', monospace;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #a8c5a8;
     font-weight: 400;
     text-transform: uppercase;
@@ -297,7 +297,7 @@ const stateSlugLookup = {
 
   .terminal-name {
     font-family: 'VT323', monospace;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: #f0e6d2;
     margin: 0;
     font-weight: 400;
@@ -317,25 +317,25 @@ const stateSlugLookup = {
   .terminal-data {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.35rem;
     position: relative;
     z-index: 2;
   }
 
   .terminal-field {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem;
     align-items: flex-start;
     font-family: 'VT323', monospace;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .terminal-label {
     color: #b8944e;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    min-width: 110px;
+    letter-spacing: 0.03em;
+    min-width: 90px;
     flex-shrink: 0;
     text-shadow:
       0 0 6px rgba(184, 148, 78, 0.5),
@@ -401,8 +401,8 @@ const stateSlugLookup = {
   }
 
   .terminal-desc {
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
     border-top: 1px solid rgba(212, 165, 116, 0.3);
   }
 
@@ -411,8 +411,8 @@ const stateSlugLookup = {
   }
 
   .terminal-desc .terminal-value {
-    font-size: 1rem;
-    line-height: 1.4;
+    font-size: 0.95rem;
+    line-height: 1.3;
     color: #b0b0b0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -427,15 +427,15 @@ const stateSlugLookup = {
   .terminal-amenities {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
 
   .terminal-field .amenity-badge {
     background: rgba(184, 92, 58, 0.2);
     border: 1px solid rgba(184, 92, 58, 0.4);
     color: #d4a574;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.9rem;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.85rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
     text-shadow:
@@ -708,16 +708,25 @@ const stateSlugLookup = {
     .terminal-line {
       flex-direction: column;
       align-items: flex-start;
-      gap: 0.25rem;
+      gap: 0.2rem;
     }
 
     .terminal-name {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+    }
+
+    .terminal-prompt {
+      font-size: 1.1rem;
+    }
+
+    .terminal-command {
+      font-size: 0.9rem;
     }
 
     .terminal-field {
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.2rem;
+      font-size: 0.95rem;
     }
 
     .terminal-label {
