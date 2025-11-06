@@ -467,10 +467,10 @@ const schema = {
     overflow: hidden;
   }
 
-  [data-theme="light"] .retro-info-box {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  :global([data-theme="light"]) .retro-info-box {
+    background: white !important;
+    border: 3px solid var(--neutral-black) !important;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
   }
 
   .retro-info-box::before {
@@ -491,7 +491,7 @@ const schema = {
     z-index: 1;
   }
 
-  [data-theme="light"] .retro-info-box::before {
+  :global([data-theme="light"]) .retro-info-box::before {
     display: none;
   }
 
@@ -619,21 +619,21 @@ const schema = {
   }
 
   .retro-btn-primary {
-    background: rgba(168, 197, 168, 0.2);
-    color: #a8c5a8;
-    border: 2px solid rgba(168, 197, 168, 0.5);
+    background: rgba(168, 197, 168, 0.9);
+    color: #1a3a1a;
+    border: 2px solid rgba(168, 197, 168, 1);
     box-shadow:
-      0 0 10px rgba(168, 197, 168, 0.3),
-      inset 0 0 20px rgba(100, 100, 100, 0.2);
+      0 0 10px rgba(168, 197, 168, 0.5),
+      inset 0 0 20px rgba(255, 255, 255, 0.2);
   }
 
   .retro-btn-primary:hover {
-    background: rgba(168, 197, 168, 0.3);
-    border-color: rgba(168, 197, 168, 0.7);
+    background: rgba(168, 197, 168, 1);
+    border-color: rgba(168, 197, 168, 1);
     box-shadow:
-      0 0 15px rgba(168, 197, 168, 0.5),
-      inset 0 0 20px rgba(100, 100, 100, 0.2);
-    text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
+      0 0 15px rgba(168, 197, 168, 0.7),
+      inset 0 0 20px rgba(255, 255, 255, 0.3);
+    text-shadow: none;
   }
 
   .retro-btn-secondary {
