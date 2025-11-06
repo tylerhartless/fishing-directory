@@ -97,8 +97,8 @@ const schema = {
   description={spot.meta_description || `Free public fishing access at ${spot.name}. GPS coordinates, amenities, and fishing reports.`}
 >
   <article class="spot-detail" data-spot-id={spot.id}>
-    <div class="container">
-      <div class="breadcrumb">
+    <div class="retro-container">
+      <div class="retro-breadcrumb">
         <a href="/">Home</a> /
         <a href="/texas">Texas</a> /
         {primaryCounty === 'Multiple Counties' ? (
@@ -109,10 +109,10 @@ const schema = {
         {spot.name}
       </div>
 
-      <h1>{spot.name}</h1>
+      <h1 class="retro-heading retro-heading-lg">{spot.name}</h1>
 
       {spot.is_verified && (
-        <div class="badge verified">✓ Verified by TPWD</div>
+        <div class="retro-badge retro-badge-large verified">✓ Verified by TPWD</div>
       )}
 
       <div class="spot-grid">
@@ -131,7 +131,7 @@ const schema = {
                 href={`https://www.google.com/maps/search/?api=1&query=${spot.latitude},${spot.longitude}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn-primary"
+                class="retro-btn retro-btn-primary"
               >
                 Open in Google Maps
               </a>
@@ -139,8 +139,8 @@ const schema = {
           </div>
 
           <!-- Description -->
-          <section class="description">
-            <h2>About This Spot</h2>
+          <section class="retro-section description">
+            <h2 class="retro-heading retro-heading-md retro-heading-underline">About This Spot</h2>
             {spot.description ? (
               <p>{spot.description}</p>
             ) : (
@@ -150,8 +150,8 @@ const schema = {
 
           <!-- Amenities -->
           {spot.amenities && (
-            <section class="amenities">
-              <h2>Amenities</h2>
+            <section class="retro-section amenities">
+              <h2 class="retro-heading retro-heading-md retro-heading-underline">Amenities</h2>
               <ul class="amenity-list">
                 {spot.amenities.boat_ramp && <li>🚤 Boat Ramp</li>}
                 {spot.amenities.parking && <li>🅿️ Parking Available</li>}
@@ -167,20 +167,20 @@ const schema = {
           )}
 
           <!-- Dynamic Content: Fishing Reports -->
-          <section class="fishing-reports">
-            <h2>Recent Fishing Reports</h2>
+          <section class="retro-section fishing-reports">
+            <h2 class="retro-heading retro-heading-md retro-heading-underline">Recent Fishing Reports</h2>
             <div id="reports-container">
               <p class="loading">Loading recent catches...</p>
             </div>
 
-            <button class="btn-secondary" id="add-report-btn">
+            <button class="retro-btn retro-btn-secondary" id="add-report-btn">
               Add Your Fishing Report
             </button>
           </section>
 
           <!-- Dynamic Content: Fish Species Votes -->
-          <section class="fish-votes">
-            <h2>What Fish Are Here?</h2>
+          <section class="retro-section fish-votes">
+            <h2 class="retro-heading retro-heading-md retro-heading-underline">What Fish Are Here?</h2>
             <p>Help other anglers by voting on what species you've caught here:</p>
             <div id="fish-votes-container">
               <p class="loading">Loading...</p>
@@ -190,7 +190,7 @@ const schema = {
 
         <!-- Sidebar -->
         <aside class="sidebar">
-          <div class="info-box">
+          <div class="retro-info-box">
             <h3>Quick Info</h3>
             <dl>
               <dt>Type:</dt>
@@ -217,7 +217,7 @@ const schema = {
           </div>
 
           {spot.spot_type === 'state_park' && (
-            <div class="info-box highlight">
+            <div class="retro-info-box highlight">
               <h3>⭐ Free Fishing!</h3>
               <p>No fishing license required at Texas State Parks</p>
             </div>
@@ -235,47 +235,7 @@ const schema = {
 </Layout>
 
 <style>
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-  }
-
-  .breadcrumb {
-    color: var(--neutral-gray);
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .breadcrumb a {
-    color: var(--c64-blue);
-    text-decoration: none;
-    font-weight: 700;
-  }
-
-  .breadcrumb a:hover {
-    color: var(--accent-cyan);
-  }
-
-  h1 {
-    margin: 0 0 1rem 0;
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--neutral-black);
-    letter-spacing: 0.02em;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 0;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border: 3px solid var(--c64-green);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  /* Page-specific styles only - common styles in retro-common.css */
 
   .verified {
     background: var(--c64-green);
@@ -310,79 +270,6 @@ const schema = {
     right: 1rem;
   }
 
-  .btn-primary {
-    display: block;
-    text-align: center;
-    padding: 1rem 1.5rem;
-    background: var(--accent-orange);
-    color: var(--neutral-black);
-    text-decoration: none;
-    border-radius: 0;
-    font-weight: 700;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
-    transition: all 0.1s;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent-cyan);
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.5);
-  }
-
-  .btn-secondary {
-    padding: 1rem 1.5rem;
-    background: var(--box-lavender);
-    color: var(--neutral-black);
-    border: 3px solid var(--neutral-black);
-    border-radius: 0;
-    cursor: pointer;
-    font-weight: 700;
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-    transition: all 0.1s;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .btn-secondary:hover {
-    background: var(--accent-lime);
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
-  }
-
-  section {
-    margin: 2.5rem 0;
-    background: white;
-    padding: 2rem;
-    border: 4px solid var(--neutral-black);
-    border-radius: 0;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  }
-
-  h2 {
-    font-size: 1.8rem;
-    margin: 0 0 1rem 0;
-    color: var(--neutral-black);
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    position: relative;
-    padding-bottom: 0.75rem;
-  }
-
-  h2::after {
-    content: '';
-    display: block;
-    width: 100px;
-    height: 4px;
-    background: var(--rainbow-gradient);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-
   .amenity-list {
     list-style: none;
     padding: 0;
@@ -404,29 +291,6 @@ const schema = {
     position: sticky;
     top: 2rem;
     align-self: start;
-  }
-
-  .info-box {
-    background: white;
-    border: 4px solid var(--neutral-black);
-    border-radius: 0;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  }
-
-  .info-box h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: var(--neutral-black);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .info-box.highlight {
-    background: var(--c64-yellow);
-    border-color: var(--neutral-black);
   }
 
   dl {
@@ -485,23 +349,6 @@ const schema = {
 
     .sidebar {
       position: static;
-    }
-
-    h1 {
-      font-size: 1.75rem;
-    }
-
-    .container {
-      padding: 2rem 1.5rem;
-    }
-
-    section {
-      padding: 1.5rem;
-      border-width: 3px;
-    }
-
-    .info-box {
-      border-width: 3px;
     }
   }
 </style>
