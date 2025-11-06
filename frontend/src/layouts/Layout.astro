@@ -21,6 +21,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
     <!-- SEO -->
     <title>{title}</title>
     <meta property="og:title" content={title} />
@@ -103,8 +108,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   .logo-text {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    font-weight: 400;
     letter-spacing: 0.05em;
     color: var(--accent-cream);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
