@@ -130,6 +130,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     z-index: 9999;
   }
 
+  :global([data-theme="light"] body::before) {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.01) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.01) 3px
+    ) !important;
+  }
+
   /* Earthy Rainbow Bar */
   .rainbow-bar {
     height: 2px;

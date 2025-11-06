@@ -191,66 +191,13 @@ const stateSlugLookup = {
       0 0 15px rgba(168, 197, 168, 0.4);
   }
 
-  /* Terminal-style spot cards */
+  /* Terminal-style spot cards - inherits from retro-card */
+  /* Only add terminal-specific styling here */
   .spot-card.terminal-card {
     display: flex;
     flex-direction: column;
     gap: 0;
-    background: rgba(40, 40, 40, 0.8);
-    border: 2px solid rgba(184, 92, 58, 0.6);
-    box-shadow:
-      0 0 15px rgba(184, 92, 58, 0.3),
-      inset 0 0 30px rgba(100, 100, 100, 0.3);
     padding: 1rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-  }
-
-  :global([data-theme="light"]) .spot-card.terminal-card {
-    background: var(--neutral-bg) !important;
-    border: 3px solid rgba(212, 165, 116, 0.6);
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
-  }
-
-  .spot-card.terminal-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  :global([data-theme="light"]) .spot-card.terminal-card::before {
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.01) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.01) 3px
-    ) !important;
-  }
-
-  .spot-card.terminal-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(212, 165, 116, 0.8);
-    box-shadow:
-      0 0 20px rgba(212, 165, 116, 0.5),
-      inset 0 0 30px rgba(0, 0, 0, 0.5);
-  }
-
-  :global([data-theme="light"]) .spot-card.terminal-card:hover {
-    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
   }
 
   .terminal-line {
