@@ -1,0 +1,49 @@
+/* Retro Digital Color Palette - Inspired by C64, early Apple, and dot-com era */
+
+:root {
+  /* Commodore 64 Rainbow Colors */
+  --c64-red: #9f4e44;
+  --c64-orange: #cb7e5f;
+  --c64-yellow: #cbcb9f;
+  --c64-green: #6d9f6f;
+  --c64-blue: #5f7fcb;
+  --c64-indigo: #7f5fcb;
+  --c64-purple: #9f4e9f;
+
+  /* Primary Brand Colors */
+  --primary-bg: #4040a0;
+  --primary-light: #6060c0;
+  --primary-text: #ffffff;
+  --secondary-text: #c0c0ff;
+
+  /* Accent Colors */
+  --accent-cyan: #50e6ff;
+  --accent-magenta: #ff50e6;
+  --accent-lime: #c0ff50;
+  --accent-orange: #ff8050;
+
+  /* Neutral Colors */
+  --neutral-bg: #f5f5f5;
+  --neutral-white: #ffffff;
+  --neutral-black: #1a1a1a;
+  --neutral-gray: #888888;
+
+  /* Retro Box Colors (for cards/sections) */
+  --box-aqua: #40c0e0;
+  --box-pink: #ff80a0;
+  --box-mint: #80ffa0;
+  --box-peach: #ffb080;
+  --box-lavender: #b080ff;
+
+  /* Rainbow Gradient */
+  --rainbow-gradient: linear-gradient(
+    to right,
+    var(--c64-red),
+    var(--c64-orange),
+    var(--c64-yellow),
+    var(--c64-green),
+    var(--c64-blue),
+    var(--c64-indigo),
+    var(--c64-purple)
+  );
+}

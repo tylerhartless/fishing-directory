@@ -10,24 +10,28 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
 >
   <section class="hero">
+    <div class="rainbow-accent"></div>
     <div class="container">
-      <h1>Stop Searching "Fishing Spots Near Me"</h1>
-      <p class="tagline">Find your perfect fishing location here!</p>
+      <div class="hero-header">
+        <h1>🎣 WCIF?</h1>
+        <p class="hero-subtitle">Where Can I Fish?</p>
+      </div>
+      <p class="tagline">Stop searching "fishing spots near me" — find your perfect location here!</p>
 
       <div class="search-container">
         <SearchWidget nominatimEmail={nominatimEmail} client:idle />
       </div>
 
       <div class="quick-stats">
-        <div class="stat">
+        <div class="stat stat-red">
           <strong>4,200+</strong>
           <span>Fishing Spots</span>
         </div>
-        <div class="stat">
+        <div class="stat stat-green">
           <strong>Texas</strong>
           <span>Available Now</span>
         </div>
-        <div class="stat">
+        <div class="stat stat-blue">
           <strong>100%</strong>
           <span>Free Access</span>
         </div>
@@ -150,58 +154,108 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
 <style>
   .hero {
-    background: linear-gradient(135deg, #1e4d2b 0%, #2d6a3f 50%, #3a8751 100%);
+    background: var(--primary-bg);
     color: white;
-    padding: 5rem 2rem 4rem;
+    padding: 0;
     text-align: center;
+    position: relative;
+  }
+
+  .rainbow-accent {
+    height: 12px;
+    background: var(--rainbow-gradient);
+  }
+
+  .hero .container {
+    padding: 4rem 2rem;
+  }
+
+  .hero-header {
+    margin-bottom: 1.5rem;
   }
 
   .hero h1 {
-    font-size: 3rem;
-    margin: 0 0 0.75rem 0;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: 4rem;
+    margin: 0;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    line-height: 1;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    margin: 0.5rem 0 0 0;
+    color: var(--secondary-text);
+    letter-spacing: 0.1em;
+    font-weight: 600;
   }
 
   .tagline {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin: 0 0 3rem 0;
-    opacity: 0.95;
-    font-weight: 500;
+    color: var(--secondary-text);
+    font-weight: 400;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .search-container {
     max-width: 700px;
     margin: 0 auto 3rem;
     background: white;
-    border-radius: 12px;
+    border: 4px solid var(--c64-yellow);
+    border-radius: 0;
     padding: 2.5rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
     color: #333;
   }
 
   .quick-stats {
     display: flex;
     justify-content: center;
-    gap: 4rem;
+    gap: 2rem;
     margin-top: 3rem;
+    flex-wrap: wrap;
   }
 
   .stat {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: white;
+    border: 3px solid;
+    padding: 1.5rem 2rem;
+    min-width: 140px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .stat-red {
+    border-color: var(--c64-red);
+  }
+
+  .stat-green {
+    border-color: var(--c64-green);
+  }
+
+  .stat-blue {
+    border-color: var(--c64-blue);
   }
 
   .stat strong {
     font-size: 2.5rem;
     display: block;
-    font-weight: 700;
+    font-weight: 900;
+    color: var(--neutral-black);
   }
 
   .stat span {
-    opacity: 0.9;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--neutral-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .container {
@@ -212,9 +266,24 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   h2 {
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     text-align: center;
-    color: #1e4d2b;
+    color: var(--neutral-black);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  h2::after {
+    content: '';
+    display: block;
+    width: 150px;
+    height: 6px;
+    background: var(--rainbow-gradient);
+    margin: 0.5rem auto 0;
   }
 
   .section-subtitle {
@@ -222,33 +291,50 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     color: #666;
     font-size: 1.1rem;
     margin-bottom: 3rem;
+    font-weight: 600;
   }
 
   .popular-locations {
-    background: #f9fafb;
+    background: var(--neutral-bg);
   }
 
   .location-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
     margin-bottom: 2rem;
   }
 
   .location-card {
     background: white;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    border: 4px solid;
+    border-radius: 0;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
-    transition: all 0.2s;
+    transition: all 0.1s;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .location-card:nth-child(1) {
+    border-color: var(--box-aqua);
+  }
+
+  .location-card:nth-child(2) {
+    border-color: var(--box-pink);
+  }
+
+  .location-card:nth-child(3) {
+    border-color: var(--box-mint);
+  }
+
+  .location-card:nth-child(4) {
+    border-color: var(--box-peach);
   }
 
   .location-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    border-color: #2d6a3f;
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
   }
 
   .location-header {
@@ -260,23 +346,27 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .location-header h3 {
     margin: 0;
-    color: #1e4d2b;
-    font-size: 1.3rem;
+    color: var(--neutral-black);
+    font-size: 1.4rem;
+    font-weight: 900;
   }
 
   .spot-count {
-    background: #e8f5e9;
-    color: #2d6a3f;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: var(--neutral-black);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .location-card > p {
-    color: #666;
+    color: #555;
     margin: 0 0 1rem 0;
     line-height: 1.5;
+    font-weight: 500;
   }
 
   .location-features {
@@ -286,11 +376,12 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   .feature-badge {
-    background: #f3f4f6;
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    color: #555;
+    background: var(--neutral-black);
+    color: white;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
 
   .browse-all {
@@ -301,18 +392,22 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   .btn-secondary {
     display: inline-block;
     padding: 1rem 2rem;
-    background: white;
-    color: #2d6a3f;
-    border: 2px solid #2d6a3f;
-    border-radius: 8px;
+    background: var(--box-lavender);
+    color: var(--neutral-black);
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
+    font-weight: 700;
+    transition: all 0.1s;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .btn-secondary:hover {
-    background: #2d6a3f;
-    color: white;
+    background: var(--accent-cyan);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
   }
 
   .features-section {
@@ -328,6 +423,26 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .feature {
     text-align: center;
+    background: white;
+    border: 3px solid var(--neutral-black);
+    padding: 2rem 1.5rem;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.2);
+  }
+
+  .feature:nth-child(1) {
+    background: var(--box-aqua);
+  }
+
+  .feature:nth-child(2) {
+    background: var(--box-mint);
+  }
+
+  .feature:nth-child(3) {
+    background: var(--box-peach);
+  }
+
+  .feature:nth-child(4) {
+    background: var(--box-pink);
   }
 
   .feature-icon {
@@ -337,18 +452,21 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .feature h3 {
     margin: 0 0 0.75rem 0;
-    color: #1e4d2b;
+    color: var(--neutral-black);
     font-size: 1.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
   }
 
   .feature p {
     margin: 0;
-    color: #666;
+    color: var(--neutral-black);
     line-height: 1.6;
+    font-weight: 600;
   }
 
   .coverage-section {
-    background: #f9fafb;
+    background: var(--neutral-bg);
   }
 
   .coverage-info {
@@ -362,24 +480,27 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   .coverage-state {
     background: white;
     padding: 2rem;
-    border-radius: 12px;
-    border: 2px solid #e5e7eb;
+    border-radius: 0;
+    border: 4px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   .coverage-state.active {
-    border-color: #2d6a3f;
-    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border-color: var(--c64-green);
+    background: var(--box-mint);
   }
 
   .coverage-state h3 {
     margin: 0 0 1rem 0;
     font-size: 1.5rem;
     text-align: left;
+    font-weight: 900;
   }
 
   .coverage-state p {
     margin: 0 0 1rem 0;
-    color: #666;
+    color: var(--neutral-black);
+    font-weight: 600;
   }
 
   .coverage-state ul {
@@ -390,8 +511,9 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .coverage-state li {
     padding: 0.5rem 0;
-    color: #555;
-    border-bottom: 1px solid #f0f0f0;
+    color: var(--neutral-black);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    font-weight: 600;
   }
 
   .coverage-state li:last-child {
@@ -399,7 +521,8 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   .coverage-state.coming-soon {
-    opacity: 0.7;
+    background: var(--neutral-white);
+    border-color: var(--neutral-gray);
   }
 
   .stay-tuned {
@@ -409,20 +532,30 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   @media (max-width: 768px) {
     .hero h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
     }
 
     .tagline {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .search-container {
       padding: 1.5rem;
+      border-width: 3px;
     }
 
     .quick-stats {
-      flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
+    }
+
+    .stat {
+      min-width: 120px;
+      padding: 1rem 1.5rem;
     }
 
     .stat strong {
@@ -431,6 +564,10 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
     .location-grid {
       grid-template-columns: 1fr;
+    }
+
+    h2 {
+      font-size: 2rem;
     }
   }
 </style>
