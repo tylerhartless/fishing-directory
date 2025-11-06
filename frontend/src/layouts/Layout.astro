@@ -103,8 +103,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-family: 'VT323', monospace;
     font-size: 2.5rem;
     font-weight: 400;
-    color: var(--earth-olive);
+    color: var(--accent-rust);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    flex-shrink: 0;
   }
 
   .logo-text {
@@ -174,15 +175,33 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   @media (max-width: 640px) {
     .logo-prompt {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
 
     .logo-text {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
 
     .logo {
       gap: 0.5rem;
+    }
+
+    nav .container {
+      padding: 0 0.75rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .logo-prompt {
+      font-size: 1.5rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+    }
+
+    .logo {
+      gap: 0.4rem;
     }
   }
 </style>
