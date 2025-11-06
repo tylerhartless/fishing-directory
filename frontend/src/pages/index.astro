@@ -47,7 +47,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     <p class="section-subtitle">Most enriched areas with complete amenity data</p>
 
     <div class="location-grid">
-      <a href="/texas/harris" class="location-card">
+      <a href="/texas/harris" class="location-card retro-card">
         <div class="location-header">
           <h3>Harris County</h3>
           <span class="spot-count">450+ spots</span>
@@ -60,7 +60,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         </div>
       </a>
 
-      <a href="/texas/travis" class="location-card">
+      <a href="/texas/travis" class="location-card retro-card">
         <div class="location-header">
           <h3>Travis County</h3>
           <span class="spot-count">280+ spots</span>
@@ -73,7 +73,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         </div>
       </a>
 
-      <a href="/texas/tarrant" class="location-card">
+      <a href="/texas/tarrant" class="location-card retro-card">
         <div class="location-header">
           <h3>Tarrant County</h3>
           <span class="spot-count">220+ spots</span>
@@ -86,7 +86,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         </div>
       </a>
 
-      <a href="/texas/bexar" class="location-card">
+      <a href="/texas/bexar" class="location-card retro-card">
         <div class="location-header">
           <h3>Bexar County</h3>
           <span class="spot-count">180+ spots</span>
@@ -109,22 +109,22 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     <div class="container">
       <h2>Why Fishermen Love This Directory</h2>
       <div class="features-grid">
-        <div class="feature">
+        <div class="feature retro-card">
           <div class="feature-icon">📍</div>
           <h3>Exact GPS Coordinates</h3>
           <p>Navigate directly to every fishing spot with precise location data</p>
         </div>
-        <div class="feature">
+        <div class="feature retro-card">
           <div class="feature-icon">✅</div>
           <h3>Sourced from State Data</h3>
           <p>Data from official sources - we're actively improving accuracy and removing duplicates</p>
         </div>
-        <div class="feature">
+        <div class="feature retro-card">
           <div class="feature-icon">🚤</div>
           <h3>Amenities Listed</h3>
           <p>Know before you go: parking, restrooms, boat ramps, and facilities</p>
         </div>
-        <div class="feature">
+        <div class="feature retro-card">
           <div class="feature-icon">🆓</div>
           <h3>Public Fishing Access</h3>
           <p>All locations allow public fishing. Most are free, though some parks and facilities may charge entrance fees.</p>
@@ -136,7 +136,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   <section class="container coverage-section">
     <h2>Current Coverage</h2>
     <div class="coverage-info">
-      <div class="coverage-state active">
+      <div class="coverage-state active retro-card">
         <h3>🎣 Texas</h3>
         <p><strong>3,300+ spots</strong> across 254 counties</p>
         <ul>
@@ -145,7 +145,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
           <li>GPS coordinates for every location</li>
         </ul>
       </div>
-      <div class="coverage-state coming-soon">
+      <div class="coverage-state coming-soon retro-card">
         <h3>🚧 Coming Soon</h3>
         <p>Florida, Louisiana, Georgia & more southern states</p>
         <p class="stay-tuned">Building comprehensive directories with the same attention to detail</p>
@@ -466,60 +466,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     margin-bottom: 1.5rem;
   }
 
-  .location-card {
-    background: rgba(40, 40, 40, 0.8);
-    border: 2px solid rgba(184, 92, 58, 0.6);
-    border-radius: 0;
-    padding: 1.5rem;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.2s;
-    box-shadow:
-      0 0 15px rgba(184, 92, 58, 0.3),
-      inset 0 0 30px rgba(100, 100, 100, 0.3);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .location-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .location-card > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  :global([data-theme="light"]) .location-card {
-    background: white;
-    border-width: 4px;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  }
-
-  :global([data-theme="light"]) .location-card::before {
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.02) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.02) 3px
-    );
-  }
-
+  /* Location cards inherit from retro-card, only add specific styling */
   .location-card:nth-child(1) {
     border-color: var(--box-sage);
   }
@@ -534,18 +481,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .location-card:nth-child(4) {
     border-color: var(--box-tan);
-  }
-
-  .location-card:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 0 20px rgba(212, 165, 116, 0.4),
-      inset 0 0 30px rgba(0, 0, 0, 0.5);
-  }
-
-  :global([data-theme="light"]) .location-card:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
   }
 
   .location-header {
@@ -671,7 +606,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .features-section {
-    background: white;
+    background: var(--neutral-bg);
   }
 
   .features-grid {
@@ -680,50 +615,10 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     gap: 1.5rem;
   }
 
+  /* Feature cards inherit from retro-card, only add specific styling */
   .feature {
     text-align: center;
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid;
     padding: 2rem 1.5rem;
-    box-shadow:
-      0 0 15px rgba(184, 92, 58, 0.2),
-      inset 0 0 30px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .feature::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .feature > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  :global([data-theme="light"]) .feature {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 5px 5px 0 rgba(0,0,0,0.2);
-  }
-
-  :global([data-theme="light"]) .feature::before {
-    background: none;
   }
 
   .feature:nth-child(1) {
@@ -818,50 +713,9 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     margin: 0 auto;
   }
 
+  /* Coverage cards inherit from retro-card, only add specific styling */
   .coverage-state {
-    background: rgba(0, 0, 0, 0.6);
     padding: 2rem;
-    border-radius: 0;
-    border: 2px solid rgba(184, 92, 58, 0.5);
-    box-shadow:
-      0 0 15px rgba(184, 92, 58, 0.2),
-      inset 0 0 30px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .coverage-state::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .coverage-state > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  :global([data-theme="light"]) .coverage-state {
-    background: white;
-    border: 4px solid var(--neutral-black);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  }
-
-  :global([data-theme="light"]) .coverage-state::before {
-    background: none;
   }
 
   .coverage-state.active {
