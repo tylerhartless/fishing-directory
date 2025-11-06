@@ -10,7 +10,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
 >
   <section class="hero">
-    <div class="rainbow-accent"></div>
     <div class="container">
       <div class="hero-header">
         <h1>Fishing Spot Finder</h1>
@@ -190,24 +189,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     position: relative;
     z-index: 2;
     padding: 1.25rem 2rem 3.5rem;
-  }
-
-  .rainbow-accent {
-    height: 4px;
-    background: repeating-linear-gradient(
-      to right,
-      var(--earth-rust) 0px,
-      var(--earth-rust) 8px,
-      transparent 8px,
-      transparent 16px
-    );
-    position: relative;
-    z-index: 2;
-    box-shadow:
-      0 0 12px rgba(184, 92, 58, 0.8),
-      0 0 20px rgba(184, 92, 58, 0.6),
-      0 0 30px rgba(184, 92, 58, 0.4),
-      0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   .hero-header {
