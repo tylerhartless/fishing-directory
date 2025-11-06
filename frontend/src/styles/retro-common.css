@@ -2,28 +2,36 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: var(--primary-bg);
+  background: linear-gradient(180deg, #1a1a1a 0%, #0d1f0d 60%, #2a2a2a 85%, #3a3a3a 100%);
   color: white;
   padding: 0;
   text-align: center;
   position: relative;
+  overflow: hidden;
 }
 
 .retro-page-header::before {
   content: '';
-  display: block;
-  height: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: repeating-linear-gradient(
-    to right,
-    var(--earth-rust) 0px,
-    var(--earth-rust) 8px,
-    transparent 8px,
-    transparent 16px
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 3px
   );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .retro-page-header .container {
-  padding: 1.25rem 2rem;
+  padding: 1.25rem 2rem 3.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 .retro-page-header h1 {
@@ -32,14 +40,22 @@
   margin: 0 0 0.5rem 0;
   font-weight: 400;
   letter-spacing: 0.05em;
-  text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  color: #f0e6d2;
+  text-shadow:
+    0 0 10px rgba(240, 230, 210, 0.8),
+    0 0 20px rgba(240, 230, 210, 0.6),
+    0 0 40px rgba(240, 230, 210, 0.4),
+    4px 4px 0 rgba(0,0,0,0.3);
   line-height: 1.1;
 }
 
 .retro-page-header .subtitle {
   font-family: 'VT323', monospace;
   font-size: 1.6rem;
-  color: var(--secondary-text);
+  color: #a8c5a8;
+  text-shadow:
+    0 0 8px rgba(168, 197, 168, 0.6),
+    0 0 15px rgba(168, 197, 168, 0.4);
   margin: 0;
   font-weight: 400;
 }
