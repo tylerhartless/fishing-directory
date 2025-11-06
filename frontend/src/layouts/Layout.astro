@@ -47,7 +47,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           <span class="logo-text">whereCanIFish.com</span>
         </a>
       </nav>
-      <div class="rainbow-bar"></div>
     </header>
 
     <main class="main-content">
@@ -138,23 +137,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       transparent 2px,
       rgba(0, 0, 0, 0.01) 3px
     ) !important;
-  }
-
-  /* Earthy Rainbow Bar */
-  .rainbow-bar {
-    height: 2px;
-    background: repeating-linear-gradient(
-      to right,
-      var(--earth-rust) 0px,
-      var(--earth-rust) 8px,
-      transparent 8px,
-      transparent 16px
-    );
-    box-shadow:
-      0 0 12px rgba(184, 92, 58, 0.8),
-      0 0 20px rgba(184, 92, 58, 0.6),
-      0 0 30px rgba(184, 92, 58, 0.4),
-      0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   header {
