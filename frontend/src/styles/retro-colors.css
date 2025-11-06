@@ -1,49 +1,49 @@
-/* Retro Digital Color Palette - Inspired by C64, early Apple, and dot-com era */
+/* Retro Outdoors Color Palette - Vintage Fishing & Nature Inspired */
 
 :root {
-  /* Commodore 64 Rainbow Colors */
-  --c64-red: #9f4e44;
-  --c64-orange: #cb7e5f;
-  --c64-yellow: #cbcb9f;
-  --c64-green: #6d9f6f;
-  --c64-blue: #5f7fcb;
-  --c64-indigo: #7f5fcb;
-  --c64-purple: #9f4e9f;
+  /* Earthy Rainbow Colors - Muted & Natural */
+  --earth-rust: #b85c3a;       /* Rusty red-orange */
+  --earth-terracotta: #c87854;  /* Warm terracotta */
+  --earth-sand: #d4a574;        /* Sandy tan */
+  --earth-olive: #7a8450;       /* Olive green */
+  --earth-forest: #4a6741;      /* Forest green */
+  --earth-slate: #5a6b73;       /* Slate blue-gray */
+  --earth-clay: #9b6b5c;        /* Clay brown */
 
-  /* Primary Brand Colors */
-  --primary-bg: #4040a0;
-  --primary-light: #6060c0;
-  --primary-text: #ffffff;
-  --secondary-text: #c0c0ff;
+  /* Primary Brand Colors - Forest & Earth */
+  --primary-bg: #3d5a3d;        /* Deep forest green */
+  --primary-light: #5a7a5a;     /* Lighter forest */
+  --primary-text: #f5f1e8;      /* Off-white/cream */
+  --secondary-text: #d4c9b0;    /* Warm beige */
 
-  /* Accent Colors */
-  --accent-cyan: #50e6ff;
-  --accent-magenta: #ff50e6;
-  --accent-lime: #c0ff50;
-  --accent-orange: #ff8050;
+  /* Accent Colors - Vintage Outdoors */
+  --accent-sage: #9ab087;       /* Sage green */
+  --accent-copper: #c87854;     /* Copper/terracotta */
+  --accent-cream: #f0e6d2;      /* Cream */
+  --accent-rust: #b85c3a;       /* Rust orange */
 
   /* Neutral Colors */
-  --neutral-bg: #f5f5f5;
+  --neutral-bg: #f5f1e8;        /* Warm off-white */
   --neutral-white: #ffffff;
-  --neutral-black: #1a1a1a;
-  --neutral-gray: #888888;
+  --neutral-black: #2d2d2d;     /* Soft black */
+  --neutral-gray: #6b6b6b;
 
-  /* Retro Box Colors (for cards/sections) */
-  --box-aqua: #40c0e0;
-  --box-pink: #ff80a0;
-  --box-mint: #80ffa0;
-  --box-peach: #ffb080;
-  --box-lavender: #b080ff;
+  /* Card/Box Colors - Vintage Map & Tackle Box */
+  --box-sage: #9ab087;          /* Sage green */
+  --box-tan: #d4a574;           /* Warm tan */
+  --box-moss: #7a8450;          /* Moss green */
+  --box-rust: #b85c3a;          /* Rust */
+  --box-clay: #9b6b5c;          /* Clay brown */
 
-  /* Rainbow Gradient */
+  /* Rainbow Gradient - Earthy Tones */
   --rainbow-gradient: linear-gradient(
     to right,
-    var(--c64-red),
-    var(--c64-orange),
-    var(--c64-yellow),
-    var(--c64-green),
-    var(--c64-blue),
-    var(--c64-indigo),
-    var(--c64-purple)
+    var(--earth-rust),
+    var(--earth-terracotta),
+    var(--earth-sand),
+    var(--earth-olive),
+    var(--earth-forest),
+    var(--earth-slate),
+    var(--earth-clay)
   );
 }

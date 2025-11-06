@@ -70,23 +70,23 @@
 
 /* Card color variants */
 .retro-card:nth-child(4n+1),
-.retro-card-aqua {
-  border-color: var(--box-aqua);
+.retro-card-sage {
+  border-color: var(--box-sage);
 }
 
 .retro-card:nth-child(4n+2),
-.retro-card-pink {
-  border-color: var(--box-pink);
+.retro-card-rust {
+  border-color: var(--box-rust);
 }
 
 .retro-card:nth-child(4n+3),
-.retro-card-mint {
-  border-color: var(--box-mint);
+.retro-card-moss {
+  border-color: var(--box-moss);
 }
 
 .retro-card:nth-child(4n+4),
-.retro-card-peach {
-  border-color: var(--box-peach);
+.retro-card-tan {
+  border-color: var(--box-tan);
 }
 
 /* ===== BUTTONS ===== */
@@ -116,30 +116,31 @@
 }
 
 .retro-btn-primary {
-  background: var(--accent-cyan);
+  background: var(--accent-sage);
   color: var(--neutral-black);
 }
 
 .retro-btn-primary:hover {
-  background: var(--accent-magenta);
+  background: var(--accent-copper);
 }
 
 .retro-btn-secondary {
-  background: var(--box-lavender);
-  color: var(--neutral-black);
+  background: var(--box-clay);
+  color: var(--primary-text);
 }
 
 .retro-btn-secondary:hover {
-  background: var(--accent-lime);
+  background: var(--accent-rust);
+  color: var(--primary-text);
 }
 
 .retro-btn-search {
-  background: var(--accent-lime);
-  color: var(--neutral-black);
+  background: var(--accent-rust);
+  color: var(--primary-text);
 }
 
 .retro-btn-search:hover {
-  background: var(--accent-orange);
+  background: var(--accent-copper);
 }
 
 /* ===== FORM CONTROLS ===== */
@@ -155,8 +156,8 @@
 
 .retro-input:focus {
   outline: none;
-  border-color: var(--c64-purple);
-  box-shadow: 0 0 0 3px rgba(159, 78, 159, 0.2);
+  border-color: var(--earth-olive);
+  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
 }
 
 .retro-select {
@@ -170,13 +171,13 @@
 }
 
 .retro-select:hover {
-  border-color: var(--c64-purple);
+  border-color: var(--earth-olive);
 }
 
 .retro-select:focus {
   outline: none;
-  border-color: var(--c64-purple);
-  box-shadow: 0 0 0 3px rgba(159, 78, 159, 0.2);
+  border-color: var(--earth-olive);
+  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
 }
 
 /* ===== BADGES ===== */
@@ -270,13 +271,13 @@
 }
 
 .retro-breadcrumb a {
-  color: var(--c64-blue);
+  color: var(--earth-slate);
   text-decoration: none;
   font-weight: 700;
 }
 
 .retro-breadcrumb a:hover {
-  color: var(--accent-cyan);
+  color: var(--accent-copper);
 }
 
 /* In page header context */
@@ -290,7 +291,7 @@
 }
 
 .retro-page-header .retro-breadcrumb a:hover {
-  color: var(--accent-cyan);
+  color: var(--accent-cream);
 }
 
 /* ===== INFO BOXES ===== */
@@ -313,7 +314,7 @@
 }
 
 .retro-info-box.highlight {
-  background: var(--c64-yellow);
+  background: var(--accent-cream);
   border-color: var(--neutral-black);
 }
 
@@ -327,17 +328,17 @@
 }
 
 .retro-notice-success {
-  background: var(--box-mint);
-  border: 4px solid var(--c64-green);
+  background: var(--box-moss);
+  border: 4px solid var(--earth-forest);
 }
 
 .retro-notice-info {
-  background: var(--box-aqua);
-  border: 4px solid var(--c64-blue);
+  background: var(--box-sage);
+  border: 4px solid var(--earth-slate);
 }
 
 .retro-notice-error {
-  background: var(--c64-red);
+  background: var(--earth-rust);
   border: 4px solid var(--neutral-black);
   color: white;
 }
