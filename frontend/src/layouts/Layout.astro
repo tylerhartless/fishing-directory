@@ -43,8 +43,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       <div class="rainbow-bar"></div>
       <nav class="container">
         <a href="/" class="logo">
-          <span class="logo-fish">><></span>
-          <span class="logo-text">Where Can I Fish?</span>
+          <span class="logo-prompt">><></span>
+          <span class="logo-text">wherecanifish.com</span>
         </a>
       </nav>
     </header>
@@ -99,12 +99,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     gap: 0.75rem;
   }
 
-  .logo-fish {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--accent-rust);
+  .logo-prompt {
+    font-family: 'VT323', monospace;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--earth-olive);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-    font-family: monospace;
   }
 
   .logo-text {
@@ -115,6 +115,18 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     color: var(--accent-cream);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     white-space: nowrap;
+    position: relative;
+  }
+
+  .logo-text::after {
+    content: '_';
+    color: var(--accent-cream);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
   }
 
   nav ul {
@@ -158,5 +170,19 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   footer p {
     margin: 0.5rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .logo-prompt {
+      font-size: 2rem;
+    }
+
+    .logo-text {
+      font-size: 2rem;
+    }
+
+    .logo {
+      gap: 0.5rem;
+    }
   }
 </style>
