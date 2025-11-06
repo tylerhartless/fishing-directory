@@ -212,8 +212,9 @@ jobs:
           # Set to true only if you need to wipe everything and start fresh
           dangerous-clean-slate: false
           exclude: |
-            **/.git*
-            **/.git*/**
+            .git/**
+            .github/**
+            .gitignore
             **/node_modules/**
             **/api/**
             staging/**
