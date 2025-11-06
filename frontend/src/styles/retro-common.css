@@ -12,8 +12,14 @@
 .retro-page-header::before {
   content: '';
   display: block;
-  height: 12px;
-  background: var(--rainbow-gradient);
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--earth-rust) 0px,
+    var(--earth-rust) 8px,
+    transparent 8px,
+    transparent 16px
+  );
 }
 
 .retro-page-header .container {
