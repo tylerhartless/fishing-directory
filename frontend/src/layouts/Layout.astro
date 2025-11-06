@@ -153,6 +153,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     padding: 0;
     box-shadow: none;
     position: relative;
+    overflow: visible;
   }
 
   nav {
@@ -162,7 +163,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     justify-content: center;
     align-items: center;
     padding: 3.5rem 0;
-    width: 100%;
+    overflow: visible;
   }
 
   .logo {
@@ -171,8 +172,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     align-items: center;
     gap: 0.2rem;
-    justify-content: center;
-    width: 100%;
     overflow: visible;
   }
 
@@ -260,10 +259,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   nav .container {
-    padding: 0;
-    margin: 0;
-    max-width: none;
-    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
   }
 
   main {
@@ -275,7 +273,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     content: '';
     display: block;
     height: 80px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #121212 30%, #151515 50%, #181818 70%, #1f1f1f 100%);
+    background: linear-gradient(180deg, #0d1f0d 0%, #121212 30%, #151515 50%, #1a1a1a 70%, #2a2a2a 100%);
     transition: background 0.3s ease;
   }
 
@@ -367,12 +365,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     .logo-prompt {
       font-size: 1.4rem;
       line-height: 2.2;
+      padding: 0 15px;
+      margin: 0 -15px;
     }
 
     .logo-text {
       font-size: 0.95rem;
       line-height: 2.2;
       letter-spacing: 0.01em;
+      padding: 0 20px;
+      margin: 0 -20px;
     }
 
     .logo {
@@ -384,14 +386,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       top: -0.4rem;
       margin-left: -0.25rem;
       margin-right: 0.15rem;
+      padding: 0 12px;
     }
 
     nav {
       padding: 2.5rem 0;
     }
 
-    nav .container {
-      padding: 0;
+    nav.container {
+      padding: 0 1rem;
     }
   }
 
@@ -399,12 +402,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     .logo-prompt {
       font-size: 1.1rem;
       line-height: 2.2;
+      padding: 0 12px;
+      margin: 0 -12px;
     }
 
     .logo-text {
       font-size: 0.75rem;
       line-height: 2.2;
       letter-spacing: 0;
+      padding: 0 15px;
+      margin: 0 -15px;
     }
 
     .logo {
@@ -416,14 +423,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       top: -0.35rem;
       margin-left: -0.2rem;
       margin-right: 0.1rem;
+      padding: 0 10px;
     }
 
     nav {
       padding: 2rem 0;
     }
 
-    nav .container {
-      padding: 0;
+    nav.container {
+      padding: 0 0.5rem;
     }
   }
 </style>
