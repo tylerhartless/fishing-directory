@@ -52,7 +52,7 @@
 
 /* Light Mode */
 [data-theme="light"] {
-  --theme-bg: #f5f5f5;
+  --theme-bg: #f5f1e8;
   --theme-bg-alt: #ffffff;
   --theme-text: #2d2d2d;
   --theme-text-secondary: #555555;
