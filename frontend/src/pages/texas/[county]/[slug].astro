@@ -569,6 +569,10 @@ const schema = {
     text-shadow: none;
   }
 
+  :global([data-theme="light"]) .retro-btn-secondary {
+    color: var(--neutral-black);
+  }
+
   :global([data-theme="light"]) .retro-btn-primary:hover,
   :global([data-theme="light"]) .retro-btn-secondary:hover {
     transform: translate(-2px, -2px);
