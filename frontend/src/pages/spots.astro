@@ -75,7 +75,7 @@ const stateSlugLookup = {
           class="retro-input"
         />
         <button type="submit" class="retro-btn retro-btn-search">Search</button>
-        <a href="/" class="retro-btn retro-btn-secondary clear-search" id="clear-btn" style="display: none;">New Search</a>
+        <a href="/" class="retro-btn retro-btn-secondary retro-btn-small clear-search" id="clear-btn" style="display: none;">← Home</a>
       </form>
     </div>
   </section>
@@ -137,6 +137,11 @@ const stateSlugLookup = {
   .search-box input {
     flex: 1;
     min-width: 250px;
+  }
+
+  .retro-btn-small {
+    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem !important;
   }
 
   .inline-toggle {
