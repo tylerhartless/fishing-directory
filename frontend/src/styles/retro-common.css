@@ -2,7 +2,7 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: linear-gradient(180deg, #1a1a1a 0%, #0d1f0d 60%, #2a2a2a 85%, #3a3a3a 100%);
+  background: linear-gradient(180deg, #0d1f0d 0%, #1a1a1a 20%, #2a2a2a 40%, #4a4a4a 70%, #6a6a6a 90%, #8a8a8a 100%);
   color: white;
   padding: 0;
   text-align: center;

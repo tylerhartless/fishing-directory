@@ -74,12 +74,18 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   /* Earthy Rainbow Bar */
   .rainbow-bar {
-    height: 8px;
-    background: var(--rainbow-gradient);
+    height: 4px;
+    background: repeating-linear-gradient(
+      to right,
+      var(--earth-rust) 0px,
+      var(--earth-rust) 8px,
+      transparent 8px,
+      transparent 16px
+    );
   }
 
   header {
-    background: linear-gradient(180deg, #1a1a1a 0%, #0d1f0d 80%, rgba(13, 31, 13, 0.8) 100%);
+    background: #0d1f0d;
     color: white;
     padding: 0;
     box-shadow: none;
