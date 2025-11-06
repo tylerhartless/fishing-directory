@@ -85,7 +85,8 @@ const stateSlugLookup = {
     </div>
 
     <div class="search-results-info" id="search-info" style="display: none;">
-      <p><span id="search-query-text"></span> • <a href="/">New search</a></p>
+      <p id="search-query-text"></p>
+      <a href="/" class="new-search-btn">New Search</a>
     </div>
 
     <div class="filters">
@@ -99,11 +100,6 @@ const stateSlugLookup = {
           <option value="river_access">River Access</option>
           <option value="fishing_pier">Fishing Piers</option>
         </select>
-
-        <label class="inline-toggle">
-          <input type="checkbox" id="boat-ramp-toggle" />
-          <span>Boat ramps</span>
-        </label>
       </div>
     </div>
 
@@ -136,37 +132,6 @@ const stateSlugLookup = {
   .search-box-top input {
     flex: 1;
     min-width: 250px;
-  }
-
-  .inline-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    cursor: pointer;
-    background: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0;
-    border: 2px solid var(--neutral-black);
-    transition: all 0.1s;
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-
-  .inline-toggle:hover {
-    background: var(--accent-copper);
-    transform: translate(-1px, -1px);
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-  }
-
-  .inline-toggle input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
-
-  .inline-toggle span {
-    user-select: none;
-    font-size: 0.85rem;
   }
 
   .filters {
@@ -297,27 +262,40 @@ const stateSlugLookup = {
   }
 
   .search-results-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     background: var(--neutral-bg);
     border-left: 3px solid var(--earth-olive);
     padding: 0.5rem 0.75rem;
     margin-bottom: 1rem;
-    font-size: 0.9rem;
   }
 
   .search-results-info p {
     margin: 0;
     color: var(--neutral-black);
     font-weight: 600;
+    font-size: 0.85rem;
+    flex: 1;
   }
 
-  .search-results-info a {
-    color: var(--earth-olive);
+  .new-search-btn {
+    background: white;
+    border: 2px solid var(--neutral-black);
+    padding: 0.4rem 0.8rem;
+    color: var(--neutral-black);
     text-decoration: none;
     font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.1s;
+    white-space: nowrap;
   }
 
-  .search-results-info a:hover {
-    text-decoration: underline;
+  .new-search-btn:hover {
+    background: var(--accent-copper);
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
   }
 
   @media (max-width: 768px) {
@@ -363,7 +341,6 @@ const stateSlugLookup = {
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const searchQuery = urlParams.get('q') || '';
-  const includeBoatRamps = urlParams.get('include_boat_ramps') === 'true';
   const userLat = urlParams.get('lat') ? parseFloat(urlParams.get('lat')) : null;
   const userLon = urlParams.get('lon') ? parseFloat(urlParams.get('lon')) : null;
 
@@ -378,17 +355,10 @@ const stateSlugLookup = {
     document.getElementById('search-query-text').textContent = `Showing results near your location`;
   }
 
-  // Boat ramp toggle
-  const boatRampToggle = document.getElementById('boat-ramp-toggle');
-  if (boatRampToggle) {
-    boatRampToggle.checked = includeBoatRamps;
-  }
-
   // Load spots from API (all states)
   async function loadSpots() {
     try {
-      const includeBoatRampsParam = includeBoatRamps ? '&include_boat_ramps=true' : '';
-      const response = await fetch(`${API_URL}/spots.php?limit=5000${includeBoatRampsParam}`);
+      const response = await fetch(`${API_URL}/spots.php?limit=5000`);
       const data = await response.json();
 
       if (data.success) {
@@ -638,26 +608,6 @@ const stateSlugLookup = {
       console.log('Error during fetch. Falling back to text search.');
       window.location.href = `/spots?q=${encodeURIComponent(query)}`;
     }
-  });
-
-  // Boat ramp toggle
-  boatRampToggle?.addEventListener('change', () => {
-    const currentUrl = new URL(window.location.href);
-    const currentQuery = currentUrl.searchParams.get('q');
-    const currentLat = currentUrl.searchParams.get('lat');
-    const currentLon = currentUrl.searchParams.get('lon');
-
-    if (boatRampToggle.checked) {
-      currentUrl.searchParams.set('include_boat_ramps', 'true');
-    } else {
-      currentUrl.searchParams.delete('include_boat_ramps');
-    }
-
-    if (currentQuery) currentUrl.searchParams.set('q', currentQuery);
-    if (currentLat) currentUrl.searchParams.set('lat', currentLat);
-    if (currentLon) currentUrl.searchParams.set('lon', currentLon);
-
-    window.location.href = currentUrl.toString();
   });
 
   // Type filter
