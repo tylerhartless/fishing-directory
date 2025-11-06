@@ -89,6 +89,11 @@ const stateSlugLookup = {
       <a href="/" class="new-search-btn">New Search</a>
     </div>
 
+    <div class="data-accuracy-notice">
+      <span class="notice-icon">ℹ️</span>
+      <p><strong>Data Accuracy Notice:</strong> We're actively improving our database. If you find inaccurate or duplicate spots, we appreciate your patience as we refine the data.</p>
+    </div>
+
     <div class="filters">
       <div class="filter-controls">
         <label for="type-filter">Filter:</label>
@@ -296,6 +301,32 @@ const stateSlugLookup = {
     background: var(--accent-copper);
     transform: translate(-1px, -1px);
     box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  }
+
+  .data-accuracy-notice {
+    background: var(--accent-cream);
+    border: 2px solid var(--earth-olive);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .data-accuracy-notice .notice-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .data-accuracy-notice p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--neutral-black);
+  }
+
+  .data-accuracy-notice strong {
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
