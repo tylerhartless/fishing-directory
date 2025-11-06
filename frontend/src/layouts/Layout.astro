@@ -130,17 +130,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     position: relative;
   }
 
-  .logo-text::after {
-    content: '_';
-    color: var(--accent-cream);
-    animation: blink 1s infinite;
-  }
-
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
   @keyframes bubble {
     0%, 100% {
       opacity: 0.3;
