@@ -114,7 +114,7 @@
   border-radius: 0;
   padding: 1.5rem;
   text-decoration: none;
-  color: inherit;
+  color: #b0b0b0;
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
@@ -152,6 +152,7 @@
   background: var(--neutral-bg) !important;
   border: 4px solid;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  color: var(--neutral-black) !important;
 }
 
 [data-theme="light"] .retro-card::before {
@@ -439,6 +440,7 @@
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
+  color: #b0b0b0;
 }
 
 .retro-section::before {
@@ -468,6 +470,7 @@
   background: var(--neutral-bg) !important;
   border: 3px solid var(--neutral-black) !important;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
+  color: var(--neutral-black) !important;
 }
 
 [data-theme="light"] .retro-section::before {
@@ -539,6 +542,7 @@
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
+  color: #b0b0b0;
 }
 
 .retro-info-box::before {
@@ -568,6 +572,7 @@
   background: var(--neutral-bg) !important;
   border: 3px solid var(--neutral-black) !important;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
+  color: var(--neutral-black) !important;
 }
 
 [data-theme="light"] .retro-info-box::before {
