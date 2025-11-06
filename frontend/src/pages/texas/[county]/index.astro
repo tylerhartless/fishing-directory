@@ -120,15 +120,28 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
 <style>
   .page-header {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    background: var(--primary-bg);
     color: white;
-    padding: 2rem 1rem;
+    padding: 0;
+    position: relative;
+  }
+
+  .page-header::before {
+    content: '';
+    display: block;
+    height: 12px;
+    background: var(--rainbow-gradient);
+  }
+
+  .page-header .container {
+    padding: 2rem 2rem;
   }
 
   .breadcrumb {
     font-size: 0.9rem;
     margin-bottom: 1rem;
-    opacity: 0.9;
+    color: var(--secondary-text);
+    font-weight: 500;
   }
 
   .breadcrumb a {
@@ -137,24 +150,28 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   .breadcrumb a:hover {
-    text-decoration: underline;
+    color: var(--accent-cyan);
   }
 
   .page-header h1 {
     font-size: 2.5rem;
     margin: 0 0 0.5rem 0;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
   }
 
   .subtitle {
     font-size: 1.2rem;
-    opacity: 0.95;
+    color: var(--secondary-text);
     margin: 0;
+    font-weight: 600;
   }
 
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 2.5rem 2rem;
   }
 
   .controls {
@@ -167,16 +184,19 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   .search-input {
     flex: 1;
     min-width: 250px;
-    padding: 0.75rem;
+    padding: 1rem;
     font-size: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    transition: border-color 0.2s;
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
+    transition: all 0.1s;
+    font-weight: 500;
+    box-sizing: border-box;
   }
 
   .search-input:focus {
     outline: none;
-    border-color: #4a7c59;
+    border-color: var(--c64-purple);
+    box-shadow: 0 0 0 3px rgba(159, 78, 159, 0.2);
   }
 
   .filter-group {
@@ -185,24 +205,31 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     gap: 0.5rem;
   }
 
+  .filter-group label {
+    font-weight: 700;
+    color: var(--neutral-black);
+  }
+
   .filter-select {
-    padding: 0.75rem;
+    padding: 1rem;
     font-size: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     background: white;
     cursor: pointer;
+    font-weight: 600;
   }
 
   .results-info {
     margin-bottom: 1.5rem;
-    color: #666;
-    font-size: 0.95rem;
+    color: var(--neutral-gray);
+    font-size: 1rem;
+    font-weight: 600;
   }
 
   #count {
-    font-weight: 600;
-    color: #2c5530;
+    font-weight: 700;
+    color: var(--neutral-black);
   }
 
   .spots-grid {
@@ -213,30 +240,48 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   .spot-card {
     background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 4px solid;
+    border-radius: 0;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
-    transition: all 0.2s;
+    transition: all 0.1s;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .spot-card:nth-child(4n+1) {
+    border-color: var(--box-aqua);
+  }
+
+  .spot-card:nth-child(4n+2) {
+    border-color: var(--box-pink);
+  }
+
+  .spot-card:nth-child(4n+3) {
+    border-color: var(--box-mint);
+  }
+
+  .spot-card:nth-child(4n+4) {
+    border-color: var(--box-peach);
   }
 
   .spot-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: #4a7c59;
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
   }
 
   .spot-card h3 {
     margin: 0 0 0.5rem 0;
-    color: #2c5530;
-    font-size: 1.1rem;
+    color: var(--neutral-black);
+    font-size: 1.2rem;
+    font-weight: 900;
   }
 
   .water-body {
     color: #666;
     font-size: 0.9rem;
     margin: 0 0 1rem 0;
+    font-weight: 500;
   }
 
   .spot-meta {
@@ -246,16 +291,23 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   .spot-type {
-    background: #f0f0f0;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: #555;
+    background: var(--neutral-black);
+    color: white;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   @media (max-width: 768px) {
     .page-header h1 {
       font-size: 2rem;
+    }
+
+    .page-header .container {
+      padding: 2rem 1.5rem;
     }
 
     .controls {
@@ -266,8 +318,22 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
       min-width: 100%;
     }
 
+    .filter-group {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .filter-select {
+      width: 100%;
+    }
+
     .spots-grid {
       grid-template-columns: 1fr;
+    }
+
+    .spot-card {
+      border-width: 3px;
     }
   }
 </style>

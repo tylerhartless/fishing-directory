@@ -238,54 +238,63 @@ const schema = {
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 2.5rem 2rem;
   }
 
   .breadcrumb {
-    color: #666;
-    margin-bottom: 1rem;
+    color: var(--neutral-gray);
+    margin-bottom: 1.5rem;
     font-size: 0.9rem;
+    font-weight: 600;
   }
 
   .breadcrumb a {
-    color: #2c5530;
+    color: var(--c64-blue);
     text-decoration: none;
+    font-weight: 700;
   }
 
   .breadcrumb a:hover {
-    text-decoration: underline;
+    color: var(--accent-cyan);
   }
 
   h1 {
     margin: 0 0 1rem 0;
     font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--neutral-black);
+    letter-spacing: 0.02em;
   }
 
   .badge {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
     font-size: 0.85rem;
-    font-weight: bold;
+    font-weight: 700;
+    border: 3px solid var(--c64-green);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .verified {
-    background: #4caf50;
+    background: var(--c64-green);
     color: white;
   }
 
   .spot-grid {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr 320px;
     gap: 2rem;
     margin-top: 2rem;
   }
 
   .map-container {
     position: relative;
-    border-radius: 8px;
+    border-radius: 0;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 4px solid var(--neutral-black);
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
   }
 
   .map-container img {
@@ -304,36 +313,74 @@ const schema = {
   .btn-primary {
     display: block;
     text-align: center;
-    padding: 0.75rem 1.5rem;
-    background: #ff6b35;
-    color: white;
+    padding: 1rem 1.5rem;
+    background: var(--accent-orange);
+    color: var(--neutral-black);
     text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
+    border-radius: 0;
+    font-weight: 700;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    transition: all 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .btn-primary:hover {
-    background: #e55a2b;
+    background: var(--accent-cyan);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.5);
   }
 
   .btn-secondary {
-    padding: 0.75rem 1.5rem;
-    background: #2c5530;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    background: var(--box-lavender);
+    color: var(--neutral-black);
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    transition: all 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent-lime);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
   }
 
   section {
-    margin: 2rem 0;
+    margin: 2.5rem 0;
+    background: white;
+    padding: 2rem;
+    border: 4px solid var(--neutral-black);
+    border-radius: 0;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #2c5530;
+    font-size: 1.8rem;
+    margin: 0 0 1rem 0;
+    color: var(--neutral-black);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+
+  h2::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: var(--rainbow-gradient);
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 
   .amenity-list {
@@ -341,13 +388,16 @@ const schema = {
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5rem;
+    gap: 0.75rem;
+    margin-top: 1rem;
   }
 
   .amenity-list li {
-    padding: 0.5rem;
-    background: #f5f5f5;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    background: var(--box-mint);
+    border: 2px solid var(--neutral-black);
+    border-radius: 0;
+    font-weight: 700;
   }
 
   .sidebar {
@@ -358,20 +408,25 @@ const schema = {
 
   .info-box {
     background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border: 4px solid var(--neutral-black);
+    border-radius: 0;
     padding: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   .info-box h3 {
     margin: 0 0 1rem 0;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--neutral-black);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .info-box.highlight {
-    background: #fff9e6;
-    border-color: #ffd700;
+    background: var(--c64-yellow);
+    border-color: var(--neutral-black);
   }
 
   dl {
@@ -379,27 +434,48 @@ const schema = {
   }
 
   dt {
-    font-weight: bold;
-    margin-top: 0.5rem;
+    font-weight: 700;
+    margin-top: 0.75rem;
+    color: var(--neutral-black);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
   }
 
   dd {
-    margin: 0 0 0.5rem 0;
+    margin: 0.25rem 0 0.75rem 0;
+    font-weight: 600;
   }
 
   .copy-coords {
     margin-left: 0.5rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.4rem 0.7rem;
     font-size: 0.75rem;
-    background: #e0e0e0;
+    background: var(--neutral-black);
+    color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 0;
     cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .copy-coords:hover {
+    background: var(--accent-cyan);
+    color: var(--neutral-black);
   }
 
   .loading {
-    color: #999;
+    color: var(--neutral-gray);
     font-style: italic;
+    font-weight: 600;
+  }
+
+  .description p {
+    line-height: 1.8;
+    font-size: 1.05rem;
+    font-weight: 500;
   }
 
   @media (max-width: 768px) {
@@ -413,6 +489,19 @@ const schema = {
 
     h1 {
       font-size: 1.75rem;
+    }
+
+    .container {
+      padding: 2rem 1.5rem;
+    }
+
+    section {
+      padding: 1.5rem;
+      border-width: 3px;
+    }
+
+    .info-box {
+      border-width: 3px;
     }
   }
 </style>
