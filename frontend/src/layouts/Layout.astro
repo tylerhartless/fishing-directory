@@ -38,7 +38,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       <div class="rainbow-bar"></div>
       <nav class="container">
         <a href="/" class="logo">
-          <span class="logo-main">WCIF?</span>
+          <span class="logo-fish">><></span>
+          <span class="logo-text">Where Can I Fish?</span>
         </a>
         <ul>
           <li><a href="/">Home</a></li>
@@ -93,14 +94,25 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   .logo {
     color: white;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
-  .logo-main {
-    font-size: 2.5rem;
+  .logo-fish {
+    font-size: 2rem;
     font-weight: 900;
-    letter-spacing: 0.15em;
-    color: #ffffff;
-    text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    color: var(--accent-rust);
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    font-family: monospace;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--accent-cream);
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
   }
 
   nav ul {
