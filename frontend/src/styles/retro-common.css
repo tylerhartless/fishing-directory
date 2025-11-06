@@ -21,7 +21,7 @@
 }
 
 .retro-page-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   margin: 0 0 0.5rem 0;
   font-weight: 900;
   letter-spacing: 0.05em;
@@ -30,7 +30,7 @@
 }
 
 .retro-page-header .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--secondary-text);
   margin: 0;
   font-weight: 600;
