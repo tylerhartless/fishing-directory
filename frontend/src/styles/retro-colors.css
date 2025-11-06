@@ -35,15 +35,6 @@
   --box-rust: #b85c3a;          /* Rust */
   --box-clay: #9b6b5c;          /* Clay brown */
 
-  /* Accent Stripe - Subtle Earthy Gradient */
-  --rainbow-gradient: linear-gradient(
-    to right,
-    var(--earth-rust),
-    var(--earth-sand),
-    var(--earth-olive),
-    var(--earth-forest),
-    var(--earth-olive),
-    var(--earth-sand),
-    var(--earth-rust)
-  );
+  /* Accent Stripe - Solid Color */
+  --rainbow-gradient: var(--earth-rust);
 }
