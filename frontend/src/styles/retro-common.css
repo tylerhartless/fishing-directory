@@ -37,10 +37,11 @@
 }
 
 .retro-page-header .subtitle {
-  font-size: 1.3rem;
+  font-family: 'VT323', monospace;
+  font-size: 1.6rem;
   color: var(--secondary-text);
   margin: 0;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .retro-page-header .description {
