@@ -99,11 +99,11 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
-  background: #0a0a0a;
+  background: #2a2a2a;
   min-height: 60vh;
 }
 
-[data-theme="light"] .retro-container {
+:global([data-theme="light"]) .retro-container {
   background: var(--neutral-bg);
 }
 
