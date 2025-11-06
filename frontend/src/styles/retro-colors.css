@@ -1,0 +1,64 @@
+/* Retro Outdoors Color Palette - Vintage Fishing & Nature Inspired */
+
+:root {
+  /* Earthy Rainbow Colors - Muted & Natural */
+  --earth-rust: #b85c3a;       /* Rusty red-orange */
+  --earth-terracotta: #c87854;  /* Warm terracotta */
+  --earth-sand: #d4a574;        /* Sandy tan */
+  --earth-olive: #7a8450;       /* Olive green */
+  --earth-forest: #4a6741;      /* Forest green */
+  --earth-slate: #5a6b73;       /* Slate blue-gray */
+  --earth-clay: #9b6b5c;        /* Clay brown */
+
+  /* Primary Brand Colors - Forest & Earth */
+  --primary-bg: #3d5a3d;        /* Deep forest green */
+  --primary-light: #5a7a5a;     /* Lighter forest */
+  --primary-text: #f5f1e8;      /* Off-white/cream */
+  --secondary-text: #d4c9b0;    /* Warm beige */
+
+  /* Accent Colors - Vintage Outdoors */
+  --accent-sage: #9ab087;       /* Sage green */
+  --accent-copper: #c87854;     /* Copper/terracotta */
+  --accent-cream: #f0e6d2;      /* Cream */
+  --accent-rust: #b85c3a;       /* Rust orange */
+
+  /* Neutral Colors */
+  --neutral-bg: #f5f1e8;        /* Warm off-white */
+  --neutral-white: #ffffff;
+  --neutral-black: #2d2d2d;     /* Soft black */
+  --neutral-gray: #6b6b6b;
+
+  /* Card/Box Colors - Vintage Map & Tackle Box */
+  --box-sage: #9ab087;          /* Sage green */
+  --box-tan: #d4a574;           /* Warm tan */
+  --box-moss: #7a8450;          /* Moss green */
+  --box-rust: #b85c3a;          /* Rust */
+  --box-clay: #9b6b5c;          /* Clay brown */
+
+  /* Accent Stripe - Solid Color */
+  --rainbow-gradient: var(--earth-rust);
+
+  /* Theme Colors - Default Dark Mode */
+  --theme-bg: #2a2a2a;
+  --theme-bg-alt: #303030;
+  --theme-text: #e5e5e5;
+  --theme-text-secondary: #b0b0b0;
+  --theme-card-bg: #353535;
+  --theme-card-border: rgba(255, 255, 255, 0.1);
+  --theme-shadow: rgba(0, 0, 0, 0.5);
+  --theme-input-bg: #353535;
+  --theme-input-border: rgba(212, 165, 116, 0.3);
+}
+
+/* Light Mode */
+[data-theme="light"] {
+  --theme-bg: #f5f1e8;
+  --theme-bg-alt: #ffffff;
+  --theme-text: #2d2d2d;
+  --theme-text-secondary: #555555;
+  --theme-card-bg: #ffffff;
+  --theme-card-border: rgba(0, 0, 0, 0.1);
+  --theme-shadow: rgba(0, 0, 0, 0.1);
+  --theme-input-bg: #f8f8f8;
+  --theme-input-border: rgba(212, 165, 116, 0.4);
+}
