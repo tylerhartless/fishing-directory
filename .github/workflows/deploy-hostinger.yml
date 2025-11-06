@@ -199,8 +199,9 @@ jobs:
         run: |
           mkdir -p deploy/frontend
           cp -r frontend/dist/* deploy/frontend/
-          # Explicitly copy .htaccess (Astro might not copy dotfiles)
+          # Explicitly copy .htaccess and maintenance.html (ensure they deploy)
           cp frontend/public/.htaccess deploy/frontend/.htaccess
+          cp frontend/public/maintenance.html deploy/frontend/maintenance.html
 
       - name: Deploy frontend to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
