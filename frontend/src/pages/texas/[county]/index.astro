@@ -140,33 +140,74 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   .filter-group label {
-    font-weight: 700;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    color: #d4a574;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    text-shadow:
+      0 0 6px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"]) .filter-group label {
     color: var(--neutral-black);
+    font-weight: 700;
+    text-shadow: none;
   }
 
   .results-info {
     margin-bottom: 1.5rem;
+    color: #b0b0b0;
+    font-size: 1.05rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+  }
+
+  :global([data-theme="light"]) .results-info {
     color: var(--neutral-gray);
-    font-size: 1rem;
     font-weight: 600;
   }
 
   #count {
+    font-weight: 400;
+    color: #a8c5a8;
+    text-shadow:
+      0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  :global([data-theme="light"]) #count {
     font-weight: 700;
     color: var(--neutral-black);
+    text-shadow: none;
   }
 
   .retro-card h3 {
     margin: 0 0 0.5rem 0;
-    color: var(--neutral-black);
+    color: #f0e6d2;
     font-size: 1.2rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-shadow:
+      0 0 8px rgba(240, 230, 210, 0.5);
+  }
+
+  :global([data-theme="light"]) .retro-card h3 {
+    color: var(--neutral-black);
     font-weight: 900;
+    text-shadow: none;
   }
 
   .water-body {
-    color: #666;
-    font-size: 0.9rem;
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    font-family: 'VT323', monospace;
     margin: 0 0 1rem 0;
+    font-weight: 400;
+  }
+
+  :global([data-theme="light"]) .water-body {
+    color: #666;
     font-weight: 500;
   }
 
