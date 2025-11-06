@@ -276,8 +276,8 @@ const schema = {
       0 0 20px rgba(240, 230, 210, 0.4);
   }
 
-  [data-theme="light"] .retro-heading-lg {
-    color: #2d2d2d;
+  :global([data-theme="light"]) .retro-heading-lg {
+    color: #2d2d2d !important;
     font-weight: 700;
     text-shadow: none;
   }
@@ -357,10 +357,10 @@ const schema = {
     overflow: hidden;
   }
 
-  [data-theme="light"] .retro-section {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  :global([data-theme="light"]) .retro-section {
+    background: white !important;
+    border: 3px solid var(--neutral-black) !important;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
   }
 
   .retro-section::before {
@@ -381,7 +381,7 @@ const schema = {
     z-index: 1;
   }
 
-  [data-theme="light"] .retro-section::before {
+  :global([data-theme="light"]) .retro-section::before {
     display: none;
   }
 

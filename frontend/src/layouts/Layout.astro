@@ -132,7 +132,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   /* Earthy Rainbow Bar */
   .rainbow-bar {
-    height: 4px;
+    height: 2px;
     background: repeating-linear-gradient(
       to right,
       var(--earth-rust) 0px,
@@ -180,7 +180,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 3rem 0;
+    padding: 3.5rem 0;
   }
 
   .logo {
@@ -206,6 +206,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     flex-shrink: 0;
     letter-spacing: -0.15em;
     line-height: 2.2;
+    padding: 0 8px;
+    margin: 0 -8px;
   }
 
   .logo-bubble {
@@ -220,6 +222,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     margin-left: -0.3rem;
     margin-right: 0.2rem;
     flex-shrink: 0;
+    padding: 0 6px;
   }
 
   .logo-text {
@@ -235,8 +238,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     white-space: nowrap;
     position: relative;
     line-height: 2.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding: 0 12px;
+    margin: 0 -12px;
   }
 
   @keyframes bubble {
