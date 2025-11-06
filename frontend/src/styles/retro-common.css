@@ -94,6 +94,12 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
+  background: #0a0a0a;
+  min-height: 60vh;
+}
+
+[data-theme="light"] .retro-container {
+  background: var(--neutral-bg);
 }
 
 /* ===== CARDS ===== */
@@ -194,35 +200,88 @@
 .retro-input {
   padding: 1rem;
   font-size: 1rem;
-  border: 3px solid var(--neutral-black);
+  font-family: 'VT323', monospace;
+  border: 2px solid rgba(184, 92, 58, 0.5);
   border-radius: 0;
-  transition: all 0.1s;
-  font-weight: 500;
+  transition: all 0.2s;
+  font-weight: 400;
   box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.6);
+  color: #e5e5e5;
+  box-shadow:
+    0 0 10px rgba(184, 92, 58, 0.2),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .retro-input {
+  background: white;
+  color: var(--neutral-black);
+  border: 3px solid var(--neutral-black);
+  box-shadow: none;
+  font-weight: 500;
 }
 
 .retro-input:focus {
   outline: none;
+  border-color: rgba(212, 165, 116, 0.8);
+  box-shadow:
+    0 0 15px rgba(212, 165, 116, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .retro-input:focus {
   border-color: var(--earth-olive);
   box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
+}
+
+.retro-input::placeholder {
+  color: #888;
+}
+
+[data-theme="light"] .retro-input::placeholder {
+  color: #999;
 }
 
 .retro-select {
   padding: 1rem;
   font-size: 1rem;
-  border: 3px solid var(--neutral-black);
+  font-family: 'VT323', monospace;
+  border: 2px solid rgba(184, 92, 58, 0.5);
   border-radius: 0;
-  background: white;
+  background: rgba(0, 0, 0, 0.6);
+  color: #e5e5e5;
   cursor: pointer;
+  font-weight: 400;
+  box-shadow:
+    0 0 10px rgba(184, 92, 58, 0.2),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .retro-select {
+  background: white;
+  color: var(--neutral-black);
+  border: 3px solid var(--neutral-black);
+  box-shadow: none;
   font-weight: 600;
 }
 
 .retro-select:hover {
+  border-color: rgba(212, 165, 116, 0.7);
+}
+
+[data-theme="light"] .retro-select:hover {
   border-color: var(--earth-olive);
 }
 
 .retro-select:focus {
   outline: none;
+  border-color: rgba(212, 165, 116, 0.8);
+  box-shadow:
+    0 0 15px rgba(212, 165, 116, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .retro-select:focus {
   border-color: var(--earth-olive);
   box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
 }
