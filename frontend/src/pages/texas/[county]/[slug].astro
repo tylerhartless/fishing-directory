@@ -508,10 +508,10 @@ const schema = {
     text-shadow: 0 0 8px rgba(240, 230, 210, 0.5);
   }
 
-  [data-theme="light"] .retro-info-box h3 {
-    color: var(--neutral-black);
-    font-weight: 700;
-    text-shadow: none;
+  :global([data-theme="light"]) .retro-info-box h3 {
+    color: var(--neutral-black) !important;
+    font-weight: 700 !important;
+    text-shadow: none !important;
   }
 
   dl {
