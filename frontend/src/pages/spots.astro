@@ -59,11 +59,11 @@ const stateSlugLookup = {
   title="Fishing Spots Near You - Search Results"
   description="Find fishing spots near your location. Browse public access fishing locations with GPS coordinates and amenities."
 >
-  <section class="retro-page-header">
+  <section class="retro-page-header terminal-header">
     <div class="container">
-      <h1 id="page-title">Fishing Spots Near You</h1>
-      <p class="subtitle" id="subtitle">
-        Loading fishing spots...
+      <h1 id="page-title">$ QUERY EXECUTING...</h1>
+      <p class="subtitle terminal-subtitle" id="subtitle">
+        > Loading database records...
       </p>
     </div>
   </section>
@@ -86,46 +86,55 @@ const stateSlugLookup = {
 
     <div class="search-results-info" id="search-info" style="display: none;">
       <p id="search-query-text"></p>
-      <a href="/" class="new-search-btn">New Search</a>
+      <a href="/" class="new-search-btn">$ NEW_QUERY</a>
     </div>
 
     <div class="data-accuracy-notice">
-      <span class="notice-icon">ℹ️</span>
-      <p><strong>Data Quality Notice:</strong> Texas has tons of great fishing data - it just wasn't all in one place. Consolidating data from various government agencies revealed some duplicates and naming quirks. We're working through it. If something looks fishy, we're probably already on it.</p>
+      <span class="notice-icon">⚠</span>
+      <p><strong>$ WARN:</strong> DATA_CONSOLIDATION IN PROGRESS. Multiple TX agency sources contain duplicates and naming inconsistencies. Active cleanup operations running. If something looks fishy, we're debugging it.</p>
     </div>
 
     <div class="filters">
       <div class="filter-controls">
-        <label for="type-filter">Filter:</label>
+        <label for="type-filter">FILTER_BY_TYPE:</label>
         <select id="type-filter" class="retro-select">
-          <option value="">All types</option>
-          <option value="lake">Lakes</option>
-          <option value="public_water">Public Waters</option>
-          <option value="state_park">State Parks</option>
-          <option value="river_access">River Access</option>
-          <option value="fishing_pier">Fishing Piers</option>
+          <option value="">ALL_RECORDS</option>
+          <option value="lake">TYPE=LAKE</option>
+          <option value="public_water">TYPE=PUBLIC_WATER</option>
+          <option value="state_park">TYPE=STATE_PARK</option>
+          <option value="river_access">TYPE=RIVER_ACCESS</option>
+          <option value="fishing_pier">TYPE=FISHING_PIER</option>
         </select>
       </div>
     </div>
 
     <div class="retro-grid retro-grid-spots" id="spots-container">
-      <div class="loading">Loading fishing spots...</div>
+      <div class="loading">> EXECUTING QUERY... FETCHING RECORDS FROM DATABASE...</div>
     </div>
 
     <div class="no-results" id="no-results" style="display: none;">
-      <p>No fishing spots found. Try adjusting your search or filters.</p>
+      <p>> ERROR: QUERY RETURNED 0 RECORDS. Try adjusting search parameters or filters.</p>
     </div>
   </section>
 </Layout>
 
 <style is:global>
-  /* Page-specific styles only - common styles in retro-common.css */
+  /* Terminal-style page for spots search results */
 
-  .subtitle {
+  .terminal-header .subtitle,
+  .terminal-subtitle {
     font-family: 'VT323', monospace;
     margin-bottom: 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 400;
+    color: #a8c5a8;
+    text-shadow:
+      0 0 8px rgba(168, 197, 168, 0.6),
+      0 0 15px rgba(168, 197, 168, 0.4);
+  }
+
+  :global([data-theme="dark"]) .terminal-subtitle {
+    color: #a8c5a8;
   }
 
   .search-box-top {
@@ -154,18 +163,293 @@ const stateSlugLookup = {
   }
 
   .filter-controls label {
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    color: #b8944e;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow:
+      0 0 6px rgba(184, 148, 78, 0.5),
+      0 0 10px rgba(184, 148, 78, 0.3);
+  }
+
+  :global([data-theme="light"]) .filter-controls label {
+    color: var(--earth-rust);
+    text-shadow: none;
     font-weight: 600;
-    color: var(--neutral-black);
-    font-size: 0.9rem;
   }
 
   .loading {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem;
-    color: var(--neutral-gray);
+    font-family: 'VT323', monospace;
+    color: #a8c5a8;
+    font-weight: 400;
+    font-size: 1.5rem;
+    text-shadow:
+      0 0 8px rgba(168, 197, 168, 0.6),
+      0 0 15px rgba(168, 197, 168, 0.4);
+  }
+
+  /* Terminal-style spot cards */
+  .spot-card.terminal-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(184, 92, 58, 0.6);
+    box-shadow:
+      0 0 15px rgba(184, 92, 58, 0.3),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  :global([data-theme="light"]) .spot-card.terminal-card {
+    background: #f8f8f8;
+    border: 3px solid rgba(212, 165, 116, 0.6);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  .spot-card.terminal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 3px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  :global([data-theme="light"]) .spot-card.terminal-card::before {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 3px
+    );
+  }
+
+  .spot-card.terminal-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(212, 165, 116, 0.8);
+    box-shadow:
+      0 0 20px rgba(212, 165, 116, 0.5),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  :global([data-theme="light"]) .spot-card.terminal-card:hover {
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .terminal-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+
+  .terminal-prompt {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: #d4a574;
+    font-weight: 400;
+    text-shadow:
+      0 0 8px rgba(212, 165, 116, 0.6),
+      0 0 15px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"]) .terminal-prompt {
+    color: var(--earth-rust);
+    text-shadow: none;
+  }
+
+  .terminal-command {
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    color: #a8c5a8;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow:
+      0 0 8px rgba(168, 197, 168, 0.5),
+      0 0 12px rgba(168, 197, 168, 0.3);
+  }
+
+  :global([data-theme="light"]) .terminal-command {
+    color: var(--earth-forest);
+    text-shadow: none;
+  }
+
+  .terminal-name {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: #f0e6d2;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    flex: 1;
+    text-shadow:
+      0 0 10px rgba(240, 230, 210, 0.6),
+      0 0 20px rgba(240, 230, 210, 0.4);
+  }
+
+  :global([data-theme="light"]) .terminal-name {
+    color: var(--neutral-black);
+    text-shadow: none;
     font-weight: 600;
+  }
+
+  .terminal-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .terminal-field {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-family: 'VT323', monospace;
     font-size: 1.1rem;
+  }
+
+  .terminal-label {
+    color: #b8944e;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: 110px;
+    flex-shrink: 0;
+    text-shadow:
+      0 0 6px rgba(184, 148, 78, 0.5),
+      0 0 10px rgba(184, 148, 78, 0.3);
+  }
+
+  :global([data-theme="light"]) .terminal-label {
+    color: var(--earth-rust);
+    text-shadow: none;
+    font-weight: 600;
+  }
+
+  .terminal-value {
+    color: #e5e5e5;
+    font-weight: 400;
+    flex: 1;
+  }
+
+  :global([data-theme="light"]) .terminal-value {
+    color: var(--neutral-black);
+  }
+
+  .terminal-badge {
+    background: rgba(168, 197, 168, 0.2);
+    border: 1px solid rgba(168, 197, 168, 0.4);
+    padding: 0.2rem 0.6rem;
+    color: #a8c5a8;
+    text-shadow:
+      0 0 6px rgba(168, 197, 168, 0.5);
+  }
+
+  :global([data-theme="light"]) .terminal-badge {
+    background: var(--box-sage);
+    border: 2px solid var(--earth-forest);
+    color: var(--neutral-black);
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  .terminal-distance {
+    color: #d4a574;
+    font-weight: 700;
+    text-shadow:
+      0 0 8px rgba(212, 165, 116, 0.6),
+      0 0 12px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"]) .terminal-distance {
+    color: var(--earth-rust);
+    text-shadow: none;
+  }
+
+  .terminal-coords {
+    font-family: 'Courier New', monospace;
+    color: #b8944e;
+    text-shadow:
+      0 0 6px rgba(184, 148, 78, 0.5);
+  }
+
+  :global([data-theme="light"]) .terminal-coords {
+    color: var(--neutral-gray);
+    text-shadow: none;
+  }
+
+  .terminal-desc {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(212, 165, 116, 0.3);
+  }
+
+  :global([data-theme="light"]) .terminal-desc {
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .terminal-desc .terminal-value {
+    font-size: 1rem;
+    line-height: 1.4;
+    color: #b0b0b0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global([data-theme="light"]) .terminal-desc .terminal-value {
+    color: #666;
+  }
+
+  .terminal-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .terminal-field .amenity-badge {
+    background: rgba(184, 92, 58, 0.2);
+    border: 1px solid rgba(184, 92, 58, 0.4);
+    color: #d4a574;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    text-shadow:
+      0 0 6px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"]) .terminal-field .amenity-badge {
+    background: var(--box-rust);
+    border: 2px solid var(--earth-rust);
+    color: var(--neutral-black);
+    text-shadow: none;
+    font-weight: 700;
   }
 
   .spot-card {
@@ -263,9 +547,19 @@ const stateSlugLookup = {
   .no-results {
     text-align: center;
     padding: 3rem;
+    font-family: 'VT323', monospace;
+    color: #d4a574;
+    font-weight: 400;
+    font-size: 1.4rem;
+    text-shadow:
+      0 0 8px rgba(212, 165, 116, 0.5),
+      0 0 15px rgba(212, 165, 116, 0.3);
+  }
+
+  :global([data-theme="light"]) .no-results {
     color: var(--neutral-gray);
+    text-shadow: none;
     font-weight: 600;
-    font-size: 1.1rem;
   }
 
   .search-results-info {
@@ -273,46 +567,84 @@ const stateSlugLookup = {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    background: var(--neutral-bg);
-    border-left: 3px solid var(--earth-olive);
-    padding: 0.5rem 0.75rem;
+    background: rgba(168, 197, 168, 0.1);
+    border: 1px solid rgba(168, 197, 168, 0.3);
+    padding: 0.75rem 1rem;
     margin-bottom: 1rem;
+    font-family: 'VT323', monospace;
+  }
+
+  :global([data-theme="light"]) .search-results-info {
+    background: var(--neutral-bg);
+    border: 2px solid var(--earth-forest);
   }
 
   .search-results-info p {
     margin: 0;
-    color: var(--neutral-black);
-    font-weight: 600;
-    font-size: 0.85rem;
+    color: #a8c5a8;
+    font-weight: 400;
+    font-size: 1.1rem;
     flex: 1;
+    text-shadow:
+      0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  :global([data-theme="light"]) .search-results-info p {
+    color: var(--earth-forest);
+    text-shadow: none;
+    font-weight: 600;
   }
 
   .new-search-btn {
+    background: rgba(184, 92, 58, 0.2);
+    border: 1px solid rgba(184, 92, 58, 0.5);
+    padding: 0.5rem 1rem;
+    color: #d4a574;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 1rem;
+    font-family: 'VT323', monospace;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-shadow:
+      0 0 6px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"]) .new-search-btn {
     background: white;
     border: 2px solid var(--neutral-black);
-    padding: 0.4rem 0.8rem;
     color: var(--neutral-black);
-    text-decoration: none;
+    text-shadow: none;
     font-weight: 600;
-    font-size: 0.8rem;
-    transition: all 0.1s;
-    white-space: nowrap;
   }
 
   .new-search-btn:hover {
-    background: var(--accent-copper);
+    background: rgba(212, 165, 116, 0.3);
+    border-color: rgba(212, 165, 116, 0.8);
     transform: translate(-1px, -1px);
+    box-shadow:
+      0 0 10px rgba(212, 165, 116, 0.5);
+  }
+
+  :global([data-theme="light"]) .new-search-btn:hover {
+    background: var(--accent-copper);
     box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
   }
 
   .data-accuracy-notice {
-    background: var(--accent-cream);
-    border: 2px solid var(--earth-olive);
+    background: rgba(184, 92, 58, 0.15);
+    border: 2px solid rgba(184, 92, 58, 0.4);
     padding: 0.75rem 1rem;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
+    font-family: 'VT323', monospace;
+  }
+
+  :global([data-theme="light"]) .data-accuracy-notice {
+    background: var(--accent-cream);
+    border: 2px solid var(--earth-rust);
   }
 
   .data-accuracy-notice .notice-icon {
@@ -322,22 +654,36 @@ const stateSlugLookup = {
 
   .data-accuracy-notice p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     line-height: 1.5;
+    color: #d4a574;
+    font-weight: 400;
+  }
+
+  :global([data-theme="light"]) .data-accuracy-notice p {
     color: var(--neutral-black);
   }
 
   .data-accuracy-notice strong {
+    font-weight: 400;
+    color: #f0e6d2;
+    text-shadow:
+      0 0 8px rgba(240, 230, 210, 0.5);
+  }
+
+  :global([data-theme="light"]) .data-accuracy-notice strong {
     font-weight: 700;
+    color: var(--neutral-black);
+    text-shadow: none;
   }
 
   @media (max-width: 768px) {
     .retro-page-header h1 {
-      font-size: 2rem;
+      font-size: 1.8rem;
     }
 
-    .subtitle {
-      font-size: 1rem;
+    .terminal-subtitle {
+      font-size: 1.1rem;
     }
 
     .search-box-top {
@@ -360,6 +706,36 @@ const stateSlugLookup = {
       flex: 1;
       min-width: 150px;
     }
+
+    .terminal-line {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .terminal-name {
+      font-size: 1.2rem;
+    }
+
+    .terminal-field {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .terminal-label {
+      min-width: auto;
+    }
+
+    .search-results-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .new-search-btn {
+      width: 100%;
+      text-align: center;
+    }
   }
 </style>
 
@@ -377,15 +753,15 @@ const stateSlugLookup = {
   const userLat = urlParams.get('lat') ? parseFloat(urlParams.get('lat')) : null;
   const userLon = urlParams.get('lon') ? parseFloat(urlParams.get('lon')) : null;
 
-  // Update search input and UI
+  // Update search input and UI with terminal-style messages
   const searchInput = document.getElementById('search-input');
   if (searchQuery && searchInput) {
     searchInput.value = searchQuery;
     document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `Showing results for "${searchQuery}"`;
+    document.getElementById('search-query-text').textContent = `> FILTER ACTIVE: "${searchQuery}"`;
   } else if (userLat && userLon) {
     document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `Showing results near your location`;
+    document.getElementById('search-query-text').textContent = `> GEOLOCATION DETECTED: [${userLat.toFixed(4)}, ${userLon.toFixed(4)}]`;
   }
 
   // Load spots from API (all states)
@@ -466,18 +842,19 @@ const stateSlugLookup = {
       filteredSpots = filteredSpots.slice(0, 100);
     }
 
-    // Update subtitle
+    // Update subtitle with terminal-style output
     const subtitle = document.getElementById('subtitle');
     const pageTitle = document.getElementById('page-title');
     if (subtitle) {
       if (userLat && userLon) {
-        subtitle.textContent = `Showing ${filteredSpots.length} nearest fishing spots`;
-        pageTitle.textContent = 'Fishing Spots Near You';
+        subtitle.textContent = `> QUERY COMPLETE: ${filteredSpots.length} records returned | SORTED BY: proximity`;
+        pageTitle.textContent = '$ SEARCH --location --sort=distance';
       } else if (searchQuery) {
-        subtitle.textContent = `${filteredSpots.length} spots found`;
-        pageTitle.textContent = `Results for "${searchQuery}"`;
+        subtitle.textContent = `> SEARCH COMPLETE: ${filteredSpots.length} records found | FILTER: "${searchQuery}"`;
+        pageTitle.textContent = `$ QUERY --filter="${searchQuery}"`;
       } else {
-        subtitle.textContent = `${filteredSpots.length} fishing spots`;
+        subtitle.textContent = `> DATABASE LOADED: ${filteredSpots.length} records available`;
+        pageTitle.textContent = '$ FETCH --all --state=TX';
       }
     }
 
@@ -545,26 +922,31 @@ const stateSlugLookup = {
       const countySlug = getCountySlug(spot.county);
 
       return `
-      <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card spot-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
-        <div class="spot-header">
-          <h3>${displayName}</h3>
-          <span class="retro-badge spot-type">${spot.spot_type.replace('_', ' ')}</span>
+      <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card spot-card terminal-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
+        <div class="terminal-line">
+          <span class="terminal-prompt">></span>
+          <span class="terminal-command">RECORD:</span>
+          <h3 class="terminal-name">${displayName}</h3>
         </div>
-        <div class="spot-details">
-          <p class="location">
-            <strong>📍 ${spot.county === 'Multiple Counties' ? 'Multiple Counties' : spot.county + ' County'}, ${spot.state}</strong>
-          </p>
-          <p class="water-body">🌊 ${spot.water_body_name}</p>
-          ${amenitiesHtml}
-          <p class="description">${spot.description}</p>
-        </div>
-        <div class="spot-footer">
+        <div class="terminal-data">
+          <div class="terminal-field">
+            <span class="terminal-label">TYPE:</span>
+            <span class="terminal-value terminal-badge">${spot.spot_type.replace('_', ' ').toUpperCase()}</span>
+          </div>
+          <div class="terminal-field">
+            <span class="terminal-label">LOCATION:</span>
+            <span class="terminal-value">${spot.county === 'Multiple Counties' ? 'Multiple Counties' : spot.county + ' County'}, ${spot.state}</span>
+          </div>
+          <div class="terminal-field">
+            <span class="terminal-label">WATER_BODY:</span>
+            <span class="terminal-value">${spot.water_body_name}</span>
+          </div>
           ${spot.distance
-            ? `<span class="distance">📍 ${spot.distance < 0.1 ? (spot.distance * 5280).toFixed(0) + ' ft' : spot.distance.toFixed(1) + ' mi'} away</span>`
-            : spot.address
-              ? `<span class="address">📍 ${spot.address}</span>`
-              : `<span class="coordinates">${parseFloat(spot.latitude).toFixed(4)}, ${parseFloat(spot.longitude).toFixed(4)}</span>`
+            ? `<div class="terminal-field"><span class="terminal-label">DISTANCE:</span><span class="terminal-value terminal-distance">${spot.distance < 0.1 ? (spot.distance * 5280).toFixed(0) + ' ft' : spot.distance.toFixed(1) + ' mi'}</span></div>`
+            : `<div class="terminal-field"><span class="terminal-label">COORDS:</span><span class="terminal-value terminal-coords">[${parseFloat(spot.latitude).toFixed(4)}, ${parseFloat(spot.longitude).toFixed(4)}]</span></div>`
           }
+          ${amenitiesHtml ? `<div class="terminal-field"><span class="terminal-label">AMENITIES:</span><div class="terminal-amenities">${prominentAmenities.join('')}</div></div>` : ''}
+          ${spot.description ? `<div class="terminal-field terminal-desc"><span class="terminal-label">INFO:</span><span class="terminal-value">${spot.description}</span></div>` : ''}
         </div>
       </a>
       `;
