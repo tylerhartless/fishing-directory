@@ -103,7 +103,7 @@
   min-height: 60vh;
 }
 
-:global([data-theme="light"]) .retro-container {
+[data-theme="light"] .retro-container {
   background: var(--neutral-bg) !important;
 }
 
@@ -148,13 +148,13 @@
   z-index: 2;
 }
 
-:global([data-theme="light"]) .retro-card {
+[data-theme="light"] .retro-card {
   background: var(--neutral-bg) !important;
   border: 4px solid;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
 }
 
-:global([data-theme="light"]) .retro-card::before {
+[data-theme="light"] .retro-card::before {
   background: repeating-linear-gradient(
     0deg,
     rgba(0, 0, 0, 0.01) 0px,
@@ -171,7 +171,7 @@
     inset 0 0 30px rgba(100, 100, 100, 0.3);
 }
 
-:global([data-theme="light"]) .retro-card:hover {
+[data-theme="light"] .retro-card:hover {
   transform: translate(-3px, -3px);
   box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
 }
@@ -464,13 +464,13 @@
   z-index: 2;
 }
 
-:global([data-theme="light"]) .retro-section {
+[data-theme="light"] .retro-section {
   background: var(--neutral-bg) !important;
   border: 3px solid var(--neutral-black) !important;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
 }
 
-:global([data-theme="light"]) .retro-section::before {
+[data-theme="light"] .retro-section::before {
   background: repeating-linear-gradient(
     0deg,
     rgba(0, 0, 0, 0.01) 0px,
@@ -564,13 +564,13 @@
   z-index: 2;
 }
 
-:global([data-theme="light"]) .retro-info-box {
+[data-theme="light"] .retro-info-box {
   background: var(--neutral-bg) !important;
   border: 3px solid var(--neutral-black) !important;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
 }
 
-:global([data-theme="light"]) .retro-info-box::before {
+[data-theme="light"] .retro-info-box::before {
   background: repeating-linear-gradient(
     0deg,
     rgba(0, 0, 0, 0.01) 0px,
@@ -591,7 +591,7 @@
   text-shadow: 0 0 8px rgba(212, 165, 116, 0.4);
 }
 
-:global([data-theme="light"]) .retro-info-box h3 {
+[data-theme="light"] .retro-info-box h3 {
   color: var(--neutral-black) !important;
   font-weight: 700 !important;
   text-shadow: none !important;
