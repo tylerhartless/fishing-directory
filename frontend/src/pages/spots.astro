@@ -61,9 +61,9 @@ const stateSlugLookup = {
 >
   <section class="retro-page-header terminal-header">
     <div class="container">
-      <h1 id="page-title">$ QUERY EXECUTING...</h1>
+      <h1 id="page-title">Fishing Spots Near You</h1>
       <p class="subtitle terminal-subtitle" id="subtitle">
-        > Loading database records...
+        Loading spots...
       </p>
     </div>
   </section>
@@ -86,34 +86,34 @@ const stateSlugLookup = {
 
     <div class="search-results-info" id="search-info" style="display: none;">
       <p id="search-query-text"></p>
-      <a href="/" class="new-search-btn">$ NEW_QUERY</a>
+      <a href="/" class="new-search-btn">New Search</a>
     </div>
 
     <div class="data-accuracy-notice">
       <span class="notice-icon">⚠</span>
-      <p><strong>$ WARN:</strong> DATA_CONSOLIDATION IN PROGRESS. Multiple TX agency sources contain duplicates and naming inconsistencies. Active cleanup operations running. If something looks fishy, we're debugging it.</p>
+      <p><strong>Data Notice:</strong> Consolidating data from multiple TX agencies revealed some duplicates and naming quirks. We're actively cleaning it up. If something looks fishy, we're debugging it.</p>
     </div>
 
     <div class="filters">
       <div class="filter-controls">
-        <label for="type-filter">FILTER_BY_TYPE:</label>
+        <label for="type-filter">Filter by type:</label>
         <select id="type-filter" class="retro-select">
-          <option value="">ALL_RECORDS</option>
-          <option value="lake">TYPE=LAKE</option>
-          <option value="public_water">TYPE=PUBLIC_WATER</option>
-          <option value="state_park">TYPE=STATE_PARK</option>
-          <option value="river_access">TYPE=RIVER_ACCESS</option>
-          <option value="fishing_pier">TYPE=FISHING_PIER</option>
+          <option value="">All types</option>
+          <option value="lake">Lakes</option>
+          <option value="public_water">Public Waters</option>
+          <option value="state_park">State Parks</option>
+          <option value="river_access">River Access</option>
+          <option value="fishing_pier">Fishing Piers</option>
         </select>
       </div>
     </div>
 
     <div class="retro-grid retro-grid-spots" id="spots-container">
-      <div class="loading">> EXECUTING QUERY... FETCHING RECORDS FROM DATABASE...</div>
+      <div class="loading">Loading fishing spots...</div>
     </div>
 
     <div class="no-results" id="no-results" style="display: none;">
-      <p>> ERROR: QUERY RETURNED 0 RECORDS. Try adjusting search parameters or filters.</p>
+      <p>No fishing spots found. Try adjusting your search or filters.</p>
     </div>
   </section>
 </Layout>
@@ -165,17 +165,15 @@ const stateSlugLookup = {
   .filter-controls label {
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #b8944e;
+    color: #d4a574;
     font-size: 1.1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.02em;
     text-shadow:
-      0 0 6px rgba(184, 148, 78, 0.5),
-      0 0 10px rgba(184, 148, 78, 0.3);
+      0 0 6px rgba(212, 165, 116, 0.4);
   }
 
   :global([data-theme="light"]) .filter-controls label {
-    color: var(--earth-rust);
+    color: var(--neutral-black);
     text-shadow: none;
     font-weight: 600;
   }
@@ -758,10 +756,10 @@ const stateSlugLookup = {
   if (searchQuery && searchInput) {
     searchInput.value = searchQuery;
     document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `> FILTER ACTIVE: "${searchQuery}"`;
+    document.getElementById('search-query-text').textContent = `Searching for: "${searchQuery}"`;
   } else if (userLat && userLon) {
     document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `> GEOLOCATION DETECTED: [${userLat.toFixed(4)}, ${userLon.toFixed(4)}]`;
+    document.getElementById('search-query-text').textContent = `Searching near: ${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
   }
 
   // Load spots from API (all states)
@@ -847,14 +845,14 @@ const stateSlugLookup = {
     const pageTitle = document.getElementById('page-title');
     if (subtitle) {
       if (userLat && userLon) {
-        subtitle.textContent = `> QUERY COMPLETE: ${filteredSpots.length} records returned | SORTED BY: proximity`;
-        pageTitle.textContent = '$ SEARCH --location --sort=distance';
+        subtitle.textContent = `Found ${filteredSpots.length} spots nearby • Sorted by distance`;
+        pageTitle.textContent = 'Fishing Spots Near You';
       } else if (searchQuery) {
-        subtitle.textContent = `> SEARCH COMPLETE: ${filteredSpots.length} records found | FILTER: "${searchQuery}"`;
-        pageTitle.textContent = `$ QUERY --filter="${searchQuery}"`;
+        subtitle.textContent = `${filteredSpots.length} spots found for "${searchQuery}"`;
+        pageTitle.textContent = `Search Results: ${searchQuery}`;
       } else {
-        subtitle.textContent = `> DATABASE LOADED: ${filteredSpots.length} records available`;
-        pageTitle.textContent = '$ FETCH --all --state=TX';
+        subtitle.textContent = `${filteredSpots.length} fishing spots in Texas`;
+        pageTitle.textContent = 'Browse All Fishing Spots';
       }
     }
 
