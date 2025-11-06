@@ -104,7 +104,7 @@
 }
 
 :global([data-theme="light"]) .retro-container {
-  background: var(--neutral-bg);
+  background: var(--neutral-bg) !important;
 }
 
 /* ===== CARDS ===== */
@@ -149,7 +149,7 @@
 }
 
 :global([data-theme="light"]) .retro-card {
-  background: var(--neutral-bg);
+  background: var(--neutral-bg) !important;
   border: 4px solid;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
 }
@@ -157,11 +157,11 @@
 :global([data-theme="light"]) .retro-card::before {
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.02) 0px,
+    rgba(0, 0, 0, 0.01) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.02) 3px
-  );
+    rgba(0, 0, 0, 0.01) 3px
+  ) !important;
 }
 
 .retro-card:hover {

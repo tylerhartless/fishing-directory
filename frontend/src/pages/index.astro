@@ -339,7 +339,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .stat {
-    background: white;
+    background: var(--neutral-bg) !important;
     border: 3px solid;
     box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
@@ -347,11 +347,11 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   :global([data-theme="light"]) .stat::before {
     background: repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.02) 0px,
+      rgba(0, 0, 0, 0.01) 0px,
       transparent 1px,
       transparent 2px,
-      rgba(0, 0, 0, 0.02) 3px
-    );
+      rgba(0, 0, 0, 0.01) 3px
+    ) !important;
   }
 
   .stat-red {
@@ -456,7 +456,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .popular-locations {
-    background: var(--neutral-bg);
+    background: var(--neutral-bg) !important;
   }
 
   .location-grid {
@@ -606,7 +606,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .features-section {
-    background: var(--neutral-bg);
+    background: var(--neutral-bg) !important;
   }
 
   .features-grid {
@@ -702,7 +702,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .coverage-section {
-    background: var(--neutral-bg);
+    background: var(--neutral-bg) !important;
   }
 
   .coverage-info {
