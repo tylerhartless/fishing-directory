@@ -85,23 +85,13 @@ const stateSlugLookup = {
       <p id="error-text"></p>
     </div>
 
-    <div class="retro-notice retro-notice-info search-results-info" id="search-info" style="display: none;">
-      <p><span id="search-query-text"></span>. <a href="/">New search</a></p>
-    </div>
-
-    <div class="retro-notice retro-notice-success filter-notice" id="filter-notice">
-      <p>
-        🎣 <strong>Showing fishing spots only</strong> (boat ramps hidden by default).
-        <label class="inline-toggle">
-          <input type="checkbox" id="boat-ramp-toggle" />
-          <span>Include boat ramps</span>
-        </label>
-      </p>
+    <div class="search-results-info" id="search-info" style="display: none;">
+      <p><span id="search-query-text"></span> • <a href="/">New search</a></p>
     </div>
 
     <div class="filters">
       <div class="filter-controls">
-        <label for="type-filter">Filter by type:</label>
+        <label for="type-filter">Filter:</label>
         <select id="type-filter" class="retro-select">
           <option value="">All types</option>
           <option value="lake">Lakes</option>
@@ -110,6 +100,11 @@ const stateSlugLookup = {
           <option value="river_access">River Access</option>
           <option value="fishing_pier">Fishing Piers</option>
         </select>
+
+        <label class="inline-toggle">
+          <input type="checkbox" id="boat-ramp-toggle" />
+          <span>Boat ramps</span>
+        </label>
       </div>
     </div>
 
@@ -127,7 +122,8 @@ const stateSlugLookup = {
   /* Page-specific styles only - common styles in retro-common.css */
 
   .subtitle {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
   }
 
   .search-box {
@@ -143,66 +139,53 @@ const stateSlugLookup = {
     min-width: 250px;
   }
 
-  .filter-notice p {
-    margin: 0;
-    color: var(--neutral-black);
-    font-size: 1rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
   .inline-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     cursor: pointer;
     background: white;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 0;
-    border: 3px solid var(--neutral-black);
+    border: 2px solid var(--neutral-black);
     transition: all 0.1s;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-weight: 600;
+    font-size: 0.85rem;
   }
 
   .inline-toggle:hover {
     background: var(--accent-copper);
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
   }
 
   .inline-toggle input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
   }
 
   .inline-toggle span {
     user-select: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .filters {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   .filter-controls {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 0;
     flex-wrap: wrap;
   }
 
   .filter-controls label {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--neutral-black);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.9rem;
   }
 
   .loading {
@@ -314,19 +297,45 @@ const stateSlugLookup = {
     font-size: 1.1rem;
   }
 
+  .search-results-info {
+    background: var(--neutral-bg);
+    border-left: 3px solid var(--earth-olive);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
   .search-results-info p {
     margin: 0;
     color: var(--neutral-black);
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .search-results-info a {
-    color: var(--neutral-black);
+    color: var(--earth-olive);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .search-results-info a:hover {
     text-decoration: underline;
-    font-weight: 700;
   }
 
   @media (max-width: 768px) {
+    .retro-page-header {
+      padding: 1.5rem 0 1rem;
+    }
+
+    .retro-page-header h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
     .search-box {
       flex-direction: column;
     }
@@ -336,13 +345,16 @@ const stateSlugLookup = {
     }
 
     .filter-controls {
-      flex-direction: column;
-      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .filter-controls label:first-child {
       width: 100%;
     }
 
     .filter-controls select {
-      width: 100%;
+      flex: 1;
+      min-width: 150px;
     }
   }
 </style>
