@@ -24,7 +24,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 
     <!-- SEO -->
     <title>{title}</title>
@@ -101,26 +101,27 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   .logo-prompt {
-    font-family: 'VT323', monospace;
-    font-size: 2.5rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.5rem;
     font-weight: 400;
     color: var(--accent-rust);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     flex-shrink: 0;
+    letter-spacing: -0.15em;
   }
 
   .logo-bubble {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #6db3f2;
     animation: bubble 1.5s ease-in-out infinite;
     position: relative;
-    top: -0.5rem;
+    top: -0.4rem;
     margin-right: 0.1rem;
   }
 
   .logo-text {
-    font-family: 'VT323', monospace;
-    font-size: 2.5rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1rem;
     font-weight: 400;
     letter-spacing: 0.05em;
     color: var(--accent-cream);
@@ -196,11 +197,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   @media (max-width: 640px) {
     .logo-prompt {
-      font-size: 1.75rem;
+      font-size: 1rem;
     }
 
     .logo-text {
-      font-size: 1.75rem;
+      font-size: 0.7rem;
     }
 
     .logo {
@@ -208,8 +209,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo-bubble {
-      font-size: 0.85rem;
-      top: -0.4rem;
+      font-size: 0.6rem;
+      top: -0.3rem;
     }
 
     nav .container {
@@ -219,11 +220,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   @media (max-width: 400px) {
     .logo-prompt {
-      font-size: 1.5rem;
+      font-size: 0.85rem;
     }
 
     .logo-text {
-      font-size: 1.5rem;
+      font-size: 0.6rem;
     }
 
     .logo {
@@ -231,8 +232,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo-bubble {
-      font-size: 0.75rem;
-      top: -0.3rem;
+      font-size: 0.5rem;
+      top: -0.25rem;
     }
   }
 </style>
