@@ -287,11 +287,11 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
       const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
       return `
-        <a href="/texas/${countySlug}/${spot.slug}" class="spot-card">
+        <a href="/texas/${countySlug}/${spot.slug}" class="retro-card">
           <h3>${spot.name}</h3>
           ${waterBody}
           <div class="spot-meta">
-            <span class="spot-type">${typeLabel}</span>
+            <span class="retro-badge spot-type">${typeLabel}</span>
           </div>
         </a>
       `;
