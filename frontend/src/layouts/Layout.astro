@@ -66,19 +66,14 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     </footer>
 
     <script is:inline>
-      // Theme detection and toggle
+      // Theme detection and toggle - Always defaults to dark mode
       (function() {
         const getTheme = () => {
           // Check localStorage first
           const stored = localStorage.getItem('theme');
           if (stored) return stored;
 
-          // Check system preference
-          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-          }
-
-          // Default to dark mode if no preference detected
+          // Always default to dark mode (ignore system preferences)
           return 'dark';
         };
 
@@ -101,16 +96,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
             });
           }
         });
-
-        // Listen for system preference changes
-        if (window.matchMedia) {
-          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            // Only auto-switch if user hasn't manually set a preference
-            if (!localStorage.getItem('theme')) {
-              setTheme(e.matches ? 'dark' : 'light');
-            }
-          });
-        }
       })();
     </script>
   </body>
