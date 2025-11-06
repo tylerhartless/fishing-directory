@@ -89,7 +89,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 2.5rem 0;
+    padding: 3rem 0;
   }
 
   .logo {
@@ -98,6 +98,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     align-items: center;
     gap: 0.2rem;
+    margin-left: 0;
   }
 
   .logo-prompt {
@@ -108,7 +109,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     flex-shrink: 0;
     letter-spacing: -0.15em;
-    line-height: 1.5;
+    line-height: 1.8;
   }
 
   .logo-bubble {
@@ -130,7 +131,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     white-space: nowrap;
     position: relative;
-    line-height: 1.5;
+    line-height: 1.8;
   }
 
   @keyframes bubble {
@@ -165,6 +166,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  nav .container {
     padding: 0 1rem;
   }
 
@@ -190,12 +195,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   @media (max-width: 640px) {
     .logo-prompt {
       font-size: 1.6rem;
-      line-height: 1.5;
+      line-height: 1.8;
     }
 
     .logo-text {
       font-size: 1.1rem;
-      line-height: 1.5;
+      line-height: 1.8;
     }
 
     .logo {
@@ -210,7 +215,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     nav {
-      padding: 2rem 0;
+      padding: 2.5rem 0;
     }
 
     nav .container {
@@ -221,12 +226,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   @media (max-width: 400px) {
     .logo-prompt {
       font-size: 1.3rem;
-      line-height: 1.5;
+      line-height: 1.8;
     }
 
     .logo-text {
       font-size: 0.9rem;
-      line-height: 1.5;
+      line-height: 1.8;
     }
 
     .logo {
@@ -241,7 +246,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     nav {
-      padding: 1.75rem 0;
+      padding: 2rem 0;
     }
   }
 </style>
