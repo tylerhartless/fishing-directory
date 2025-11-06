@@ -109,6 +109,16 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     }
   };
 
+  const handleInputFocus = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {
+    // Scroll the input into view when focused, with some padding at the top
+    setTimeout(() => {
+      (e.target as HTMLInputElement).scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 300); // Small delay to let mobile keyboard appear first
+  };
+
   const handleSuggestionClick = (county: string) => {
     const countySlug = county.toLowerCase().replace(/\s+/g, '-');
     window.location.href = `/texas/${countySlug}`;
@@ -169,6 +179,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
             autocomplete="off"
             value={searchQuery}
             onInput={handleInputChange}
+            onFocus={handleInputFocus}
           />
           <button type="submit" class="btn-search" disabled={isSearching}>
             {isSearching ? 'Searching...' : 'Search'}
