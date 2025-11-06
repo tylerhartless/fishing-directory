@@ -48,6 +48,11 @@
     transparent 16px
   );
   z-index: 3;
+  box-shadow:
+    0 0 12px rgba(184, 92, 58, 0.8),
+    0 0 20px rgba(184, 92, 58, 0.6),
+    0 0 30px rgba(184, 92, 58, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .retro-page-header .container {

@@ -204,8 +204,9 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     position: relative;
     z-index: 2;
     box-shadow:
-      0 0 8px rgba(184, 92, 58, 0.6),
-      0 0 15px rgba(184, 92, 58, 0.4),
+      0 0 12px rgba(184, 92, 58, 0.8),
+      0 0 20px rgba(184, 92, 58, 0.6),
+      0 0 30px rgba(184, 92, 58, 0.4),
       0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
@@ -302,17 +303,55 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: white;
-    border: 3px solid;
+    background: rgba(40, 40, 40, 0.8);
+    border: 2px solid;
     padding: 1.5rem 2rem;
     min-width: 140px;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+    box-shadow:
+      0 0 15px rgba(184, 92, 58, 0.3),
+      inset 0 0 30px rgba(100, 100, 100, 0.3);
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
 
-  :global([data-theme="dark"]) .stat {
-    background: var(--theme-card-bg);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
+  .stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 3px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .stat > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  :global([data-theme="light"]) .stat {
+    background: white;
+    border: 3px solid;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  :global([data-theme="light"]) .stat::before {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.02) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 3px
+    );
   }
 
   .stat-red {
@@ -330,26 +369,37 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   .stat strong {
     font-size: 2.5rem;
     display: block;
-    font-weight: 900;
-    color: var(--neutral-black);
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    color: #f0e6d2;
     transition: color 0.3s ease;
+    text-shadow:
+      0 0 10px rgba(240, 230, 210, 0.6),
+      0 0 20px rgba(240, 230, 210, 0.4);
   }
 
-  :global([data-theme="dark"]) .stat strong {
-    color: var(--theme-text);
+  :global([data-theme="light"]) .stat strong {
+    color: var(--neutral-black);
+    font-weight: 900;
+    text-shadow: none;
   }
 
   .stat span {
     font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--neutral-gray);
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    color: #a8c5a8;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
+    text-shadow:
+      0 0 6px rgba(168, 197, 168, 0.4);
   }
 
-  :global([data-theme="dark"]) .stat span {
-    color: var(--theme-text-secondary);
+  :global([data-theme="light"]) .stat span {
+    color: var(--neutral-gray);
+    font-weight: 600;
+    text-shadow: none;
   }
 
   .container {
