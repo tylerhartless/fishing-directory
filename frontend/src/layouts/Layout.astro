@@ -50,7 +50,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       <div class="rainbow-bar"></div>
     </header>
 
-    <main>
+    <main class="main-content">
       <slot />
     </main>
 
@@ -70,6 +70,25 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     line-height: 1.6;
     color: #333;
     background: #f5f5f5;
+    position: relative;
+  }
+
+  :global(body::before) {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.02) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 3px
+    );
+    pointer-events: none;
+    z-index: 9999;
   }
 
   /* Earthy Rainbow Bar */
@@ -221,6 +240,20 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   main {
     min-height: calc(100vh - 200px);
+  }
+
+  /* Gradient transition for pages without hero sections */
+  main.main-content::before {
+    content: '';
+    display: block;
+    height: 80px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #2a2a2a 20%, #4a4a4a 40%, #7a7a7a 60%, #a0a0a0 75%, #c5c5c5 87%, #e0e0e0 94%, #f5f5f5 100%);
+  }
+
+  /* Hide gradient on pages that have hero/page-header sections */
+  main.main-content:has(.hero)::before,
+  main.main-content:has(.retro-page-header)::before {
+    display: none;
   }
 
   footer {
