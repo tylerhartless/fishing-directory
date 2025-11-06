@@ -183,3 +183,20 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* Mobile responsive layout */
+@media (max-width: 640px) {
+  .search-form {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-form input {
+    width: 100%;
+  }
+
+  .btn-search {
+    width: 100%;
+    padding: 1rem;
+  }
+}
