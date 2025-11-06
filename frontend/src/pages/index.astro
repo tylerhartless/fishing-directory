@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SearchWidget from '../components/SearchWidget.tsx';
+
+const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
 ---
 
 <Layout
@@ -7,53 +10,27 @@ import Layout from '../layouts/Layout.astro';
   description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
 >
   <section class="hero">
+    <div class="rainbow-accent"></div>
     <div class="container">
-      <h1>Stop Searching "Fishing Spots Near Me"</h1>
-      <p class="tagline">Find your perfect fishing location here!</p>
+      <div class="hero-header">
+        <h1>wherecanifish.com</h1>
+        <p class="tagline">Stop fishing for spots near you and catch one here! 🎣</p>
+      </div>
 
       <div class="search-container">
-        <div class="location-prompt">
-          <svg class="location-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          <p>Enter or select a location to see fishing spots</p>
-        </div>
-
-        <div class="search-actions">
-          <button type="button" id="use-location-btn" class="btn-primary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Use Current Location
-          </button>
-
-          <div class="search-divider">or</div>
-
-          <form class="search-form" id="location-search-form">
-            <input
-              type="text"
-              id="location-search"
-              placeholder="Enter city, county, or zip code..."
-              autocomplete="off"
-            />
-            <button type="submit" class="btn-search">Search</button>
-          </form>
-
-          <div id="search-suggestions" class="suggestions"></div>
-        </div>
+        <SearchWidget nominatimEmail={nominatimEmail} client:idle />
       </div>
 
       <div class="quick-stats">
-        <div class="stat">
+        <div class="stat stat-red">
           <strong>4,200+</strong>
           <span>Fishing Spots</span>
         </div>
-        <div class="stat">
+        <div class="stat stat-green">
           <strong>Texas</strong>
           <span>Available Now</span>
         </div>
-        <div class="stat">
+        <div class="stat stat-blue">
           <strong>100%</strong>
           <span>Free Access</span>
         </div>
@@ -176,240 +153,180 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
   .hero {
-    background: linear-gradient(135deg, #1e4d2b 0%, #2d6a3f 50%, #3a8751 100%);
+    background: var(--primary-bg);
     color: white;
-    padding: 5rem 2rem 4rem;
+    padding: 0;
     text-align: center;
+    position: relative;
+  }
+
+  .rainbow-accent {
+    height: 12px;
+    background: var(--rainbow-gradient);
+  }
+
+  .hero .container {
+    padding: 2.5rem 2rem;
+  }
+
+  .hero-header {
+    margin-bottom: 2rem;
   }
 
   .hero h1 {
     font-size: 3rem;
     margin: 0 0 0.75rem 0;
-    font-weight: 700;
-    line-height: 1.2;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    color: var(--accent-cyan);
   }
 
   .tagline {
-    font-size: 1.5rem;
-    margin: 0 0 3rem 0;
-    opacity: 0.95;
-    font-weight: 500;
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--secondary-text);
+    font-weight: 600;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .search-container {
     max-width: 700px;
-    margin: 0 auto 3rem;
+    margin: 0 auto 2rem;
     background: white;
-    border-radius: 12px;
-    padding: 2.5rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    border: 4px solid var(--c64-yellow);
+    border-radius: 0;
+    padding: 2rem;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
     color: #333;
-  }
-
-  .location-prompt {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .location-icon {
-    color: #2d6a3f;
-    margin-bottom: 1rem;
-  }
-
-  .location-prompt p {
-    font-size: 1.1rem;
-    color: #666;
-    margin: 0;
-  }
-
-  .search-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .btn-primary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 2rem;
-    background: #ff6b35;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .btn-primary:hover {
-    background: #e55a2b;
-    transform: translateY(-2px);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-
-  .search-divider {
-    text-align: center;
-    color: #999;
-    font-size: 0.9rem;
-    position: relative;
-    margin: 0.5rem 0;
-  }
-
-  .search-divider::before,
-  .search-divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 40%;
-    height: 1px;
-    background: #ddd;
-  }
-
-  .search-divider::before {
-    left: 0;
-  }
-
-  .search-divider::after {
-    right: 0;
-  }
-
-  .search-form {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .search-form input {
-    flex: 1;
-    padding: 1rem;
-    font-size: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    transition: border-color 0.2s;
-  }
-
-  .search-form input:focus {
-    outline: none;
-    border-color: #2d6a3f;
-  }
-
-  .btn-search {
-    padding: 1rem 2rem;
-    background: #2d6a3f;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .btn-search:hover {
-    background: #1e4d2b;
-  }
-
-  .suggestions {
-    display: none;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-top: 0.5rem;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  .suggestions.active {
-    display: block;
-  }
-
-  .suggestion-item {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .suggestion-item:hover {
-    background: #f5f5f5;
-  }
-
-  .suggestion-item:last-child {
-    border-bottom: none;
   }
 
   .quick-stats {
     display: flex;
     justify-content: center;
-    gap: 4rem;
-    margin-top: 3rem;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
   }
 
   .stat {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: white;
+    border: 3px solid;
+    padding: 1.5rem 2rem;
+    min-width: 140px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .stat-red {
+    border-color: var(--c64-red);
+  }
+
+  .stat-green {
+    border-color: var(--c64-green);
+  }
+
+  .stat-blue {
+    border-color: var(--c64-blue);
   }
 
   .stat strong {
     font-size: 2.5rem;
     display: block;
-    font-weight: 700;
+    font-weight: 900;
+    color: var(--neutral-black);
   }
 
   .stat span {
-    opacity: 0.9;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--neutral-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding: 2.5rem 2rem;
   }
 
   h2 {
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     text-align: center;
-    color: #1e4d2b;
+    color: var(--neutral-black);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  h2::after {
+    content: '';
+    display: block;
+    width: 150px;
+    height: 6px;
+    background: var(--rainbow-gradient);
+    margin: 0.5rem auto 0;
   }
 
   .section-subtitle {
     text-align: center;
     color: #666;
     font-size: 1.1rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
   }
 
   .popular-locations {
-    background: #f9fafb;
+    background: var(--neutral-bg);
   }
 
   .location-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   .location-card {
     background: white;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    border: 4px solid;
+    border-radius: 0;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
-    transition: all 0.2s;
+    transition: all 0.1s;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .location-card:nth-child(1) {
+    border-color: var(--box-aqua);
+  }
+
+  .location-card:nth-child(2) {
+    border-color: var(--box-pink);
+  }
+
+  .location-card:nth-child(3) {
+    border-color: var(--box-mint);
+  }
+
+  .location-card:nth-child(4) {
+    border-color: var(--box-peach);
   }
 
   .location-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    border-color: #2d6a3f;
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
   }
 
   .location-header {
@@ -421,23 +338,27 @@ import Layout from '../layouts/Layout.astro';
 
   .location-header h3 {
     margin: 0;
-    color: #1e4d2b;
-    font-size: 1.3rem;
+    color: var(--neutral-black);
+    font-size: 1.4rem;
+    font-weight: 900;
   }
 
   .spot-count {
-    background: #e8f5e9;
-    color: #2d6a3f;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: var(--neutral-black);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .location-card > p {
-    color: #666;
+    color: #555;
     margin: 0 0 1rem 0;
     line-height: 1.5;
+    font-weight: 500;
   }
 
   .location-features {
@@ -447,48 +368,73 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .feature-badge {
-    background: #f3f4f6;
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    color: #555;
+    background: var(--neutral-black);
+    color: white;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
 
   .browse-all {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 
   .btn-secondary {
     display: inline-block;
     padding: 1rem 2rem;
-    background: white;
-    color: #2d6a3f;
-    border: 2px solid #2d6a3f;
-    border-radius: 8px;
+    background: var(--box-lavender);
+    color: var(--neutral-black);
+    border: 3px solid var(--neutral-black);
+    border-radius: 0;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
+    font-weight: 700;
+    transition: all 0.1s;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .btn-secondary:hover {
-    background: #2d6a3f;
-    color: white;
+    background: var(--accent-cyan);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
   }
 
   .features-section {
     background: white;
-    padding: 4rem 0;
+    padding: 2.5rem 0;
   }
 
   .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .feature {
     text-align: center;
+    background: white;
+    border: 3px solid var(--neutral-black);
+    padding: 2rem 1.5rem;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.2);
+  }
+
+  .feature:nth-child(1) {
+    background: var(--box-aqua);
+  }
+
+  .feature:nth-child(2) {
+    background: var(--box-mint);
+  }
+
+  .feature:nth-child(3) {
+    background: var(--box-peach);
+  }
+
+  .feature:nth-child(4) {
+    background: var(--box-pink);
   }
 
   .feature-icon {
@@ -498,24 +444,27 @@ import Layout from '../layouts/Layout.astro';
 
   .feature h3 {
     margin: 0 0 0.75rem 0;
-    color: #1e4d2b;
+    color: var(--neutral-black);
     font-size: 1.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
   }
 
   .feature p {
     margin: 0;
-    color: #666;
+    color: var(--neutral-black);
     line-height: 1.6;
+    font-weight: 600;
   }
 
   .coverage-section {
-    background: #f9fafb;
+    background: var(--neutral-bg);
   }
 
   .coverage-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
     max-width: 800px;
     margin: 0 auto;
   }
@@ -523,24 +472,27 @@ import Layout from '../layouts/Layout.astro';
   .coverage-state {
     background: white;
     padding: 2rem;
-    border-radius: 12px;
-    border: 2px solid #e5e7eb;
+    border-radius: 0;
+    border: 4px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
   .coverage-state.active {
-    border-color: #2d6a3f;
-    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border-color: var(--c64-green);
+    background: var(--box-mint);
   }
 
   .coverage-state h3 {
     margin: 0 0 1rem 0;
     font-size: 1.5rem;
     text-align: left;
+    font-weight: 900;
   }
 
   .coverage-state p {
     margin: 0 0 1rem 0;
-    color: #666;
+    color: var(--neutral-black);
+    font-weight: 600;
   }
 
   .coverage-state ul {
@@ -551,8 +503,9 @@ import Layout from '../layouts/Layout.astro';
 
   .coverage-state li {
     padding: 0.5rem 0;
-    color: #555;
-    border-bottom: 1px solid #f0f0f0;
+    color: var(--neutral-black);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    font-weight: 600;
   }
 
   .coverage-state li:last-child {
@@ -560,7 +513,8 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .coverage-state.coming-soon {
-    opacity: 0.7;
+    background: var(--neutral-white);
+    border-color: var(--neutral-gray);
   }
 
   .stay-tuned {
@@ -569,21 +523,33 @@ import Layout from '../layouts/Layout.astro';
   }
 
   @media (max-width: 768px) {
+    .hero .container {
+      padding: 2rem 1.5rem;
+    }
+
     .hero h1 {
       font-size: 2rem;
+      letter-spacing: 0.05em;
     }
 
     .tagline {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .search-container {
       padding: 1.5rem;
+      border-width: 3px;
+      margin-bottom: 1.5rem;
     }
 
     .quick-stats {
-      flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .stat {
+      min-width: 120px;
+      padding: 1rem 1.5rem;
     }
 
     .stat strong {
@@ -592,161 +558,15 @@ import Layout from '../layouts/Layout.astro';
 
     .location-grid {
       grid-template-columns: 1fr;
-    }
-  }
-</style>
-
-<script>
-  // Use current location button
-  const useLocationBtn = document.getElementById('use-location-btn');
-  const locationSearch = document.getElementById('location-search') as HTMLInputElement;
-  const searchForm = document.getElementById('location-search-form') as HTMLFormElement;
-
-  useLocationBtn?.addEventListener('click', () => {
-    if ('geolocation' in navigator) {
-      useLocationBtn.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="4" stroke-dasharray="80" stroke-dashoffset="60"/></svg> Getting location...';
-      useLocationBtn.setAttribute('disabled', 'true');
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          // Redirect to universal spots page with coordinates
-          window.location.href = `/spots?lat=${latitude}&lon=${longitude}`;
-        },
-        (error) => {
-          let errorMessage = 'Unable to get your location. ';
-
-          if (error.code === error.PERMISSION_DENIED) {
-            errorMessage += 'Location permission was denied. Please enable it in your browser settings.';
-          } else if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost') {
-            errorMessage += 'Location requires HTTPS when not on localhost. Please search manually or enable HTTPS.';
-          } else {
-            errorMessage += 'Please enter your location manually.';
-          }
-
-          alert(errorMessage);
-          useLocationBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Use Current Location';
-          useLocationBtn.removeAttribute('disabled');
-        }
-      );
-    } else {
-      alert('Geolocation is not supported by your browser');
-    }
-  });
-
-  // Search form handling (NOW WITH GEOCODING)
-  searchForm?.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Stop the form
-    console.log('[INDEX.ASTRO] Search submitted.');
-
-    // This file uses 'locationSearch', which is correct
-    const query = locationSearch.value.trim();
-    if (!query) return;
-
-    // Nominatim requires a contact email per their usage policy
-    // If you want to use your own email, set PUBLIC_NOMINATIM_EMAIL in your .env file
-    const email = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
-
-    // Make the query more specific for better results
-    const specificQuery = query + ', texas';
-    const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(specificQuery)}&format=json&limit=1&email=${email}`;
-
-    console.log(`[INDEX.ASTRO] Fetching: ${apiUrl}`);
-    
-    // Show loading state
-    const searchButton = searchForm.querySelector('button[type="submit"]');
-    if (searchButton) {
-      searchButton.innerHTML = 'Searching...';
-      searchButton.disabled = true;
+      gap: 1.25rem;
     }
 
-    try {
-      const response = await fetch(apiUrl);
-
-      if (!response.ok) {
-        console.error(`[INDEX.ASTRO] Nominatim API request failed: ${response.status}`);
-        throw new Error(`API response not OK: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('[INDEX.ASTRO] Nominatim response:', data);
-
-      if (data && data.length > 0) {
-        // SUCCESS
-        const lat = data[0].lat;
-        const lon = data[0].lon;
-        console.log(`[INDEX.ASTRO] Geocoding success: ${lat}, ${lon}. Redirecting...`);
-        window.location.href = `/spots?lat=${lat}&lon=${lon}`;
-      } else {
-        // FAIL (No results)
-        console.warn('[INDEX.ASTRO] No results from Nominatim. Falling back to text search.');
-        window.location.href = `/spots?q=${encodeURIComponent(query)}`;
-      }
-    } catch (error) {
-      // FAIL (Fetch error)
-      console.error('[INDEX.ASTRO] Geocoding fetch error:', error);
-      console.warn('[INDEX.ASTRO] Error during fetch. Falling back to text search.');
-      window.location.href = `/spots?q=${encodeURIComponent(query)}`;
-    }
-  });
-
-  // Simple autocomplete for common Texas locations
-  const commonLocations = [
-    { name: 'Houston', county: 'Harris' },
-    { name: 'Austin', county: 'Travis' },
-    { name: 'Dallas', county: 'Dallas' },
-    { name: 'Fort Worth', county: 'Tarrant' },
-    { name: 'San Antonio', county: 'Bexar' },
-  ];
-
-  locationSearch?.addEventListener('input', (e) => {
-    const value = (e.target as HTMLInputElement).value.toLowerCase();
-    const suggestions = document.getElementById('search-suggestions');
-
-    if (value.length < 2) {
-      suggestions?.classList.remove('active');
-      return;
+    .container {
+      padding: 2rem 1.5rem;
     }
 
-    const matches = commonLocations.filter(loc =>
-      loc.name.toLowerCase().includes(value) ||
-      loc.county.toLowerCase().includes(value)
-    );
-
-    if (matches.length > 0) {
-      suggestions!.innerHTML = matches.map(loc =>
-        `<div class="suggestion-item" data-county="${loc.county}">${loc.name} (${loc.county} County)</div>`
-      ).join('');
-      suggestions?.classList.add('active');
-
-      // Add click handlers
-      suggestions?.querySelectorAll('.suggestion-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const county = item.getAttribute('data-county');
-          const countySlug = county.toLowerCase().replace(/\s+/g, '-');
-          window.location.href = `/texas/${countySlug}`;
-        });
-      });
-    } else {
-      suggestions?.classList.remove('active');
+    h2 {
+      font-size: 2rem;
     }
-  });
-
-  // Close suggestions when clicking outside
-  document.addEventListener('click', (e) => {
-    const suggestions = document.getElementById('search-suggestions');
-    if (!(e.target as Element).closest('.search-form')) {
-      suggestions?.classList.remove('active');
-    }
-  });
-</script>
-
-<style>
-  .spinner {
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
   }
 </style>

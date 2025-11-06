@@ -1,4 +1,7 @@
 ---
+import '../styles/retro-colors.css';
+import '../styles/search-widget.css';
+
 interface Props {
   title: string;
   description?: string;
@@ -31,8 +34,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   </head>
   <body>
     <header>
+      <div class="rainbow-bar"></div>
       <nav class="container">
-        <a href="/" class="logo">Public Fishing Directory</a>
+        <a href="/" class="logo">
+          <span class="logo-main">WCIF?</span>
+        </a>
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/browse">Browse</a></li>
@@ -60,25 +66,56 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.6;
     color: #333;
+    background: #f5f5f5;
+  }
+
+  /* Commodore 64 Rainbow Bar */
+  .rainbow-bar {
+    height: 8px;
+    background: linear-gradient(
+      to right,
+      #9f4e44 0%,      /* Red */
+      #9f4e44 14.28%,
+      #cb7e5f 14.28%,  /* Orange */
+      #cb7e5f 28.56%,
+      #cbcb9f 28.56%,  /* Yellow */
+      #cbcb9f 42.84%,
+      #6d9f6f 42.84%,  /* Green */
+      #6d9f6f 57.12%,
+      #5f7fcb 57.12%,  /* Blue */
+      #5f7fcb 71.4%,
+      #7f5fcb 71.4%,   /* Indigo */
+      #7f5fcb 85.68%,
+      #9f4e9f 85.68%,  /* Purple */
+      #9f4e9f 100%
+    );
   }
 
   header {
-    background: #2c5530;
+    background: #4040a0;
     color: white;
-    padding: 1rem 0;
+    padding: 0;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
   }
 
   nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 0;
   }
 
   .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
     color: white;
     text-decoration: none;
+  }
+
+  .logo-main {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: #ffffff;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
   }
 
   nav ul {
@@ -92,10 +129,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   nav a {
     color: white;
     text-decoration: none;
+    font-weight: 500;
   }
 
   nav a:hover {
-    text-decoration: underline;
+    color: #c0c0ff;
   }
 
   .container {
@@ -109,11 +147,26 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   footer {
-    background: #f5f5f5;
+    background: #4040a0;
     padding: 2rem 0;
-    margin-top: 4rem;
+    margin-top: 2.5rem;
     text-align: center;
     font-size: 0.9rem;
-    color: #666;
+    color: #c0c0ff;
+    border-top: 8px solid transparent;
+    border-image: linear-gradient(
+      to right,
+      #9f4e44,
+      #cb7e5f,
+      #cbcb9f,
+      #6d9f6f,
+      #5f7fcb,
+      #7f5fcb,
+      #9f4e9f
+    ) 1;
+  }
+
+  footer p {
+    margin: 0.5rem 0;
   }
 </style>
