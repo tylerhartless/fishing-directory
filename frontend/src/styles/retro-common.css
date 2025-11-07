@@ -60,7 +60,7 @@
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15); /* Subtle letterpress effect */
   filter: none;
   font-weight: 700;
-  text-transform: uppercase; /* Vintage ad ALL CAPS style */
+  text-transform: capitalize;
   letter-spacing: 0.08em; /* More spacing for catalog style */
 }
 
@@ -434,7 +434,7 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] h6 {
   color: var(--theme-heading-color);
   font-weight: 900; /* Extra bold for vintage catalog */
-  text-transform: uppercase; /* ALL CAPS for catalog style */
+  text-transform: capitalize;
   letter-spacing: 0.05em;
 }
 
