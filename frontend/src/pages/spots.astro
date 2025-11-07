@@ -69,17 +69,6 @@ const stateSlugLookup = {
   </section>
 
   <section class="retro-container">
-    <form class="search-box-top" id="search-form">
-      <input
-        type="text"
-        name="q"
-        placeholder="Search by location, lake, county..."
-        id="search-input"
-        class="retro-input"
-      />
-      <button type="submit" class="retro-btn retro-btn-search">Search</button>
-    </form>
-
     <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
       <p id="error-text"></p>
     </div>
@@ -195,211 +184,213 @@ const stateSlugLookup = {
       0 0 15px rgba(168, 197, 168, 0.4);
   }
 
-  /* Terminal-style spot cards - inherits from retro-card */
-  /* Only add terminal-specific styling here */
-  .spot-card.terminal-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding: 1rem;
-  }
-
-  .terminal-line {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-bottom: 0.5rem;
-    position: relative;
-    z-index: 2;
-    flex-wrap: wrap;
-  }
-
-  .terminal-prompt {
+  /* Unified card styling - matches county pages */
+  .retro-card h3 {
+    margin: 0 0 0.75rem 0;
+    color: #ffffff;
+    font-size: 1.8rem;
     font-family: 'VT323', monospace;
-    font-size: 1.2rem;
-    color: #d4a574;
-    font-weight: 400;
-    text-shadow:
-      0 0 8px rgba(212, 165, 116, 0.6),
-      0 0 15px rgba(212, 165, 116, 0.4);
-  }
-
-  [data-theme="light"] .terminal-prompt {
-    color: var(--neutral-black);
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  .terminal-command {
-    font-family: 'VT323', monospace;
-    font-size: 1rem;
-    color: #a8c5a8;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-shadow:
-      0 0 8px rgba(168, 197, 168, 0.5),
-      0 0 12px rgba(168, 197, 168, 0.3);
-  }
-
-  [data-theme="light"] .terminal-command {
-    color: var(--earth-forest);
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  .terminal-name {
-    font-family: 'VT323', monospace;
-    font-size: 1.2rem;
-    color: #f0e6d2;
-    margin: 0;
     font-weight: 400;
     letter-spacing: 0.02em;
-    flex: 1;
     text-shadow:
-      0 0 10px rgba(240, 230, 210, 0.6),
-      0 0 20px rgba(240, 230, 210, 0.4);
+      0 0 10px rgba(255, 255, 255, 0.6),
+      0 0 20px rgba(255, 255, 255, 0.4);
   }
 
-  [data-theme="light"] .terminal-name {
-    color: var(--neutral-black) !important;
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  .terminal-data {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    position: relative;
-    z-index: 2;
-  }
-
-  .terminal-field {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-start;
-    font-family: 'VT323', monospace;
-    font-size: 1rem;
-  }
-
-  .terminal-label {
-    color: #b8944e;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    min-width: 90px;
-    flex-shrink: 0;
-    text-shadow:
-      0 0 6px rgba(184, 148, 78, 0.5),
-      0 0 10px rgba(184, 148, 78, 0.3);
-  }
-
-  [data-theme="light"] .terminal-label {
+  [data-theme="light"] .retro-card h3 {
     color: var(--neutral-black);
+    font-weight: 900;
     text-shadow: none;
-    font-weight: 700;
   }
 
-  .terminal-value {
-    color: #e5e5e5;
-    font-weight: 400;
-    flex: 1;
-  }
-
-  [data-theme="light"] .terminal-value {
-    color: var(--neutral-black);
-    font-weight: 700;
-  }
-
-  .terminal-badge {
-    background: rgba(168, 197, 168, 0.2);
-    border: 1px solid rgba(168, 197, 168, 0.4);
-    padding: 0.2rem 0.6rem;
-    color: #a8c5a8;
-    text-shadow:
-      0 0 6px rgba(168, 197, 168, 0.5);
-  }
-
-  [data-theme="light"] .terminal-badge {
-    background: var(--box-sage);
-    border: 2px solid var(--earth-forest);
-    color: var(--neutral-black);
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  .terminal-distance {
+  /* Distance indicator - only on /spots page */
+  .distance-indicator {
     color: #d4a574;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
     text-shadow:
       0 0 8px rgba(212, 165, 116, 0.6),
       0 0 12px rgba(212, 165, 116, 0.4);
   }
 
-  [data-theme="light"] .terminal-distance {
+  [data-theme="light"] .distance-indicator {
     color: var(--earth-rust);
     text-shadow: none;
+    font-weight: 700;
   }
 
-  .terminal-coords {
-    font-family: 'Courier New', monospace;
-    color: #b8944e;
-    text-shadow:
-      0 0 6px rgba(184, 148, 78, 0.5);
+  .spot-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
-  [data-theme="light"] .terminal-coords {
-    color: var(--neutral-gray);
+  .amenities-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+
+  .amenity-badge {
+    background: rgba(168, 197, 168, 0.15);
+    border: 1px solid rgba(168, 197, 168, 0.3);
+    color: #a8c5a8;
+    padding: 0.3rem 0.6rem;
+    font-size: 1rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
     text-shadow: none;
   }
 
-  .terminal-desc {
-    margin-top: 0.35rem;
-    padding-top: 0.35rem;
-    border-top: 1px solid rgba(212, 165, 116, 0.3);
+  [data-theme="light"] .amenity-badge {
+    background: rgba(122, 132, 80, 0.1);
+    border: 1px solid rgba(122, 132, 80, 0.3);
+    color: #5a6450;
+    text-shadow: none;
+    font-weight: 600;
   }
 
-  [data-theme="light"] .terminal-desc {
-    border-top-color: rgba(0, 0, 0, 0.1);
-  }
-
-  .terminal-desc .terminal-value {
-    font-size: 0.95rem;
-    line-height: 1.3;
-    color: #b0b0b0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  [data-theme="light"] .terminal-desc .terminal-value {
-    color: #666;
-  }
-
-  .terminal-amenities {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-  }
-
-  .terminal-field .amenity-badge {
-    background: rgba(184, 92, 58, 0.2);
-    border: 1px solid rgba(184, 92, 58, 0.4);
-    color: #d4a574;
-    padding: 0.15rem 0.4rem;
-    font-size: 0.85rem;
+  /* Spot type badge styling */
+  .spot-type {
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
-    text-shadow:
-      0 0 6px rgba(212, 165, 116, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
-  [data-theme="light"] .terminal-field .amenity-badge {
-    background: var(--box-rust);
-    border: 2px solid var(--earth-rust);
-    color: var(--neutral-black);
+  /* Colored card outlines and spot type badges based on spot type */
+
+  /* Lake - Blue for dark, slate blue for light */
+  .retro-card[data-spot-type="lake"] {
+    border-color: #5c9dff;
+    box-shadow: 0 0 12px rgba(92, 157, 255, 0.25);
+  }
+
+  .retro-card[data-spot-type="lake"] .spot-type {
+    background: rgba(92, 157, 255, 0.2);
+    border: 1px solid rgba(92, 157, 255, 0.5);
+    color: #5c9dff;
+    text-shadow: 0 0 6px rgba(92, 157, 255, 0.5);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="lake"] {
+    border-color: #5a6b73;
+    box-shadow: 2px 2px 0 rgba(90, 107, 115, 0.2);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="lake"] .spot-type {
+    background: #5a6b73;
+    border: 2px solid #3a4b53;
+    color: #ffffff;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  /* River Access - Purple for dark, deep purple for light */
+  .retro-card[data-spot-type="river_access"] {
+    border-color: #b88dff;
+    box-shadow: 0 0 12px rgba(184, 141, 255, 0.25);
+  }
+
+  .retro-card[data-spot-type="river_access"] .spot-type {
+    background: rgba(184, 141, 255, 0.2);
+    border: 1px solid rgba(184, 141, 255, 0.5);
+    color: #b88dff;
+    text-shadow: 0 0 6px rgba(184, 141, 255, 0.5);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="river_access"] {
+    border-color: #6b4a9e;
+    box-shadow: 2px 2px 0 rgba(107, 74, 158, 0.2);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="river_access"] .spot-type {
+    background: #6b4a9e;
+    border: 2px solid #5a3a8e;
+    color: #ffffff;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  /* Public Water - Green for dark, forest green for light */
+  .retro-card[data-spot-type="public_water"] {
+    border-color: #7ec97e;
+    box-shadow: 0 0 12px rgba(126, 201, 126, 0.25);
+  }
+
+  .retro-card[data-spot-type="public_water"] .spot-type {
+    background: rgba(126, 201, 126, 0.2);
+    border: 1px solid rgba(126, 201, 126, 0.5);
+    color: #7ec97e;
+    text-shadow: 0 0 6px rgba(126, 201, 126, 0.5);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="public_water"] {
+    border-color: #4a6741;
+    box-shadow: 2px 2px 0 rgba(74, 103, 65, 0.2);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="public_water"] .spot-type {
+    background: #4a6741;
+    border: 2px solid #3a5731;
+    color: #ffffff;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  /* State Park - Yellow-green for dark, olive green for light */
+  .retro-card[data-spot-type="state_park"] {
+    border-color: #a8d96e;
+    box-shadow: 0 0 12px rgba(168, 217, 110, 0.25);
+  }
+
+  .retro-card[data-spot-type="state_park"] .spot-type {
+    background: rgba(168, 217, 110, 0.2);
+    border: 1px solid rgba(168, 217, 110, 0.5);
+    color: #a8d96e;
+    text-shadow: 0 0 6px rgba(168, 217, 110, 0.5);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="state_park"] {
+    border-color: #7a8450;
+    box-shadow: 2px 2px 0 rgba(122, 132, 80, 0.2);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="state_park"] .spot-type {
+    background: #7a8450;
+    border: 2px solid #6a7440;
+    color: #ffffff;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  /* Fishing Pier - Gold for dark, sandy tan for light */
+  .retro-card[data-spot-type="fishing_pier"] {
+    border-color: #ffb84d;
+    box-shadow: 0 0 12px rgba(255, 184, 77, 0.25);
+  }
+
+  .retro-card[data-spot-type="fishing_pier"] .spot-type {
+    background: rgba(255, 184, 77, 0.2);
+    border: 1px solid rgba(255, 184, 77, 0.5);
+    color: #ffb84d;
+    text-shadow: 0 0 6px rgba(255, 184, 77, 0.5);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="fishing_pier"] {
+    border-color: #d4a574;
+    box-shadow: 2px 2px 0 rgba(212, 165, 116, 0.2);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="fishing_pier"] .spot-type {
+    background: #d4a574;
+    border: 2px solid #c49564;
+    color: #2d2d2d;
     text-shadow: none;
     font-weight: 700;
   }
@@ -478,23 +469,6 @@ const stateSlugLookup = {
     font-weight: 700;
   }
 
-  .amenities-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0.5rem 0;
-  }
-
-  .amenity-badge {
-    background: var(--box-sage);
-    color: var(--neutral-black);
-    padding: 0.4rem 0.7rem;
-    border-radius: 0;
-    font-size: 0.75rem;
-    border: 2px solid var(--neutral-black);
-    white-space: nowrap;
-    font-weight: 700;
-  }
 
   .no-results {
     text-align: center;
@@ -914,37 +888,25 @@ const stateSlugLookup = {
         ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
         : '';
 
+      const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
       // Get proper county slug for URL
       const countySlug = getCountySlug(spot.county);
 
+      // Format distance if available
+      const distanceHtml = spot.distance
+        ? `<div class="distance-indicator">${spot.distance < 0.1 ? (spot.distance * 5280).toFixed(0) + ' ft away' : spot.distance.toFixed(1) + ' mi away'}</div>`
+        : '';
+
       return `
-      <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card spot-card terminal-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
-        <div class="terminal-line">
-          <span class="terminal-prompt">></span>
-          <span class="terminal-command">RECORD:</span>
-          <h3 class="terminal-name">${displayName}</h3>
-        </div>
-        <div class="terminal-data">
-          <div class="terminal-field">
-            <span class="terminal-label">TYPE:</span>
-            <span class="terminal-value terminal-badge">${spot.spot_type.replace('_', ' ').toUpperCase()}</span>
+        <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
+          <h3>${displayName}</h3>
+          ${distanceHtml}
+          <div class="spot-meta">
+            <span class="retro-badge spot-type">${typeLabel}</span>
           </div>
-          <div class="terminal-field">
-            <span class="terminal-label">LOCATION:</span>
-            <span class="terminal-value">${spot.county === 'Multiple Counties' ? 'Multiple Counties' : spot.county + ' County'}, ${spot.state}</span>
-          </div>
-          <div class="terminal-field">
-            <span class="terminal-label">WATER_BODY:</span>
-            <span class="terminal-value">${spot.water_body_name}</span>
-          </div>
-          ${spot.distance
-            ? `<div class="terminal-field"><span class="terminal-label">DISTANCE:</span><span class="terminal-value terminal-distance">${spot.distance < 0.1 ? (spot.distance * 5280).toFixed(0) + ' ft' : spot.distance.toFixed(1) + ' mi'}</span></div>`
-            : `<div class="terminal-field"><span class="terminal-label">COORDS:</span><span class="terminal-value terminal-coords">[${parseFloat(spot.latitude).toFixed(4)}, ${parseFloat(spot.longitude).toFixed(4)}]</span></div>`
-          }
-          ${amenitiesHtml ? `<div class="terminal-field"><span class="terminal-label">AMENITIES:</span><div class="terminal-amenities">${prominentAmenities.join('')}</div></div>` : ''}
-          ${spot.description ? `<div class="terminal-field terminal-desc"><span class="terminal-label">INFO:</span><span class="terminal-value">${spot.description}</span></div>` : ''}
-        </div>
-      </a>
+          ${amenitiesHtml}
+        </a>
       `;
     }).join('');
   }

@@ -47,6 +47,9 @@ const counties = Object.entries(countyData)
 >
   <section class="retro-page-header">
     <div class="container">
+      <nav class="retro-breadcrumb">
+        <a href="/">Home</a> / Texas
+      </nav>
       <h1>Texas Fishing Spots by County</h1>
       <p class="subtitle">
         {texasSpots.length} fishing spots across {counties.length} counties
@@ -84,16 +87,16 @@ const counties = Object.entries(countyData)
     margin: 0;
     font-size: 1.3rem;
     font-family: 'VT323', monospace;
-    color: #f0e6d2;
+    color: var(--theme-heading-color);
     font-weight: 400;
     letter-spacing: 0.02em;
     flex: 1;
     text-shadow:
-      0 0 8px rgba(240, 230, 210, 0.5);
+      0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .county-header h3 {
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
