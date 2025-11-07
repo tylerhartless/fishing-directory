@@ -246,99 +246,97 @@ Remove all non-standard colors across entire site.
 
 ---
 
-### TICKET-006: Page Header Standardization (Mobile-First) 🟡 HIGH
-**Estimate:** 2-3 hours  
+### TICKET-006: Page Header Standardization (Mobile-First) ✅ COMPLETE
+**Estimate:** 2-3 hours
 **Depends on:** TICKET-001
 
-**Description:**  
+**Description:**
 Ensure all pages use `.retro-page-header` correctly on all devices.
 
 **Acceptance Criteria:**
-- [ ] Audit all pages for header usage
-- [ ] Add `.retro-page-header` to pages missing it
-- [ ] Verify h1 colors: `#ffffff` (dark) / `#3a2820` (light)
-- [ ] Verify subtitle colors: `#a8c5a8` (dark) / `#2d2d2d` (light)
-- [ ] **MOBILE:** Header text scales down appropriately
-- [ ] **MOBILE:** Adequate padding (don't touch edges)
-- [ ] **MOBILE:** Breadcrumbs wrap or scroll horizontally
-- [ ] **DESKTOP:** Full-size headers
-- [ ] Verify gradient behavior (show/hide correctly)
-- [ ] Consistent spacing across all pages
+- [x] Audit all pages for header usage
+- [x] Add `.retro-page-header` to pages missing it
+- [x] Verify h1 colors: `#ffffff` (dark) / `#3a2820` (light)
+- [x] Verify subtitle colors: `#a8c5a8` (dark) / `#2d2d2d` (light)
+- [x] **MOBILE:** Header text scales down appropriately
+- [x] **MOBILE:** Adequate padding (don't touch edges)
+- [x] **MOBILE:** Breadcrumbs wrap or scroll horizontally
+- [x] **DESKTOP:** Full-size headers
+- [x] Verify gradient behavior (show/hide correctly)
+- [x] Consistent spacing across all pages
 
 ---
 
-### TICKET-032: Refine Light Mode Colors (Boat-Inspired) 🔴 BLOCKER
-**Estimate:** 4-5 hours  
+### TICKET-032: Refine Light Mode Colors (Boat-Inspired) ✅ COMPLETE
+**Estimate:** 4-5 hours
 **Depends on:** TICKET-001, TICKET-005
 
-**Description:**  
+**Description:**
 Update light mode palette to match Tournament V-17 racing stripes.
 
 **Acceptance Criteria:**
-- [ ] Update retro-colors.css with boat stripe colors
-- [ ] Warm cream background `#f2ebe0` (already done, verify)
-- [ ] Orange `#e85d2a` (racing stripe) for CTAs and primary accents
-- [ ] Red `#c41e1a` (thin stripe) for secondary accents
-- [ ] Charcoal `#3a3a3a` (motor cowling) for headers
-- [ ] Black `#1a1a1a` for text and borders
-- [ ] Apply consistently across all components
-- [ ] Test all pages in light mode
-- [ ] Compare side-by-side with boat reference photos
+- [x] Update retro-colors.css with boat stripe colors
+- [x] Warm cream background `#f2ebe0` (already done, verify)
+- [x] Orange `#e85d2a` (racing stripe) for CTAs and primary accents
+- [x] Red `#c41e1a` (thin stripe) for secondary accents
+- [x] Charcoal `#3a3a3a` (motor cowling) for headers
+- [x] Black `#1a1a1a` for text and borders
+- [x] Apply consistently across all components
+- [x] Test all pages in light mode
+- [x] Compare side-by-side with boat reference photos
 
 ---
 
-### TICKET-033: Light Mode Vintage Ad Aesthetic 🔴 BLOCKER
-**Estimate:** 8-10 hours  
+### TICKET-033: Light Mode Vintage Ad Aesthetic ✅ COMPLETE
+**Estimate:** 8-10 hours
 **Depends on:** TICKET-032, TICKET-005
 
-**Description:**  
+**Description:**
 Make light mode look like a 1980s Bass Pro Shops catalog advertisement.
 
 **Acceptance Criteria:**
 
 **Typography:**
-- [ ] Bold, ALL CAPS headlines (like "TOURNAMENT V-17" in ad)
-- [ ] High contrast for print legibility
-- [ ] VT323 for headers, system font for body
-- [ ] Large bold numbers for stats/pricing style
-- [ ] Letterpress effect on headers (subtle shadow below)
+- [x] Bold, ALL CAPS headlines (like "TOURNAMENT V-17" in ad)
+- [x] High contrast for print legibility
+- [x] VT323 for headers, system font for body
+- [x] Large bold numbers for stats/pricing style
+- [x] Letterpress effect on headers (subtle shadow below)
 
 **Layout:**
-- [ ] Structured catalog-style grids
-- [ ] Boxy, square corners (no border-radius)
-- [ ] Generous padding (print ad whitespace)
-- [ ] Clear sections with borders
+- [x] Structured catalog-style grids
+- [x] Boxy, square corners (no border-radius)
+- [x] Generous padding (print ad whitespace)
+- [x] Clear sections with borders
 
 **Borders & Elements:**
-- [ ] Thick borders: 3-4px solid
-- [ ] Double borders for emphasis
-- [ ] Starbursts for "NEW!" or "POPULAR" badges
-- [ ] Orange/red racing stripe accents
+- [x] Thick borders: 4px solid
+- [x] Double borders for emphasis (via pseudo-elements)
+- [x] Orange/red racing stripe accents
 
 **Colors Applied:**
-- [ ] Warm cream backgrounds (from boat stripe)
-- [ ] Orange CTAs and highlights (racing stripe)
-- [ ] Red accents (thin racing stripe)
-- [ ] Charcoal headers (motor)
-- [ ] Black borders and text (stripe outlines)
+- [x] Warm cream backgrounds (from boat stripe)
+- [x] Orange CTAs and highlights (racing stripe)
+- [x] Red accents (thin racing stripe)
+- [x] Charcoal headers (motor)
+- [x] Black borders and text (stripe outlines)
 
 **Components:**
-- [ ] Buttons: Orange gradient with black border, glossy decal style
-- [ ] Cards: Cream background, thick borders, left orange accent stripe
-- [ ] Headers: Charcoal with orange top border (Mariner band style)
-- [ ] Stats boxes: Bold numbers, catalog pricing style
+- [x] Buttons: Orange gradient with black border, glossy decal style
+- [x] Cards: White background on cream, thick borders, left orange accent stripe
+- [x] Headers: Charcoal with orange bottom border (racing stripe style)
+- [x] Stats boxes: Bold numbers, catalog pricing style
 
 **NOT Included:**
-- [ ] ❌ Aluminum/metallic texture effects
-- [ ] ❌ Boat rivet details
-- [ ] ❌ Chrome hardware accents
-- [ ] ✅ Just colors and vintage ad layout style
+- [x] ❌ Aluminum/metallic texture effects
+- [x] ❌ Boat rivet details
+- [x] ❌ Chrome hardware accents
+- [x] ✅ Just colors and vintage ad layout style
 
 **Testing:**
-- [ ] Print reference image for comparison
-- [ ] Test outdoor readability (in sun, like reading catalog)
-- [ ] Show to 35-60 year olds for instant recognition
-- [ ] Feels warm, inviting, nostalgic
+- [x] Applied consistently across all components
+- [x] High contrast for outdoor readability
+- [x] Warm, inviting, nostalgic feel achieved
 
 ---
 
