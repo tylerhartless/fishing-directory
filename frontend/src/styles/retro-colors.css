@@ -43,8 +43,10 @@
   /* Theme Colors - Default Dark Mode */
   --theme-bg: #1a1a1a;          /* Darker background for dark mode */
   --theme-bg-alt: #202020;
+  --theme-bg-forest: #0d1f0d;   /* Dark forest green background */
   --theme-text: #e5e5e5;
   --theme-text-secondary: #b0b0b0;
+  --theme-text-sage: #a8c5a8;   /* Sage green accent text */
   --theme-card-bg: #252525;
   --theme-card-border: rgba(255, 255, 255, 0.1);
   --theme-shadow: rgba(0, 0, 0, 0.5);
@@ -53,14 +55,26 @@
   --theme-heading-color: #ffffff; /* White headers for dark mode */
   --theme-breadcrumb-color: #39ff14; /* Green for breadcrumbs in dark mode */
   --theme-breadcrumb-hover: #50ff30; /* Brighter green for hover/active */
+
+  /* Additional gray shades for UI elements */
+  --gray-darkest: #333;
+  --gray-darker: #444;
+  --gray-dark: #555;
+  --gray-medium: #666;
+  --gray-light: #888;
+  --gray-medium-light: #999;
+  --gray-lighter: #ddd;
+  --gray-lightest: #e0e0e0;
 }
 
 /* Light Mode */
 [data-theme="light"] {
   --theme-bg: #f5f1e8;
   --theme-bg-alt: #ffffff;
+  --theme-bg-forest: #f5f1e8;   /* Override forest bg for light mode */
   --theme-text: #2d2d2d;
   --theme-text-secondary: #555555;
+  --theme-text-sage: #4a6741;   /* Darker green for light mode */
   --theme-card-bg: #ffffff;
   --theme-card-border: rgba(0, 0, 0, 0.1);
   --theme-shadow: rgba(0, 0, 0, 0.1);

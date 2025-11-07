@@ -2,7 +2,7 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: #0d1f0d;
+  background: var(--theme-bg-forest);
   color: white;
   padding: 0;
   text-align: left;
@@ -25,7 +25,7 @@
 }
 
 [data-theme="light"] .retro-page-header {
-  background: #f5f1e8;
+  background: var(--neutral-bg);
 }
 
 [data-theme="light"] .retro-page-header::after {
@@ -65,7 +65,7 @@
 .retro-page-header .subtitle {
   font-family: 'VT323', monospace;
   font-size: 1.6rem;
-  color: #a8c5a8;
+  color: var(--theme-text-sage);
   text-shadow:
     0 0 8px rgba(168, 197, 168, 0.6),
     0 0 15px rgba(168, 197, 168, 0.4);
@@ -108,7 +108,7 @@
   border-radius: 0;
   padding: 1.5rem;
   text-decoration: none;
-  color: #b0b0b0;
+  color: var(--theme-text-secondary);
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
@@ -240,7 +240,7 @@
 .retro-btn-search {
   font-family: 'VT323', monospace;
   background: rgba(168, 197, 168, 0.15);
-  color: #a8c5a8;
+  color: var(--theme-text-sage);
   border: 2px solid rgba(168, 197, 168, 0.5);
   font-size: 1.15rem;
   font-weight: 400;
@@ -284,7 +284,7 @@
   font-weight: 400;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.6);
-  color: #e5e5e5;
+  color: var(--theme-text);
   box-shadow:
     0 0 10px rgba(168, 197, 168, 0.2),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
@@ -312,11 +312,11 @@
 }
 
 .retro-input::placeholder {
-  color: #888;
+  color: var(--gray-light);
 }
 
 [data-theme="light"] .retro-input::placeholder {
-  color: #999;
+  color: var(--gray-medium-light);
 }
 
 .retro-select {
@@ -326,7 +326,7 @@
   border: 2px solid rgba(168, 197, 168, 0.5);
   border-radius: 0;
   background: rgba(0, 0, 0, 0.6);
-  color: #e5e5e5;
+  color: var(--theme-text);
   cursor: pointer;
   font-weight: 400;
   box-shadow:
@@ -460,7 +460,7 @@ h1, h2, h3, h4, h5, h6 {
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
-  color: #b0b0b0;
+  color: var(--theme-text-secondary);
 }
 
 .retro-section::before {
@@ -596,7 +596,7 @@ h1, h2, h3, h4, h5, h6 {
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
-  color: #b0b0b0;
+  color: var(--theme-text-secondary);
 }
 
 .retro-info-box::before {
@@ -643,7 +643,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 0 1rem 0;
   font-size: 1.3rem;
   font-weight: 400;
-  color: #a8c5a8;
+  color: var(--theme-text-sage);
   font-family: 'VT323', monospace;
   text-transform: uppercase;
   letter-spacing: 0.05em;
