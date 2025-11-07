@@ -2,9 +2,10 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 20%, #0f2a0f 35%, #101010 50%, #131313 65%, #171717 80%, #1a1a1a 100%);
+  background: linear-gradient(180deg, #0d1f0d 0%, #0d1f0d 180px, #0e250e 240px, #0f2a0f 300px, #101010 420px, #151515 540px, #1a1a1a 100%);
   color: white;
   padding: 0;
+  padding-bottom: 400px;
   text-align: left;
   position: relative;
   overflow: hidden;
@@ -13,6 +14,7 @@
 
 [data-theme="light"] .retro-page-header {
   background: #f5f1e8;
+  padding-bottom: 0;
 }
 
 /* Removed scanlines from page header for better alignment and visual consistency */
@@ -20,7 +22,7 @@
 .retro-page-header .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.25rem 2rem 1rem 2rem;
+  padding: 1.25rem 2rem 0.5rem 2rem;
   position: relative;
   z-index: 2;
 }
@@ -74,7 +76,7 @@
 .retro-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0.75rem 2rem 2.5rem 2rem;
+  padding: 0 2rem 2.5rem 2rem;
   background: var(--theme-bg);
   min-height: 60vh;
 }
