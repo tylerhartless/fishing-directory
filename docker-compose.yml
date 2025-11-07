@@ -20,6 +20,12 @@ services:
     command: >
       bash -c "docker-php-ext-install mysqli pdo pdo_mysql
       && apache2-foreground"
+    healthcheck:
+      test: ["CMD-SHELL", "service apache2 status || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Astro Frontend Dev Server
   astro:
@@ -39,7 +45,8 @@ services:
     networks:
       - fishing_network
     depends_on:
-      - php
+      php:
+        condition: service_healthy
 
 networks:
   fishing_network:
