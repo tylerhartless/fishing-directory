@@ -41,25 +41,25 @@
 
 ## Sprint 0: Foundation & Audit
 
-### TICKET-001: Repository Audit & CSS Analysis 🔴 BLOCKER
-**Estimate:** 1-2 hours  
+### TICKET-001: Repository Audit & CSS Analysis ✅ COMPLETE
+**Estimate:** 1-2 hours
 **Depends on:** None
 
-**Description:**  
+**Description:**
 Get repo access and perform comprehensive audit of current codebase state.
 
 **Acceptance Criteria:**
-- [ ] Repo access obtained (GitHub URL or local path)
-- [ ] Complete CSS file structure documented
-- [ ] Import chains mapped (which files import what)
-- [ ] Duplicate styles identified across files
-- [ ] Component audit complete (shared vs custom styles)
-- [ ] Mobile-first assessment: identify mobile issues
-- [ ] Findings document created with refactoring priorities
+- [x] Repo access obtained (GitHub URL or local path)
+- [x] Complete CSS file structure documented
+- [x] Import chains mapped (which files import what)
+- [x] Duplicate styles identified across files
+- [x] Component audit complete (shared vs custom styles)
+- [x] Mobile-first assessment: identify mobile issues
+- [x] Findings document created with refactoring priorities
 
 ---
 
-### TICKET-002: Create GitHub Project & Issue Templates 🟢 MEDIUM
+### TICKET-002: Create GitHub Project & Issue Templates ✅ COMPLETE
 **Estimate:** 30 minutes
 **Depends on:** None
 
@@ -67,11 +67,11 @@ Get repo access and perform comprehensive audit of current codebase state.
 Set up project management infrastructure.
 
 **Acceptance Criteria:**
-- [ ] GitHub project created
-- [ ] Issue templates defined (bug, feature, css, design)
-- [ ] Milestones created (Pre-Launch, Post-Launch, Future)
-- [ ] Labels configured (priority, type, platform)
-- [ ] This ticket list converted to actual GitHub issues
+- [x] GitHub project created
+- [x] Issue templates defined (bug, feature, css, design)
+- [x] Milestones created (Pre-Launch, Post-Launch, Future)
+- [x] Labels configured (priority, type, platform)
+- [x] This ticket list converted to actual GitHub issues
 
 ---
 
@@ -185,46 +185,46 @@ Ensure we're maximizing Astro's capabilities for performance and UX.
 
 ## Sprint 1: CSS Architecture & Color Unification
 
-### TICKET-003: Refactor Search Widget CSS (Mobile-First) 🔴 BLOCKER
-**Estimate:** 3-4 hours  
+### TICKET-003: Refactor Search Widget CSS (Mobile-First) ✅ COMPLETE
+**Estimate:** 3-4 hours
 **Depends on:** TICKET-001, TICKET-031
 
-**Description:**  
+**Description:**
 Remove bright green `#00ff00`, use retro-common.css classes, optimize for mobile.
 
 **Acceptance Criteria:**
-- [ ] Replace custom button styles with `.retro-btn-search`
-- [ ] Replace custom input styles with `.retro-input`
-- [ ] Replace `#00ff00` with proper colors (`#39ff14` sparingly, `#d4a574` for labels)
-- [ ] Use retro-colors.css variables throughout
-- [ ] **MOBILE:** Full-width buttons, min 44px touch targets
-- [ ] **MOBILE:** Stack all elements vertically
-- [ ] **MOBILE:** Large readable text (VT323 scales well)
-- [ ] **DESKTOP:** Maintain layout, scale appropriately
-- [ ] Test on actual devices (iOS Safari, Chrome Android)
-- [ ] Test dark and light modes
-- [ ] No visual regressions
+- [x] Replace custom button styles with `.retro-btn-search`
+- [x] Replace custom input styles with `.retro-input`
+- [x] Replace `#00ff00` with proper colors (`#39ff14` sparingly, `#d4a574` for labels)
+- [x] Use retro-colors.css variables throughout
+- [x] **MOBILE:** Full-width buttons, min 44px touch targets
+- [x] **MOBILE:** Stack all elements vertically
+- [x] **MOBILE:** Large readable text (VT323 scales well)
+- [x] **DESKTOP:** Maintain layout, scale appropriately
+- [x] Test on actual devices (iOS Safari, Chrome Android)
+- [x] Test dark and light modes
+- [x] No visual regressions
 
 ---
 
-### TICKET-004: Consolidate Home Page CSS (Mobile-First) 🔴 BLOCKER
-**Estimate:** 4-5 hours  
+### TICKET-004: Consolidate Home Page CSS (Mobile-First) ✅ COMPLETE
+**Estimate:** 4-5 hours
 **Depends on:** TICKET-001, TICKET-031
 
-**Description:**  
+**Description:**
 Move reusable home page styles to shared files, ensure mobile excellence.
 
 **Acceptance Criteria:**
-- [ ] Duplicate styles moved to retro-common.css
-- [ ] Stat boxes use `.retro-card` class
-- [ ] County cards use 4-color border rotation (sage/rust/moss/tan)
-- [ ] **MOBILE:** Single column layout, cards full-width
-- [ ] **MOBILE:** Touch-friendly spacing (min 8px gaps)
-- [ ] **MOBILE:** Readable text sizes (16px minimum body)
-- [ ] **DESKTOP:** 2-3 column grid
-- [ ] Page-specific CSS reduced 30%+
-- [ ] Layout doesn't break at any viewport size
-- [ ] Test on actual devices
+- [x] Duplicate styles moved to retro-common.css
+- [x] Stat boxes use `.retro-card` class
+- [x] County cards use 4-color border rotation (sage/rust/moss/tan)
+- [x] **MOBILE:** Single column layout, cards full-width
+- [x] **MOBILE:** Touch-friendly spacing (min 8px gaps)
+- [x] **MOBILE:** Readable text sizes (16px minimum body)
+- [x] **DESKTOP:** 2-3 column grid
+- [x] Page-specific CSS reduced 30%+
+- [x] Layout doesn't break at any viewport size
+- [x] Test on actual devices
 
 ---
 
