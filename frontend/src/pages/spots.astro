@@ -120,14 +120,14 @@ const stateSlugLookup = {
     margin-bottom: 0;
     font-size: 1.3rem;
     font-weight: 400;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     text-shadow:
       0 0 8px rgba(168, 197, 168, 0.6),
       0 0 15px rgba(168, 197, 168, 0.4);
   }
 
   [data-theme="dark"] .terminal-subtitle {
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
   }
 
   .search-box-top {
@@ -158,7 +158,7 @@ const stateSlugLookup = {
   .filter-controls label {
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #d4a574;
+    color: var(--earth-sand);
     font-size: 1.1rem;
     letter-spacing: 0.02em;
     text-shadow:
@@ -176,7 +176,7 @@ const stateSlugLookup = {
     text-align: center;
     padding: 3rem;
     font-family: 'VT323', monospace;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     font-weight: 400;
     font-size: 1.5rem;
     text-shadow:
@@ -187,7 +187,7 @@ const stateSlugLookup = {
   /* Unified card styling - matches county pages */
   .retro-card h3 {
     margin: 0 0 0.75rem 0;
-    color: #ffffff;
+    color: var(--neutral-white);
     font-size: 1.8rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
@@ -205,7 +205,7 @@ const stateSlugLookup = {
 
   /* Distance indicator - only on /spots page */
   .distance-indicator {
-    color: #d4a574;
+    color: var(--earth-sand);
     font-size: 1.1rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
@@ -237,7 +237,7 @@ const stateSlugLookup = {
   .amenity-badge {
     background: rgba(168, 197, 168, 0.15);
     border: 1px solid rgba(168, 197, 168, 0.3);
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     padding: 0.3rem 0.6rem;
     font-size: 1rem;
     font-family: 'VT323', monospace;
@@ -267,25 +267,25 @@ const stateSlugLookup = {
 
   /* Lake - Blue for dark, slate blue for light */
   .retro-card[data-spot-type="lake"] {
-    border-color: #5c9dff;
+    border-color: var(--badge-lake);
     box-shadow: 0 0 12px rgba(92, 157, 255, 0.25);
   }
 
   .retro-card[data-spot-type="lake"] .spot-type {
     background: rgba(92, 157, 255, 0.2);
     border: 1px solid rgba(92, 157, 255, 0.5);
-    color: #5c9dff;
+    color: var(--badge-lake);
     text-shadow: 0 0 6px rgba(92, 157, 255, 0.5);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="lake"] {
-    border-color: #5a6b73;
+    border-color: var(--badge-lake-light);
     box-shadow: 2px 2px 0 rgba(90, 107, 115, 0.2);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="lake"] .spot-type {
-    background: #5a6b73;
-    border: 2px solid #3a4b53;
+    background: var(--badge-lake-light);
+    border: 2px solid var(--badge-lake-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -293,25 +293,25 @@ const stateSlugLookup = {
 
   /* River Access - Purple for dark, deep purple for light */
   .retro-card[data-spot-type="river_access"] {
-    border-color: #b88dff;
+    border-color: var(--badge-river);
     box-shadow: 0 0 12px rgba(184, 141, 255, 0.25);
   }
 
   .retro-card[data-spot-type="river_access"] .spot-type {
     background: rgba(184, 141, 255, 0.2);
     border: 1px solid rgba(184, 141, 255, 0.5);
-    color: #b88dff;
+    color: var(--badge-river);
     text-shadow: 0 0 6px rgba(184, 141, 255, 0.5);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="river_access"] {
-    border-color: #6b4a9e;
+    border-color: var(--badge-river-light);
     box-shadow: 2px 2px 0 rgba(107, 74, 158, 0.2);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="river_access"] .spot-type {
-    background: #6b4a9e;
-    border: 2px solid #5a3a8e;
+    background: var(--badge-river-light);
+    border: 2px solid var(--badge-river-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -319,25 +319,25 @@ const stateSlugLookup = {
 
   /* Public Water - Green for dark, forest green for light */
   .retro-card[data-spot-type="public_water"] {
-    border-color: #7ec97e;
+    border-color: var(--badge-public);
     box-shadow: 0 0 12px rgba(126, 201, 126, 0.25);
   }
 
   .retro-card[data-spot-type="public_water"] .spot-type {
     background: rgba(126, 201, 126, 0.2);
     border: 1px solid rgba(126, 201, 126, 0.5);
-    color: #7ec97e;
+    color: var(--badge-public);
     text-shadow: 0 0 6px rgba(126, 201, 126, 0.5);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="public_water"] {
-    border-color: #4a6741;
+    border-color: var(--badge-public-light);
     box-shadow: 2px 2px 0 rgba(74, 103, 65, 0.2);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="public_water"] .spot-type {
-    background: #4a6741;
-    border: 2px solid #3a5731;
+    background: var(--badge-public-light);
+    border: 2px solid var(--badge-public-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -345,25 +345,25 @@ const stateSlugLookup = {
 
   /* State Park - Yellow-green for dark, olive green for light */
   .retro-card[data-spot-type="state_park"] {
-    border-color: #a8d96e;
+    border-color: var(--badge-park);
     box-shadow: 0 0 12px rgba(168, 217, 110, 0.25);
   }
 
   .retro-card[data-spot-type="state_park"] .spot-type {
     background: rgba(168, 217, 110, 0.2);
     border: 1px solid rgba(168, 217, 110, 0.5);
-    color: #a8d96e;
+    color: var(--badge-park);
     text-shadow: 0 0 6px rgba(168, 217, 110, 0.5);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="state_park"] {
-    border-color: #7a8450;
+    border-color: var(--badge-park-light);
     box-shadow: 2px 2px 0 rgba(122, 132, 80, 0.2);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="state_park"] .spot-type {
-    background: #7a8450;
-    border: 2px solid #6a7440;
+    background: var(--badge-park-light);
+    border: 2px solid var(--badge-park-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -371,25 +371,25 @@ const stateSlugLookup = {
 
   /* Fishing Pier - Gold for dark, sandy tan for light */
   .retro-card[data-spot-type="fishing_pier"] {
-    border-color: #ffb84d;
+    border-color: var(--badge-pier);
     box-shadow: 0 0 12px rgba(255, 184, 77, 0.25);
   }
 
   .retro-card[data-spot-type="fishing_pier"] .spot-type {
     background: rgba(255, 184, 77, 0.2);
     border: 1px solid rgba(255, 184, 77, 0.5);
-    color: #ffb84d;
+    color: var(--badge-pier);
     text-shadow: 0 0 6px rgba(255, 184, 77, 0.5);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="fishing_pier"] {
-    border-color: #d4a574;
+    border-color: var(--badge-pier-light);
     box-shadow: 2px 2px 0 rgba(212, 165, 116, 0.2);
   }
 
   [data-theme="light"] .retro-card[data-spot-type="fishing_pier"] .spot-type {
-    background: #d4a574;
-    border: 2px solid #c49564;
+    background: var(--badge-pier-light);
+    border: 2px solid var(--badge-pier-border-light);
     color: #2d2d2d;
     text-shadow: none;
     font-weight: 700;
@@ -431,12 +431,12 @@ const stateSlugLookup = {
   }
 
   .water-body {
-    color: #666;
+    color: var(--gray-medium);
     font-weight: 500;
   }
 
   .description {
-    color: #666;
+    color: var(--gray-medium);
     font-size: 0.9rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -474,7 +474,7 @@ const stateSlugLookup = {
     text-align: center;
     padding: 3rem;
     font-family: 'VT323', monospace;
-    color: #d4a574;
+    color: var(--earth-sand);
     font-weight: 400;
     font-size: 1.4rem;
     text-shadow:
@@ -507,7 +507,7 @@ const stateSlugLookup = {
 
   .search-results-info p {
     margin: 0;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     font-weight: 400;
     font-size: 1.1rem;
     flex: 1;
@@ -525,7 +525,7 @@ const stateSlugLookup = {
     background: rgba(184, 92, 58, 0.2);
     border: 1px solid rgba(184, 92, 58, 0.5);
     padding: 0.5rem 1rem;
-    color: #d4a574;
+    color: var(--earth-sand);
     text-decoration: none;
     font-weight: 400;
     font-size: 1rem;
@@ -598,7 +598,7 @@ const stateSlugLookup = {
 
   .data-accuracy-notice strong {
     font-weight: 400;
-    color: #f0e6d2;
+    color: var(--accent-cream);
     flex: 1;
     text-shadow:
       0 0 8px rgba(240, 230, 210, 0.5);
@@ -613,7 +613,7 @@ const stateSlugLookup = {
   .data-accuracy-notice .toggle-arrow {
     font-size: 0.9rem;
     transition: transform 0.2s ease;
-    color: #d4a574;
+    color: var(--earth-sand);
   }
 
   [data-theme="light"] .data-accuracy-notice .toggle-arrow {
@@ -629,7 +629,7 @@ const stateSlugLookup = {
     padding: 0 1rem 0.75rem 1rem;
     font-size: 1.05rem;
     line-height: 1.5;
-    color: #d4a574;
+    color: var(--earth-sand);
     font-weight: 400;
   }
 

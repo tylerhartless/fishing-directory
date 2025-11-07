@@ -191,7 +191,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     border: 2px solid rgba(168, 197, 168, 0.5);
     padding: 0.75rem 1.5rem;
     text-align: center;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     font-family: 'VT323', monospace;
     font-weight: 400;
     font-size: 1.05rem;
@@ -246,7 +246,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-size: 0.9rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
@@ -284,7 +284,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .section-subtitle {
-    color: #666;
+    color: var(--gray-medium);
   }
 
   /* Popular locations grid */
@@ -329,7 +329,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   .location-card > p {
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     margin: 0 0 1rem 0;
     line-height: 1.5;
     font-family: 'VT323', monospace;
@@ -338,7 +338,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .location-card > p {
-    color: #555;
+    color: var(--gray-dark);
     font-weight: 500;
   }
 
@@ -367,7 +367,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     padding: 1rem 2rem;
     font-family: 'VT323', monospace;
     background: rgba(168, 197, 168, 0.15);
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     border: 2px solid rgba(168, 197, 168, 0.5);
     border-radius: 0;
     text-decoration: none;
@@ -459,7 +459,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .feature p {
     margin: 0;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     line-height: 1.6;
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
@@ -519,7 +519,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .coverage-state p {
     margin: 0 0 1rem 0;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     font-weight: 400;
@@ -538,7 +538,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .coverage-state li {
     padding: 0.5rem 0;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     border-bottom: 1px solid rgba(168, 197, 168, 0.2);

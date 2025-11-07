@@ -170,7 +170,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   .filter-group label {
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #d4a574;
+    color: var(--earth-sand);
     font-size: 1.1rem;
     letter-spacing: 0.02em;
     text-shadow:
@@ -185,7 +185,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   .results-info {
     margin-bottom: 1.5rem;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-size: 1.05rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
@@ -198,7 +198,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   #count {
     font-weight: 400;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     text-shadow:
       0 0 6px rgba(168, 197, 168, 0.4);
   }
@@ -228,7 +228,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global(.water-body) {
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-size: 0.95rem;
     font-family: 'VT323', monospace;
     margin: 0 0 1rem 0;
@@ -236,7 +236,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global([data-theme="light"] .water-body) {
-    color: #666;
+    color: var(--gray-medium);
     font-weight: 500;
   }
 
@@ -256,7 +256,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   :global(.amenity-badge) {
     background: rgba(168, 197, 168, 0.15);
     border: 1px solid rgba(168, 197, 168, 0.3);
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     padding: 0.3rem 0.6rem;
     font-size: 1rem;
     font-family: 'VT323', monospace;
@@ -286,25 +286,25 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   /* Lake - Blue for dark, slate blue for light */
   :global(.retro-card[data-spot-type="lake"]) {
-    border-color: #5c9dff;
+    border-color: var(--badge-lake);
     box-shadow: 0 0 12px rgba(92, 157, 255, 0.25);
   }
 
   :global(.retro-card[data-spot-type="lake"] .spot-type) {
     background: rgba(92, 157, 255, 0.2);
     border: 1px solid rgba(92, 157, 255, 0.5);
-    color: #5c9dff;
+    color: var(--badge-lake);
     text-shadow: 0 0 6px rgba(92, 157, 255, 0.5);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="lake"]) {
-    border-color: #5a6b73;
+    border-color: var(--badge-lake-light);
     box-shadow: 2px 2px 0 rgba(90, 107, 115, 0.2);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="lake"] .spot-type) {
-    background: #5a6b73;
-    border: 2px solid #3a4b53;
+    background: var(--badge-lake-light);
+    border: 2px solid var(--badge-lake-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -312,25 +312,25 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   /* River Access - Purple for dark, deep purple for light */
   :global(.retro-card[data-spot-type="river_access"]) {
-    border-color: #b88dff;
+    border-color: var(--badge-river);
     box-shadow: 0 0 12px rgba(184, 141, 255, 0.25);
   }
 
   :global(.retro-card[data-spot-type="river_access"] .spot-type) {
     background: rgba(184, 141, 255, 0.2);
     border: 1px solid rgba(184, 141, 255, 0.5);
-    color: #b88dff;
+    color: var(--badge-river);
     text-shadow: 0 0 6px rgba(184, 141, 255, 0.5);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="river_access"]) {
-    border-color: #6b4a9e;
+    border-color: var(--badge-river-light);
     box-shadow: 2px 2px 0 rgba(107, 74, 158, 0.2);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="river_access"] .spot-type) {
-    background: #6b4a9e;
-    border: 2px solid #5a3a8e;
+    background: var(--badge-river-light);
+    border: 2px solid var(--badge-river-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -338,25 +338,25 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   /* Public Water - Green for dark, forest green for light */
   :global(.retro-card[data-spot-type="public_water"]) {
-    border-color: #7ec97e;
+    border-color: var(--badge-public);
     box-shadow: 0 0 12px rgba(126, 201, 126, 0.25);
   }
 
   :global(.retro-card[data-spot-type="public_water"] .spot-type) {
     background: rgba(126, 201, 126, 0.2);
     border: 1px solid rgba(126, 201, 126, 0.5);
-    color: #7ec97e;
+    color: var(--badge-public);
     text-shadow: 0 0 6px rgba(126, 201, 126, 0.5);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="public_water"]) {
-    border-color: #4a6741;
+    border-color: var(--badge-public-light);
     box-shadow: 2px 2px 0 rgba(74, 103, 65, 0.2);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="public_water"] .spot-type) {
-    background: #4a6741;
-    border: 2px solid #3a5731;
+    background: var(--badge-public-light);
+    border: 2px solid var(--badge-public-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -364,25 +364,25 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   /* State Park - Yellow-green for dark, olive green for light */
   :global(.retro-card[data-spot-type="state_park"]) {
-    border-color: #a8d96e;
+    border-color: var(--badge-park);
     box-shadow: 0 0 12px rgba(168, 217, 110, 0.25);
   }
 
   :global(.retro-card[data-spot-type="state_park"] .spot-type) {
     background: rgba(168, 217, 110, 0.2);
     border: 1px solid rgba(168, 217, 110, 0.5);
-    color: #a8d96e;
+    color: var(--badge-park);
     text-shadow: 0 0 6px rgba(168, 217, 110, 0.5);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="state_park"]) {
-    border-color: #7a8450;
+    border-color: var(--badge-park-light);
     box-shadow: 2px 2px 0 rgba(122, 132, 80, 0.2);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="state_park"] .spot-type) {
-    background: #7a8450;
-    border: 2px solid #6a7440;
+    background: var(--badge-park-light);
+    border: 2px solid var(--badge-park-border-light);
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
@@ -390,25 +390,25 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   /* Fishing Pier - Gold for dark, sandy tan for light */
   :global(.retro-card[data-spot-type="fishing_pier"]) {
-    border-color: #ffb84d;
+    border-color: var(--badge-pier);
     box-shadow: 0 0 12px rgba(255, 184, 77, 0.25);
   }
 
   :global(.retro-card[data-spot-type="fishing_pier"] .spot-type) {
     background: rgba(255, 184, 77, 0.2);
     border: 1px solid rgba(255, 184, 77, 0.5);
-    color: #ffb84d;
+    color: var(--badge-pier);
     text-shadow: 0 0 6px rgba(255, 184, 77, 0.5);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="fishing_pier"]) {
-    border-color: #d4a574;
+    border-color: var(--earth-sand);
     box-shadow: 2px 2px 0 rgba(212, 165, 116, 0.2);
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="fishing_pier"] .spot-type) {
-    background: #d4a574;
-    border: 2px solid #c49564;
+    background: var(--badge-pier-light);
+    border: 2px solid var(--badge-pier-border-light);
     color: #2d2d2d;
     text-shadow: none;
     font-weight: 700;
