@@ -27,15 +27,15 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
       </div>
 
       <div class="quick-stats">
-        <div class="stat stat-red">
+        <div class="stat retro-card" style="border-color: var(--earth-rust);">
           <strong>3,300+</strong>
           <span>Fishing Spots</span>
         </div>
-        <div class="stat stat-green">
+        <div class="stat retro-card" style="border-color: var(--earth-forest);">
           <strong>Texas</strong>
           <span>Available Now</span>
         </div>
-        <div class="stat stat-blue">
+        <div class="stat retro-card" style="border-color: var(--earth-slate);">
           <strong>100%</strong>
           <span>Public Access</span>
         </div>
@@ -156,6 +156,8 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 </Layout>
 
 <style>
+  /* Page-specific styles only - common styles in retro-common.css */
+
   /* Search section container */
   .search-section {
     text-align: center;
@@ -197,8 +199,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     box-shadow:
       0 0 10px rgba(184, 92, 58, 0.3),
       inset 0 0 20px rgba(0, 0, 0, 0.3);
-    text-shadow:
-      0 0 6px rgba(212, 165, 116, 0.4);
+    text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
   }
 
   :global([data-theme="light"]) .status-banner {
@@ -210,6 +211,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-weight: 600;
   }
 
+  /* Quick stats using retro-card base */
   .quick-stats {
     display: flex;
     justify-content: center;
@@ -222,67 +224,8 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(30, 30, 30, 0.9);
-    border: 2px solid;
-    padding: 1.5rem 2rem;
     min-width: 140px;
-    box-shadow:
-      0 0 15px rgba(184, 92, 58, 0.3),
-      inset 0 0 30px rgba(100, 100, 100, 0.3);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .stat > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  :global([data-theme="light"]) .stat {
-    background: var(--neutral-bg) !important;
-    border: 3px solid;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  }
-
-  :global([data-theme="light"]) .stat::before {
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.01) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.01) 3px
-    ) !important;
-  }
-
-  .stat-red {
-    border-color: var(--earth-rust);
-  }
-
-  .stat-green {
-    border-color: var(--earth-forest);
-  }
-
-  .stat-blue {
-    border-color: var(--earth-slate);
+    padding: 1.5rem 2rem;
   }
 
   .stat strong {
@@ -291,14 +234,10 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-family: 'VT323', monospace;
     font-weight: 400;
     color: var(--theme-heading-color);
-    transition: color 0.3s ease;
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.6),
-      0 0 20px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4);
   }
 
   :global([data-theme="light"]) .stat strong {
-    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -310,9 +249,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     color: #a8c5a8;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    transition: color 0.3s ease;
-    text-shadow:
-      0 0 6px rgba(168, 197, 168, 0.4);
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
   }
 
   :global([data-theme="light"]) .stat span {
@@ -321,13 +258,8 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     text-shadow: none;
   }
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-  }
-
-  h2 {
+  /* Section headings */
+  .container h2 {
     font-family: 'VT323', monospace;
     font-size: 2.5rem;
     margin-bottom: 0.75rem;
@@ -336,71 +268,31 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    transition: color 0.3s ease;
   }
 
-  [data-theme="light"] h2 {
-    color: var(--theme-heading-color);
+  [data-theme="light"] .container h2 {
     font-weight: 700;
-  }
-
-  h2::after {
-    content: '';
-    display: block;
-    width: 150px;
-    height: 6px;
-    background: var(--rainbow-gradient);
-    margin: 0.5rem auto 0;
   }
 
   .section-subtitle {
     font-family: 'VT323', monospace;
     text-align: center;
-    color: #666;
+    color: var(--theme-text-secondary);
     font-size: 1.4rem;
     margin-bottom: 2rem;
     font-weight: 400;
-    transition: color 0.3s ease;
   }
 
-  :global([data-theme="dark"]) .section-subtitle {
-    color: var(--theme-text-secondary);
+  :global([data-theme="light"]) .section-subtitle {
+    color: #666;
   }
 
-  .popular-locations {
-    background: var(--theme-bg);
-    transition: background 0.3s ease;
-  }
-
-  :global([data-theme="light"]) .popular-locations {
-    background: var(--neutral-bg) !important;
-  }
-
+  /* Popular locations grid */
   .location-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1.5rem;
-  }
-
-  /* Location cards inherit from retro-card, only add specific styling */
-  .location-card:nth-child(1) {
-    border-color: var(--box-sage);
-  }
-
-  .location-card:nth-child(2) {
-    border-color: var(--box-rust);
-  }
-
-  .location-card:nth-child(3) {
-    border-color: var(--box-moss);
-  }
-
-  .location-card:nth-child(4) {
-    border-color: var(--box-tan);
   }
 
   .location-header {
@@ -417,13 +309,10 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-weight: 400;
     font-family: 'VT323', monospace;
     letter-spacing: 0.02em;
-    transition: color 0.3s ease;
-    text-shadow:
-      0 0 8px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .location-header h3 {
-    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -446,7 +335,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     font-weight: 400;
-    transition: color 0.3s ease;
   }
 
   :global([data-theme="light"]) .location-card > p {
@@ -486,9 +374,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-size: 1.15rem;
     font-weight: 400;
     transition: all 0.2s;
-    box-shadow:
-      0 0 10px rgba(184, 92, 58, 0.3),
-      inset 0 0 20px rgba(100, 100, 100, 0.2);
+    box-shadow: 0 0 10px rgba(184, 92, 58, 0.3), inset 0 0 20px rgba(100, 100, 100, 0.2);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
@@ -506,9 +392,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   .btn-secondary:hover {
     background: rgba(212, 165, 116, 0.3);
     border-color: rgba(212, 165, 116, 0.7);
-    box-shadow:
-      0 0 15px rgba(212, 165, 116, 0.5),
-      inset 0 0 20px rgba(100, 100, 100, 0.2);
+    box-shadow: 0 0 15px rgba(212, 165, 116, 0.5), inset 0 0 20px rgba(100, 100, 100, 0.2);
     text-shadow: 0 0 8px rgba(212, 165, 116, 0.6);
   }
 
@@ -519,62 +403,33 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     text-shadow: none;
   }
 
-  .features-section {
-    background: var(--theme-bg);
-    padding: 2.5rem 0;
-    transition: background 0.3s ease;
-  }
-
-  :global([data-theme="light"]) .features-section {
-    background: var(--neutral-bg) !important;
-  }
-
+  /* Features section using retro-grid */
   .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
 
-  /* Feature cards inherit from retro-card, only add specific styling */
   .feature {
     text-align: center;
     padding: 2rem 1.5rem;
   }
 
-  .feature:nth-child(1) {
-    border-color: rgba(168, 197, 168, 0.5);
-  }
-
-  .feature:nth-child(2) {
-    border-color: rgba(144, 164, 136, 0.5);
-  }
-
-  .feature:nth-child(3) {
-    border-color: rgba(212, 165, 116, 0.5);
-  }
-
-  .feature:nth-child(4) {
-    border-color: rgba(184, 92, 58, 0.5);
-  }
-
-  :global([data-theme="light"]) .feature:nth-child(1) {
+  /* Feature card color overrides for light mode */
+  :global([data-theme="light"]) .feature:nth-child(4n+1) {
     background: var(--box-sage);
-    border-color: var(--neutral-black);
   }
 
-  :global([data-theme="light"]) .feature:nth-child(2) {
+  :global([data-theme="light"]) .feature:nth-child(4n+2) {
     background: var(--box-moss);
-    border-color: var(--neutral-black);
   }
 
-  :global([data-theme="light"]) .feature:nth-child(3) {
+  :global([data-theme="light"]) .feature:nth-child(4n+3) {
     background: var(--box-tan);
-    border-color: var(--neutral-black);
   }
 
-  :global([data-theme="light"]) .feature:nth-child(4) {
+  :global([data-theme="light"]) .feature:nth-child(4n+4) {
     background: var(--box-rust);
-    border-color: var(--neutral-black);
   }
 
   .feature-icon {
@@ -590,13 +445,10 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    transition: color 0.3s ease;
-    text-shadow:
-      0 0 8px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .feature h3 {
-    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -608,7 +460,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     font-weight: 400;
-    transition: color 0.3s ease;
   }
 
   :global([data-theme="light"]) .feature p {
@@ -616,15 +467,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-weight: 600;
   }
 
-  .coverage-section {
-    background: var(--theme-bg);
-    transition: background 0.3s ease;
-  }
-
-  :global([data-theme="light"]) .coverage-section {
-    background: var(--neutral-bg) !important;
-  }
-
+  /* Coverage section */
   .coverage-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -633,7 +476,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     margin: 0 auto;
   }
 
-  /* Coverage cards inherit from retro-card, only add specific styling */
   .coverage-state {
     padding: 2rem;
   }
@@ -647,6 +489,15 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     background: var(--box-moss);
   }
 
+  .coverage-state.coming-soon {
+    border-color: rgba(144, 164, 136, 0.4);
+  }
+
+  :global([data-theme="light"]) .coverage-state.coming-soon {
+    background: var(--neutral-white);
+    border-color: var(--neutral-gray);
+  }
+
   .coverage-state h3 {
     margin: 0 0 1rem 0;
     font-size: 1.5rem;
@@ -654,13 +505,10 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-family: 'VT323', monospace;
     font-weight: 400;
     color: var(--theme-heading-color);
-    transition: color 0.3s ease;
-    text-shadow:
-      0 0 8px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .coverage-state h3 {
-    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -671,7 +519,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     font-weight: 400;
-    transition: color 0.3s ease;
   }
 
   :global([data-theme="light"]) .coverage-state p {
@@ -692,7 +539,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-size: 1.05rem;
     border-bottom: 1px solid rgba(212, 165, 116, 0.2);
     font-weight: 400;
-    transition: all 0.3s ease;
   }
 
   :global([data-theme="light"]) .coverage-state li {
@@ -703,15 +549,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .coverage-state li:last-child {
     border-bottom: none;
-  }
-
-  .coverage-state.coming-soon {
-    border-color: rgba(144, 164, 136, 0.4);
-  }
-
-  :global([data-theme="light"]) .coverage-state.coming-soon {
-    background: var(--neutral-white);
-    border-color: var(--neutral-gray);
   }
 
   .stay-tuned {
@@ -745,11 +582,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
       gap: 1.25rem;
     }
 
-    .container {
-      padding: 2rem 1.5rem;
-    }
-
-    h2 {
+    .container h2 {
       font-size: 2rem;
     }
   }
