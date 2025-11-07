@@ -9,13 +9,18 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   title="Find Fishing Spots Near You - Public Fishing Directory"
   description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
 >
-  <section class="hero">
+  <section class="retro-page-header">
     <div class="container">
-      <div class="hero-header">
-        <h1>Fishing Spot Finder</h1>
-        <p class="tagline">Stop fishing for spots near you and catch one here! 🎣</p>
-      </div>
+      <nav class="retro-breadcrumb">
+        Home
+      </nav>
+      <h1>Fishing Spot Finder</h1>
+      <p class="subtitle">Stop fishing for spots near you and catch one here! 🎣</p>
+    </div>
+  </section>
 
+  <section class="retro-container">
+    <div class="search-section">
       <div class="search-container">
         <SearchWidget nominatimEmail={nominatimEmail} client:idle />
       </div>
@@ -154,80 +159,16 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 </Layout>
 
 <style>
-  .hero {
-    background: linear-gradient(180deg, #0d1f0d 0%, #121212 20%, #151515 40%, #1a1a1a 60%, #222222 80%, #2a2a2a 100%);
-    color: white;
-    padding: 0;
+  /* Search section container */
+  .search-section {
     text-align: center;
-    position: relative;
-    transition: background 0.3s ease;
-  }
-
-  :global([data-theme="light"]) .hero {
-    background: #f5f5f5;
-    color: #2d2d2d;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      transparent 1px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .hero .container {
-    position: relative;
-    z-index: 2;
-    padding: 1.25rem 2rem 3.5rem;
-  }
-
-  .hero-header {
-    margin-bottom: 2rem;
-  }
-
-  .hero h1 {
-    font-family: 'VT323', monospace;
-    font-size: 3.5rem;
-    margin: 0 0 0.5rem 0;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    line-height: 1.1;
-    color: #f0e6d2;
-    text-shadow:
-      0 0 8px rgba(240, 230, 210, 0.5),
-      0 0 15px rgba(240, 230, 210, 0.3),
-      4px 4px 0 rgba(0,0,0,0.3);
-  }
-
-  .tagline {
-    font-family: 'VT323', monospace;
-    font-size: 1.8rem;
-    margin: 0;
-    color: #a8c5a8;
-    text-shadow:
-      0 0 8px rgba(168, 197, 168, 0.6),
-      0 0 15px rgba(168, 197, 168, 0.4);
-    font-weight: 400;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 3rem;
   }
 
   .search-container {
     max-width: 700px;
-    margin: 0 auto 1rem;
-    background: rgba(0, 0, 0, 0.6);
+    margin: 0 auto 2rem;
+    background: rgba(30, 30, 30, 0.8);
     border: 2px solid rgba(184, 92, 58, 0.5);
     border-radius: 0;
     padding: 1.5rem;
@@ -239,15 +180,15 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   :global([data-theme="light"]) .search-container {
-    background: #f8f8f8;
-    border: 3px solid rgba(212, 165, 116, 0.4);
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.08);
+    background: white;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
   }
 
   .status-banner {
     max-width: 700px;
-    margin: 0 auto 2rem;
-    background: rgba(184, 92, 58, 0.2);
+    margin: 0 auto 2.5rem;
+    background: rgba(30, 30, 30, 0.9);
     border: 2px solid rgba(184, 92, 58, 0.5);
     padding: 0.75rem 1.5rem;
     text-align: center;
@@ -265,9 +206,9 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   :global([data-theme="light"]) .status-banner {
     background: var(--accent-cream);
-    border: 2px solid var(--earth-rust);
+    border: 3px solid var(--neutral-black);
     color: var(--neutral-black);
-    box-shadow: none;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
     text-shadow: none;
     font-weight: 600;
   }
@@ -284,7 +225,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(40, 40, 40, 0.8);
+    background: rgba(30, 30, 30, 0.9);
     border: 2px solid;
     padding: 1.5rem 2rem;
     min-width: 140px;
@@ -352,15 +293,15 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     display: block;
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #f0e6d2;
+    color: var(--theme-heading-color);
     transition: color 0.3s ease;
     text-shadow:
-      0 0 10px rgba(240, 230, 210, 0.6),
-      0 0 20px rgba(240, 230, 210, 0.4);
+      0 0 10px rgba(255, 255, 255, 0.6),
+      0 0 20px rgba(255, 255, 255, 0.4);
   }
 
   :global([data-theme="light"]) .stat strong {
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -394,7 +335,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     font-size: 2.5rem;
     margin-bottom: 0.75rem;
     text-align: center;
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -404,8 +345,9 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     transition: color 0.3s ease;
   }
 
-  :global([data-theme="dark"]) h2 {
-    color: var(--theme-text);
+  [data-theme="light"] h2 {
+    color: var(--theme-heading-color);
+    font-weight: 700;
   }
 
   h2::after {
@@ -432,7 +374,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   .popular-locations {
-    background: #2a2a2a;
+    background: var(--theme-bg);
     transition: background 0.3s ease;
   }
 
@@ -473,18 +415,18 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .location-header h3 {
     margin: 0;
-    color: #f0e6d2;
+    color: var(--theme-heading-color);
     font-size: 1.4rem;
     font-weight: 400;
     font-family: 'VT323', monospace;
     letter-spacing: 0.02em;
     transition: color 0.3s ease;
     text-shadow:
-      0 0 8px rgba(240, 230, 210, 0.5);
+      0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .location-header h3 {
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -581,7 +523,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   .features-section {
-    background: #2a2a2a;
+    background: var(--theme-bg);
     padding: 2.5rem 0;
     transition: background 0.3s ease;
   }
@@ -645,7 +587,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   .feature h3 {
     margin: 0 0 0.75rem 0;
-    color: #f0e6d2;
+    color: var(--theme-heading-color);
     font-size: 1.2rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
@@ -653,11 +595,11 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
     text-shadow:
-      0 0 8px rgba(240, 230, 210, 0.5);
+      0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .feature h3 {
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -678,7 +620,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   .coverage-section {
-    background: #2a2a2a;
+    background: var(--theme-bg);
     transition: background 0.3s ease;
   }
 
@@ -714,14 +656,14 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     text-align: left;
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #f0e6d2;
+    color: var(--theme-heading-color);
     transition: color 0.3s ease;
     text-shadow:
-      0 0 8px rgba(240, 230, 210, 0.5);
+      0 0 8px rgba(255, 255, 255, 0.5);
   }
 
   :global([data-theme="light"]) .coverage-state h3 {
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
@@ -781,19 +723,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   }
 
   @media (max-width: 768px) {
-    .hero .container {
-      padding: 2rem 1.5rem;
-    }
-
-    .hero h1 {
-      font-size: 2rem;
-      letter-spacing: 0.05em;
-    }
-
-    .tagline {
-      font-size: 1.1rem;
-    }
-
     .search-container {
       padding: 1.5rem;
       border-width: 3px;
