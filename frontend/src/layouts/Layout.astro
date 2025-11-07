@@ -259,8 +259,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   main.main-content::before {
     content: '';
     display: block;
-    height: 200px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 15%, #0f2a0f 30%, #101010 50%, #151515 70%, #1a1a1a 100%);
+    height: 300px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 10%, #0f2a0f 20%, #101010 40%, #151515 60%, #1a1a1a 100%);
     transition: background 0.3s ease;
   }
 
@@ -277,12 +277,26 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   footer {
     background: #0d1f0d;
     padding: 2rem 0;
-    margin-top: 2.5rem;
+    margin-top: 0;
     text-align: center;
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     color: #b0b0b0;
     position: relative;
+  }
+
+  /* Gradient transition before footer */
+  footer::before {
+    content: '';
+    display: block;
+    height: 250px;
+    background: linear-gradient(180deg, #1a1a1a 0%, #151515 30%, #121212 50%, #0f2a0f 70%, #0e250e 85%, #0d1f0d 100%);
+    margin-bottom: 2rem;
+    transition: background 0.3s ease;
+  }
+
+  [data-theme="light"] footer::before {
+    display: none;
   }
 
   [data-theme="light"] footer {
