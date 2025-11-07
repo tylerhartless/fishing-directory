@@ -2,7 +2,7 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 10%, #101010 20%, #131313 35%, #151515 50%, #171717 65%, #1a1a1a 80%, #1a1a1a 100%);
+  background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 20%, #0f2a0f 35%, #101010 50%, #131313 65%, #171717 80%, #1a1a1a 100%);
   color: white;
   padding: 0;
   text-align: left;
@@ -12,7 +12,7 @@
 }
 
 [data-theme="light"] .retro-page-header {
-  background: linear-gradient(180deg, #0d1f0d 0%, #1a1a1a 15%, #2a2a2a 25%, #3a3a3a 35%, #4a4a4a 45%, #6a6a6a 55%, #8a8a8a 65%, #a0a0a0 75%, #c0c0c0 85%, #d5d5d5 92%, #e8e8e8 96%, #f5f5f5 100%);
+  background: #f5f1e8;
 }
 
 .retro-page-header::before {
