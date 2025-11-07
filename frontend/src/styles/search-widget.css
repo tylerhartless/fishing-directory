@@ -1,4 +1,5 @@
 /* SearchWidget Component Styles - Terminal Theme */
+/* Uses retro-btn-search and retro-input from retro-common.css */
 
 .search-widget {
   /* Container is styled by parent */
@@ -10,9 +11,9 @@
 }
 
 .location-icon {
-  color: #00ff00;
+  color: var(--earth-sand);
   margin-bottom: 1rem;
-  filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.5));
+  filter: drop-shadow(0 0 8px rgba(212, 165, 116, 0.5));
 }
 
 [data-theme="light"] .location-icon {
@@ -23,11 +24,11 @@
 .location-prompt p {
   font-size: 1.2rem;
   font-family: 'VT323', monospace;
-  color: #00ff00;
+  color: var(--earth-sand);
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+  text-shadow: 0 0 8px rgba(212, 165, 116, 0.4);
 }
 
 [data-theme="light"] .location-prompt p {
@@ -43,71 +44,24 @@
   gap: 1rem;
 }
 
-.btn-primary {
+/* Widget-specific button overrides for better mobile touch targets */
+.search-widget .retro-btn-search {
+  min-height: 44px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1rem 2rem;
-  font-family: 'VT323', monospace;
-  background: rgba(0, 255, 0, 0.1);
-  color: #00ff00;
-  border: 2px solid #00ff00;
-  border-radius: 0;
-  font-size: 1.15rem;
-  font-weight: 400;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow:
-    0 0 10px rgba(0, 255, 0, 0.3),
-    inset 0 0 20px rgba(0, 255, 0, 0.05);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 6px rgba(0, 255, 0, 0.6);
 }
 
-[data-theme="light"] .btn-primary {
-  background: var(--accent-sage, #9ab087);
-  color: var(--neutral-black, #2d2d2d);
-  border: 3px solid var(--neutral-black, #2d2d2d);
-  font-size: 1.1rem;
-  font-weight: 700;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-  text-shadow: none;
-}
-
-.btn-primary:hover {
-  background: rgba(0, 255, 0, 0.2);
-  border-color: #00ff00;
-  box-shadow:
-    0 0 15px rgba(0, 255, 0, 0.5),
-    inset 0 0 20px rgba(0, 255, 0, 0.1);
-}
-
-[data-theme="light"] .btn-primary:hover {
-  background: var(--accent-copper, #c87854);
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
-}
-
-.btn-primary:active {
-  transform: translateY(1px);
-}
-
-[data-theme="light"] .btn-primary:active {
-  transform: translate(0, 0);
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
+/* Keep primary button as full-width on mobile */
+.btn-primary {
+  width: 100%;
 }
 
 .search-divider {
   text-align: center;
-  color: #00ff00;
+  color: var(--earth-sand);
   font-size: 1rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
@@ -115,7 +69,7 @@
   margin: 0.5rem 0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  text-shadow: 0 0 6px rgba(0, 255, 0, 0.6);
+  text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
 }
 
 [data-theme="light"] .search-divider {
@@ -131,7 +85,7 @@
   top: 50%;
   width: 35%;
   height: 2px;
-  background: rgba(0, 255, 0, 0.3);
+  background: rgba(184, 92, 58, 0.3);
 }
 
 [data-theme="light"] .search-divider::before,
@@ -153,122 +107,31 @@
   gap: 0.5rem;
 }
 
-.search-form input {
+/* Widget-specific input override for flexibility */
+.search-form .retro-input {
   flex: 1;
-  padding: 1rem;
+  min-height: 44px;
   font-size: 1.1rem;
-  font-family: 'VT323', monospace;
-  border: 2px solid #00ff00;
-  border-radius: 0;
-  transition: all 0.2s;
-  font-weight: 400;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.8);
-  color: #00ff00;
-  box-shadow:
-    0 0 10px rgba(0, 255, 0, 0.2),
-    inset 0 0 20px rgba(0, 0, 0, 0.8);
-  text-shadow: 0 0 4px rgba(0, 255, 0, 0.4);
 }
 
-[data-theme="light"] .search-form input {
-  background: white;
-  color: var(--neutral-black);
-  border: 3px solid var(--neutral-black);
-  box-shadow: none;
-  font-weight: 500;
-}
-
-.search-form input:focus {
-  outline: none;
-  border-color: #00ff00;
-  box-shadow:
-    0 0 15px rgba(0, 255, 0, 0.5),
-    inset 0 0 20px rgba(0, 0, 0, 0.8);
-}
-
-[data-theme="light"] .search-form input:focus {
-  border-color: var(--earth-olive);
-  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
-}
-
-.search-form input::placeholder {
-  color: rgba(0, 255, 0, 0.5);
-}
-
-[data-theme="light"] .search-form input::placeholder {
-  color: #999;
-}
-
+/* Widget-specific button sizing */
 .btn-search {
-  padding: 1rem 2rem;
-  font-family: 'VT323', monospace;
-  background: rgba(0, 255, 0, 0.1);
-  color: #00ff00;
-  border: 2px solid #00ff00;
-  border-radius: 0;
-  font-size: 1.15rem;
-  font-weight: 400;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow:
-    0 0 10px rgba(0, 255, 0, 0.3),
-    inset 0 0 20px rgba(0, 255, 0, 0.05);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 6px rgba(0, 255, 0, 0.6);
-}
-
-[data-theme="light"] .btn-search {
-  background: var(--accent-rust, #b85c3a);
-  color: var(--primary-text, #f5f1e8);
-  border: 3px solid var(--neutral-black, #2d2d2d);
-  font-weight: 700;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-  text-shadow: none;
-}
-
-.btn-search:hover {
-  background: rgba(0, 255, 0, 0.2);
-  border-color: #00ff00;
-  box-shadow:
-    0 0 15px rgba(0, 255, 0, 0.5),
-    inset 0 0 20px rgba(0, 255, 0, 0.1);
-}
-
-[data-theme="light"] .btn-search:hover {
-  background: var(--accent-copper, #c87854);
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
-}
-
-.btn-search:active {
-  transform: translateY(1px);
-}
-
-[data-theme="light"] .btn-search:active {
-  transform: translate(0, 0);
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-}
-
-.btn-search:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .suggestions {
   display: none;
   font-family: 'VT323', monospace;
   background: rgba(0, 0, 0, 0.95);
-  border: 2px solid #00ff00;
+  border: 2px solid rgba(184, 92, 58, 0.5);
   border-radius: 0;
   margin-top: 0.5rem;
   max-height: 200px;
   overflow-y: auto;
   box-shadow:
-    0 0 15px rgba(0, 255, 0, 0.3),
-    inset 0 0 20px rgba(0, 255, 0, 0.05);
+    0 0 15px rgba(184, 92, 58, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="light"] .suggestions {
@@ -284,24 +147,28 @@
 .suggestion-item {
   padding: 0.75rem 1rem;
   cursor: pointer;
-  border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+  border-bottom: 1px solid rgba(184, 92, 58, 0.3);
   font-weight: 400;
   font-size: 1.05rem;
-  color: #00ff00;
+  color: var(--earth-sand);
   transition: all 0.2s;
-  text-shadow: 0 0 4px rgba(0, 255, 0, 0.4);
+  text-shadow: 0 0 4px rgba(212, 165, 116, 0.3);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 [data-theme="light"] .suggestion-item {
   border-bottom: 2px solid #e0e0e0;
   font-weight: 600;
   color: var(--neutral-black);
+  text-shadow: none;
 }
 
 .suggestion-item:hover {
-  background: rgba(0, 255, 0, 0.2);
-  color: #00ff00;
-  text-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+  background: rgba(184, 92, 58, 0.2);
+  color: var(--earth-sand);
+  text-shadow: 0 0 8px rgba(212, 165, 116, 0.5);
 }
 
 [data-theme="light"] .suggestion-item:hover {
@@ -322,19 +189,40 @@
   to { transform: rotate(360deg); }
 }
 
-/* Mobile responsive layout */
+/* Mobile responsive layout - Mobile-first approach */
 @media (max-width: 640px) {
   .search-form {
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  .search-form input {
+  .search-form .retro-input {
     width: 100%;
   }
 
   .btn-search {
     width: 100%;
-    padding: 1rem;
+    min-width: unset;
+  }
+
+  .location-prompt p {
+    font-size: 1.1rem;
+  }
+}
+
+/* Ensure touch targets on all screen sizes */
+@media (hover: none) and (pointer: coarse) {
+  /* Touch device optimizations */
+  .search-widget .retro-btn-search,
+  .btn-primary,
+  .btn-search,
+  .suggestion-item {
+    min-height: 44px;
+  }
+
+  /* Slightly larger tap areas for better UX */
+  .search-form .retro-input {
+    min-height: 48px;
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
