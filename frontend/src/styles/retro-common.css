@@ -25,7 +25,8 @@
 }
 
 [data-theme="light"] .retro-page-header {
-  background: var(--neutral-bg);
+  background: var(--boat-cream); /* Warm cream background */
+  border-bottom: 6px solid var(--boat-orange); /* Orange bottom border (racing stripe) */
 }
 
 [data-theme="light"] .retro-page-header::after {
@@ -57,9 +58,11 @@
 
 [data-theme="light"] .retro-page-header h1 {
   color: var(--theme-heading-color);
-  text-shadow: none;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15); /* Subtle letterpress effect */
   filter: none;
   font-weight: 700;
+  text-transform: uppercase; /* Vintage ad ALL CAPS style */
+  letter-spacing: 0.08em; /* More spacing for catalog style */
 }
 
 .retro-page-header .subtitle {
@@ -98,7 +101,7 @@
 }
 
 [data-theme="light"] .retro-container {
-  background: var(--neutral-bg) !important;
+  background: var(--boat-cream) !important; /* Warm cream background */
 }
 
 /* ===== CARDS ===== */
@@ -143,10 +146,24 @@
 }
 
 [data-theme="light"] .retro-card {
-  background: var(--neutral-bg) !important;
-  border: 4px solid;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  color: var(--neutral-black) !important;
+  background: #ffffff !important; /* White cards on cream background */
+  border: 4px solid var(--boat-black); /* Thick black borders */
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2); /* Strong shadow for depth */
+  color: var(--boat-black) !important;
+  border-radius: 0; /* Boxy, square corners */
+  position: relative;
+}
+
+/* Optional: Left orange accent stripe for cards (vintage ad style) */
+[data-theme="light"] .retro-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--boat-orange);
+  pointer-events: none;
 }
 
 [data-theme="light"] .retro-card::before {
@@ -251,12 +268,14 @@
 }
 
 [data-theme="light"] .retro-btn-search {
-  background: var(--accent-rust);
-  color: var(--primary-text);
-  border: 3px solid var(--neutral-black);
-  font-weight: 700;
+  background: linear-gradient(180deg, var(--boat-orange) 0%, #d15820 100%); /* Orange gradient */
+  color: white;
+  border: 4px solid var(--boat-black); /* Thick black border */
+  font-weight: 900; /* Extra bold for vintage ad */
   box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-  text-shadow: none;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Glossy text effect */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .retro-btn-search:hover {
@@ -268,9 +287,10 @@
 }
 
 [data-theme="light"] .retro-btn-search:hover {
-  background: var(--accent-copper);
+  background: linear-gradient(180deg, var(--boat-red) 0%, #a01510 100%); /* Red gradient on hover */
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.4);
+  border-color: var(--boat-black);
 }
 
 /* ===== FORM CONTROLS ===== */
@@ -292,10 +312,10 @@
 
 [data-theme="light"] .retro-input {
   background: white;
-  color: var(--neutral-black);
-  border: 3px solid var(--neutral-black);
-  box-shadow: none;
-  font-weight: 500;
+  color: var(--boat-black);
+  border: 3px solid var(--boat-black); /* Thick black borders */
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1); /* Slight inset for depth */
+  font-weight: 600;
 }
 
 .retro-input:focus {
@@ -307,8 +327,8 @@
 }
 
 [data-theme="light"] .retro-input:focus {
-  border-color: var(--earth-olive);
-  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
+  border-color: var(--boat-orange); /* Orange focus for catalog style */
+  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.2), inset 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 .retro-input::placeholder {
@@ -336,10 +356,10 @@
 
 [data-theme="light"] .retro-select {
   background: white;
-  color: var(--neutral-black);
-  border: 3px solid var(--neutral-black);
-  box-shadow: none;
-  font-weight: 600;
+  color: var(--boat-black);
+  border: 3px solid var(--boat-black); /* Thick black borders */
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2); /* Box shadow for depth */
+  font-weight: 700;
 }
 
 .retro-select:hover {
@@ -347,7 +367,8 @@
 }
 
 [data-theme="light"] .retro-select:hover {
-  border-color: var(--earth-olive);
+  border-color: var(--boat-orange); /* Orange hover */
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
 }
 
 .retro-select:focus {
@@ -359,8 +380,8 @@
 }
 
 [data-theme="light"] .retro-select:focus {
-  border-color: var(--earth-olive);
-  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
+  border-color: var(--boat-orange);
+  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.2), 2px 2px 0 rgba(0,0,0,0.2);
 }
 
 /* ===== BADGES ===== */
@@ -374,6 +395,16 @@
   white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Light mode badge styles (catalog-style) */
+[data-theme="light"] .retro-badge {
+  background: var(--boat-black);
+  color: white;
+  border: 2px solid var(--boat-black);
+  font-weight: 900;
+  padding: 0.5rem 1rem;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
 }
 
 .retro-badge-large {
@@ -403,6 +434,9 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] h5,
 [data-theme="light"] h6 {
   color: var(--theme-heading-color);
+  font-weight: 900; /* Extra bold for vintage catalog */
+  text-transform: uppercase; /* ALL CAPS for catalog style */
+  letter-spacing: 0.05em;
 }
 
 .retro-heading {
@@ -487,10 +521,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-section {
-  background: var(--neutral-bg) !important;
-  border: 3px solid var(--neutral-black) !important;
+  background: #ffffff !important; /* White sections on cream background */
+  border: 4px solid var(--boat-black) !important; /* Thick borders */
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
-  color: var(--neutral-black) !important;
+  color: var(--boat-black) !important;
+  padding: 2.5rem !important; /* Generous padding like print ads */
+  position: relative;
+}
+
+/* Top orange border accent (Mariner band style) */
+[data-theme="light"] .retro-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--boat-orange);
+  pointer-events: none;
+  z-index: 3;
 }
 
 [data-theme="light"] .retro-section::before {
@@ -547,14 +596,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-breadcrumb a {
-  color: var(--theme-breadcrumb-color);
+  color: var(--theme-breadcrumb-color); /* Orange */
   text-shadow: none;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 [data-theme="light"] .retro-breadcrumb a:hover,
 [data-theme="light"] .retro-breadcrumb .active {
-  color: var(--theme-breadcrumb-color);
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  color: var(--theme-breadcrumb-hover); /* Red on hover */
+  text-shadow: none;
+  text-decoration: none;
 }
 
 /* In page header context - override for header */
@@ -623,10 +675,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-info-box {
-  background: var(--neutral-bg) !important;
-  border: 3px solid var(--neutral-black) !important;
+  background: #ffffff !important; /* White box on cream background */
+  border: 4px solid var(--boat-black) !important; /* Thick black border */
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
-  color: var(--neutral-black) !important;
+  color: var(--boat-black) !important;
+  padding: 2rem !important; /* Generous padding */
 }
 
 [data-theme="light"] .retro-info-box::before {
@@ -651,9 +704,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-info-box h3 {
-  color: var(--neutral-black) !important;
-  font-weight: 700 !important;
+  color: var(--boat-charcoal) !important;
+  font-weight: 900 !important; /* Extra bold for vintage catalog */
   text-shadow: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .retro-info-box.highlight {
@@ -668,6 +723,15 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   font-weight: 700;
+  border: 3px solid;
+}
+
+/* Light mode notice styles (vintage catalog) */
+[data-theme="light"] .retro-notice {
+  border-width: 4px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .retro-notice-success {
@@ -682,7 +746,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .retro-notice-error {
   background: var(--earth-rust);
-  border: 4px solid var(--neutral-black);
+  border-color: var(--neutral-black);
+  color: white;
+}
+
+[data-theme="light"] .retro-notice-error {
+  background: var(--boat-red);
+  border-color: var(--boat-black);
   color: white;
 }
 

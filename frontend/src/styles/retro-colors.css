@@ -24,6 +24,13 @@
   --accent-dark-orange: #d16a3a; /* Dark orange for light mode */
   --accent-dark-brown: #3a2820; /* Dark brown (almost black) for light mode headers */
 
+  /* Tournament V-17 Boat Colors - Light Mode Palette */
+  --boat-cream: #f2ebe0;        /* Warm cream background (boat racing stripe) */
+  --boat-orange: #e85d2a;       /* Orange racing stripe (CTAs, primary accents) */
+  --boat-red: #c41e1a;          /* Red thin stripe (secondary accents) */
+  --boat-charcoal: #3a3a3a;     /* Motor cowling charcoal (headers) */
+  --boat-black: #1a1a1a;        /* Black stripe outlines (text, borders) */
+
   /* Neutral Colors */
   --neutral-bg: #f5f1e8;        /* Warm off-white */
   --neutral-white: #ffffff;
@@ -88,20 +95,25 @@
   --badge-pier-border-light: #c49564; /* Darker tan border (light mode) */
 }
 
-/* Light Mode */
+/* Light Mode - Tournament V-17 Boat-Inspired Palette */
 [data-theme="light"] {
-  --theme-bg: #f5f1e8;
+  --theme-bg: var(--boat-cream);        /* Warm cream background */
   --theme-bg-alt: #ffffff;
-  --theme-bg-forest: #0d1f0d;   /* Same dark forest green as dark mode */
-  --theme-text: #2d2d2d;
+  --theme-bg-forest: #0d1f0d;           /* Same dark forest green as dark mode */
+  --theme-text: var(--boat-black);      /* Black text */
   --theme-text-secondary: #555555;
-  --theme-text-sage: #4a6741;   /* Darker green for light mode */
+  --theme-text-sage: #4a6741;           /* Darker green for light mode */
   --theme-card-bg: #ffffff;
-  --theme-card-border: rgba(0, 0, 0, 0.1);
-  --theme-shadow: rgba(0, 0, 0, 0.1);
-  --theme-input-bg: #f8f8f8;
-  --theme-input-border: rgba(212, 165, 116, 0.4);
-  --theme-heading-color: #3a2820; /* Dark brown for headers in light mode */
-  --theme-breadcrumb-color: #d16a3a; /* Dark orange for breadcrumbs in light mode */
-  --theme-breadcrumb-hover: #b85c3a; /* Darker orange for hover/active */
+  --theme-card-border: var(--boat-black); /* Black borders */
+  --theme-shadow: rgba(0, 0, 0, 0.2);   /* Stronger shadows for vintage ad look */
+  --theme-input-bg: #ffffff;
+  --theme-input-border: var(--boat-black); /* Black input borders */
+  --theme-heading-color: var(--boat-charcoal); /* Charcoal headers */
+  --theme-breadcrumb-color: var(--boat-orange); /* Orange breadcrumbs */
+  --theme-breadcrumb-hover: var(--boat-red); /* Red on hover */
+
+  /* Button colors for vintage ad style */
+  --theme-btn-primary-bg: var(--boat-orange);
+  --theme-btn-primary-hover: var(--boat-red);
+  --theme-btn-border: var(--boat-black);
 }
