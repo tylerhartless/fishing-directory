@@ -65,6 +65,27 @@
   --gray-medium-light: #999;
   --gray-lighter: #ddd;
   --gray-lightest: #e0e0e0;
+
+  /* Spot Type Badge Colors - Dark Mode */
+  --badge-lake: #5c9dff;              /* Blue for lakes */
+  --badge-lake-light: #5a6b73;        /* Slate blue (light mode card/badge) */
+  --badge-lake-border-light: #3a4b53; /* Darker slate border (light mode) */
+
+  --badge-river: #b88dff;              /* Purple for rivers */
+  --badge-river-light: #6b4a9e;        /* Deep purple (light mode card/badge) */
+  --badge-river-border-light: #5a3a8e; /* Darker purple border (light mode) */
+
+  --badge-public: #7ec97e;              /* Green for public water */
+  --badge-public-light: #4a6741;        /* Forest green (light mode card/badge) */
+  --badge-public-border-light: #3a5731; /* Darker forest border (light mode) */
+
+  --badge-park: #a8d96e;              /* Yellow-green for state parks */
+  --badge-park-light: #7a8450;        /* Olive green (light mode card/badge) */
+  --badge-park-border-light: #6a7440; /* Darker olive border (light mode) */
+
+  --badge-pier: #ffb84d;              /* Gold for fishing piers */
+  --badge-pier-light: #d4a574;        /* Sandy tan (light mode card/badge) */
+  --badge-pier-border-light: #c49564; /* Darker tan border (light mode) */
 }
 
 /* Light Mode */
