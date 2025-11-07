@@ -170,7 +170,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   .filter-group label {
     font-family: 'VT323', monospace;
     font-weight: 400;
-    color: #d4a574;
+    color: var(--earth-sand);
     font-size: 1.1rem;
     letter-spacing: 0.02em;
     text-shadow:
@@ -185,7 +185,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   .results-info {
     margin-bottom: 1.5rem;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-size: 1.05rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
@@ -198,7 +198,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   #count {
     font-weight: 400;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     text-shadow:
       0 0 6px rgba(168, 197, 168, 0.4);
   }
@@ -228,7 +228,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global(.water-body) {
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-size: 0.95rem;
     font-family: 'VT323', monospace;
     margin: 0 0 1rem 0;
@@ -236,7 +236,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global([data-theme="light"] .water-body) {
-    color: #666;
+    color: var(--gray-medium);
     font-weight: 500;
   }
 
@@ -256,7 +256,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   :global(.amenity-badge) {
     background: rgba(168, 197, 168, 0.15);
     border: 1px solid rgba(168, 197, 168, 0.3);
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     padding: 0.3rem 0.6rem;
     font-size: 1rem;
     font-family: 'VT323', monospace;
@@ -402,7 +402,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global([data-theme="light"] .retro-card[data-spot-type="fishing_pier"]) {
-    border-color: #d4a574;
+    border-color: var(--earth-sand);
     box-shadow: 2px 2px 0 rgba(212, 165, 116, 0.2);
   }
 

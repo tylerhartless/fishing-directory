@@ -244,7 +244,7 @@ const schema = {
   .verified {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.5);
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     font-family: 'VT323', monospace;
     padding: 0.75rem 1.5rem;
     display: inline-block;
@@ -331,7 +331,7 @@ const schema = {
     line-height: 1.8;
     font-size: 1.15rem;
     font-weight: 400;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
   }
 
   :global([data-theme="light"]) .description p {
@@ -354,7 +354,7 @@ const schema = {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.4);
     border-radius: 0;
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     font-size: 1.05rem;
     font-weight: 400;
     text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
@@ -390,7 +390,7 @@ const schema = {
   dt {
     font-weight: 400;
     margin-top: 0.75rem;
-    color: #d4a574;
+    color: var(--earth-sand);
     text-transform: uppercase;
     font-size: 1rem;
     letter-spacing: 0.05em;
@@ -407,7 +407,7 @@ const schema = {
   dd {
     margin: 0.25rem 0 0.75rem 0;
     font-weight: 400;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     font-size: 1.05rem;
   }
 
@@ -422,7 +422,7 @@ const schema = {
     font-size: 0.85rem;
     font-family: 'VT323', monospace;
     background: rgba(168, 197, 168, 0.2);
-    color: #a8c5a8;
+    color: var(--theme-text-sage);
     border: 2px solid rgba(168, 197, 168, 0.5);
     border-radius: 0;
     cursor: pointer;
@@ -447,7 +447,7 @@ const schema = {
   .copy-coords:hover {
     background: rgba(212, 165, 116, 0.3);
     border-color: rgba(212, 165, 116, 0.7);
-    color: #d4a574;
+    color: var(--earth-sand);
     text-shadow: 0 0 8px rgba(212, 165, 116, 0.5);
     box-shadow: 0 0 12px rgba(212, 165, 116, 0.5);
   }
@@ -461,7 +461,7 @@ const schema = {
 
   .loading {
     font-family: 'VT323', monospace;
-    color: #888;
+    color: var(--gray-light);
     font-style: italic;
     font-weight: 400;
     font-size: 1.05rem;
@@ -506,7 +506,7 @@ const schema = {
 
   .retro-btn-secondary {
     background: rgba(184, 92, 58, 0.2);
-    color: #d4a574;
+    color: var(--earth-sand);
     border: 2px solid rgba(184, 92, 58, 0.5);
     box-shadow:
       0 0 10px rgba(184, 92, 58, 0.3),
