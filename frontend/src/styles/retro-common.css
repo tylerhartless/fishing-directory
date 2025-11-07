@@ -34,7 +34,7 @@
 }
 
 .retro-page-header .container {
-  padding: 1.25rem 0 3.5rem 0;
+  padding: 1.25rem 2rem 3.5rem 2rem;
   position: relative;
   z-index: 2;
 }
@@ -88,7 +88,7 @@
 .retro-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2.5rem 0;
+  padding: 2.5rem 2rem;
   background: var(--theme-bg);
   min-height: 60vh;
 }
@@ -685,7 +685,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
   .retro-page-header .container {
-    padding: 1.25rem 1rem 2rem 1rem;
+    padding: 1.25rem 1.5rem 2rem 1.5rem;
   }
 
   .retro-page-header h1 {
@@ -693,7 +693,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .retro-container {
-    padding: 2rem 1rem;
+    padding: 2rem 1.5rem;
   }
 
   .retro-card {
