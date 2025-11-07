@@ -100,6 +100,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 </html>
 
 <style>
+  :global(*),
+  :global(*::before),
+  :global(*::after) {
+    box-sizing: border-box;
+  }
+
   :global(body) {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
