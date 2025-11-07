@@ -1,3 +1,7 @@
+# IMPORTANT: Use 'docker compose up' NOT 'docker compose restart'
+# The 'restart' command doesn't respect depends_on health checks
+# Use the restart.bat (Windows) or restart.sh (Mac/Linux) scripts
+
 services:
   # PHP API Server (connects to external MySQL database)
   php:
