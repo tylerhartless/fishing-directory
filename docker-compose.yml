@@ -1,46 +1,9 @@
+# IMPORTANT: Use 'docker compose up' NOT 'docker compose restart'
+# The 'restart' command doesn't respect depends_on health checks
+# Use the restart.bat (Windows) or restart.sh (Mac/Linux) scripts
+
 services:
-  # MySQL Database
-  mysql:
-    image: mysql:8.0
-    container_name: fishing_directory_db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: fishing_root_password
-      MYSQL_DATABASE: fishing_directory
-      MYSQL_USER: fishing_user
-      MYSQL_PASSWORD: fishing_password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    networks:
-      - fishing_network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pfishing_root_password"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # phpMyAdmin (for database management)
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: fishing_directory_phpmyadmin
-    restart: unless-stopped
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: fishing_user
-      PMA_PASSWORD: fishing_password
-    ports:
-      - "8080:80"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - fishing_network
-
-  # PHP API Server
+  # PHP API Server (connects to external MySQL database)
   php:
     image: php:8.2-apache
     container_name: fishing_directory_api
@@ -49,14 +12,24 @@ services:
       - "8000:80"
     volumes:
       - ./backend/api:/var/www/html
-    depends_on:
-      mysql:
-        condition: service_healthy
+    environment:
+      # Connect to external MySQL database (running in data-pipeline repo or remote)
+      - DB_HOST=${DB_HOST:-localhost}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-fishing_directory}
+      - DB_USER=${DB_USER:-fishing_user}
+      - DB_PASSWORD=${DB_PASSWORD:-fishing_password}
     networks:
       - fishing_network
     command: >
       bash -c "docker-php-ext-install mysqli pdo pdo_mysql
       && apache2-foreground"
+    healthcheck:
+      test: ["CMD-SHELL", "service apache2 status || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Astro Frontend Dev Server
   astro:
@@ -76,11 +49,8 @@ services:
     networks:
       - fishing_network
     depends_on:
-      - php
-
-volumes:
-  mysql_data:
-    driver: local
+      php:
+        condition: service_healthy
 
 networks:
   fishing_network:

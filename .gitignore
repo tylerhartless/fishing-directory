@@ -24,16 +24,14 @@ dist/
 /frontend/dist/
 .astro/
 
-# Data files (too large for git)
-raw-data/*.csv
-raw-data/*.shp
-raw-data/*.geojson
-raw-data/*.zip
-processed-data/*.json
-
-# Keep directory structure but ignore contents
-!raw-data/.gitkeep
-!processed-data/.gitkeep
+# Data pipeline (now in separate repository)
+data-pipeline/
+raw-data/
+processed-data/
+database/
+check_db_size.py
+export_production_db.py
+deploy_database.sql
 
 # IDE
 .vscode/
@@ -56,7 +54,6 @@ backup/
 # Docker volumes (don't commit database data)
 .docker/
 mysql-data/
-data-pipeline/osm/*.osm.pbf
 
 # Big data files
 *.pbf
@@ -65,7 +62,6 @@ data-pipeline/osm/*.osm.pbf
 deploy/public_html/
 frontend/public/data/
 deploy/database.sql
-deploy_database.sql
 
 # Ignore the local API config
 /backend/api/config.php

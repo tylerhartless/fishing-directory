@@ -149,7 +149,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       <div class="search-actions">
         <button
           type="button"
-          class="btn-primary"
+          class="retro-btn-search btn-primary"
           onClick={handleUseLocation}
           disabled={isLoadingLocation}
         >
@@ -175,13 +175,14 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         <form class="search-form" onSubmit={handleSearchSubmit}>
           <input
             type="text"
+            class="retro-input"
             placeholder="Enter city, county, or zip code..."
             autocomplete="off"
             value={searchQuery}
             onInput={handleInputChange}
             onFocus={handleInputFocus}
           />
-          <button type="submit" class="btn-search" disabled={isSearching}>
+          <button type="submit" class="retro-btn-search btn-search" disabled={isSearching}>
             {isSearching ? 'Searching...' : 'Search'}
           </button>
         </form>

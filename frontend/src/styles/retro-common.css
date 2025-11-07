@@ -2,7 +2,7 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: #0d1f0d;
+  background: var(--theme-bg-forest);
   color: white;
   padding: 0;
   text-align: left;
@@ -25,7 +25,7 @@
 }
 
 [data-theme="light"] .retro-page-header {
-  background: #f5f1e8;
+  background: var(--boat-cream); /* Warm cream background */
 }
 
 [data-theme="light"] .retro-page-header::after {
@@ -57,15 +57,17 @@
 
 [data-theme="light"] .retro-page-header h1 {
   color: var(--theme-heading-color);
-  text-shadow: none;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15); /* Subtle letterpress effect */
   filter: none;
   font-weight: 700;
+  text-transform: uppercase; /* Vintage ad ALL CAPS style */
+  letter-spacing: 0.08em; /* More spacing for catalog style */
 }
 
 .retro-page-header .subtitle {
   font-family: 'VT323', monospace;
   font-size: 1.6rem;
-  color: #a8c5a8;
+  color: var(--theme-text-sage);
   text-shadow:
     0 0 8px rgba(168, 197, 168, 0.6),
     0 0 15px rgba(168, 197, 168, 0.4);
@@ -98,7 +100,7 @@
 }
 
 [data-theme="light"] .retro-container {
-  background: var(--neutral-bg) !important;
+  background: var(--boat-cream) !important; /* Warm cream background */
 }
 
 /* ===== CARDS ===== */
@@ -108,12 +110,12 @@
   border-radius: 0;
   padding: 1.5rem;
   text-decoration: none;
-  color: #b0b0b0;
+  color: var(--theme-text-secondary);
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
   box-shadow:
-    0 0 15px rgba(184, 92, 58, 0.3),
+    0 0 15px rgba(168, 197, 168, 0.3),
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
@@ -143,10 +145,24 @@
 }
 
 [data-theme="light"] .retro-card {
-  background: var(--neutral-bg) !important;
-  border: 4px solid;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-  color: var(--neutral-black) !important;
+  background: #ffffff !important; /* White cards on cream background */
+  border: 4px solid var(--boat-black); /* Thick black borders */
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2); /* Strong shadow for depth */
+  color: var(--boat-black) !important;
+  border-radius: 0; /* Boxy, square corners */
+  position: relative;
+}
+
+/* Optional: Left orange accent stripe for cards (vintage ad style) */
+[data-theme="light"] .retro-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--boat-orange);
+  pointer-events: none;
 }
 
 [data-theme="light"] .retro-card::before {
@@ -162,7 +178,7 @@
 .retro-card:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 0 20px rgba(212, 165, 116, 0.5),
+    0 0 20px rgba(168, 197, 168, 0.5),
     inset 0 0 30px rgba(100, 100, 100, 0.3);
 }
 
@@ -239,38 +255,41 @@
 
 .retro-btn-search {
   font-family: 'VT323', monospace;
-  background: rgba(184, 92, 58, 0.2);
-  color: #d4a574;
-  border: 2px solid rgba(184, 92, 58, 0.5);
+  background: rgba(168, 197, 168, 0.15);
+  color: var(--theme-text-sage);
+  border: 2px solid rgba(168, 197, 168, 0.5);
   font-size: 1.15rem;
   font-weight: 400;
   box-shadow:
-    0 0 10px rgba(184, 92, 58, 0.3),
+    0 0 10px rgba(168, 197, 168, 0.3),
     inset 0 0 20px rgba(100, 100, 100, 0.2);
-  text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
+  text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
 }
 
 [data-theme="light"] .retro-btn-search {
-  background: var(--accent-rust);
-  color: var(--primary-text);
-  border: 3px solid var(--neutral-black);
-  font-weight: 700;
+  background: linear-gradient(180deg, var(--boat-orange) 0%, #d15820 100%); /* Orange gradient */
+  color: white;
+  border: 4px solid var(--boat-black); /* Thick black border */
+  font-weight: 900; /* Extra bold for vintage ad */
   box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-  text-shadow: none;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Glossy text effect */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .retro-btn-search:hover {
-  background: rgba(212, 165, 116, 0.3);
-  border-color: rgba(212, 165, 116, 0.7);
+  background: rgba(168, 197, 168, 0.25);
+  border-color: rgba(168, 197, 168, 0.8);
   box-shadow:
-    0 0 15px rgba(212, 165, 116, 0.5),
+    0 0 15px rgba(168, 197, 168, 0.5),
     inset 0 0 20px rgba(100, 100, 100, 0.2);
 }
 
 [data-theme="light"] .retro-btn-search:hover {
-  background: var(--accent-copper);
+  background: linear-gradient(180deg, var(--boat-red) 0%, #a01510 100%); /* Red gradient on hover */
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.4);
+  border-color: var(--boat-black);
 }
 
 /* ===== FORM CONTROLS ===== */
@@ -278,89 +297,90 @@
   padding: 1rem;
   font-size: 1rem;
   font-family: 'VT323', monospace;
-  border: 2px solid rgba(184, 92, 58, 0.5);
+  border: 2px solid rgba(168, 197, 168, 0.5);
   border-radius: 0;
   transition: all 0.2s;
   font-weight: 400;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.6);
-  color: #e5e5e5;
+  color: var(--theme-text);
   box-shadow:
-    0 0 10px rgba(184, 92, 58, 0.2),
+    0 0 10px rgba(168, 197, 168, 0.2),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] .retro-input {
   background: white;
-  color: var(--neutral-black);
-  border: 3px solid var(--neutral-black);
-  box-shadow: none;
-  font-weight: 500;
+  color: var(--boat-black);
+  border: 3px solid var(--boat-black); /* Thick black borders */
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1); /* Slight inset for depth */
+  font-weight: 600;
 }
 
 .retro-input:focus {
   outline: none;
-  border-color: rgba(212, 165, 116, 0.8);
+  border-color: rgba(168, 197, 168, 0.8);
   box-shadow:
-    0 0 15px rgba(212, 165, 116, 0.4),
+    0 0 15px rgba(168, 197, 168, 0.4),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] .retro-input:focus {
-  border-color: var(--earth-olive);
-  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
+  border-color: var(--boat-orange); /* Orange focus for catalog style */
+  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.2), inset 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 .retro-input::placeholder {
-  color: #888;
+  color: var(--gray-light);
 }
 
 [data-theme="light"] .retro-input::placeholder {
-  color: #999;
+  color: var(--gray-medium-light);
 }
 
 .retro-select {
   padding: 1rem;
   font-size: 1rem;
   font-family: 'VT323', monospace;
-  border: 2px solid rgba(184, 92, 58, 0.5);
+  border: 2px solid rgba(168, 197, 168, 0.5);
   border-radius: 0;
   background: rgba(0, 0, 0, 0.6);
-  color: #e5e5e5;
+  color: var(--theme-text);
   cursor: pointer;
   font-weight: 400;
   box-shadow:
-    0 0 10px rgba(184, 92, 58, 0.2),
+    0 0 10px rgba(168, 197, 168, 0.2),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] .retro-select {
   background: white;
-  color: var(--neutral-black);
-  border: 3px solid var(--neutral-black);
-  box-shadow: none;
-  font-weight: 600;
+  color: var(--boat-black);
+  border: 3px solid var(--boat-black); /* Thick black borders */
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2); /* Box shadow for depth */
+  font-weight: 700;
 }
 
 .retro-select:hover {
-  border-color: rgba(212, 165, 116, 0.7);
+  border-color: rgba(168, 197, 168, 0.7);
 }
 
 [data-theme="light"] .retro-select:hover {
-  border-color: var(--earth-olive);
+  border-color: var(--boat-orange); /* Orange hover */
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
 }
 
 .retro-select:focus {
   outline: none;
-  border-color: rgba(212, 165, 116, 0.8);
+  border-color: rgba(168, 197, 168, 0.8);
   box-shadow:
-    0 0 15px rgba(212, 165, 116, 0.4),
+    0 0 15px rgba(168, 197, 168, 0.4),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] .retro-select:focus {
-  border-color: var(--earth-olive);
-  box-shadow: 0 0 0 3px rgba(122, 132, 80, 0.2);
+  border-color: var(--boat-orange);
+  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.2), 2px 2px 0 rgba(0,0,0,0.2);
 }
 
 /* ===== BADGES ===== */
@@ -374,6 +394,16 @@
   white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Light mode badge styles (catalog-style) */
+[data-theme="light"] .retro-badge {
+  background: var(--boat-black);
+  color: white;
+  border: 2px solid var(--boat-black);
+  font-weight: 900;
+  padding: 0.5rem 1rem;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
 }
 
 .retro-badge-large {
@@ -403,6 +433,9 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] h5,
 [data-theme="light"] h6 {
   color: var(--theme-heading-color);
+  font-weight: 900; /* Extra bold for vintage catalog */
+  text-transform: uppercase; /* ALL CAPS for catalog style */
+  letter-spacing: 0.05em;
 }
 
 .retro-heading {
@@ -452,15 +485,15 @@ h1, h2, h3, h4, h5, h6 {
 .retro-section {
   margin: 2.5rem 0;
   background: rgba(30, 30, 30, 0.8);
-  border: 2px solid rgba(184, 92, 58, 0.6);
+  border: 2px solid rgba(168, 197, 168, 0.6);
   border-radius: 0;
   padding: 2rem;
   box-shadow:
-    0 0 15px rgba(184, 92, 58, 0.3),
+    0 0 15px rgba(168, 197, 168, 0.3),
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
-  color: #b0b0b0;
+  color: var(--theme-text-secondary);
 }
 
 .retro-section::before {
@@ -487,10 +520,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-section {
-  background: var(--neutral-bg) !important;
-  border: 3px solid var(--neutral-black) !important;
+  background: #ffffff !important; /* White sections on cream background */
+  border: 4px solid var(--boat-black) !important; /* Thick borders */
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
-  color: var(--neutral-black) !important;
+  color: var(--boat-black) !important;
+  padding: 2.5rem !important; /* Generous padding like print ads */
+  position: relative;
+}
+
+/* Top orange border accent (Mariner band style) */
+[data-theme="light"] .retro-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--boat-orange);
+  pointer-events: none;
+  z-index: 3;
 }
 
 [data-theme="light"] .retro-section::before {
@@ -522,7 +570,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--theme-text-secondary);
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
-  font-weight: 400;
+  font-weight: 500; /* Standardized weight for consistency */
   font-family: 'VT323', monospace;
 }
 
@@ -530,7 +578,7 @@ h1, h2, h3, h4, h5, h6 {
 .retro-breadcrumb a {
   color: var(--theme-breadcrumb-color);
   text-decoration: none;
-  font-weight: 400;
+  font-weight: 500; /* Standardized weight */
   text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
   transition: all 0.2s;
 }
@@ -539,28 +587,37 @@ h1, h2, h3, h4, h5, h6 {
 .retro-breadcrumb .active {
   color: var(--theme-breadcrumb-hover);
   text-shadow: 0 0 10px rgba(80, 255, 48, 0.8), 0 0 20px rgba(80, 255, 48, 0.5);
+  font-weight: 500; /* Consistent weight on hover */
 }
 
-/* Light Mode Breadcrumbs - Dark orange with shadow */
+/* Light Mode Breadcrumbs - Orange links, black current page */
 [data-theme="light"] .retro-breadcrumb {
-  font-weight: 600;
+  font-weight: 500; /* Standardized weight */
+  color: var(--boat-black); /* Black for current page text */
 }
 
 [data-theme="light"] .retro-breadcrumb a {
-  color: var(--theme-breadcrumb-color);
+  color: var(--theme-breadcrumb-color); /* Orange */
   text-shadow: none;
+  font-weight: 600; /* Slightly bolder for links to stand out */
+  text-decoration: underline;
 }
 
 [data-theme="light"] .retro-breadcrumb a:hover,
 [data-theme="light"] .retro-breadcrumb .active {
-  color: var(--theme-breadcrumb-color);
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  color: var(--theme-breadcrumb-hover); /* Red on hover */
+  text-shadow: none;
+  text-decoration: none;
+  font-weight: 600; /* Consistent with link weight */
 }
 
-/* In page header context - override for header */
+/* In page header context - no need for override anymore */
 .retro-page-header .retro-breadcrumb {
   color: var(--secondary-text);
-  font-weight: 500;
+}
+
+[data-theme="light"] .retro-page-header .retro-breadcrumb {
+  color: var(--boat-black); /* Black for current page in light mode */
 }
 
 .retro-page-header .retro-breadcrumb a {
@@ -587,16 +644,16 @@ h1, h2, h3, h4, h5, h6 {
 /* Terminal-style info boxes for dark mode (default) */
 .retro-info-box {
   background: rgba(30, 30, 30, 0.8);
-  border: 2px solid rgba(184, 92, 58, 0.6);
+  border: 2px solid rgba(168, 197, 168, 0.6);
   border-radius: 0;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow:
-    0 0 15px rgba(184, 92, 58, 0.3),
+    0 0 15px rgba(168, 197, 168, 0.3),
     inset 0 0 30px rgba(100, 100, 100, 0.3);
   position: relative;
   overflow: hidden;
-  color: #b0b0b0;
+  color: var(--theme-text-secondary);
 }
 
 .retro-info-box::before {
@@ -623,10 +680,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-info-box {
-  background: var(--neutral-bg) !important;
-  border: 3px solid var(--neutral-black) !important;
+  background: #ffffff !important; /* White box on cream background */
+  border: 4px solid var(--boat-black) !important; /* Thick black border */
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
-  color: var(--neutral-black) !important;
+  color: var(--boat-black) !important;
+  padding: 2rem !important; /* Generous padding */
 }
 
 [data-theme="light"] .retro-info-box::before {
@@ -643,17 +701,19 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 0 1rem 0;
   font-size: 1.3rem;
   font-weight: 400;
-  color: #d4a574;
+  color: var(--theme-text-sage);
   font-family: 'VT323', monospace;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 8px rgba(212, 165, 116, 0.4);
+  text-shadow: 0 0 8px rgba(168, 197, 168, 0.4);
 }
 
 [data-theme="light"] .retro-info-box h3 {
-  color: var(--neutral-black) !important;
-  font-weight: 700 !important;
+  color: var(--boat-charcoal) !important;
+  font-weight: 900 !important; /* Extra bold for vintage catalog */
   text-shadow: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .retro-info-box.highlight {
@@ -668,6 +728,15 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   font-weight: 700;
+  border: 3px solid;
+}
+
+/* Light mode notice styles (vintage catalog) */
+[data-theme="light"] .retro-notice {
+  border-width: 4px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .retro-notice-success {
@@ -682,7 +751,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .retro-notice-error {
   background: var(--earth-rust);
-  border: 4px solid var(--neutral-black);
+  border-color: var(--neutral-black);
+  color: white;
+}
+
+[data-theme="light"] .retro-notice-error {
+  background: var(--boat-red);
+  border-color: var(--boat-black);
   color: white;
 }
 
