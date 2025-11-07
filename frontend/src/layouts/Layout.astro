@@ -222,6 +222,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     animation: blink 1s step-end infinite;
   }
 
+  [data-theme="light"] .cursor {
+    display: none;
+  }
+
   @keyframes blink {
     0%, 50% {
       opacity: 1;
