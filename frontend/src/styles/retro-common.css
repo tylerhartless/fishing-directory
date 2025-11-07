@@ -5,7 +5,7 @@
   background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 10%, #101010 20%, #131313 35%, #151515 50%, #171717 65%, #1a1a1a 80%, #1a1a1a 100%);
   color: white;
   padding: 0;
-  text-align: center;
+  text-align: left;
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
@@ -34,7 +34,7 @@
 }
 
 .retro-page-header .container {
-  padding: 1.25rem 2rem 3.5rem;
+  padding: 1.25rem 2rem 3.5rem 4rem;
   position: relative;
   z-index: 2;
 }
