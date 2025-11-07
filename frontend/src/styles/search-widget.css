@@ -1,5 +1,6 @@
 /* SearchWidget Component Styles - Terminal Theme */
 /* Uses retro-btn-search and retro-input from retro-common.css */
+/* Dark mode color scheme: #ffffff (white) and #a8c5a8 (sage green) from page header */
 
 .search-widget {
   /* Container is styled by parent */
@@ -11,9 +12,9 @@
 }
 
 .location-icon {
-  color: var(--earth-sand);
+  color: #a8c5a8;
   margin-bottom: 1rem;
-  filter: drop-shadow(0 0 8px rgba(212, 165, 116, 0.5));
+  filter: drop-shadow(0 0 8px rgba(168, 197, 168, 0.5));
 }
 
 [data-theme="light"] .location-icon {
@@ -24,11 +25,11 @@
 .location-prompt p {
   font-size: 1.2rem;
   font-family: 'VT323', monospace;
-  color: var(--earth-sand);
+  color: #a8c5a8;
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 8px rgba(212, 165, 116, 0.4);
+  text-shadow: 0 0 8px rgba(168, 197, 168, 0.4);
 }
 
 [data-theme="light"] .location-prompt p {
@@ -61,7 +62,7 @@
 
 .search-divider {
   text-align: center;
-  color: var(--earth-sand);
+  color: #a8c5a8;
   font-size: 1rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
@@ -69,7 +70,7 @@
   margin: 0.5rem 0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
+  text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
 }
 
 [data-theme="light"] .search-divider {
@@ -85,7 +86,7 @@
   top: 50%;
   width: 35%;
   height: 2px;
-  background: rgba(184, 92, 58, 0.3);
+  background: rgba(168, 197, 168, 0.3);
 }
 
 [data-theme="light"] .search-divider::before,
@@ -124,13 +125,13 @@
   display: none;
   font-family: 'VT323', monospace;
   background: rgba(0, 0, 0, 0.95);
-  border: 2px solid rgba(184, 92, 58, 0.5);
+  border: 2px solid rgba(168, 197, 168, 0.5);
   border-radius: 0;
   margin-top: 0.5rem;
   max-height: 200px;
   overflow-y: auto;
   box-shadow:
-    0 0 15px rgba(184, 92, 58, 0.3),
+    0 0 15px rgba(168, 197, 168, 0.3),
     inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -147,12 +148,12 @@
 .suggestion-item {
   padding: 0.75rem 1rem;
   cursor: pointer;
-  border-bottom: 1px solid rgba(184, 92, 58, 0.3);
+  border-bottom: 1px solid rgba(168, 197, 168, 0.3);
   font-weight: 400;
   font-size: 1.05rem;
-  color: var(--earth-sand);
+  color: #ffffff;
   transition: all 0.2s;
-  text-shadow: 0 0 4px rgba(212, 165, 116, 0.3);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -166,9 +167,9 @@
 }
 
 .suggestion-item:hover {
-  background: rgba(184, 92, 58, 0.2);
-  color: var(--earth-sand);
-  text-shadow: 0 0 8px rgba(212, 165, 116, 0.5);
+  background: rgba(168, 197, 168, 0.2);
+  color: #a8c5a8;
+  text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
 }
 
 [data-theme="light"] .suggestion-item:hover {
