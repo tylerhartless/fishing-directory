@@ -101,19 +101,47 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     </div>
 
     <div id="spots-container" class="retro-grid retro-grid-spots">
-      {spots.sort((a, b) => a.name.localeCompare(b.name)).map(spot => (
-        <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="retro-card">
-          <h3>{spot.name}</h3>
-          {spot.water_body_name && (
-            <p class="water-body">{spot.water_body_name}</p>
-          )}
-          <div class="spot-meta">
-            <span class="retro-badge spot-type">
-              {spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-            </span>
-          </div>
-        </a>
-      ))}
+      {spots.sort((a, b) => a.name.localeCompare(b.name)).map(spot => {
+        const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+        const amenitiesJson = JSON.stringify(amenities);
+
+        const prominentAmenities = [];
+        const amenityIcons = {
+          'boat_ramp': '🚤 Boat Ramp',
+          'fishing_pier': '🎣 Pier',
+          'fish_cleaning': '🔪 Cleaning Station',
+          'restrooms': '🚻 Restrooms',
+          'parking': '🅿️ Parking',
+          'boat_trailer_parking': '🚢 Boat Trailer',
+          'camping': '⛺ Camping',
+          'lighting': '💡 Lighting',
+          'picnic_area': '🧺 Picnic Area'
+        };
+
+        for (const [key, label] of Object.entries(amenityIcons)) {
+          if (amenities[key] === true) {
+            prominentAmenities.push(label);
+          }
+        }
+
+        return (
+          <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="retro-card" data-amenities={amenitiesJson}>
+            <h3>{spot.name}</h3>
+            <div class="spot-meta">
+              <span class="retro-badge spot-type">
+                {spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </span>
+            </div>
+            {prominentAmenities.length > 0 && (
+              <div class="amenities-row">
+                {prominentAmenities.map(label => (
+                  <span class="amenity-badge">{label}</span>
+                ))}
+              </div>
+            )}
+          </a>
+        );
+      })}
     </div>
   </section>
 </Layout>
@@ -182,14 +210,15 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global(.retro-card h3) {
-    margin: 0 0 0.5rem 0;
-    color: #f0e6d2;
-    font-size: 1.2rem;
+    margin: 0 0 0.75rem 0;
+    color: #ffffff;
+    font-size: 1.8rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
     letter-spacing: 0.02em;
     text-shadow:
-      0 0 8px rgba(240, 230, 210, 0.5);
+      0 0 10px rgba(255, 255, 255, 0.6),
+      0 0 20px rgba(255, 255, 255, 0.4);
   }
 
   :global([data-theme="light"] .retro-card h3) {
@@ -215,6 +244,33 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+  }
+
+  :global(.amenities-row) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+
+  :global(.amenity-badge) {
+    background: rgba(184, 92, 58, 0.2);
+    border: 1px solid rgba(184, 92, 58, 0.4);
+    color: #d4a574;
+    padding: 0.3rem 0.6rem;
+    font-size: 1.1rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    text-shadow:
+      0 0 6px rgba(212, 165, 116, 0.4);
+  }
+
+  :global([data-theme="light"] .amenity-badge) {
+    background: var(--box-rust);
+    border: 2px solid var(--earth-rust);
+    color: var(--neutral-black);
+    text-shadow: none;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -281,18 +337,41 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     const countySlug = window.location.pathname.split('/')[2];
 
     spotsContainer.innerHTML = spotsToDisplay.map(spot => {
-      const waterBody = spot.water_body_name ?
-        `<p class="water-body">${spot.water_body_name}</p>` : '';
+      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+      const amenitiesJson = JSON.stringify(amenities);
+
+      const prominentAmenities = [];
+      const amenityIcons = {
+        'boat_ramp': '🚤 Boat Ramp',
+        'fishing_pier': '🎣 Pier',
+        'fish_cleaning': '🔪 Cleaning Station',
+        'restrooms': '🚻 Restrooms',
+        'parking': '🅿️ Parking',
+        'boat_trailer_parking': '🚢 Boat Trailer',
+        'camping': '⛺ Camping',
+        'lighting': '💡 Lighting',
+        'picnic_area': '🧺 Picnic Area'
+      };
+
+      for (const [key, label] of Object.entries(amenityIcons)) {
+        if (amenities[key] === true) {
+          prominentAmenities.push(`<span class="amenity-badge">${label}</span>`);
+        }
+      }
+
+      const amenitiesHtml = prominentAmenities.length > 0
+        ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
+        : '';
 
       const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
       return `
-        <a href="/texas/${countySlug}/${spot.slug}" class="retro-card">
+        <a href="/texas/${countySlug}/${spot.slug}" class="retro-card" data-amenities='${amenitiesJson}'>
           <h3>${spot.name}</h3>
-          ${waterBody}
           <div class="spot-meta">
             <span class="retro-badge spot-type">${typeLabel}</span>
           </div>
+          ${amenitiesHtml}
         </a>
       `;
     }).join('');
