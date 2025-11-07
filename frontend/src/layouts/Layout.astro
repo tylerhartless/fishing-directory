@@ -43,8 +43,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       <nav class="container">
         <a href="/" class="logo">
           <span class="logo-prompt">&gt;&lt;&gt;</span>
-          <span class="logo-bubble">°</span>
-          <span class="logo-text">whereCanIFish.com</span>
+          <span class="logo-text">whereCanIFish.com<span class="cursor">_</span></span>
         </a>
       </nav>
     </header>
@@ -148,6 +147,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     overflow: visible;
   }
 
+  [data-theme="light"] header {
+    border-bottom: 4px solid var(--earth-rust);
+  }
+
   nav {
     position: relative;
     z-index: 2;
@@ -163,7 +166,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.5rem;
     overflow: visible;
   }
 
@@ -173,9 +176,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-weight: 400;
     color: #39ff14;
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-    filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.8))
-            drop-shadow(0 0 15px rgba(57, 255, 20, 0.6))
-            drop-shadow(0 0 25px rgba(57, 255, 20, 0.4));
+    filter: drop-shadow(0 0 4px rgba(57, 255, 20, 0.6))
+            drop-shadow(0 0 8px rgba(57, 255, 20, 0.3));
     flex-shrink: 0;
     letter-spacing: -0.15em;
     line-height: 2.2;
@@ -183,31 +185,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     margin: 0 -20px;
   }
 
-  .logo-bubble {
-    font-size: 1rem;
-    color: #6db3f2;
-    text-shadow: none;
-    filter: drop-shadow(0 0 6px rgba(109, 179, 242, 0.9))
-            drop-shadow(0 0 12px rgba(109, 179, 242, 0.6));
-    animation: bubble 1.5s ease-in-out infinite;
-    position: relative;
-    top: -0.5rem;
-    margin-left: -0.3rem;
-    margin-right: 0.2rem;
-    flex-shrink: 0;
-    padding: 0 15px;
-  }
-
   .logo-text {
     font-family: 'Press Start 2P', monospace;
     font-size: 1.4rem;
     font-weight: 400;
     letter-spacing: 0.02em;
-    color: #f0e6d2;
+    color: #ffffff;
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-    filter: drop-shadow(0 0 8px rgba(240, 230, 210, 0.7))
-            drop-shadow(0 0 15px rgba(240, 230, 210, 0.5))
-            drop-shadow(0 0 25px rgba(240, 230, 210, 0.3));
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4))
+            drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
     white-space: nowrap;
     position: relative;
     line-height: 2.2;
@@ -215,14 +201,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     margin: 0 -25px;
   }
 
-  @keyframes bubble {
-    0%, 100% {
-      opacity: 0.3;
-      transform: translateY(0);
-    }
-    50% {
+  .cursor {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% {
       opacity: 1;
-      transform: translateY(-3px);
+    }
+    51%, 100% {
+      opacity: 0;
     }
   }
 
@@ -280,23 +268,20 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   footer {
-    background: #0d1f0d;
+    background: #2a2a2a;
     padding: 2rem 0;
     margin-top: 2.5rem;
     text-align: center;
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     color: #b0b0b0;
-    border-top: 4px solid var(--earth-rust);
     position: relative;
-    box-shadow: 0 -4px 15px rgba(184, 92, 58, 0.3);
   }
 
-  :global([data-theme="light"]) footer {
-    background: var(--primary-bg);
-    color: var(--secondary-text);
-    font-size: 0.9rem;
-    box-shadow: none;
+  [data-theme="light"] footer {
+    background: #0d1f0d;
+    color: white;
+    border-top: 4px solid var(--earth-rust);
   }
 
   footer p {
@@ -370,15 +355,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo {
-      gap: 0.15rem;
-    }
-
-    .logo-bubble {
-      font-size: 0.75rem;
-      top: -0.4rem;
-      margin-left: -0.25rem;
-      margin-right: 0.15rem;
-      padding: 0 12px;
+      gap: 0.3rem;
     }
 
     nav {
@@ -407,15 +384,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     .logo {
-      gap: 0.1rem;
-    }
-
-    .logo-bubble {
-      font-size: 0.6rem;
-      top: -0.35rem;
-      margin-left: -0.2rem;
-      margin-right: 0.1rem;
-      padding: 0 10px;
+      gap: 0.2rem;
     }
 
     nav {
