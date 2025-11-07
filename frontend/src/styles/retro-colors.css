@@ -92,7 +92,7 @@
 [data-theme="light"] {
   --theme-bg: #f5f1e8;
   --theme-bg-alt: #ffffff;
-  --theme-bg-forest: #3d5a3d;   /* Keep forest green for light mode header */
+  --theme-bg-forest: #0d1f0d;   /* Same dark forest green as dark mode */
   --theme-text: #2d2d2d;
   --theme-text-secondary: #555555;
   --theme-text-sage: #4a6741;   /* Darker green for light mode */
