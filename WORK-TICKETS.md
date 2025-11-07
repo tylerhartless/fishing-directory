@@ -1,9 +1,9 @@
 # WhereCanIFish.com - Work Tickets
 **Pre-Launch Development Roadmap**
 
-**Last Updated:** November 7, 2025  
-**Status:** Pre-Launch  
-**Estimate:** 110-140 hours total
+**Last Updated:** November 7, 2025
+**Status:** Pre-Launch
+**Estimate:** 129-167 hours total
 
 ---
 
@@ -60,10 +60,10 @@ Get repo access and perform comprehensive audit of current codebase state.
 ---
 
 ### TICKET-002: Create GitHub Project & Issue Templates 🟢 MEDIUM
-**Estimate:** 30 minutes  
+**Estimate:** 30 minutes
 **Depends on:** None
 
-**Description:**  
+**Description:**
 Set up project management infrastructure.
 
 **Acceptance Criteria:**
@@ -75,14 +75,76 @@ Set up project management infrastructure.
 
 ---
 
-### TICKET-031: Astro Framework Best Practices Audit 🔴 BLOCKER
-**Estimate:** 6-8 hours  
+### TICKET-034: County Many-to-Many Relationship Schema 🔴 BLOCKER
+**Estimate:** 4-6 hours
 **Depends on:** TICKET-001
 
-**Description:**  
+**Description:**
+Update spot data model to support association with multiple counties. Large water bodies often span multiple counties, and the current "Multiple Counties" label is ambiguous and poor for SEO.
+
+**Acceptance Criteria:**
+
+**Schema Update:**
+- [ ] Update `spots` table/model to support many-to-many relationship with counties
+- [ ] Create junction table (e.g., `spot_counties` or `spots_counties_join`)
+- [ ] Migration script to convert existing data
+- [ ] Handle spots currently labeled "Multiple Counties"
+- [ ] Data validation: ensure at least one county per spot
+
+**Spot Detail Page Display:**
+- [ ] Display all associated counties on spot page
+- [ ] Format: "Counties: Montgomery, Walker" or similar
+- [ ] Link each county name to its county page
+- [ ] Show counties in alphabetical order
+
+**County Landing Page Display:**
+- [ ] Update county pages to query spots by many-to-many relationship
+- [ ] Spots appear on ALL relevant county pages
+- [ ] Example: Lake Conroe appears on both Montgomery and Walker county pages
+- [ ] Ensure no performance issues with joins
+
+**SEO Benefits:**
+- [ ] Remove ambiguous "Multiple Counties" label
+- [ ] Each county page shows complete list of accessible spots
+- [ ] Better discoverability regardless of entry point
+
+**Data Migration:**
+- [ ] Identify all spots currently labeled "Multiple Counties"
+- [ ] Research and assign correct county associations
+- [ ] Document data source for county boundaries
+- [ ] Test migration on staging before production
+
+**Testing:**
+- [ ] Test large lake (multiple counties) displays correctly
+- [ ] Test single county spot still works
+- [ ] Test county page queries are efficient
+- [ ] Verify no broken links
+
+---
+
+### TICKET-031: Astro Framework Best Practices Audit 🔴 BLOCKER
+**Estimate:** 6-8 hours
+**Depends on:** TICKET-001
+
+**Description:**
 Ensure we're maximizing Astro's capabilities for performance and UX.
 
 **Acceptance Criteria:**
+
+**Hybrid Rendering Model (SSG + ISR):**
+- [ ] **SSG (Static Site Generation):** Pre-render at build time:
+  - Homepage
+  - All /state pages
+  - All /county pages
+  - /fishing-without-a-license landing page
+  - Other static content pages (About, Contact, etc.)
+- [ ] **ISR (Incremental Static Regeneration):** On-demand generation for:
+  - Individual /spot/{spotName} detail pages
+  - Generate just-in-time on first request
+  - Cache at CDN edge for subsequent visitors
+  - Document revalidation strategy
+- [ ] Build time remains fast (<5 minutes) regardless of spot count
+- [ ] Document hybrid approach and when to use each method
 
 **View Transitions:**
 - [ ] Implement Astro View Transitions API
@@ -101,12 +163,6 @@ Ensure we're maximizing Astro's capabilities for performance and UX.
 - [ ] Map = `client:idle` (load after page interactive)
 - [ ] Measure JS bundle size reduction
 
-**Static Site Generation:**
-- [ ] Confirm all spot pages pre-rendered at build
-- [ ] Confirm county pages pre-rendered
-- [ ] On-demand revalidation when spots updated
-- [ ] Cache strategy documented
-
 **Image Optimization:**
 - [ ] Use `<Image />` component from `astro:assets`
 - [ ] Automatic WebP/AVIF conversion
@@ -123,6 +179,7 @@ Ensure we're maximizing Astro's capabilities for performance and UX.
 - [ ] When to use islands vs static
 - [ ] View Transitions best practices
 - [ ] Component hydration strategy
+- [ ] Hybrid rendering model explained (SSG vs ISR)
 
 ---
 
@@ -597,10 +654,10 @@ Improve card hover states and clickability, optimized for mobile touch.
 ---
 
 ### TICKET-016: Design Unified Listing Page Layout (Mobile-First) 🔴 BLOCKER
-**Estimate:** 8-10 hours  
+**Estimate:** 8-10 hours
 **Depends on:** TICKET-015
 
-**Description:**  
+**Description:**
 Create standard template for all spot listing pages, mobile-optimized.
 
 **Acceptance Criteria:**
@@ -639,6 +696,62 @@ Create standard template for all spot listing pages, mobile-optimized.
 - [ ] Test dark and light modes
 - [ ] Verify filters/sort work
 - [ ] Test infinite scroll performance
+
+---
+
+### TICKET-035: State Park "No License Required" Feature 🔴 BLOCKER
+**Estimate:** 5-7 hours
+**Depends on:** TICKET-015, TICKET-016
+
+**Description:**
+Highlight that fishing at Texas State Parks doesn't require a fishing license. Add visual indicators to spot cards and update search filter logic to make this benefit discoverable.
+
+**Acceptance Criteria:**
+
+**Data Model:**
+- [ ] Add `is_state_park` boolean field to spots table/model
+- [ ] Identify and flag all existing state park spots
+- [ ] Data validation in spot submission form
+
+**Spot Card Visual Indicator:**
+- [ ] Design prominent badge/icon for "No License Required"
+- [ ] Badge styles: terminal aesthetic for dark mode, vintage ad style for light mode
+- [ ] Badge position: top-right corner or below spot name
+- [ ] Badge text: "Fishing License Not Required" or "No License Needed"
+- [ ] Apply to ALL spot card contexts:
+  - Search results
+  - County page listings
+  - Home page featured spots (if applicable)
+  - "Nearby spots" on spot detail pages
+
+**Search Filter Update:**
+- [ ] Relabel "State Park" filter to be more descriptive
+- [ ] New label: "State Parks (No License Required)" or similar
+- [ ] Filter correctly queries `is_state_park` field
+- [ ] Filter works in combination with other filters
+- [ ] Update filter UI to emphasize this benefit
+
+**Spot Detail Page:**
+- [ ] Display "No License Required" prominently on state park spot pages
+- [ ] Add informational text explaining this benefit
+- [ ] Consider adding state park badge/banner at top of page
+
+**Mobile Optimization:**
+- [ ] Badge readable on small screens
+- [ ] Badge doesn't interfere with card clickability
+- [ ] Filter label doesn't truncate on mobile
+
+**SEO:**
+- [ ] Add "no fishing license required" to state park spot meta descriptions
+- [ ] Update schema markup to include this feature
+- [ ] Consider adding structured data
+
+**Testing:**
+- [ ] Verify all state parks have badge
+- [ ] Verify non-state parks don't have badge
+- [ ] Test filter returns only state parks
+- [ ] Test on actual devices
+- [ ] Test dark and light modes
 
 ---
 
@@ -861,10 +974,10 @@ Prevent duplicate spot submissions with intelligent proximity detection.
 ## Sprint 6: SEO & Polish
 
 ### TICKET-021: Implement SEO Basics 🟡 HIGH
-**Estimate:** 4-5 hours  
+**Estimate:** 4-5 hours
 **Depends on:** None
 
-**Description:**  
+**Description:**
 Set up essential SEO infrastructure for "fishing spots near me" queries.
 
 **Acceptance Criteria:**
@@ -902,6 +1015,144 @@ Set up essential SEO infrastructure for "fishing spots near me" queries.
 - [ ] Validate all meta tags
 - [ ] Test schema markup
 - [ ] Verify sitemap accessible
+
+---
+
+### TICKET-036: Geotargeted "Near Me" Landing Page 🟡 HIGH
+**Estimate:** 6-8 hours
+**Depends on:** TICKET-021, TICKET-031
+
+**Description:**
+Create a dynamic landing page targeting "fishing spots near me" and similar local-intent search queries. Uses browser geolocation to show personalized results.
+
+**Acceptance Criteria:**
+
+**Route & Setup:**
+- [ ] Create route: `/near-me` or `/fishing-spots-near-me`
+- [ ] Use Astro SSG for page shell
+- [ ] Client-side geolocation hydration with `client:load`
+
+**Geolocation Functionality:**
+- [ ] Request browser geolocation permission on page load
+- [ ] Clear permission prompt with explanation of benefit
+- [ ] Loading state while waiting for permission/location
+
+**Success State (Permission Granted):**
+- [ ] Display user's approximate location (city/region, not exact coords)
+- [ ] Show list of fishing spots sorted by distance
+- [ ] Display distance from user to each spot (e.g., "2.3 miles away")
+- [ ] Use spot cards from TICKET-015 (enhanced clickability)
+- [ ] Show 20-30 spots initially with "Load more" button
+- [ ] Map view showing user location and nearby spots
+
+**Fallback State (Permission Denied):**
+- [ ] Clear, friendly message explaining fallback
+- [ ] Prominent search bar: "Enter your city or zip code"
+- [ ] Autocomplete for Texas cities and zip codes
+- [ ] Submit redirects to search results with location filter
+
+**Mobile Optimization:**
+- [ ] Geolocation more reliable on mobile (GPS available)
+- [ ] Large, clear permission prompt message
+- [ ] Distance displayed prominently on cards
+- [ ] Touch-friendly search bar in fallback
+- [ ] Map optimized for mobile viewing
+
+**SEO Optimization:**
+- [ ] Meta title: "Fishing Spots Near Me | Find Local Texas Fishing Locations"
+- [ ] Meta description: "Discover fishing spots near your location..."
+- [ ] Schema markup for local search
+- [ ] Include "near me" keyword naturally in content
+- [ ] Link to popular city/county pages
+
+**Content:**
+- [ ] Hero section: "Find Fishing Spots Near You"
+- [ ] Brief explanation of how it works
+- [ ] Privacy note: "We don't store your location"
+- [ ] Link to privacy policy
+
+**Testing:**
+- [ ] Test geolocation on actual mobile devices (iOS/Android)
+- [ ] Test permission denial flow
+- [ ] Test in private/incognito mode
+- [ ] Verify distance calculations accurate
+- [ ] Test on actual devices in different locations
+
+---
+
+### TICKET-037: "No License" Thematic Landing Page 🟡 HIGH
+**Estimate:** 4-6 hours
+**Depends on:** TICKET-021, TICKET-035
+
+**Description:**
+Create a content-driven static landing page targeting users searching for fishing locations that don't require a license. This page serves as a comprehensive guide and SEO magnet for this high-value query.
+
+**Acceptance Criteria:**
+
+**Route & Setup:**
+- [ ] Create route: `/fishing-without-a-license` or `/no-license-fishing`
+- [ ] Fully static page (Astro SSG)
+- [ ] Pre-rendered at build time with all state park data
+
+**SEO Optimization:**
+- [ ] Meta title: "Where Can I Fish Without a License in Texas? | State Parks Guide"
+- [ ] Meta description: "Complete list of Texas fishing locations where no license is required..."
+- [ ] Target keywords:
+  - "where can I fish without a license"
+  - "no license fishing spots"
+  - "free fishing locations texas"
+  - "fishing without license texas"
+- [ ] Schema markup: Article or Guide
+- [ ] Optimized URL structure
+- [ ] Internal links to all state park spot pages
+
+**Page Content:**
+- [ ] **Hero Section:**
+  - Headline: "Fish Texas State Parks - No License Required"
+  - Subheading explaining the benefit
+  - Call-to-action: Browse all state park spots
+- [ ] **Informational Section:**
+  - Explain Texas law: State parks exempt from fishing license requirement
+  - Clarify any conditions or restrictions
+  - Link to official TPWD source
+- [ ] **Complete List of State Parks:**
+  - All state park fishing spots listed
+  - Organized by region or alphabetically
+  - Each entry links to full spot page
+  - Include county for each spot
+  - Brief description of what makes each spot unique
+- [ ] **FAQ Section:**
+  - "Do I need a license to fish at state parks?"
+  - "Are there any restrictions?"
+  - "What other locations don't require a license?"
+  - "Do I need a state park entrance pass?"
+
+**Visual Design:**
+- [ ] Terminal aesthetic (dark mode)
+- [ ] Vintage ad aesthetic (light mode)
+- [ ] Prominent badges: "NO LICENSE REQUIRED"
+- [ ] Use state park imagery
+- [ ] Map showing all state park locations
+
+**Spot Card Display:**
+- [ ] Use enhanced spot cards from TICKET-015
+- [ ] Display "No License Required" badge from TICKET-035
+- [ ] Grid layout: responsive columns
+- [ ] Filter/sort options: by region, by county, by popularity
+
+**Internal Linking:**
+- [ ] Link from home page (prominent placement)
+- [ ] Link from navigation menu
+- [ ] Link from search widget (e.g., "Looking for no-license fishing?")
+- [ ] Link from state park spot pages (cross-promotion)
+- [ ] Add to footer
+
+**Testing:**
+- [ ] Verify all state parks listed
+- [ ] Verify all links work
+- [ ] Test on actual devices
+- [ ] Validate SEO with tools
+- [ ] Check page load performance
 
 ---
 
@@ -1233,12 +1484,18 @@ Page transitions, scroll animations, micro-interactions (Phase 2 & 3 from animat
 
 ## Total Effort Estimate
 
-**Total:** 110-140 hours
+**Total:** 129-167 hours
+
+**New Scope Items Added (19-27 hours):**
+- TICKET-034: County Many-to-Many Relationship Schema (4-6 hours)
+- TICKET-035: State Park "No License Required" Feature (5-7 hours)
+- TICKET-036: Geotargeted "Near Me" Landing Page (6-8 hours)
+- TICKET-037: "No License" Thematic Landing Page (4-6 hours)
 
 **Timeline Estimates:**
-- Full-time (40 hrs/week): 3-4 weeks
-- Part-time (20 hrs/week): 6-7 weeks
-- Side project (10 hrs/week): 11-14 weeks
+- Full-time (40 hrs/week): 3.5-4.5 weeks
+- Part-time (20 hrs/week): 7-9 weeks
+- Side project (10 hrs/week): 13-17 weeks
 
 ---
 
@@ -1251,16 +1508,43 @@ Store in `/docs/design-references/`:
 
 ---
 
-## Questions to Resolve Tomorrow
+## Scope Clarifications & Open Questions
+
+### Page Definition: /spots vs. /search
+**Status:** Needs design team clarification
+**Impact:** TICKET-016
+
+The current ambiguity between the `/spots` page and the search results page needs to be resolved during the layout redesign. The design and product team should provide a clear definition and user flow for these pages to clarify their distinct purposes.
+
+**Possible Approaches:**
+- `/spots` → Browsable directory of all spots (full catalog)
+- `/search` → Explicit search results page with filters applied
+- Alternative: Combine into single page with different states
+
+**Action:** Clarify with design/product team before implementing TICKET-016
+
+---
+
+## Questions to Resolve
 
 1. **"I Fish Here":** Anonymous or require account?
 2. **Species voting:** Anonymous or require account?
 3. **User submissions:** Email verification required?
 4. **Analytics:** Cookie consent banner needed? (Check Texas/US regulations)
+5. **Landing page routes:** Finalize exact URLs for new landing pages (TICKET-036, TICKET-037)
 
 ---
 
-**Document Version:** 2.0  
-**Last Updated:** November 7, 2025  
-**Status:** Ready for implementation  
+**Document Version:** 3.0
+**Last Updated:** November 7, 2025
+**Status:** Ready for implementation
 **Next Step:** Get repo access and start TICKET-001
+
+**Changelog v3.0:**
+- Added TICKET-034: County Many-to-Many Relationship Schema (data integrity)
+- Added TICKET-035: State Park "No License Required" Feature (UI/UX enhancement)
+- Added TICKET-036: Geotargeted "Near Me" Landing Page (SEO strategy)
+- Added TICKET-037: "No License" Thematic Landing Page (SEO strategy)
+- Updated TICKET-031: Explicitly defined Hybrid Rendering Model (SSG + ISR)
+- Added Scope Clarifications section for /spots vs /search
+- Updated total estimate: 129-167 hours (was 110-140 hours)
