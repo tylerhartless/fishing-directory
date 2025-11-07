@@ -139,7 +139,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: #0d1f0d;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 30%, #112d11 50%, #0f2a0f 70%, #0d1f0d 100%);
     color: white;
     padding: 0;
     box-shadow: none;
@@ -148,7 +148,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   [data-theme="light"] header {
-    border-bottom: 4px solid var(--earth-rust);
+    background: #0d1f0d;
+    border-bottom: 4px solid var(--accent-dark-orange);
   }
 
   nav {
@@ -253,7 +254,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     content: '';
     display: block;
     height: 80px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #121212 30%, #151515 50%, #1a1a1a 70%, #2a2a2a 100%);
+    background: linear-gradient(180deg, #0d1f0d 0%, #101010 30%, #131313 50%, #161616 70%, #1a1a1a 100%);
     transition: background 0.3s ease;
   }
 
@@ -268,7 +269,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   footer {
-    background: linear-gradient(180deg, #2a2a2a 0%, #222222 20%, #1a1a1a 40%, #151515 60%, #121212 80%, #0d1f0d 100%);
+    background: linear-gradient(180deg, #1a1a1a 0%, #181818 20%, #151515 40%, #121212 60%, #0f2a0f 80%, #0d1f0d 100%);
     padding: 2rem 0;
     margin-top: 2.5rem;
     text-align: center;
@@ -281,7 +282,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   [data-theme="light"] footer {
     background: #0d1f0d;
     color: white;
-    border-top: 4px solid var(--earth-rust);
+    border-top: 4px solid var(--accent-dark-orange);
   }
 
   footer p {

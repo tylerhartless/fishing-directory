@@ -2,7 +2,7 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: linear-gradient(180deg, #0d1f0d 0%, #121212 20%, #151515 40%, #1a1a1a 60%, #222222 80%, #2a2a2a 100%);
+  background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 10%, #101010 20%, #131313 35%, #151515 50%, #171717 65%, #1a1a1a 80%, #1a1a1a 100%);
   color: white;
   padding: 0;
   text-align: center;
@@ -45,13 +45,19 @@
   margin: 0 0 0.5rem 0;
   font-weight: 400;
   letter-spacing: 0.05em;
-  color: #f0e6d2;
+  color: var(--theme-heading-color);
   text-shadow:
-    0 0 10px rgba(240, 230, 210, 0.8),
-    0 0 20px rgba(240, 230, 210, 0.6),
-    0 0 40px rgba(240, 230, 210, 0.4),
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 255, 255, 0.6),
+    0 0 40px rgba(255, 255, 255, 0.4),
     4px 4px 0 rgba(0,0,0,0.3);
   line-height: 1.1;
+}
+
+[data-theme="light"] .retro-page-header h1 {
+  color: var(--theme-heading-color);
+  text-shadow: none;
+  font-weight: 700;
 }
 
 .retro-page-header .subtitle {
@@ -83,7 +89,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
-  background: #2a2a2a;
+  background: var(--theme-bg);
   min-height: 60vh;
 }
 
@@ -93,7 +99,7 @@
 
 /* ===== CARDS ===== */
 .retro-card {
-  background: rgba(40, 40, 40, 0.8);
+  background: rgba(30, 30, 30, 0.8);
   border: 2px solid;
   border-radius: 0;
   padding: 1.5rem;
@@ -372,25 +378,51 @@
 }
 
 /* ===== TYPOGRAPHY ===== */
+/* Global heading styles for theme consistency */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--theme-heading-color);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--theme-heading-color);
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: var(--theme-heading-color);
+}
+
 .retro-heading {
   font-weight: 900;
-  color: var(--neutral-black);
+  color: var(--theme-heading-color);
   letter-spacing: 0.05em;
 }
 
 .retro-heading-lg {
   font-size: 2.5rem;
   margin: 0 0 1rem 0;
+  color: var(--theme-heading-color);
 }
 
 .retro-heading-md {
   font-size: 1.8rem;
   margin: 0 0 1rem 0;
+  color: var(--theme-heading-color);
 }
 
 .retro-heading-sm {
   font-size: 1.3rem;
   margin: 0;
+  color: var(--theme-heading-color);
 }
 
 /* Heading with rainbow underline */
@@ -415,7 +447,7 @@
 /* Terminal-style sections for dark mode (default) */
 .retro-section {
   margin: 2.5rem 0;
-  background: rgba(40, 40, 40, 0.8);
+  background: rgba(30, 30, 30, 0.8);
   border: 2px solid rgba(184, 92, 58, 0.6);
   border-radius: 0;
   padding: 2rem;
@@ -483,53 +515,74 @@
 
 /* ===== BREADCRUMBS ===== */
 .retro-breadcrumb {
-  color: var(--neutral-gray);
+  color: var(--theme-text-secondary);
   margin-bottom: 1.5rem;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 400;
+  font-family: 'VT323', monospace;
+}
+
+/* Dark Mode Breadcrumbs - Green with glow */
+.retro-breadcrumb a {
+  color: var(--theme-breadcrumb-color);
+  text-decoration: none;
+  font-weight: 400;
+  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  transition: all 0.2s;
+}
+
+.retro-breadcrumb a:hover,
+.retro-breadcrumb .active {
+  color: var(--theme-breadcrumb-hover);
+  text-shadow: 0 0 10px rgba(80, 255, 48, 0.8), 0 0 20px rgba(80, 255, 48, 0.5);
+}
+
+/* Light Mode Breadcrumbs - Dark orange with shadow */
+[data-theme="light"] .retro-breadcrumb {
   font-weight: 600;
 }
 
-.retro-breadcrumb a {
-  color: var(--earth-slate);
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.retro-breadcrumb a:hover {
-  color: var(--accent-copper);
-}
-
 [data-theme="light"] .retro-breadcrumb a {
-  color: var(--earth-rust);
+  color: var(--theme-breadcrumb-color);
+  text-shadow: none;
 }
 
-[data-theme="light"] .retro-breadcrumb a:hover {
-  color: var(--accent-copper);
+[data-theme="light"] .retro-breadcrumb a:hover,
+[data-theme="light"] .retro-breadcrumb .active {
+  color: var(--theme-breadcrumb-hover);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Current page styling in light mode */
-[data-theme="light"] .retro-breadcrumb {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* In page header context */
+/* In page header context - override for header */
 .retro-page-header .retro-breadcrumb {
   color: var(--secondary-text);
   font-weight: 500;
 }
 
 .retro-page-header .retro-breadcrumb a {
-  color: white;
+  color: var(--theme-breadcrumb-color);
+  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
 }
 
 .retro-page-header .retro-breadcrumb a:hover {
-  color: var(--accent-cream);
+  color: var(--theme-breadcrumb-hover);
+  text-shadow: 0 0 10px rgba(80, 255, 48, 0.8), 0 0 20px rgba(80, 255, 48, 0.5);
+}
+
+[data-theme="light"] .retro-page-header .retro-breadcrumb a {
+  color: var(--theme-breadcrumb-color);
+  text-shadow: none;
+}
+
+[data-theme="light"] .retro-page-header .retro-breadcrumb a:hover {
+  color: var(--theme-breadcrumb-hover);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== INFO BOXES ===== */
 /* Terminal-style info boxes for dark mode (default) */
 .retro-info-box {
-  background: rgba(40, 40, 40, 0.8);
+  background: rgba(30, 30, 30, 0.8);
   border: 2px solid rgba(184, 92, 58, 0.6);
   border-radius: 0;
   padding: 1.5rem;

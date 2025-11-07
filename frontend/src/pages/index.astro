@@ -9,13 +9,18 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   title="Find Fishing Spots Near You - Public Fishing Directory"
   description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
 >
-  <section class="hero">
+  <section class="retro-page-header">
     <div class="container">
-      <div class="hero-header">
-        <h1>Fishing Spot Finder</h1>
-        <p class="tagline">Stop fishing for spots near you and catch one here! 🎣</p>
-      </div>
+      <nav class="retro-breadcrumb">
+        Home
+      </nav>
+      <h1>Fishing Spot Finder</h1>
+      <p class="subtitle">Stop fishing for spots near you and catch one here! 🎣</p>
+    </div>
+  </section>
 
+  <section class="retro-container">
+    <div class="search-section">
       <div class="search-container">
         <SearchWidget nominatimEmail={nominatimEmail} client:idle />
       </div>
