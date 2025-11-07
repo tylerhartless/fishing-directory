@@ -26,7 +26,6 @@
 
 [data-theme="light"] .retro-page-header {
   background: var(--boat-cream); /* Warm cream background */
-  border-bottom: 6px solid var(--boat-orange); /* Orange bottom border (racing stripe) */
 }
 
 [data-theme="light"] .retro-page-header::after {
@@ -593,6 +592,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Light Mode Breadcrumbs - Dark orange with shadow */
 [data-theme="light"] .retro-breadcrumb {
   font-weight: 600;
+  color: var(--boat-black); /* Black for current page text */
 }
 
 [data-theme="light"] .retro-breadcrumb a {
