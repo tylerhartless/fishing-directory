@@ -246,23 +246,22 @@ const stateSlugLookup = {
   }
 
   .amenity-badge {
-    background: rgba(184, 92, 58, 0.2);
-    border: 1px solid rgba(184, 92, 58, 0.4);
-    color: #d4a574;
+    background: rgba(168, 197, 168, 0.15);
+    border: 1px solid rgba(168, 197, 168, 0.3);
+    color: #a8c5a8;
     padding: 0.3rem 0.6rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
-    text-shadow:
-      0 0 6px rgba(212, 165, 116, 0.4);
+    text-shadow: none;
   }
 
   [data-theme="light"] .amenity-badge {
-    background: var(--box-rust);
-    border: 2px solid var(--earth-rust);
-    color: var(--neutral-black);
+    background: rgba(122, 132, 80, 0.1);
+    border: 1px solid rgba(122, 132, 80, 0.3);
+    color: #5a6450;
     text-shadow: none;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   /* Spot type badge styling */
@@ -329,53 +328,53 @@ const stateSlugLookup = {
     font-weight: 700;
   }
 
-  /* Public Water - Orange for dark, burnt orange for light */
+  /* Public Water - Green for dark, forest green for light */
   .retro-card[data-spot-type="public_water"] {
-    border-color: #ff9966;
-    box-shadow: 0 0 12px rgba(255, 153, 102, 0.25);
-  }
-
-  .retro-card[data-spot-type="public_water"] .spot-type {
-    background: rgba(255, 153, 102, 0.2);
-    border: 1px solid rgba(255, 153, 102, 0.5);
-    color: #ff9966;
-    text-shadow: 0 0 6px rgba(255, 153, 102, 0.5);
-  }
-
-  [data-theme="light"] .retro-card[data-spot-type="public_water"] {
-    border-color: #c87854;
-    box-shadow: 2px 2px 0 rgba(200, 120, 84, 0.2);
-  }
-
-  [data-theme="light"] .retro-card[data-spot-type="public_water"] .spot-type {
-    background: #c87854;
-    border: 2px solid #b85c3a;
-    color: #ffffff;
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  /* State Park - Green for dark, olive green for light */
-  .retro-card[data-spot-type="state_park"] {
     border-color: #7ec97e;
     box-shadow: 0 0 12px rgba(126, 201, 126, 0.25);
   }
 
-  .retro-card[data-spot-type="state_park"] .spot-type {
+  .retro-card[data-spot-type="public_water"] .spot-type {
     background: rgba(126, 201, 126, 0.2);
     border: 1px solid rgba(126, 201, 126, 0.5);
     color: #7ec97e;
     text-shadow: 0 0 6px rgba(126, 201, 126, 0.5);
   }
 
-  [data-theme="light"] .retro-card[data-spot-type="state_park"] {
+  [data-theme="light"] .retro-card[data-spot-type="public_water"] {
     border-color: #4a6741;
     box-shadow: 2px 2px 0 rgba(74, 103, 65, 0.2);
   }
 
-  [data-theme="light"] .retro-card[data-spot-type="state_park"] .spot-type {
+  [data-theme="light"] .retro-card[data-spot-type="public_water"] .spot-type {
     background: #4a6741;
     border: 2px solid #3a5731;
+    color: #ffffff;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  /* State Park - Yellow-green for dark, olive green for light */
+  .retro-card[data-spot-type="state_park"] {
+    border-color: #a8d96e;
+    box-shadow: 0 0 12px rgba(168, 217, 110, 0.25);
+  }
+
+  .retro-card[data-spot-type="state_park"] .spot-type {
+    background: rgba(168, 217, 110, 0.2);
+    border: 1px solid rgba(168, 217, 110, 0.5);
+    color: #a8d96e;
+    text-shadow: 0 0 6px rgba(168, 217, 110, 0.5);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="state_park"] {
+    border-color: #7a8450;
+    box-shadow: 2px 2px 0 rgba(122, 132, 80, 0.2);
+  }
+
+  [data-theme="light"] .retro-card[data-spot-type="state_park"] .spot-type {
+    background: #7a8450;
+    border: 2px solid #6a7440;
     color: #ffffff;
     text-shadow: none;
     font-weight: 700;
