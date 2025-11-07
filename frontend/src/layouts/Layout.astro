@@ -45,6 +45,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           <span class="logo-prompt">&gt;&lt;&gt;</span>
           <span class="logo-text">whereCanIFish.com<span class="cursor">_</span></span>
         </a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <span class="theme-icon theme-icon-dark">🌙</span>
+          <span class="theme-icon theme-icon-light">☀️</span>
+        </button>
       </nav>
     </header>
 
@@ -56,10 +60,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       <div class="container">
         <p>&copy; {new Date().getFullYear()} Public Fishing Directory. All rights reserved.</p>
         <p>Data sources: State wildlife departments, user submissions</p>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-          <span class="theme-icon theme-icon-dark">🌙</span>
-          <span class="theme-icon theme-icon-light">☀️</span>
-        </button>
       </div>
     </footer>
 
@@ -162,9 +162,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     position: relative;
     z-index: 2;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 6.5rem 0;
+    padding: 6.5rem 2rem;
     overflow: visible;
   }
 
@@ -245,10 +245,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     padding: 0 2rem;
   }
 
-  nav .container {
+  nav.container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     overflow: visible;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   main {
@@ -315,24 +317,45 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   .theme-toggle {
-    position: absolute;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
+    background: rgba(0, 255, 0, 0.05);
+    border: 2px solid #00ff00;
+    padding: 0.6rem 1.2rem;
     cursor: pointer;
     font-size: 1.2rem;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    font-family: 'VT323', monospace;
   }
 
   .theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%) scale(1.05);
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    transform: scale(1.05);
+  }
+
+  .theme-toggle:active {
+    transform: translateY(1px) scale(1.05);
+  }
+
+  [data-theme="light"] .theme-toggle {
+    background: var(--accent-sage);
+    border: 3px solid var(--neutral-black);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  [data-theme="light"] .theme-toggle:hover {
+    background: var(--box-moss);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  [data-theme="light"] .theme-toggle:active {
+    transform: translate(0, 0);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   }
 
   .theme-icon {
@@ -348,13 +371,26 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   @media (max-width: 768px) {
+    nav {
+      padding: 3.5rem 1rem;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    nav.container {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
     .theme-toggle {
-      position: static;
-      transform: none;
-      margin: 1rem auto 0;
+      margin: 0;
     }
 
     .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    [data-theme="light"] .theme-toggle:hover {
       transform: scale(1.05);
     }
   }
