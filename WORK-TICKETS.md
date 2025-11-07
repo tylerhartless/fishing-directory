@@ -518,12 +518,18 @@ Add JavaScript functionality using Astro's islands architecture to minimize bund
 
 ---
 
-### TICKET-013: Implement "I Fish Here" Relevancy System (Mobile-First) 🔴 BLOCKER
-**Estimate:** 6-8 hours  
+### TICKET-013: Implement "I Fish Here" Check-In System (Mobile-First) 🔴 BLOCKER
+**Estimate:** 6-8 hours
 **Depends on:** TICKET-011
 
-**Description:**  
-Add community engagement button for spot relevancy with time decay algorithm to prevent gaming.
+**Description:**
+Add community engagement button for spot relevancy with time decay algorithm to prevent gaming. Anonymous check-ins with optional account upsell for favorites feature (post-launch).
+
+**User Flow:**
+1. User clicks "I Fish Here" button
+2. Check-in recorded (anonymous, no signup required)
+3. Optional follow-up: "What did you catch today?" → Species voting (TICKET-014)
+4. Success toast: "Checked in! [Want to save favorites? Sign up]" (post-launch feature)
 
 **Acceptance Criteria:**
 
@@ -532,14 +538,23 @@ Add community engagement button for spot relevancy with time decay algorithm to 
 - [ ] **MOBILE:** Full-width on small screens
 - [ ] **MOBILE:** Haptic feedback on tap (Vibration API)
 - [ ] Button styled to match terminal theme
-- [ ] Button text: "I Fish Here" or "I've Fished Here" (finalize copy)
+- [ ] Button text: "I Fish Here" (final copy)
 - [ ] **DESKTOP:** Smaller button, inline placement
+- [ ] After check-in, optionally show species voting interface
 
-**Backend:**
-- [ ] Database schema: `check_ins` table (user_id, spot_id, timestamp)
+**Backend (Anonymous + Hybrid Ready):**
+- [ ] Database schema: `check_ins` table (id, spot_id, user_id NULL, fingerprint_hash, created_at)
 - [ ] API endpoint to record check-in
-- [ ] Rate limiting: 1 check-in per user per spot per week
-- [ ] Decide: Anonymous check-ins OR require account?
+- [ ] Multi-layer rate limiting (anonymous users):
+  - Cookie fingerprint (stops casual repeat votes)
+  - IP address hash (stops same-session abuse)
+  - 1 check-in per fingerprint per spot per week
+- [ ] Schema ready for optional user_id (future accounts feature)
+
+**Fingerprinting Strategy:**
+- [ ] Generate fingerprint: hash(IP + User-Agent + Cookie ID)
+- [ ] Store fingerprint cookie (30 day expiry)
+- [ ] Query by fingerprint OR user_id (NULL for anonymous)
 
 **Relevancy Algorithm:**
 - [ ] Time decay formula: `score = sum(check-ins * 0.95^days_old)`
@@ -547,25 +562,42 @@ Add community engagement button for spot relevancy with time decay algorithm to 
 - [ ] Store calculated score in `spots` table
 - [ ] Use score to boost spots in search results
 
-**Display:**
+**Display (Anti-Gaming):**
 - [ ] Show aggregated score, NOT raw count
-- [ ] Phrasing: "X anglers fish here" or "Popular with anglers"
+- [ ] Phrasing: "Popular with anglers" or "12 anglers fish here recently"
 - [ ] Visual indicator (subtle, not gamified)
+- [ ] NEVER show exact numbers that can be gamed
 
 **Testing:**
 - [ ] Test on actual devices
-- [ ] Verify rate limiting works
+- [ ] Verify rate limiting works (try same fingerprint twice)
 - [ ] Test time decay calculation
 - [ ] Verify search result boosting
+- [ ] Test cookie persistence across sessions
 
 ---
 
 ### TICKET-014: Implement Species Voting System (Mobile-First) 🔴 BLOCKER
-**Estimate:** 8-10 hours  
-**Depends on:** TICKET-011
+**Estimate:** 8-10 hours
+**Depends on:** TICKET-011, TICKET-013
 
-**Description:**  
-Community species reporting via simple voting buttons (NOT detailed fishing reports, NO photos).
+**Description:**
+Community species reporting via simple voting buttons. Works together with "I Fish Here" check-ins (TICKET-013) to build unified spot relevancy. Anonymous voting, no detailed fishing reports, no photos.
+
+**Integration with TICKET-013:**
+- After user clicks "I Fish Here", optionally show: "What did you catch today?"
+- User selects species (optional step)
+- Both check-in and species vote contribute to spot relevancy score
+- REPLACES the separate "Add Your Fishing Report" form entirely
+- One unified action, not separate systems
+
+**User Flow:**
+1. User clicks "I Fish Here" button (TICKET-013)
+2. Check-in recorded
+3. (Optional) Modal/section appears: "What did you catch?" with species buttons
+4. User taps one or more species
+5. Species votes recorded (same fingerprinting as check-ins)
+6. Success: "Checked in! You caught Bass and Catfish"
 
 **Acceptance Criteria:**
 
@@ -574,40 +606,60 @@ Community species reporting via simple voting buttons (NOT detailed fishing repo
 - [ ] **MOBILE:** Grid layout 2-3 columns max
 - [ ] **MOBILE:** Common species shown first, "See all species" expands rest
 - [ ] Species buttons styled (terminal aesthetic, fish emoji or icon)
-- [ ] Button states: unvoted, voted (user's vote highlighted)
+- [ ] Allow multiple species selection in one session
+- [ ] "Skip" or "Didn't catch anything" option
 - [ ] **DESKTOP:** 3-4 columns, more compact grid
 
-**Backend:**
-- [ ] Database schema: `species_votes` table (user_id, spot_id, species_id, timestamp)
-- [ ] API endpoint to record vote
-- [ ] Rate limiting: 1 vote per species per spot per user per week
+**Backend (Anonymous + Hybrid Ready):**
+- [ ] Database schema: `species_votes` table (id, spot_id, species_id, user_id NULL, fingerprint_hash, created_at)
+- [ ] API endpoint to record vote(s)
+- [ ] Multi-layer rate limiting (same as TICKET-013):
+  - Cookie fingerprint + IP hash
+  - 1 vote per species per spot per fingerprint per week
+  - Can vote for multiple species in same session
+- [ ] Schema ready for optional user_id (future accounts feature)
 - [ ] Species master list (Texas fish species)
 
 **Voting Algorithm:**
 - [ ] Time decay formula: `species_score = sum(votes * 0.95^days_old)`
 - [ ] Batch job runs daily to recalculate scores
 - [ ] Store calculated scores in `spot_species` table
+- [ ] Combine with check-in data for overall spot activity score
 
-**Display:**
-- [ ] Show confidence indicators, NOT raw counts:
-  - "Commonly caught" (high score)
-  - "Occasionally caught" (medium score)
-  - "Rarely caught" (low score)
-- [ ] Show last report date: "Last reported 3 days ago"
+**Display (Anti-Gaming - CRITICAL):**
+- [ ] Show confidence indicators, NOT raw vote counts:
+  - "Commonly caught" (high score, e.g., >20 recent votes)
+  - "Occasionally caught" (medium score, e.g., 5-20 votes)
+  - "Rarely caught" (low score, e.g., 1-5 votes)
+- [ ] Show relative recency: "Last reported 3 days ago"
 - [ ] Mix state data (if available) with community data
 - [ ] Clear labels: `[STATE RECORDS]` vs `[ANGLER REPORTS]`
+- [ ] NEVER display raw numbers on frontend
+- [ ] Sort species by confidence level, not vote count
+
+**Remove Old Fishing Report System:**
+- [ ] ❌ DELETE "Add Your Fishing Report" button from spot pages
+- [ ] ❌ DELETE fishing report form (species, count, notes prompts)
+- [ ] ❌ DELETE `fishing_reports` table (replace with species_votes)
+- [ ] ❌ DELETE `submit-report.php` API endpoint
+- [ ] ❌ DELETE `reports.php` API endpoint
+- [ ] ✅ KEEP ONLY: Check-ins (TICKET-013) + Species voting (this ticket)
 
 **Scope Boundaries:**
 - [ ] ❌ NO photo uploads
-- [ ] ❌ NO detailed fishing reports
-- [ ] ❌ NO catch size/weight tracking
+- [ ] ❌ NO detailed fishing reports (catch count, size, weight, notes)
+- [ ] ❌ NO separate "fishing report" feature
 - [ ] ✅ JUST species presence via simple voting
+- [ ] ✅ Integrated with "I Fish Here" check-ins
 
 **Testing:**
 - [ ] Test on actual devices
-- [ ] Verify rate limiting
+- [ ] Verify rate limiting (same fingerprint can't vote twice for same species)
+- [ ] Verify multi-species voting works in one session
 - [ ] Test time decay calculation
 - [ ] Test state data + community data display
+- [ ] Verify confidence levels display correctly (not raw counts)
+- [ ] Test "Skip" flow (check-in without species vote)
 
 ---
 
@@ -1442,8 +1494,83 @@ Comprehensive testing before launch to ensure everything works.
 
 ## Post-Launch (Deferred)
 
+### TICKET-030: Optional User Accounts & Favorites
+**Timeline:** Post-launch (when users request it)
+**Estimate:** 15-25 hours
+**Depends on:** TICKET-013, TICKET-014 (must be working anonymously first)
+
+**Description:**
+Add optional user accounts to enable favorite spots, contribution tracking, and notifications. Anonymous check-ins and species voting continue to work without accounts.
+
+**Why Post-Launch:**
+- Don't block MVP on auth complexity
+- Validate that users actually want this feature first
+- Users asking "Can I save my favorites?" = perfect timing signal
+
+**Acceptance Criteria:**
+
+**Authentication System:**
+- [ ] Email + password signup
+- [ ] Email verification (prevent spam accounts)
+- [ ] Login/logout flow
+- [ ] Password reset via email
+- [ ] Session management (JWT or server-side sessions)
+- [ ] "Remember me" option
+
+**Account Features:**
+- [ ] **Favorite Spots:**
+  - Heart icon on spot pages to save favorites
+  - "My Favorites" page showing saved spots
+  - Quick access from navigation
+- [ ] **Contribution History:**
+  - "My Check-Ins" - spots you've visited
+  - "My Species Reports" - species you've reported
+  - Stats: "You've checked in to 12 spots"
+- [ ] **Personal Map:**
+  - Map showing all spots you've checked into
+  - Visual heatmap of your fishing activity
+- [ ] **Notifications (optional):**
+  - Email when someone reports new species at your favorite spot
+  - Weekly digest of activity at favorites
+  - Opt-in only, not default
+
+**Migration from Anonymous:**
+- [ ] When user signs up, prompt: "Claim your previous check-ins?"
+- [ ] Match by fingerprint hash from last 30 days
+- [ ] Migrate anonymous check-ins to user account
+- [ ] Update `user_id` field in `check_ins` and `species_votes` tables
+
+**Hybrid Mode (Anonymous + Logged In):**
+- [ ] Anonymous users: Rate limit by fingerprint (existing behavior)
+- [ ] Logged in users: Rate limit by user_id + show favorites/history
+- [ ] Both modes contribute equally to spot relevancy scores
+- [ ] No special weight for logged-in votes (prevent gaming)
+
+**UI Changes:**
+- [ ] "Sign Up" and "Log In" buttons in navigation
+- [ ] After anonymous check-in, show: "Checked in! [Save this spot?]" → signup prompt
+- [ ] Account dropdown menu (desktop) or account page (mobile)
+- [ ] Profile page with stats and favorites
+
+**Privacy & Security:**
+- [ ] Privacy policy updated
+- [ ] Secure password hashing (bcrypt)
+- [ ] HTTPS required for login
+- [ ] Rate limit login attempts (prevent brute force)
+- [ ] Email unsubscribe for notifications
+
+**Testing:**
+- [ ] Test signup, login, logout flows
+- [ ] Test password reset
+- [ ] Test favorite spots (add/remove)
+- [ ] Test migration from anonymous to account
+- [ ] Test that anonymous mode still works
+- [ ] Security audit (SQL injection, XSS, CSRF)
+
+---
+
 ### TICKET-027: Data Pipeline Abstraction
-**Timeline:** When adding second state (Florida, Louisiana, etc.)  
+**Timeline:** When adding second state (Florida, Louisiana, etc.)
 **Estimate:** 20-30 hours
 
 Extract data pipeline into standalone tool, separate from website codebase.
@@ -1451,7 +1578,7 @@ Extract data pipeline into standalone tool, separate from website codebase.
 ---
 
 ### TICKET-028: Airtable Integration
-**Timeline:** When scaling data operations  
+**Timeline:** When scaling data operations
 **Estimate:** 15-20 hours
 
 Use Airtable as source of truth for raw fishing data, run validation/deduplication scripts.
@@ -1459,7 +1586,7 @@ Use Airtable as source of truth for raw fishing data, run validation/deduplicati
 ---
 
 ### TICKET-029: Advanced Animations & Polish
-**Timeline:** Post-launch enhancement  
+**Timeline:** Post-launch enhancement
 **Estimate:** 10-15 hours
 
 Page transitions, scroll animations, micro-interactions (Phase 2 & 3 from animation plan).
@@ -1527,18 +1654,29 @@ The current ambiguity between the `/spots` page and the search results page need
 
 ## Questions to Resolve
 
-1. **"I Fish Here":** Anonymous or require account?
-2. **Species voting:** Anonymous or require account?
-3. **User submissions:** Email verification required?
+1. ~~**"I Fish Here":** Anonymous or require account?~~ ✅ **RESOLVED:** Anonymous (MVP), optional accounts post-launch (TICKET-030)
+2. ~~**Species voting:** Anonymous or require account?~~ ✅ **RESOLVED:** Anonymous (MVP), optional accounts post-launch (TICKET-030)
+3. **User submissions:** Email verification required? *(Recommend: No for MVP, yes if spam becomes issue)*
 4. **Analytics:** Cookie consent banner needed? (Check Texas/US regulations)
 5. **Landing page routes:** Finalize exact URLs for new landing pages (TICKET-036, TICKET-037)
 
 ---
 
-**Document Version:** 3.0
+**Document Version:** 3.1
 **Last Updated:** November 7, 2025
 **Status:** Ready for implementation
 **Next Step:** Get repo access and start TICKET-001
+
+**Changelog v3.1:**
+- **MAJOR:** Updated TICKET-013 & TICKET-014 to use anonymous check-ins/voting (no accounts required for MVP)
+- **MAJOR:** Merged fishing reports into unified check-in + species voting system
+- **MAJOR:** Added anti-gaming display requirements (show confidence levels, NOT raw counts)
+- Added TICKET-030: Optional User Accounts & Favorites (post-launch)
+- Specified fingerprinting strategy for anonymous rate limiting
+- Added migration path from anonymous to logged-in users
+- Removed separate "Add Your Fishing Report" feature (replaced by integrated system)
+- Resolved Questions #1 and #2 (anonymous for MVP)
+- Updated database schemas to support hybrid anonymous/logged-in mode
 
 **Changelog v3.0:**
 - Added TICKET-034: County Many-to-Many Relationship Schema (data integrity)
