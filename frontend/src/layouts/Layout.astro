@@ -45,10 +45,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           <span class="logo-prompt">&gt;&lt;&gt;</span>
           <span class="logo-text">whereCanIFish.com<span class="cursor">_</span></span>
         </a>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-          <span class="theme-icon theme-icon-dark">🌙</span>
-          <span class="theme-icon theme-icon-light">☀️</span>
-        </button>
       </nav>
     </header>
 
@@ -62,6 +58,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
         <p>Data sources: State wildlife departments, user submissions</p>
       </div>
     </footer>
+
+    <!-- Floating theme toggle -->
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+      <span class="theme-icon theme-icon-dark">DARK</span>
+      <span class="theme-icon theme-icon-light">LIGHT</span>
+    </button>
 
     <script is:inline>
       // Theme detection and toggle - Always defaults to dark mode
@@ -162,7 +164,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     position: relative;
     z-index: 2;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 6.5rem 2rem;
     overflow: visible;
@@ -247,7 +249,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   nav.container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     overflow: visible;
     max-width: 1200px;
     margin: 0 auto;
@@ -317,34 +319,42 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   .theme-toggle {
-    background: rgba(0, 255, 0, 0.05);
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: rgba(0, 0, 0, 0.6);
     border: 2px solid #00ff00;
-    padding: 0.6rem 1.2rem;
+    padding: 0.6rem 1rem;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
     border-radius: 0;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
     font-family: 'VT323', monospace;
+    z-index: 1000;
+    color: #00ff00;
+    letter-spacing: 0.05em;
+    font-weight: 400;
   }
 
   .theme-toggle:hover {
     background: rgba(0, 255, 0, 0.1);
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-    transform: scale(1.05);
+    transform: translateY(-2px);
   }
 
   .theme-toggle:active {
-    transform: translateY(1px) scale(1.05);
+    transform: translateY(0);
   }
 
   [data-theme="light"] .theme-toggle {
     background: var(--accent-sage);
     border: 3px solid var(--neutral-black);
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    color: var(--neutral-black);
   }
 
   [data-theme="light"] .theme-toggle:hover {
@@ -373,25 +383,17 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   @media (max-width: 768px) {
     nav {
       padding: 3.5rem 1rem;
-      flex-direction: column;
-      gap: 1.5rem;
     }
 
     nav.container {
-      flex-direction: column;
-      gap: 1.5rem;
+      padding: 0 1rem;
     }
 
     .theme-toggle {
-      margin: 0;
-    }
-
-    .theme-toggle:hover {
-      transform: scale(1.05);
-    }
-
-    [data-theme="light"] .theme-toggle:hover {
-      transform: scale(1.05);
+      bottom: 1.5rem;
+      right: 1.5rem;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
     }
   }
 
