@@ -570,7 +570,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--theme-text-secondary);
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
-  font-weight: 400;
+  font-weight: 500; /* Standardized weight for consistency */
   font-family: 'VT323', monospace;
 }
 
@@ -578,7 +578,7 @@ h1, h2, h3, h4, h5, h6 {
 .retro-breadcrumb a {
   color: var(--theme-breadcrumb-color);
   text-decoration: none;
-  font-weight: 400;
+  font-weight: 500; /* Standardized weight */
   text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
   transition: all 0.2s;
 }
@@ -587,18 +587,19 @@ h1, h2, h3, h4, h5, h6 {
 .retro-breadcrumb .active {
   color: var(--theme-breadcrumb-hover);
   text-shadow: 0 0 10px rgba(80, 255, 48, 0.8), 0 0 20px rgba(80, 255, 48, 0.5);
+  font-weight: 500; /* Consistent weight on hover */
 }
 
-/* Light Mode Breadcrumbs - Dark orange with shadow */
+/* Light Mode Breadcrumbs - Orange links, black current page */
 [data-theme="light"] .retro-breadcrumb {
-  font-weight: 600;
+  font-weight: 500; /* Standardized weight */
   color: var(--boat-black); /* Black for current page text */
 }
 
 [data-theme="light"] .retro-breadcrumb a {
   color: var(--theme-breadcrumb-color); /* Orange */
   text-shadow: none;
-  font-weight: 700;
+  font-weight: 600; /* Slightly bolder for links to stand out */
   text-decoration: underline;
 }
 
@@ -607,12 +608,12 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--theme-breadcrumb-hover); /* Red on hover */
   text-shadow: none;
   text-decoration: none;
+  font-weight: 600; /* Consistent with link weight */
 }
 
-/* In page header context - override for header */
+/* In page header context - no need for override anymore */
 .retro-page-header .retro-breadcrumb {
   color: var(--secondary-text);
-  font-weight: 500;
 }
 
 [data-theme="light"] .retro-page-header .retro-breadcrumb {
