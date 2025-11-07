@@ -18,6 +18,8 @@
 /* Removed scanlines from page header for better alignment and visual consistency */
 
 .retro-page-header .container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 1.25rem 2rem 3.5rem 2rem;
   position: relative;
   z-index: 2;
