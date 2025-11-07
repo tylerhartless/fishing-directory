@@ -211,7 +211,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
   :global(.retro-card h3) {
     margin: 0 0 0.75rem 0;
-    color: #ffffff;
+    color: var(--theme-heading-color);
     font-size: 1.8rem;
     font-family: 'VT323', monospace;
     font-weight: 400;
@@ -222,7 +222,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   }
 
   :global([data-theme="light"] .retro-card h3) {
-    color: var(--neutral-black);
+    color: var(--theme-heading-color);
     font-weight: 900;
     text-shadow: none;
   }
