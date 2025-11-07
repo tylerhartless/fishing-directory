@@ -15,23 +15,7 @@
   background: #f5f1e8;
 }
 
-.retro-page-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.15) 0px,
-    transparent 1px,
-    transparent 2px,
-    rgba(0, 0, 0, 0.15) 3px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
+/* Removed scanlines from page header for better alignment and visual consistency */
 
 .retro-page-header .container {
   padding: 1.25rem 2rem 3.5rem 2rem;
