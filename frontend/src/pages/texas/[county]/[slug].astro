@@ -96,21 +96,21 @@ const schema = {
   title={spot.meta_title || `${spot.name} - Public Fishing in ${primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + ' County'}, TX`}
   description={spot.meta_description || `Free public fishing access at ${spot.name}. GPS coordinates, amenities, and fishing reports.`}
 >
-  <article class="spot-detail" data-spot-id={spot.id}>
-    <div class="retro-container">
-      <div class="retro-breadcrumb">
-        <a href="/">Home</a> /
-        <a href="/texas">Texas</a> /
-        {primaryCounty === 'Multiple Counties' ? (
+  <section class="retro-page-header">
+    <div class="container">
+      <nav class="retro-breadcrumb">
+        <a href="/">Home</a> / <a href="/texas">Texas</a> / {primaryCounty === 'Multiple Counties' ? (
           <span>{primaryCounty}</span>
         ) : (
           <a href={`/texas/${countySlug}`}>{primaryCounty} County</a>
-        )} /
-        {spot.name}
-      </div>
+        )} / {spot.name}
+      </nav>
+      <h1>{spot.name}</h1>
+    </div>
+  </section>
 
-      <h1 class="retro-heading retro-heading-lg">{spot.name}</h1>
-
+  <article class="spot-detail" data-spot-id={spot.id}>
+    <div class="retro-container">
       {spot.is_verified && (
         <div class="retro-badge retro-badge-large verified">✓ Verified by TPWD</div>
       )}
@@ -241,47 +241,6 @@ const schema = {
     font-family: 'VT323', monospace;
   }
 
-  .retro-breadcrumb {
-    font-family: 'VT323', monospace;
-    color: #d4a574;
-    font-size: 1.05rem;
-    margin-bottom: 1.5rem;
-    text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
-  }
-
-  :global([data-theme="light"]) .retro-breadcrumb {
-    font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    color: #444;
-  }
-
-  .retro-breadcrumb a {
-    color: #d4a574;
-    text-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
-  }
-
-  :global([data-theme="light"]) .retro-breadcrumb a {
-    color: var(--earth-rust);
-    text-shadow: none;
-  }
-
-  .retro-heading-lg {
-    font-family: 'VT323', monospace;
-    color: #f0e6d2;
-    font-size: 3rem;
-    font-weight: 400;
-    margin: 0 0 1.5rem 0;
-    text-shadow:
-      0 0 10px rgba(240, 230, 210, 0.6),
-      0 0 20px rgba(240, 230, 210, 0.4);
-  }
-
-  :global([data-theme="light"]) .retro-heading-lg {
-    color: var(--neutral-black) !important;
-    font-weight: 700 !important;
-    text-shadow: none !important;
-  }
-
   .verified {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.5);
@@ -354,17 +313,17 @@ const schema = {
 
   .retro-section h2 {
     font-family: 'VT323', monospace;
-    color: #d4a574;
+    color: var(--theme-heading-color);
     font-size: 2rem;
     font-weight: 400;
     margin: 0 0 1rem 0;
-    text-shadow: 0 0 8px rgba(212, 165, 116, 0.4);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
   }
 
   :global([data-theme="light"]) .retro-section h2 {
-    color: var(--neutral-black) !important;
-    font-weight: 700 !important;
-    text-shadow: none !important;
+    color: var(--theme-heading-color);
+    font-weight: 700;
+    text-shadow: none;
   }
 
   .description p {
