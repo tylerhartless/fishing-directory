@@ -11,7 +11,8 @@ export interface FishingSpot {
   slug: string;
   latitude: number;
   longitude: number;
-  county: string;
+  county: string; // DEPRECATED: Legacy single county field for backward compatibility
+  counties?: string[]; // NEW: Array of counties for spots spanning multiple counties
   water_body_name?: string;
   spot_type: 'boat_ramp' | 'bank_fishing' | 'pier' | 'wade_fishing' | 'kayak_launch' | 'fishing_pier' | 'state_park';
   description?: string;
@@ -82,12 +83,60 @@ export async function getSpots(): Promise<FishingSpot[]> {
 }
 
 /**
- * Get spots filtered by county (This function now uses the corrected getSpots())
+ * Helper: Get all counties for a spot (supports both legacy and new format)
+ */
+export function getSpotCounties(spot: FishingSpot): string[] {
+  // If spot has new counties array, use it
+  if (spot.counties && spot.counties.length > 0) {
+    return spot.counties;
+  }
+
+  // Otherwise, use legacy single county field
+  // Skip 'Multiple Counties' placeholder as it's not a real county
+  if (spot.county && spot.county !== 'Multiple Counties') {
+    return [spot.county];
+  }
+
+  return [];
+}
+
+/**
+ * Helper: Check if a spot is in a given county
+ */
+export function spotIsInCounty(spot: FishingSpot, countyName: string): boolean {
+  const counties = getSpotCounties(spot);
+  return counties.some(c => c.toLowerCase() === countyName.toLowerCase());
+}
+
+/**
+ * Helper: Get display name for spot's county/counties
+ */
+export function getSpotCountyDisplay(spot: FishingSpot): string {
+  const counties = getSpotCounties(spot);
+
+  if (counties.length === 0) {
+    return 'Multiple Counties';
+  }
+
+  if (counties.length === 1) {
+    return counties[0];
+  }
+
+  // Multiple counties: "County A & County B" or "County A, County B, & County C"
+  if (counties.length === 2) {
+    return `${counties[0]} & ${counties[1]}`;
+  }
+
+  return counties.slice(0, -1).join(', ') + ', & ' + counties[counties.length - 1];
+}
+
+/**
+ * Get spots filtered by county (supports both legacy and new multi-county format)
  */
 export async function getSpotsByCounty(county: string): Promise<FishingSpot[]> {
   const allSpots = await getSpots();
   return allSpots.filter(spot =>
-    spot.county.toLowerCase() === county.toLowerCase() && spot.is_active !== false
+    spotIsInCounty(spot, county) && spot.is_active !== false
   );
 }
 

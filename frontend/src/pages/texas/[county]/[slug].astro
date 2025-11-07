@@ -1,6 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { getSpots, generateMapUrl, type FishingSpot } from '../../../lib/database';
+import { getSpots, generateMapUrl, getSpotCounties, getSpotCountyDisplay, type FishingSpot } from '../../../lib/database';
 
 
 export async function getStaticPaths() {
@@ -62,15 +62,13 @@ const { spot } = Astro.props;
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
 const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${spot.longitude},${spot.latitude},14,0/600x400?access_token=${MAPBOX_TOKEN}`;
 
-// Extract primary county for display (handles multi-county entries)
-let primaryCounty = spot.county;
-if (primaryCounty.includes(',')) {
-  primaryCounty = primaryCounty.split(',')[0].trim();
-}
-// Remove "County" suffix if present
-primaryCounty = primaryCounty.replace(/\s+County$/i, '').trim();
+// Get all counties for this spot (supports both legacy and new multi-county format)
+const spotCounties = getSpotCounties(spot);
+const countyDisplay = getSpotCountyDisplay(spot);
+const primaryCounty = spotCounties.length > 0 ? spotCounties[0] : 'Unknown';
+const isMultiCounty = spotCounties.length > 1;
 
-// Create county slug for URLs
+// Create county slug for URLs (use primary county)
 const countySlug = primaryCounty.toLowerCase().replace(/\s+/g, '-');
 
 // Schema.org structured data for SEO
@@ -87,20 +85,20 @@ const schema = {
   "address": {
     "@type": "PostalAddress",
     "addressRegion": "TX",
-    "addressLocality": primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + " County"
+    "addressLocality": isMultiCounty ? countyDisplay : `${primaryCounty} County`
   }
 };
 ---
 
 <Layout
-  title={spot.meta_title || `${spot.name} - Public Fishing in ${primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + ' County'}, TX`}
+  title={spot.meta_title || `${spot.name} - Public Fishing in ${isMultiCounty ? countyDisplay : primaryCounty + ' County'}, TX`}
   description={spot.meta_description || `Free public fishing access at ${spot.name}. GPS coordinates, amenities, and fishing reports.`}
 >
   <section class="retro-page-header">
     <div class="container">
       <nav class="retro-breadcrumb">
-        <a href="/">Home</a> / <a href="/texas">Texas</a> / {primaryCounty === 'Multiple Counties' ? (
-          <span>{primaryCounty}</span>
+        <a href="/">Home</a> / <a href="/texas">Texas</a> / {isMultiCounty ? (
+          <span>{countyDisplay}</span>
         ) : (
           <a href={`/texas/${countySlug}`}>{primaryCounty} County</a>
         )} / {spot.name}
@@ -144,7 +142,7 @@ const schema = {
             {spot.description ? (
               <p>{spot.description}</p>
             ) : (
-              <p>Public fishing access in {primaryCounty === 'Multiple Counties' ? 'Multiple Counties' : primaryCounty + ' County'}, Texas.</p>
+              <p>Public fishing access in {isMultiCounty ? countyDisplay : primaryCounty + ' County'}, Texas.</p>
             )}
           </section>
 
@@ -196,8 +194,22 @@ const schema = {
               <dt>Type:</dt>
               <dd>{spot.spot_type.replace(/_/g, ' ')}</dd>
 
-              <dt>County:</dt>
-              <dd>{spot.county}</dd>
+              <dt>{isMultiCounty ? 'Counties:' : 'County:'}</dt>
+              <dd>
+                {isMultiCounty ? (
+                  <ul style="margin: 0; padding-left: 1.2rem; list-style: disc;">
+                    {spotCounties.map(county => (
+                      <li>
+                        <a href={`/texas/${county.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {county} County
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <a href={`/texas/${countySlug}`}>{primaryCounty} County</a>
+                )}
+              </dd>
 
               {spot.water_body_name && (
                 <>
