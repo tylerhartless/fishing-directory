@@ -147,7 +147,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: #0d1f0d;
+    background: var(--theme-bg-forest);
     color: white;
     padding: 0;
     box-shadow: none;
@@ -156,7 +156,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   [data-theme="light"] header {
-    background: #0d1f0d;
+    background: var(--theme-bg-forest);
     border-bottom: 4px solid var(--accent-dark-orange);
   }
 
@@ -183,7 +183,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-family: 'Press Start 2P', monospace;
     font-size: 2.2rem;
     font-weight: 400;
-    color: #39ff14;
+    color: var(--theme-breadcrumb-color);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     filter: drop-shadow(0 0 4px rgba(57, 255, 20, 0.6))
             drop-shadow(0 0 8px rgba(57, 255, 20, 0.3));
@@ -199,7 +199,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-size: 1.4rem;
     font-weight: 400;
     letter-spacing: 0.02em;
-    color: #ffffff;
+    color: var(--neutral-white);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
     filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4))
             drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
@@ -279,13 +279,13 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   footer {
-    background: #0d1f0d;
+    background: var(--theme-bg-forest);
     padding: 0 0 2rem 0;
     margin-top: 0;
     text-align: center;
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
-    color: #b0b0b0;
+    color: var(--theme-text-secondary);
     position: relative;
   }
 
@@ -304,7 +304,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   [data-theme="light"] footer {
-    background: #0d1f0d;
+    background: var(--theme-bg-forest);
     color: white;
     border-top: 4px solid var(--accent-dark-orange);
   }
@@ -323,7 +323,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     bottom: 2rem;
     right: 2rem;
     background: rgba(0, 0, 0, 0.6);
-    border: 2px solid #39ff14;
+    border: 2px solid var(--theme-breadcrumb-color);
     padding: 0.6rem 1rem;
     cursor: pointer;
     font-size: 0.9rem;
@@ -335,7 +335,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
     font-family: 'VT323', monospace;
     z-index: 1000;
-    color: #39ff14;
+    color: var(--theme-breadcrumb-color);
     letter-spacing: 0.05em;
     font-weight: 400;
   }
