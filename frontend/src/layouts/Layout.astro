@@ -300,10 +300,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   /* Gradient transition for pages without hero sections */
   main.main-content::before {
     content: '';
-    display: block;
-    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
     background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
     transition: background 0.3s ease;
+    pointer-events: none;
+    z-index: 50;
   }
 
   [data-theme="light"] main.main-content::before {
