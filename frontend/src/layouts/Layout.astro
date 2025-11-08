@@ -301,10 +301,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   main.main-content::before {
     content: '';
     position: fixed;
-    top: 80px;
+    top: 0;
     left: 0;
     right: 0;
-    height: 200px;
+    height: 300px;
     background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
     transition: background 0.3s ease;
     pointer-events: none;
@@ -313,19 +313,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   [data-theme="light"] main.main-content::before {
     display: none;
-  }
-
-  /* Adjust gradient position on mobile to account for larger header padding */
-  @media (max-width: 768px) {
-    main.main-content::before {
-      top: 100px;
-    }
-  }
-
-  @media (max-width: 400px) {
-    main.main-content::before {
-      top: 90px;
-    }
   }
 
   /* Hide gradient on pages that have hero/page-header sections */
