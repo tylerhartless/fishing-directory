@@ -1610,14 +1610,9 @@
   align-items: center;
 }
 
-/* Spot Type Badge - now inline */
+/* Spot Type Badge - hidden since card color already indicates type */
 .spot-type {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
-  font-family: 'VT323', monospace;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  display: none;
 }
 
 /* Card Metadata Items - inline with bullets */
