@@ -132,11 +132,15 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
                 {spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </span>
             </div>
-            {prominentAmenities.length > 0 && (
+            {prominentAmenities.length > 0 ? (
               <div class="amenities-row">
                 {prominentAmenities.map(label => (
                   <span class="amenity-badge">{label}</span>
                 ))}
+              </div>
+            ) : (
+              <div class="amenities-row amenities-empty">
+                <span class="amenity-placeholder">No amenities listed</span>
               </div>
             )}
           </a>
@@ -270,6 +274,22 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     color: #5a6450;
     text-shadow: none;
     font-weight: 600;
+  }
+
+  /* Amenity placeholder styling */
+  :global(.amenity-placeholder) {
+    color: var(--theme-text-secondary);
+    font-size: 0.95rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.6;
+  }
+
+  :global([data-theme="light"] .amenity-placeholder) {
+    color: var(--neutral-gray);
+    font-weight: 500;
+    opacity: 0.7;
   }
 
   /* Spot type badge styling */
@@ -502,7 +522,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 
       const amenitiesHtml = prominentAmenities.length > 0
         ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
-        : '';
+        : `<div class="amenities-row amenities-empty"><span class="amenity-placeholder">No amenities listed</span></div>`;
 
       const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 

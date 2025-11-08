@@ -153,9 +153,9 @@ const schema = {
           </section>
 
           <!-- Amenities -->
-          {spot.amenities && (
-            <section class="retro-section amenities">
-              <h2 class="retro-heading retro-heading-md retro-heading-underline">Amenities</h2>
+          <section class="retro-section amenities">
+            <h2 class="retro-heading retro-heading-md retro-heading-underline">Amenities</h2>
+            {spot.amenities && (Object.values(spot.amenities).some(v => v === true)) ? (
               <ul class="amenity-list">
                 {spot.amenities.boat_ramp && <li>🚤 Boat Ramp</li>}
                 {spot.amenities.parking && <li>🅿️ Parking Available</li>}
@@ -167,8 +167,10 @@ const schema = {
                 {spot.amenities.fishing_pier && <li>🎣 Fishing Pier</li>}
                 {spot.amenities.picnic_area && <li>🧺 Picnic Area</li>}
               </ul>
-            </section>
-          )}
+            ) : (
+              <p class="amenities-empty-message">No amenities information available for this location.</p>
+            )}
+          </section>
 
           <!-- Dynamic Content: Fishing Reports -->
           <section class="retro-section fishing-reports">
@@ -445,6 +447,21 @@ const schema = {
     box-shadow: none;
     text-shadow: none;
     font-weight: 700;
+  }
+
+  .amenities-empty-message {
+    font-family: 'VT323', monospace;
+    color: var(--theme-text-secondary);
+    font-size: 1.05rem;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  :global([data-theme="light"]) .amenities-empty-message {
+    color: var(--neutral-gray);
+    font-weight: 500;
   }
 
   .sidebar {
