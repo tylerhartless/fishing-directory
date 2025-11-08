@@ -9,6 +9,7 @@
   position: relative;
   overflow: visible;
   transition: background 0.3s ease;
+  z-index: 2; /* Above the body::after gradient */
 }
 
 [data-theme="light"] .retro-page-header {
