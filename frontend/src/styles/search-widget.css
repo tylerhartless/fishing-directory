@@ -23,6 +23,8 @@
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+  background: var(--theme-bg);
+  padding: 0;
 }
 
 /* Wipe-away animation when returning to search */
