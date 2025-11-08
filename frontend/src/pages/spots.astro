@@ -59,22 +59,21 @@ const stateSlugLookup = {
   title="Fishing Spots Near You - Search Results"
   description="Find fishing spots near your location. Browse public access fishing locations with GPS coordinates and amenities."
 >
-  <section class="results-header" transition:name="search-container">
+  <section class="spots-page-container" transition:name="search-container">
     <div class="container">
-      <div class="terminal-output">
-        <div class="terminal-line">
-          <span class="terminal-prompt">›</span>
-          <span class="terminal-command" id="page-title">Fishing Spots Near You</span>
+      <div class="results-wrapper">
+        <div class="terminal-output">
+          <div class="terminal-line">
+            <span class="terminal-prompt">›</span>
+            <span class="terminal-command" id="page-title">Fishing Spots Near You</span>
+          </div>
+          <div class="terminal-status">
+            <span class="status-indicator">●</span>
+            <span id="subtitle">Querying database...</span>
+          </div>
         </div>
-        <div class="terminal-status">
-          <span class="status-indicator">●</span>
-          <span id="subtitle">Querying database...</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="retro-container">
+        <div class="results-content">
     <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
       <div class="error-header">
         <span class="error-prompt">✖</span>
@@ -121,6 +120,10 @@ const stateSlugLookup = {
     <div class="no-results" id="no-results" style="display: none;">
       <p>No fishing spots found. Try adjusting your search or filters.</p>
     </div>
+
+        </div>
+      </div>
+    </div>
   </section>
 </Layout>
 
@@ -129,27 +132,48 @@ const stateSlugLookup = {
      RESULTS PAGE - COHESIVE WITH SEARCH WIDGET
      ===================================== */
 
-  /* Results Header - Continues from widget */
-  .results-header {
+  /* Main container - matches widget container exactly */
+  .spots-page-container {
+    padding: 2rem 0;
+  }
+
+  .spots-page-container .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* Results wrapper - the visible box that matches widget */
+  .results-wrapper {
     background: rgba(30, 30, 30, 0.8);
     border: 2px solid rgba(168, 197, 168, 0.5);
     border-radius: 0;
-    padding: 2rem 0;
+    padding: 2rem;
     box-shadow:
       0 0 20px rgba(168, 197, 168, 0.3),
       inset 0 0 30px rgba(0, 0, 0, 0.5);
-    margin-bottom: 2rem;
+    color: var(--theme-text);
+    transition: all 0.3s ease;
   }
 
-  [data-theme="light"] .results-header {
+  [data-theme="light"] .results-wrapper {
     background: white;
-    border: 4px solid var(--neutral-black);
+    border: 3px solid var(--neutral-black);
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
   }
 
   .terminal-output {
-    max-width: 800px;
-    margin: 0 auto;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(168, 197, 168, 0.2);
+  }
+
+  [data-theme="light"] .terminal-output {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .results-content {
+    /* Content area for all results, filters, etc. */
   }
 
   .terminal-line {
@@ -234,6 +258,7 @@ const stateSlugLookup = {
 
   .filters {
     margin-bottom: 1.5rem;
+    margin-top: 0;
   }
 
   .filter-controls {
@@ -642,7 +667,7 @@ const stateSlugLookup = {
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    background: transparent;
+    background: rgba(168, 197, 168, 0.05);
     border: 1px solid rgba(168, 197, 168, 0.2);
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
@@ -650,9 +675,9 @@ const stateSlugLookup = {
   }
 
   [data-theme="light"] .search-results-info {
-    background: var(--accent-cream);
-    border: 3px solid var(--neutral-black);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.02);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    box-shadow: none;
   }
 
   .query-display {
@@ -723,15 +748,15 @@ const stateSlugLookup = {
   }
 
   .data-accuracy-notice {
-    background: rgba(184, 92, 58, 0.15);
-    border: 2px solid rgba(184, 92, 58, 0.4);
+    background: rgba(184, 92, 58, 0.1);
+    border: 1px solid rgba(184, 92, 58, 0.3);
     margin-bottom: 1.5rem;
     font-family: 'VT323', monospace;
   }
 
   [data-theme="light"] .data-accuracy-notice {
-    background: var(--accent-cream);
-    border: 2px solid var(--earth-rust);
+    background: rgba(184, 92, 58, 0.05);
+    border: 2px solid rgba(184, 92, 58, 0.2);
   }
 
   .data-accuracy-notice summary {
