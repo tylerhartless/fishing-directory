@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/retro-colors.css';
 import '../styles/retro-common.css';
 import '../styles/search-widget.css';
@@ -37,6 +38,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <!-- View Transitions -->
+    <ViewTransitions />
   </head>
   <body>
     <header>
@@ -82,19 +86,35 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           localStorage.setItem('theme', theme);
         };
 
-        // Set initial theme
-        setTheme(getTheme());
+        // Single global handler function to avoid multiple listeners
+        const handleThemeToggle = () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        };
 
-        // Toggle button handler
-        document.addEventListener('DOMContentLoaded', () => {
+        const setupThemeToggle = () => {
           const toggle = document.getElementById('theme-toggle');
           if (toggle) {
-            toggle.addEventListener('click', () => {
-              const current = document.documentElement.getAttribute('data-theme');
-              const next = current === 'dark' ? 'light' : 'dark';
-              setTheme(next);
-            });
+            // Remove old listener if it exists
+            toggle.removeEventListener('click', handleThemeToggle);
+            // Add fresh listener
+            toggle.addEventListener('click', handleThemeToggle);
           }
+        };
+
+        // Set initial theme (runs on first load)
+        setTheme(getTheme());
+
+        // Setup theme toggle on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', setupThemeToggle);
+
+        // Re-apply theme after View Transitions navigation
+        document.addEventListener('astro:page-load', () => {
+          // Re-apply theme from localStorage
+          setTheme(getTheme());
+          // Re-setup toggle button
+          setupThemeToggle();
         });
       })();
     </script>
@@ -153,6 +173,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     box-shadow: none;
     position: relative;
     overflow: visible;
+    /* Persist across page transitions - never moves */
+    view-transition-name: site-header;
   }
 
   [data-theme="light"] header {
@@ -166,8 +188,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 6.5rem 2rem;
+    padding: 2rem 2rem;
     overflow: visible;
+    /* Fixed height to prevent layout shift */
+    min-height: 100px;
   }
 
   .logo {
@@ -275,8 +299,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   main.main-content::before {
     content: '';
     display: block;
-    height: 300px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 10%, #0f2a0f 20%, #101010 40%, #151515 60%, #1a1a1a 100%);
+    height: 100px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
     transition: background 0.3s ease;
   }
 
@@ -290,6 +314,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: none;
   }
 
+  /* Spots page gets same gradient as homepage */
+  main.main-content:has(.spots-page-container)::before {
+    height: 200px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
+  }
+
   footer {
     background: var(--theme-bg-forest);
     padding: 0 0 2rem 0;
@@ -299,14 +329,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-size: 1.05rem;
     color: var(--theme-text-secondary);
     position: relative;
+    /* Persist across page transitions */
+    view-transition-name: site-footer;
   }
 
   /* Gradient transition before footer */
   footer::before {
     content: '';
     display: block;
-    height: 500px;
-    background: linear-gradient(180deg, transparent 0%, #1a1a1a 5%, #181818 22%, #151515 38%, #121212 52%, #0f2a0f 72%, #0e250e 87%, #0d1f0d 100%);
+    height: 200px;
+    background: linear-gradient(180deg, transparent 0%, #1a1a1a 25%, #151515 50%, #0f2a0f 75%, #0d1f0d 100%);
     margin-bottom: 0;
     transition: background 0.3s ease;
   }
@@ -466,4 +498,167 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       padding: 0 0.5rem;
     }
   }
+
+  /* =====================================
+     VIEW TRANSITIONS - THEME SPECIFIC
+     ===================================== */
+
+  /* Header and footer never move - they're persistent anchors */
+  ::view-transition-old(site-header),
+  ::view-transition-new(site-header),
+  ::view-transition-old(site-footer),
+  ::view-transition-new(site-footer) {
+    animation: none !important;
+  }
+
+  /* Disable root animations to prevent double-transition */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  @keyframes terminalFlickerOut {
+    0% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 0.9;
+      filter: brightness(1.1);
+    }
+    100% {
+      opacity: 0;
+      filter: brightness(0.8);
+    }
+  }
+
+  @keyframes terminalFlickerIn {
+    0% {
+      opacity: 0;
+      filter: brightness(1.2);
+    }
+    50% {
+      opacity: 0.8;
+      filter: brightness(1.1);
+    }
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+  }
+
+  /* Light Mode: Magazine page slide */
+  [data-theme="light"] ::view-transition-old(root) {
+    animation: magazineSlideOut 0.3s ease-out;
+  }
+
+  [data-theme="light"] ::view-transition-new(root) {
+    animation: magazineSlideIn 0.3s ease-in;
+  }
+
+  @keyframes magazineSlideOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+  }
+
+  @keyframes magazineSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root),
+    ::view-transition-old(search-container),
+    ::view-transition-new(search-container) {
+      animation: none !important;
+    }
+  }
+
+  /* =====================================
+     SEARCH WIDGET MORPH TRANSITION
+     ===================================== */
+
+  /* Search container morphing to results header */
+  ::view-transition-old(search-container),
+  ::view-transition-new(search-container) {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Dark Mode: Widget expands downward like terminal output */
+  ::view-transition-old(search-container) {
+    animation-name: expandOut;
+  }
+
+  ::view-transition-new(search-container) {
+    animation-name: expandIn;
+  }
+
+  @keyframes expandOut {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0.8;
+      transform: scale(1.05) translateY(-20px);
+    }
+  }
+
+  @keyframes expandIn {
+    from {
+      opacity: 0.8;
+      transform: scale(0.95) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Light Mode: Magazine page flip effect */
+  [data-theme="light"] ::view-transition-old(search-container) {
+    animation-name: pageFlipOut;
+  }
+
+  [data-theme="light"] ::view-transition-new(search-container) {
+    animation-name: pageFlipIn;
+  }
+
+  @keyframes pageFlipOut {
+    from {
+      opacity: 1;
+      transform: perspective(1000px) rotateX(0deg);
+    }
+    to {
+      opacity: 0;
+      transform: perspective(1000px) rotateX(-15deg) translateY(-30px);
+    }
+  }
+
+  @keyframes pageFlipIn {
+    from {
+      opacity: 0;
+      transform: perspective(1000px) rotateX(15deg) translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(1000px) rotateX(0deg) translateY(0);
+    }
+  }
+
 </style>

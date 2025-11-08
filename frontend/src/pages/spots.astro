@@ -59,92 +59,107 @@ const stateSlugLookup = {
   title="Fishing Spots Near You - Search Results"
   description="Find fishing spots near your location. Browse public access fishing locations with GPS coordinates and amenities."
 >
-  <section class="retro-page-header terminal-header">
+  <section class="retro-page-header">
     <div class="container">
-      <h1 id="page-title">Fishing Spots Near You</h1>
-      <p class="subtitle terminal-subtitle" id="subtitle">
-        Loading spots...
-      </p>
+      <h1>Search Results</h1>
     </div>
   </section>
 
   <section class="retro-container">
-    <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
-      <p id="error-text"></p>
-    </div>
+    <div class="search-section">
+      <div class="search-container">
+        <!-- Results Header -->
+        <div class="results-header">
+          <div class="search-results-info" id="search-info">
+            <div class="query-display">
+              <span class="query-prompt">›</span>
+              <span id="search-query-text">Finding fishing spots near you...</span>
+            </div>
+            <a href="/" class="new-search-btn">← New Search</a>
+          </div>
+        </div>
 
-    <div class="search-results-info" id="search-info" style="display: none;">
-      <p id="search-query-text"></p>
-      <a href="/" class="new-search-btn">New Search</a>
-    </div>
+        <!-- Error Messages -->
+        <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
+          <div class="error-header">
+            <span class="error-prompt">✖</span>
+            <span>ERROR</span>
+          </div>
+          <p id="error-text"></p>
+        </div>
 
-    <details class="data-accuracy-notice">
-      <summary>
-        <span class="notice-icon">⚠</span>
-        <strong>Data Notice</strong>
-        <span class="toggle-arrow">▼</span>
-      </summary>
-      <p>Consolidating data from multiple TX agencies revealed some duplicates and naming quirks. We're actively cleaning it up. If something looks fishy, we're debugging it.</p>
-    </details>
+        <!-- Filters -->
+        <div class="filters">
+          <div class="filter-controls">
+            <label for="type-filter">Filter:</label>
+            <select id="type-filter" class="retro-select">
+              <option value="">All types</option>
+              <option value="lake">Lakes</option>
+              <option value="public_water">Public Waters</option>
+              <option value="state_park">State Parks</option>
+              <option value="river_access">River Access</option>
+              <option value="fishing_pier">Fishing Piers</option>
+            </select>
+          </div>
+        </div>
 
-    <div class="filters">
-      <div class="filter-controls">
-        <label for="type-filter">Filter by type:</label>
-        <select id="type-filter" class="retro-select">
-          <option value="">All types</option>
-          <option value="lake">Lakes</option>
-          <option value="public_water">Public Waters</option>
-          <option value="state_park">State Parks</option>
-          <option value="river_access">River Access</option>
-          <option value="fishing_pier">Fishing Piers</option>
-        </select>
+        <!-- Results Grid -->
+        <div class="retro-grid retro-grid-spots" id="spots-container">
+          <div class="loading">Loading fishing spots...</div>
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="no-results" style="display: none;">
+          <p>No fishing spots found. Try a different search.</p>
+        </div>
+
+        <!-- Data Notice (collapsed by default) -->
+        <details class="data-accuracy-notice">
+          <summary>
+            <span class="notice-icon">⚠</span>
+            <strong>Data Notice</strong>
+            <span class="toggle-arrow">▼</span>
+          </summary>
+          <p>We're consolidating data from multiple TX agencies. Some duplicates exist. We're actively cleaning it up.</p>
+        </details>
       </div>
-    </div>
-
-    <div class="retro-grid retro-grid-spots" id="spots-container">
-      <div class="loading">Loading fishing spots...</div>
-    </div>
-
-    <div class="no-results" id="no-results" style="display: none;">
-      <p>No fishing spots found. Try adjusting your search or filters.</p>
     </div>
   </section>
 </Layout>
 
 <style is:global>
-  /* Terminal-style page for spots search results */
+  /* =====================================
+     RESULTS PAGE - MORPHS FROM SEARCH WIDGET
+     ===================================== */
 
-  .terminal-header .subtitle,
-  .terminal-subtitle {
-    font-family: 'VT323', monospace;
-    margin-bottom: 0;
-    font-size: 1.3rem;
-    font-weight: 400;
-    color: var(--theme-text-sage);
-    text-shadow:
-      0 0 8px rgba(168, 197, 168, 0.6),
-      0 0 15px rgba(168, 197, 168, 0.4);
+  /* Reduce the gradient spacer height for spots page only */
+  .retro-page-header::after {
+    height: 50px !important;
   }
 
-  [data-theme="dark"] .terminal-subtitle {
-    color: var(--theme-text-sage);
+  /* Tighten spacing after page header */
+  .retro-page-header + .retro-container {
+    padding-top: 0.5rem !important;
   }
 
-  .search-box-top {
-    display: flex;
-    max-width: 700px;
-    margin: 0 auto 1.5rem;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  /* Results header - minimal spacing */
+  .results-header {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0;
+    margin-top: 0;
+    padding-top: 0;
+    border-bottom: 2px solid rgba(168, 197, 168, 0.2);
   }
 
-  .search-box-top input {
-    flex: 1;
-    min-width: 250px;
+  [data-theme="light"] .results-header {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   }
+
+
 
   .filters {
     margin-bottom: 1.5rem;
+    margin-top: 0;
   }
 
   .filter-controls {
@@ -171,6 +186,54 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
+  /* Error Message */
+  .retro-notice-error {
+    background: rgba(255, 68, 68, 0.1);
+    border: 2px solid rgba(255, 68, 68, 0.4);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  [data-theme="light"] .retro-notice-error {
+    background: #ffe0e0;
+    border: 3px solid #cc0000;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .error-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    color: #ff6666;
+    text-shadow: 0 0 6px rgba(255, 68, 68, 0.5);
+  }
+
+  [data-theme="light"] .error-header {
+    color: #990000;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  .error-prompt {
+    font-size: 1.5rem;
+  }
+
+  .retro-notice-error p {
+    margin: 0;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: rgba(255, 102, 102, 0.9);
+  }
+
+  [data-theme="light"] .retro-notice-error p {
+    color: #990000;
+    font-weight: 600;
+  }
+
+  /* Loading State */
   .loading {
     grid-column: 1 / -1;
     text-align: center;
@@ -179,9 +242,20 @@ const stateSlugLookup = {
     color: var(--theme-text-sage);
     font-weight: 400;
     font-size: 1.5rem;
-    text-shadow:
-      0 0 8px rgba(168, 197, 168, 0.6),
-      0 0 15px rgba(168, 197, 168, 0.4);
+    text-shadow: 0 0 8px rgba(168, 197, 168, 0.5);
+    animation: textPulse 1.5s ease-in-out infinite;
+  }
+
+  [data-theme="light"] .loading {
+    color: var(--gray-dark);
+    text-shadow: none;
+    font-weight: 600;
+    animation: none;
+  }
+
+  @keyframes textPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 
   /* Unified card styling - matches county pages */
@@ -488,85 +562,92 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
+  /* Search Results Info - clean and integrated */
   .search-results-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    background: rgba(168, 197, 168, 0.1);
-    border: 1px solid rgba(168, 197, 168, 0.3);
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
     font-family: 'VT323', monospace;
   }
 
-  [data-theme="light"] .search-results-info {
-    background: var(--neutral-bg);
-    border: 2px solid var(--earth-forest);
-  }
-
-  .search-results-info p {
-    margin: 0;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-    font-size: 1.1rem;
+  .query-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     flex: 1;
-    text-shadow:
-      0 0 6px rgba(168, 197, 168, 0.4);
   }
 
-  [data-theme="light"] .search-results-info p {
-    color: var(--earth-forest);
+  .query-prompt {
+    font-size: 1.4rem;
+    color: rgba(168, 197, 168, 0.7);
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.5);
+  }
+
+  [data-theme="light"] .query-prompt {
+    color: var(--accent-dark-orange);
     text-shadow: none;
-    font-weight: 600;
+    font-weight: 700;
   }
 
-  .new-search-btn {
-    background: rgba(184, 92, 58, 0.2);
-    border: 1px solid rgba(184, 92, 58, 0.5);
-    padding: 0.5rem 1rem;
-    color: var(--earth-sand);
-    text-decoration: none;
+  .search-results-info #search-query-text {
+    color: var(--theme-text-sage);
+    font-size: 1.15rem;
     font-weight: 400;
-    font-size: 1rem;
-    font-family: 'VT323', monospace;
-    transition: all 0.2s;
-    white-space: nowrap;
-    text-shadow:
-      0 0 6px rgba(212, 165, 116, 0.4);
+    text-shadow: 0 0 4px rgba(168, 197, 168, 0.3);
   }
 
-  [data-theme="light"] .new-search-btn {
-    background: white;
-    border: 2px solid var(--neutral-black);
+  [data-theme="light"] .search-results-info #search-query-text {
     color: var(--neutral-black);
     text-shadow: none;
     font-weight: 600;
   }
 
+  .new-search-btn {
+    background: rgba(168, 197, 168, 0.1);
+    border: 1px solid rgba(168, 197, 168, 0.3);
+    padding: 0.6rem 1.25rem;
+    color: var(--theme-text-sage);
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 1.05rem;
+    font-family: 'VT323', monospace;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  [data-theme="light"] .new-search-btn {
+    background: var(--accent-sage);
+    border: 2px solid var(--neutral-black);
+    color: var(--neutral-black);
+    text-shadow: none;
+    font-weight: 700;
+  }
+
   .new-search-btn:hover {
-    background: rgba(212, 165, 116, 0.3);
-    border-color: rgba(212, 165, 116, 0.8);
-    transform: translate(-1px, -1px);
-    box-shadow:
-      0 0 10px rgba(212, 165, 116, 0.5);
+    background: rgba(168, 197, 168, 0.2);
+    border-color: rgba(168, 197, 168, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(168, 197, 168, 0.4);
   }
 
   [data-theme="light"] .new-search-btn:hover {
-    background: var(--accent-copper);
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    background: var(--box-moss);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
   }
 
   .data-accuracy-notice {
-    background: rgba(184, 92, 58, 0.15);
-    border: 2px solid rgba(184, 92, 58, 0.4);
+    background: rgba(184, 92, 58, 0.1);
+    border: 1px solid rgba(184, 92, 58, 0.3);
     margin-bottom: 1.5rem;
     font-family: 'VT323', monospace;
   }
 
   [data-theme="light"] .data-accuracy-notice {
-    background: var(--accent-cream);
-    border: 2px solid var(--earth-rust);
+    background: rgba(184, 92, 58, 0.05);
+    border: 2px solid rgba(184, 92, 58, 0.2);
   }
 
   .data-accuracy-notice summary {
@@ -638,12 +719,84 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
-  @media (max-width: 768px) {
-    .retro-page-header h1 {
-      font-size: 1.8rem;
+  /* =====================================
+     PROGRESSIVE REVEAL ANIMATIONS
+     ===================================== */
+
+  /* Result cards fade in sequentially */
+  .retro-card {
+    opacity: 0;
+    animation: revealCard 0.4s ease-out forwards;
+  }
+
+  @keyframes revealCard {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Light mode: slide in from side (catalog page turn) */
+  [data-theme="light"] .retro-card {
+    animation: revealCardLight 0.35s ease-out forwards;
+  }
+
+  @keyframes revealCardLight {
+    from {
+      opacity: 0;
+      transform: translateX(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Stagger animation delays - set via JS */
+  .retro-card:nth-child(1) { animation-delay: 0.05s; }
+  .retro-card:nth-child(2) { animation-delay: 0.1s; }
+  .retro-card:nth-child(3) { animation-delay: 0.15s; }
+  .retro-card:nth-child(4) { animation-delay: 0.2s; }
+  .retro-card:nth-child(5) { animation-delay: 0.25s; }
+  .retro-card:nth-child(6) { animation-delay: 0.3s; }
+  .retro-card:nth-child(7) { animation-delay: 0.35s; }
+  .retro-card:nth-child(8) { animation-delay: 0.4s; }
+  .retro-card:nth-child(9) { animation-delay: 0.45s; }
+  .retro-card:nth-child(10) { animation-delay: 0.5s; }
+
+  /* For cards beyond 10, cap the delay */
+  .retro-card:nth-child(n+11) { animation-delay: 0.5s; }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .retro-card {
+      animation: simpleFadeIn 0.2s ease-out forwards !important;
     }
 
-    .terminal-subtitle {
+    @keyframes simpleFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+
+  /* =====================================
+     RESPONSIVE
+     ===================================== */
+
+  @media (max-width: 768px) {
+    .results-header {
+      padding: 1.5rem 0;
+    }
+
+    .terminal-command {
+      font-size: 1.5rem;
+    }
+
+    .terminal-status {
       font-size: 1.1rem;
     }
 
@@ -707,12 +860,39 @@ const stateSlugLookup = {
       text-align: center;
     }
   }
+
+  /* Stylistic fade-in animation for results */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Dark mode: subtle glow on fade-in */
+  [data-theme="dark"] .retro-card {
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+
+  /* Light mode: clean slide-in */
+  [data-theme="light"] .retro-card {
+    animation: fadeInUp 0.3s ease-out forwards;
+  }
 </style>
 
 <script define:vars={{ stateSlugLookup }}>
-  // API URL - use /api for production, localhost:8000 for local development
-  const API_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:8000'
+  // API URL - dynamically construct based on environment
+  const isDev = window.location.hostname === 'localhost' ||
+                window.location.hostname.startsWith('100.') || // Tailscale IP
+                window.location.hostname.startsWith('127.') || // Localhost variations
+                window.location.port === '4321'; // Astro dev server
+
+  const API_URL = isDev
+    ? `http://${window.location.hostname}:8000` // Use same hostname but port 8000
     : `${window.location.protocol}//${window.location.host}/api`;
   let allSpots = [];
   let filteredSpots = [];
@@ -723,15 +903,14 @@ const stateSlugLookup = {
   const userLat = urlParams.get('lat') ? parseFloat(urlParams.get('lat')) : null;
   const userLon = urlParams.get('lon') ? parseFloat(urlParams.get('lon')) : null;
 
-  // Update search input and UI with terminal-style messages
-  const searchInput = document.getElementById('search-input');
-  if (searchQuery && searchInput) {
-    searchInput.value = searchQuery;
-    document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `Searching for: "${searchQuery}"`;
+  // Update search query text (always visible)
+  const searchQueryTextEl = document.getElementById('search-query-text');
+  if (searchQuery) {
+    searchQueryTextEl.textContent = `Searching for: "${searchQuery}"`;
   } else if (userLat && userLon) {
-    document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `Searching near: ${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
+    searchQueryTextEl.textContent = `Searching near: ${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
+  } else {
+    searchQueryTextEl.textContent = `Loading fishing spots...`;
   }
 
   // Load spots from API (all states)
@@ -812,19 +991,15 @@ const stateSlugLookup = {
       filteredSpots = filteredSpots.slice(0, 100);
     }
 
-    // Update subtitle with terminal-style output
-    const subtitle = document.getElementById('subtitle');
-    const pageTitle = document.getElementById('page-title');
-    if (subtitle) {
+    // Update search query text
+    const searchQueryText = document.getElementById('search-query-text');
+    if (searchQueryText) {
       if (userLat && userLon) {
-        subtitle.textContent = `Found ${filteredSpots.length} spots nearby • Sorted by distance`;
-        pageTitle.textContent = 'Fishing Spots Near You';
+        searchQueryText.textContent = `Found ${filteredSpots.length} spots nearby`;
       } else if (searchQuery) {
-        subtitle.textContent = `${filteredSpots.length} spots found for "${searchQuery}"`;
-        pageTitle.textContent = `Search Results: ${searchQuery}`;
+        searchQueryText.textContent = `${filteredSpots.length} results for "${searchQuery}"`;
       } else {
-        subtitle.textContent = `${filteredSpots.length} fishing spots in Texas`;
-        pageTitle.textContent = 'Browse All Fishing Spots';
+        searchQueryText.textContent = `${filteredSpots.length} fishing spots in Texas`;
       }
     }
 
@@ -860,7 +1035,11 @@ const stateSlugLookup = {
 
     noResults.style.display = 'none';
 
-    container.innerHTML = spots.map(spot => {
+    // Add a stylistic delay before showing results (terminal-like loading)
+    container.innerHTML = '<div class="loading">Processing results...</div>';
+
+    setTimeout(() => {
+      container.innerHTML = spots.map(spot => {
       const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
       const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
       const amenitiesJson = JSON.stringify(amenities);
@@ -899,8 +1078,8 @@ const stateSlugLookup = {
         : '';
 
       return `
-        <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
-          <h3>${displayName}</h3>
+        <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}' data-spot-id="${spot.id}">
+          <h3 style="view-transition-name: spot-title-${spot.id};">${displayName}</h3>
           ${distanceHtml}
           <div class="spot-meta">
             <span class="retro-badge spot-type">${typeLabel}</span>
@@ -908,7 +1087,15 @@ const stateSlugLookup = {
           ${amenitiesHtml}
         </a>
       `;
-    }).join('');
+      }).join('');
+
+      // Fade in results with CSS animation
+      const cards = container.querySelectorAll('.retro-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.animation = `fadeInUp 0.4s ease-out ${index * 0.03}s forwards`;
+      });
+    }, 300); // 300ms delay - just enough to feel intentional
   }
 
   function showError(message) {
@@ -1017,6 +1204,14 @@ const stateSlugLookup = {
     });
   });
 
-  // Load spots on page load
+  // Load spots on initial page load
   loadSpots();
+
+  // Re-load spots when navigating via View Transitions
+  document.addEventListener('astro:page-load', () => {
+    // Only run if we're on the spots page
+    if (window.location.pathname === '/spots') {
+      loadSpots();
+    }
+  });
 </script>
