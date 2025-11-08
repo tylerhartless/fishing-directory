@@ -304,10 +304,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: none;
   }
 
-  /* Spots page gets a shorter gradient */
+  /* Spots page gets same gradient as homepage */
   main.main-content:has(.spots-page-container)::before {
-    height: 150px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 30%, #0f2a0f 60%, #1a1a1a 100%);
+    height: 200px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
   }
 
   footer {
