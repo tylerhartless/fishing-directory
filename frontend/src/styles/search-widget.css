@@ -735,7 +735,7 @@
   }
 
   .search-form-section {
-    padding: 1.25rem;
+    padding: 0.75rem;
   }
 }
 
@@ -1966,13 +1966,18 @@
   /* Add minimal padding to inner content instead */
   .results-header,
   .results-controls {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
 
   .results-container {
-    padding-left: 0.5rem;
+    padding-left: 0.25rem;
     padding-right: 0.25rem;
+  }
+
+  /* Reduce gap between cards on mobile */
+  .results-grid {
+    gap: 0.5rem;
   }
 
   /* Make results header more compact and thinner */
@@ -2051,7 +2056,7 @@
 
   /* Reduce padding on spot cards for more width */
   .spot-card {
-    padding: 0.85rem;
+    padding: 0.5rem;
   }
 
   .card-header {
