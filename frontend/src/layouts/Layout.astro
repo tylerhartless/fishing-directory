@@ -167,7 +167,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: transparent; /* Let gradient show through in dark mode */
+    background: var(--theme-bg); /* Block scrolling content, gradient shows through from z-index: 0 */
     color: white;
     padding: 0;
     box-shadow: none;
