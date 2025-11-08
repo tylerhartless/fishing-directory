@@ -186,16 +186,17 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     top: 80px; /* Start below header */
     left: 0;
     right: 0;
-    height: 120px;
+    height: 250px;
     background: linear-gradient(180deg,
       rgba(13, 31, 13, 0.95) 0%,
-      rgba(13, 31, 13, 0.7) 20%,
-      rgba(17, 24, 17, 0.4) 50%,
-      rgba(21, 21, 21, 0.2) 75%,
+      rgba(13, 31, 13, 0.7) 15%,
+      rgba(17, 24, 17, 0.5) 35%,
+      rgba(21, 21, 21, 0.3) 60%,
+      rgba(26, 26, 26, 0.15) 80%,
       transparent 100%
     );
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 
   [data-theme="light"] header::after {
