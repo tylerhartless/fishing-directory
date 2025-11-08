@@ -436,7 +436,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: rgba(0, 0, 0, 0.75);
+    background: var(--theme-toggle-bg);
     border: 3px solid var(--theme-toggle-border);
     padding: 0.8rem 1.2rem;
     cursor: pointer;
@@ -446,49 +446,35 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     align-items: center;
     justify-content: center;
     border-radius: 0;
-    box-shadow: 0 0 20px rgba(154, 176, 135, 0.4),
-                inset 0 0 10px rgba(154, 176, 135, 0.1);
+    box-shadow: var(--theme-toggle-shadow);
     font-family: 'VT323', monospace;
     z-index: 1000;
     color: var(--theme-toggle-text);
     letter-spacing: 0.05em;
     font-weight: 400;
-    backdrop-filter: blur(8px);
+    backdrop-filter: var(--theme-toggle-backdrop-filter);
     min-width: 70px;
     line-height: 1;
   }
 
   .theme-toggle:hover {
-    background: rgba(154, 176, 135, 0.15);
-    border-color: var(--neutral-white);
-    box-shadow: 0 0 30px rgba(154, 176, 135, 0.6),
-                0 0 40px rgba(255, 255, 255, 0.3),
-                inset 0 0 15px rgba(154, 176, 135, 0.2);
+    background: var(--theme-toggle-hover-bg);
+    border-color: var(--theme-toggle-hover-border);
+    box-shadow: var(--theme-toggle-hover-shadow);
     transform: translateY(-3px) scale(1.05);
   }
 
   .theme-toggle:active {
     transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 0 15px rgba(154, 176, 135, 0.5),
-                inset 0 0 10px rgba(154, 176, 135, 0.15);
-  }
-
-  [data-theme="light"] .theme-toggle {
-    background: var(--accent-sage);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
-    backdrop-filter: none;
+    box-shadow: var(--theme-toggle-active-shadow);
   }
 
   [data-theme="light"] .theme-toggle:hover {
-    background: var(--box-moss);
-    border-color: var(--theme-toggle-border);
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   }
 
   [data-theme="light"] .theme-toggle:active {
     transform: translate(0, 0);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   }
 
   .theme-icon {

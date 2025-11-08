@@ -62,8 +62,15 @@
   --theme-heading-color: #ffffff; /* White headers for dark mode */
   --theme-breadcrumb-color: #39ff14; /* Green for breadcrumbs in dark mode */
   --theme-breadcrumb-hover: #50ff30; /* Brighter green for hover/active */
+  --theme-toggle-bg: rgba(0, 0, 0, 0.75);
   --theme-toggle-border: #9ab087; /* Sage green border for dark mode */
   --theme-toggle-text: #ffffff; /* White text for dark mode */
+  --theme-toggle-shadow: 0 0 20px rgba(154, 176, 135, 0.4), inset 0 0 10px rgba(154, 176, 135, 0.1);
+  --theme-toggle-hover-bg: rgba(154, 176, 135, 0.15);
+  --theme-toggle-hover-border: #ffffff;
+  --theme-toggle-hover-shadow: 0 0 30px rgba(154, 176, 135, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(154, 176, 135, 0.2);
+  --theme-toggle-active-shadow: 0 0 15px rgba(154, 176, 135, 0.5), inset 0 0 10px rgba(154, 176, 135, 0.15);
+  --theme-toggle-backdrop-filter: blur(8px);
 
   /* Additional gray shades for UI elements */
   --gray-darkest: #333;
@@ -113,8 +120,15 @@
   --theme-heading-color: var(--boat-charcoal); /* Charcoal headers */
   --theme-breadcrumb-color: var(--boat-orange); /* Orange breadcrumbs */
   --theme-breadcrumb-hover: var(--boat-red); /* Red on hover */
+  --theme-toggle-bg: var(--accent-sage);
   --theme-toggle-border: var(--neutral-black); /* Black border for light mode */
   --theme-toggle-text: var(--neutral-black); /* Black text for light mode */
+  --theme-toggle-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  --theme-toggle-hover-bg: var(--box-moss);
+  --theme-toggle-hover-border: var(--neutral-black);
+  --theme-toggle-hover-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+  --theme-toggle-active-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  --theme-toggle-backdrop-filter: none;
 
   /* Button colors for vintage ad style */
   --theme-btn-primary-bg: var(--boat-orange);
