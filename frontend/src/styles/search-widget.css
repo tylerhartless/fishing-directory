@@ -19,7 +19,7 @@
 
 .search-widget {
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -735,7 +735,7 @@
   }
 
   .search-form-section {
-    padding: 1.25rem;
+    padding: 0.75rem;
   }
 }
 
@@ -1392,7 +1392,7 @@
    ===================================== */
 
 .results-container {
-  max-height: 70vh;
+  max-height: 50vh;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 0.5rem;
@@ -1400,35 +1400,7 @@
   position: relative;
 }
 
-/* Gradient fade at bottom - Dark Mode */
-.search-results::after {
-  content: '';
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background: linear-gradient(
-    to top,
-    var(--neutral-black, #0a0a0a) 0%,
-    rgba(10, 10, 10, 0.95) 20%,
-    rgba(10, 10, 10, 0.7) 50%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* Gradient fade at bottom - Light Mode */
-[data-theme="light"] .search-results::after {
-  background: linear-gradient(
-    to top,
-    var(--neutral-white, #f9f9f9) 0%,
-    rgba(249, 249, 249, 0.9) 30%,
-    rgba(249, 249, 249, 0.5) 60%,
-    transparent 100%
-  );
-}
+/* Fade effect removed to allow users to see content below */
 
 @keyframes fadeInResults {
   from {
@@ -1598,7 +1570,7 @@
 .spot-card h3 {
   margin: 0;
   color: var(--neutral-white);
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -1616,7 +1588,7 @@
 /* Distance Indicator - inline with title */
 .distance-indicator {
   color: var(--earth-sand);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
   text-shadow: 0 0 8px rgba(212, 165, 116, 0.6), 0 0 12px rgba(212, 165, 116, 0.4);
@@ -1638,19 +1610,9 @@
   align-items: center;
 }
 
-/* Spot Type Badge - now inline */
-.spot-type {
-  padding: 0.3rem 0.6rem;
-  font-size: 0.95rem;
-  font-family: 'VT323', monospace;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
 /* Card Metadata Items - inline with bullets */
 .card-meta-item {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-family: 'VT323', monospace;
   color: rgba(168, 197, 168, 0.8);
   font-weight: 400;
@@ -1682,23 +1644,9 @@
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-lake) 25%, transparent);
 }
 
-.spot-card[data-spot-type="lake"] .spot-type {
-  background: color-mix(in srgb, var(--badge-lake) 20%, transparent);
-  border: 1px solid color-mix(in srgb, var(--badge-lake) 50%, transparent);
-  color: var(--badge-lake);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--badge-lake) 50%, transparent);
-}
-
 .spot-card[data-spot-type="river_access"] {
   border-color: color-mix(in srgb, var(--badge-river) 40%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-river) 25%, transparent);
-}
-
-.spot-card[data-spot-type="river_access"] .spot-type {
-  background: color-mix(in srgb, var(--badge-river) 20%, transparent);
-  border: 1px solid color-mix(in srgb, var(--badge-river) 50%, transparent);
-  color: var(--badge-river);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--badge-river) 50%, transparent);
 }
 
 .spot-card[data-spot-type="public_water"] {
@@ -1706,35 +1654,14 @@
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-public) 25%, transparent);
 }
 
-.spot-card[data-spot-type="public_water"] .spot-type {
-  background: color-mix(in srgb, var(--badge-public) 20%, transparent);
-  border: 1px solid color-mix(in srgb, var(--badge-public) 50%, transparent);
-  color: var(--badge-public);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--badge-public) 50%, transparent);
-}
-
 .spot-card[data-spot-type="state_park"] {
   border-color: color-mix(in srgb, var(--badge-park) 40%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-park) 25%, transparent);
 }
 
-.spot-card[data-spot-type="state_park"] .spot-type {
-  background: color-mix(in srgb, var(--badge-park) 20%, transparent);
-  border: 1px solid color-mix(in srgb, var(--badge-park) 50%, transparent);
-  color: var(--badge-park);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--badge-park) 50%, transparent);
-}
-
 .spot-card[data-spot-type="fishing_pier"] {
   border-color: color-mix(in srgb, var(--badge-pier) 40%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-pier) 25%, transparent);
-}
-
-.spot-card[data-spot-type="fishing_pier"] .spot-type {
-  background: color-mix(in srgb, var(--badge-pier) 20%, transparent);
-  border: 1px solid color-mix(in srgb, var(--badge-pier) 50%, transparent);
-  color: var(--badge-pier);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--badge-pier) 50%, transparent);
 }
 
 /* Light Mode spot type colors (using CSS variables) */
@@ -1743,25 +1670,9 @@
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-lake-light) 20%, transparent);
 }
 
-[data-theme="light"] .spot-card[data-spot-type="lake"] .spot-type {
-  background: color-mix(in srgb, var(--badge-lake-light) 80%, var(--neutral-white) 20%);
-  border: 2px solid var(--badge-lake-border-light);
-  color: var(--neutral-white);
-  text-shadow: none;
-  font-weight: 700;
-}
-
 [data-theme="light"] .spot-card[data-spot-type="river_access"] {
   border-color: var(--badge-river-light);
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-river-light) 20%, transparent);
-}
-
-[data-theme="light"] .spot-card[data-spot-type="river_access"] .spot-type {
-  background: color-mix(in srgb, var(--badge-river-light) 70%, var(--neutral-white) 30%);
-  border: 2px solid var(--badge-river-border-light);
-  color: var(--neutral-white);
-  text-shadow: none;
-  font-weight: 700;
 }
 
 [data-theme="light"] .spot-card[data-spot-type="public_water"] {
@@ -1769,38 +1680,14 @@
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-public-light) 20%, transparent);
 }
 
-[data-theme="light"] .spot-card[data-spot-type="public_water"] .spot-type {
-  background: color-mix(in srgb, var(--badge-public-light) 75%, var(--neutral-white) 25%);
-  border: 2px solid var(--badge-public-border-light);
-  color: var(--neutral-white);
-  text-shadow: none;
-  font-weight: 700;
-}
-
 [data-theme="light"] .spot-card[data-spot-type="state_park"] {
   border-color: var(--badge-park-light);
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-park-light) 20%, transparent);
 }
 
-[data-theme="light"] .spot-card[data-spot-type="state_park"] .spot-type {
-  background: var(--accent-sage);
-  border: 2px solid var(--badge-park-border-light);
-  color: var(--neutral-white);
-  text-shadow: none;
-  font-weight: 700;
-}
-
 [data-theme="light"] .spot-card[data-spot-type="fishing_pier"] {
   border-color: var(--badge-pier-light);
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-pier-light) 20%, transparent);
-}
-
-[data-theme="light"] .spot-card[data-spot-type="fishing_pier"] .spot-type {
-  background: color-mix(in srgb, var(--badge-pier-light) 85%, var(--neutral-white) 15%);
-  border: 2px solid var(--badge-pier-border-light);
-  color: var(--neutral-black);
-  text-shadow: none;
-  font-weight: 700;
 }
 
 /* Note: Amenities are now displayed inline using .card-meta-item in .card-body */
@@ -1994,13 +1881,18 @@
   /* Add minimal padding to inner content instead */
   .results-header,
   .results-controls {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
 
   .results-container {
-    padding-left: 0.5rem;
+    padding-left: 0.25rem;
     padding-right: 0.25rem;
+  }
+
+  /* Reduce gap between cards on mobile */
+  .results-grid {
+    gap: 0.5rem;
   }
 
   /* Make results header more compact and thinner */
@@ -2079,7 +1971,7 @@
 
   /* Reduce padding on spot cards for more width */
   .spot-card {
-    padding: 0.85rem;
+    padding: 0.5rem;
   }
 
   .card-header {
@@ -2088,11 +1980,11 @@
   }
 
   .spot-card h3 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 
   .distance-indicator {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
 }
