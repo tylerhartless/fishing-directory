@@ -60,30 +60,28 @@
 
 /* Slide-in animation when search mode appears */
 .search-widget[data-show-results="false"]:not([data-transitioning="true"]) > :not(.search-widget-transition) {
-  animation: slideInSearch 0.5s ease-out;
+  animation: slideInSearch 0.25s ease-out;
 }
 
 @keyframes slideInSearch {
   0% {
     opacity: 0;
-    transform: scale(0.95);
-    filter: blur(5px);
+    transform: scale(0.98);
   }
   100% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0px);
   }
 }
 
 [data-theme="light"] .search-widget[data-show-results="false"]:not([data-transitioning="true"]) > :not(.search-widget-transition) {
-  animation: slideInSearchLight 0.4s ease-out;
+  animation: slideInSearchLight 0.2s ease-out;
 }
 
 @keyframes slideInSearchLight {
   0% {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.98);
   }
   100% {
     opacity: 1;
@@ -230,7 +228,7 @@
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
   font-weight: 700;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
 }
 
 [data-theme="light"] .btn-location-hero::before {
