@@ -782,12 +782,14 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                         )}
                       </div>
                       <div class="card-body">
-                        {prominentAmenities.length > 0 && (
+                        {prominentAmenities.length > 0 ? (
                           <>
                             {prominentAmenities.map(amenity => (
                               <span key={amenity} class="card-meta-item">{amenity}</span>
                             ))}
                           </>
+                        ) : (
+                          <span class="amenity-placeholder">No amenities listed</span>
                         )}
                       </div>
                     </a>
