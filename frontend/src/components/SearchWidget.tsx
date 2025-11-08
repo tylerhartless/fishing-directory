@@ -212,7 +212,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           top: targetPosition,
           behavior: 'smooth'
         });
-      }, 50); // Small delay to ensure DOM is ready
+      }, 300); // Wait for transition to complete (250ms) + small buffer
     }
   }, [showResults]);
 
@@ -249,7 +249,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setTimeout(() => {
             setShowTransition(false);
             setShowResults(true);
-          }, 400);
+          }, 250);
 
           setSortBy('distance');
         },
@@ -325,7 +325,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       setTimeout(() => {
         setShowTransition(false);
         setShowResults(true);
-      }, 400);
+      }, 250);
 
     } catch (error) {
       console.error('Geocoding error:', error);
