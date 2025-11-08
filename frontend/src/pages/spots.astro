@@ -59,21 +59,17 @@ const stateSlugLookup = {
   title="Fishing Spots Near You - Search Results"
   description="Find fishing spots near your location. Browse public access fishing locations with GPS coordinates and amenities."
 >
+  <section class="retro-page-header">
+    <div class="container">
+      <h1>Search Results</h1>
+      <p class="subtitle" id="page-subtitle">Finding fishing spots near you...</p>
+    </div>
+  </section>
+
+  <section class="retro-container">
   <section class="spots-page-container" transition:name="search-container">
     <div class="container">
       <div class="results-wrapper">
-        <div class="terminal-output">
-          <div class="terminal-line">
-            <span class="terminal-prompt">›</span>
-            <span class="terminal-command" id="page-title">Fishing Spots Near You</span>
-          </div>
-          <div class="terminal-status">
-            <span class="status-indicator">●</span>
-            <span id="subtitle">Querying database...</span>
-          </div>
-        </div>
-
-        <div class="results-content">
     <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
       <div class="error-header">
         <span class="error-prompt">✖</span>
@@ -121,9 +117,9 @@ const stateSlugLookup = {
       <p>No fishing spots found. Try adjusting your search or filters.</p>
     </div>
 
-        </div>
       </div>
     </div>
+  </section>
   </section>
 </Layout>
 
@@ -132,16 +128,14 @@ const stateSlugLookup = {
      RESULTS PAGE - COHESIVE WITH SEARCH WIDGET
      ===================================== */
 
-  /* Main container - matches widget container exactly */
+  /* Main container - matches widget container position */
   .spots-page-container {
-    padding: 0 0 2rem 0;
-    margin-top: -50px; /* Pull up into gradient for seamless transition */
+    margin: 0 auto;
+    max-width: 700px;
   }
 
   .spots-page-container .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0;
   }
 
   /* Results wrapper - the visible box that matches widget */
@@ -163,99 +157,7 @@ const stateSlugLookup = {
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .terminal-output {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(168, 197, 168, 0.2);
-  }
 
-  [data-theme="light"] .terminal-output {
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .results-content {
-    /* Content area for all results, filters, etc. */
-  }
-
-  .terminal-line {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .terminal-prompt {
-    font-family: 'VT323', monospace;
-    font-size: 1.8rem;
-    color: rgba(168, 197, 168, 0.7);
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.5);
-  }
-
-  [data-theme="light"] .terminal-prompt {
-    color: var(--accent-dark-orange);
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  .terminal-command {
-    font-family: 'VT323', monospace;
-    font-size: 1.8rem;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 8px rgba(168, 197, 168, 0.4);
-  }
-
-  [data-theme="light"] .terminal-command {
-    color: var(--neutral-black);
-    text-shadow: none;
-    font-weight: 700;
-  }
-
-  .terminal-status {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0;
-    font-family: 'VT323', monospace;
-    font-size: 1.2rem;
-    color: rgba(168, 197, 168, 0.6);
-  }
-
-  [data-theme="light"] .terminal-status {
-    color: var(--gray-dark);
-    font-weight: 600;
-  }
-
-  .status-indicator {
-    animation: pulse 2s ease-in-out infinite;
-    color: var(--theme-text-sage);
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.8);
-  }
-
-  [data-theme="light"] .status-indicator {
-    animation: none;
-    color: var(--accent-dark-orange);
-    text-shadow: none;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .search-box-top {
-    display: flex;
-    max-width: 700px;
-    margin: 0 auto 1.5rem;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .search-box-top input {
-    flex: 1;
-    min-width: 250px;
-  }
 
   .filters {
     margin-bottom: 1.5rem;
@@ -1075,19 +977,15 @@ const stateSlugLookup = {
       filteredSpots = filteredSpots.slice(0, 100);
     }
 
-    // Update subtitle with terminal-style output
-    const subtitle = document.getElementById('subtitle');
-    const pageTitle = document.getElementById('page-title');
-    if (subtitle) {
+    // Update page subtitle in header
+    const pageSubtitle = document.getElementById('page-subtitle');
+    if (pageSubtitle) {
       if (userLat && userLon) {
-        subtitle.textContent = `Found ${filteredSpots.length} spots nearby • Sorted by distance`;
-        pageTitle.textContent = 'Fishing Spots Near You';
+        pageSubtitle.textContent = `Found ${filteredSpots.length} spots nearby • Sorted by distance`;
       } else if (searchQuery) {
-        subtitle.textContent = `${filteredSpots.length} spots found for "${searchQuery}"`;
-        pageTitle.textContent = `Search Results: ${searchQuery}`;
+        pageSubtitle.textContent = `${filteredSpots.length} spots found for "${searchQuery}"`;
       } else {
-        subtitle.textContent = `${filteredSpots.length} fishing spots in Texas`;
-        pageTitle.textContent = 'Browse All Fishing Spots';
+        pageSubtitle.textContent = `${filteredSpots.length} fishing spots in Texas`;
       }
     }
 
