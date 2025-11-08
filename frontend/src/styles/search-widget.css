@@ -1933,29 +1933,78 @@
    ===================================== */
 
 @media (max-width: 640px) {
+  /* Widen the widget to almost touch screen edges */
+  .search-widget[data-show-results="true"] {
+    padding: 0 0.5rem;
+  }
+
+  /* Make results header more compact */
   .results-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .results-info {
+    min-width: unset;
+    flex: 1;
+  }
+
+  .query-text {
+    font-size: 1rem;
   }
 
   .btn-new-search {
-    width: 100%;
+    width: auto;
     text-align: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  /* Consolidate controls into a compact 2-row layout */
+  .results-controls {
+    margin-bottom: 1rem;
   }
 
   .controls-row {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.5rem;
     align-items: stretch;
   }
 
-  .btn-filter-toggle,
-  .sort-control,
-  .result-count {
+  /* Filters button spans first column, first row */
+  .btn-filter-toggle {
+    grid-column: 1;
+    grid-row: 1;
     width: 100%;
   }
 
+  /* Sort control spans second column, first row */
   .sort-control {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
     min-width: unset;
+  }
+
+  /* Result count spans both columns, second row */
+  .result-count {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 1rem;
+  }
+
+  .sort-control label {
+    display: none; /* Hide "Sort:" label on mobile */
+  }
+
+  .sort-control select {
+    width: 100%;
   }
 
   .filter-panel {
@@ -1973,6 +2022,16 @@
   .no-license-badge {
     font-size: 0.75rem;
     padding: 0.15rem 0.4rem;
+  }
+
+  /* Reduce padding on spot cards for more width */
+  .spot-card {
+    padding: 1.25rem;
+  }
+
+  /* Reduce margins on results container */
+  .results-container {
+    padding-right: 0.25rem;
   }
 }
 
