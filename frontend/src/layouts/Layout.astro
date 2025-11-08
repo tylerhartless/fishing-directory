@@ -167,16 +167,91 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: var(--theme-bg-forest);
+    background: linear-gradient(180deg,
+      var(--theme-bg) 0%,
+      var(--theme-bg) 85%,        /* Solid header top 85% */
+      rgba(26, 26, 26, 0.85) 87%, /* Bottom 15% ultra-smooth fade starts */
+      rgba(26, 26, 26, 0.7) 89%,
+      rgba(26, 26, 26, 0.55) 91%,
+      rgba(26, 26, 26, 0.4) 93%,
+      rgba(26, 26, 26, 0.25) 95%,
+      rgba(26, 26, 26, 0.1) 97%,
+      transparent 100%            /* Bottom 15% ultra-smooth fade ends */
+    ); /* Top 85% solid, bottom 15% ultra-smooth fade for glows */
     color: white;
     padding: 0;
     box-shadow: none;
     position: sticky;
     top: 0;
     overflow: visible;
-    z-index: 100;
+    z-index: 100; /* Above main content to block when scrolling */
     /* Persist across page transitions - never moves */
     view-transition-name: site-header;
+  }
+
+  /* Gradient overlay for header area */
+  header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg,
+      rgba(13, 31, 13, 0.6) 0%,
+      rgba(13, 31, 13, 0.5) 100%
+    );
+    pointer-events: none;
+    z-index: 0; /* Above header background, below nav */
+  }
+
+  /* Dark mode gradient - behind all content, touching sticky header */
+  :global(body::after) {
+    content: '';
+    position: fixed;
+    top: 0; /* Touch the top (sticky header is also at top: 0) */
+    left: 0;
+    right: 0;
+    height: 1800px; /* Extended gradient covering more of the page */
+    background: linear-gradient(180deg,
+      rgba(13, 31, 13, 0.6) 0%,
+      rgba(13, 30, 13, 0.58) 5%,
+      rgba(13, 30, 13, 0.56) 10%,
+      rgba(13, 29, 13, 0.54) 15%,
+      rgba(14, 28, 14, 0.52) 20%,
+      rgba(14, 28, 14, 0.50) 25%,
+      rgba(14, 27, 14, 0.48) 30%,
+      rgba(15, 26, 15, 0.46) 35%,
+      rgba(15, 26, 15, 0.44) 40%,
+      rgba(16, 25, 16, 0.42) 45%,
+      rgba(16, 24, 16, 0.40) 50%,
+      rgba(17, 24, 17, 0.38) 55%,
+      rgba(18, 23, 18, 0.36) 60%,
+      rgba(19, 23, 19, 0.34) 65%,
+      rgba(20, 22, 20, 0.32) 70%,
+      rgba(21, 22, 21, 0.30) 75%,
+      rgba(22, 22, 22, 0.28) 80%,
+      rgba(23, 22, 23, 0.26) 85%,
+      rgba(24, 23, 24, 0.24) 90%,
+      rgba(25, 24, 25, 0.22) 95%,
+      rgba(26, 25, 26, 0.20) 100%,
+      rgba(26, 25, 26, 0.18) 105%,
+      rgba(26, 26, 26, 0.16) 110%,
+      rgba(26, 26, 26, 0.14) 115%,
+      rgba(26, 26, 26, 0.12) 120%,
+      rgba(26, 26, 26, 0.10) 125%,
+      rgba(26, 26, 26, 0.08) 130%,
+      rgba(26, 26, 26, 0.06) 135%,
+      rgba(26, 26, 26, 0.04) 140%,
+      rgba(26, 26, 26, 0.02) 145%,
+      transparent 150%
+    );
+    pointer-events: none;
+    z-index: 0; /* Behind all content (main: 1, nav: 102, header: 100) */
+  }
+
+  :global([data-theme="light"] body::after) {
+    display: none;
   }
 
   [data-theme="light"] header {
@@ -184,9 +259,13 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     border-bottom: 4px solid var(--accent-dark-orange);
   }
 
+  [data-theme="light"] header::after {
+    display: none; /* No gradient overlay in light mode */
+  }
+
   nav {
     position: relative;
-    z-index: 2;
+    z-index: 1; /* Above header::after gradient */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -295,36 +374,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   main {
     min-height: calc(100vh - 200px);
-  }
-
-  /* Gradient transition for pages without hero sections */
-  main.main-content::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 300px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
-    transition: background 0.3s ease;
-    pointer-events: none;
-    z-index: 50;
-  }
-
-  [data-theme="light"] main.main-content::before {
-    display: none;
-  }
-
-  /* Hide gradient on pages that have hero/page-header sections */
-  main.main-content:has(.hero)::before,
-  main.main-content:has(.retro-page-header)::before {
-    display: none;
-  }
-
-  /* Spots page gets same gradient as homepage */
-  main.main-content:has(.spots-page-container)::before {
-    height: 200px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
+    position: relative;
+    z-index: 1; /* Below header (z-index: 100) so header blocks when scrolling */
   }
 
   footer {
