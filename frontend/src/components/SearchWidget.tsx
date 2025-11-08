@@ -87,6 +87,52 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     }
   }, []);
 
+  // Restore search state from sessionStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedState = sessionStorage.getItem('searchWidgetState');
+      if (savedState) {
+        try {
+          const state = JSON.parse(savedState);
+
+          // Ensure all loading states are cleared
+          setIsLoadingLocation(false);
+          setIsSearching(false);
+          setIsLoadingSpots(false);
+          setLoadingMessage('');
+          setErrorMessage('');
+
+          // Restore search state
+          setUserLocation(state.userLocation);
+          setSearchContext(state.searchContext);
+          setAllSpots(state.allSpots);
+          setTypeFilters(new Set(state.typeFilters));
+          setSortBy(state.sortBy);
+          setDisplayCount(state.displayCount);
+          setShowResults(true);
+        } catch (error) {
+          console.error('Failed to restore search state:', error);
+          sessionStorage.removeItem('searchWidgetState');
+        }
+      }
+    }
+  }, []);
+
+  // Save search state to sessionStorage when results are shown
+  useEffect(() => {
+    if (typeof window !== 'undefined' && showResults && allSpots.length > 0) {
+      const state = {
+        userLocation,
+        searchContext,
+        allSpots,
+        typeFilters: Array.from(typeFilters),
+        sortBy,
+        displayCount,
+      };
+      sessionStorage.setItem('searchWidgetState', JSON.stringify(state));
+    }
+  }, [showResults, userLocation, searchContext, allSpots, typeFilters, sortBy, displayCount]);
+
   // API URL
   const API_URL = typeof window !== 'undefined'
     ? (window.location.hostname === 'localhost' || window.location.hostname.startsWith('100.') || window.location.hostname.startsWith('127.') || window.location.port === '4321'
@@ -398,6 +444,18 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   const handleNewSearch = () => {
     // Trigger wipe-away animation, then return to search (no loading overlay)
     setIsTransitioning(true);
+
+    // Clear saved search state
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('searchWidgetState');
+    }
+
+    // Clear all loading states immediately to prevent stuck state
+    setIsLoadingLocation(false);
+    setIsSearching(false);
+    setIsLoadingSpots(false);
+    setLoadingMessage('');
+    setErrorMessage('');
 
     setTimeout(() => {
       setShowResults(false);
