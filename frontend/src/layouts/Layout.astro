@@ -39,6 +39,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
+    <!-- Set theme immediately before any rendering to prevent flash -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const theme = stored || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
     <!-- View Transitions -->
     <ViewTransitions />
   </head>
@@ -70,17 +79,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     </button>
 
     <script is:inline>
-      // Theme detection and toggle - Always defaults to dark mode
+      // Theme toggle functionality
       (function() {
-        const getTheme = () => {
-          // Check localStorage first
-          const stored = localStorage.getItem('theme');
-          if (stored) return stored;
-
-          // Always default to dark mode (ignore system preferences)
-          return 'dark';
-        };
-
         const setTheme = (theme) => {
           document.documentElement.setAttribute('data-theme', theme);
           localStorage.setItem('theme', theme);
@@ -103,16 +103,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           }
         };
 
-        // Set initial theme (runs on first load)
-        setTheme(getTheme());
-
         // Setup theme toggle on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', setupThemeToggle);
 
         // Re-apply theme after View Transitions navigation
         document.addEventListener('astro:page-load', () => {
-          // Re-apply theme from localStorage
-          setTheme(getTheme());
+          // Re-apply theme from localStorage (already set in head, but ensure it persists)
+          const stored = localStorage.getItem('theme');
+          if (stored) {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
           // Re-setup toggle button
           setupThemeToggle();
         });
