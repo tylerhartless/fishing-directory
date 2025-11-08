@@ -228,7 +228,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setTimeout(() => {
             setShowTransition(false);
             setShowResults(true);
-          }, 800);
+          }, 400);
 
           setSortBy('distance');
         },
@@ -304,7 +304,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       setTimeout(() => {
         setShowTransition(false);
         setShowResults(true);
-      }, 800);
+      }, 400);
 
     } catch (error) {
       console.error('Geocoding error:', error);

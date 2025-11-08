@@ -1397,6 +1397,37 @@
   overflow-x: hidden;
   padding-right: 0.5rem;
   animation: fadeInResults 0.6s ease-out 0.3s backwards;
+  position: relative;
+}
+
+/* Gradient fade at bottom - Dark Mode */
+.search-results::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(
+    to top,
+    var(--neutral-black, #0a0a0a) 0%,
+    rgba(10, 10, 10, 0.95) 20%,
+    rgba(10, 10, 10, 0.7) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Gradient fade at bottom - Light Mode */
+[data-theme="light"] .search-results::after {
+  background: linear-gradient(
+    to top,
+    var(--neutral-white, #f9f9f9) 0%,
+    rgba(249, 249, 249, 0.9) 30%,
+    rgba(249, 249, 249, 0.5) 60%,
+    transparent 100%
+  );
 }
 
 @keyframes fadeInResults {
