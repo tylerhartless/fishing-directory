@@ -59,23 +59,36 @@ const stateSlugLookup = {
   title="Fishing Spots Near You - Search Results"
   description="Find fishing spots near your location. Browse public access fishing locations with GPS coordinates and amenities."
 >
-  <section class="retro-page-header terminal-header">
+  <section class="results-header" transition:name="search-container">
     <div class="container">
-      <h1 id="page-title">Fishing Spots Near You</h1>
-      <p class="subtitle terminal-subtitle" id="subtitle">
-        Loading spots...
-      </p>
+      <div class="terminal-output">
+        <div class="terminal-line">
+          <span class="terminal-prompt">›</span>
+          <span class="terminal-command" id="page-title">Fishing Spots Near You</span>
+        </div>
+        <div class="terminal-status">
+          <span class="status-indicator">●</span>
+          <span id="subtitle">Querying database...</span>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="retro-container">
     <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
+      <div class="error-header">
+        <span class="error-prompt">✖</span>
+        <span>ERROR</span>
+      </div>
       <p id="error-text"></p>
     </div>
 
     <div class="search-results-info" id="search-info" style="display: none;">
-      <p id="search-query-text"></p>
-      <a href="/" class="new-search-btn">New Search</a>
+      <div class="query-display">
+        <span class="query-prompt">›</span>
+        <span id="search-query-text"></span>
+      </div>
+      <a href="/" class="new-search-btn">← New Search</a>
     </div>
 
     <details class="data-accuracy-notice">
@@ -112,22 +125,98 @@ const stateSlugLookup = {
 </Layout>
 
 <style is:global>
-  /* Terminal-style page for spots search results */
+  /* =====================================
+     RESULTS PAGE - COHESIVE WITH SEARCH WIDGET
+     ===================================== */
 
-  .terminal-header .subtitle,
-  .terminal-subtitle {
-    font-family: 'VT323', monospace;
-    margin-bottom: 0;
-    font-size: 1.3rem;
-    font-weight: 400;
-    color: var(--theme-text-sage);
-    text-shadow:
-      0 0 8px rgba(168, 197, 168, 0.6),
-      0 0 15px rgba(168, 197, 168, 0.4);
+  /* Results Header - Continues from widget */
+  .results-header {
+    background: rgba(30, 30, 30, 0.8);
+    border: 2px solid rgba(168, 197, 168, 0.5);
+    border-radius: 0;
+    padding: 2rem 0;
+    box-shadow:
+      0 0 20px rgba(168, 197, 168, 0.3),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+    margin-bottom: 2rem;
   }
 
-  [data-theme="dark"] .terminal-subtitle {
+  [data-theme="light"] .results-header {
+    background: white;
+    border: 4px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .terminal-output {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .terminal-line {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .terminal-prompt {
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    color: rgba(168, 197, 168, 0.7);
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.5);
+  }
+
+  [data-theme="light"] .terminal-prompt {
+    color: var(--accent-dark-orange);
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  .terminal-command {
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
     color: var(--theme-text-sage);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 8px rgba(168, 197, 168, 0.4);
+  }
+
+  [data-theme="light"] .terminal-command {
+    color: var(--neutral-black);
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  .terminal-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    color: rgba(168, 197, 168, 0.6);
+  }
+
+  [data-theme="light"] .terminal-status {
+    color: var(--gray-dark);
+    font-weight: 600;
+  }
+
+  .status-indicator {
+    animation: pulse 2s ease-in-out infinite;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.8);
+  }
+
+  [data-theme="light"] .status-indicator {
+    animation: none;
+    color: var(--accent-dark-orange);
+    text-shadow: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
 
   .search-box-top {
@@ -171,6 +260,54 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
+  /* Error Message */
+  .retro-notice-error {
+    background: rgba(255, 68, 68, 0.1);
+    border: 2px solid rgba(255, 68, 68, 0.4);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  [data-theme="light"] .retro-notice-error {
+    background: #ffe0e0;
+    border: 3px solid #cc0000;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .error-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    color: #ff6666;
+    text-shadow: 0 0 6px rgba(255, 68, 68, 0.5);
+  }
+
+  [data-theme="light"] .error-header {
+    color: #990000;
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  .error-prompt {
+    font-size: 1.5rem;
+  }
+
+  .retro-notice-error p {
+    margin: 0;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: rgba(255, 102, 102, 0.9);
+  }
+
+  [data-theme="light"] .retro-notice-error p {
+    color: #990000;
+    font-weight: 600;
+  }
+
+  /* Loading State */
   .loading {
     grid-column: 1 / -1;
     text-align: center;
@@ -179,9 +316,20 @@ const stateSlugLookup = {
     color: var(--theme-text-sage);
     font-weight: 400;
     font-size: 1.5rem;
-    text-shadow:
-      0 0 8px rgba(168, 197, 168, 0.6),
-      0 0 15px rgba(168, 197, 168, 0.4);
+    text-shadow: 0 0 8px rgba(168, 197, 168, 0.5);
+    animation: textPulse 1.5s ease-in-out infinite;
+  }
+
+  [data-theme="light"] .loading {
+    color: var(--gray-dark);
+    text-shadow: none;
+    font-weight: 600;
+    animation: none;
+  }
+
+  @keyframes textPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 
   /* Unified card styling - matches county pages */
@@ -488,73 +636,90 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
+  /* Search Results Info */
   .search-results-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    background: rgba(168, 197, 168, 0.1);
-    border: 1px solid rgba(168, 197, 168, 0.3);
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
+    gap: 1.5rem;
+    background: transparent;
+    border: 1px solid rgba(168, 197, 168, 0.2);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
     font-family: 'VT323', monospace;
   }
 
   [data-theme="light"] .search-results-info {
-    background: var(--neutral-bg);
-    border: 2px solid var(--earth-forest);
+    background: var(--accent-cream);
+    border: 3px solid var(--neutral-black);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .search-results-info p {
-    margin: 0;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-    font-size: 1.1rem;
+  .query-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     flex: 1;
-    text-shadow:
-      0 0 6px rgba(168, 197, 168, 0.4);
   }
 
-  [data-theme="light"] .search-results-info p {
-    color: var(--earth-forest);
+  .query-prompt {
+    font-size: 1.4rem;
+    color: rgba(168, 197, 168, 0.7);
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.5);
+  }
+
+  [data-theme="light"] .query-prompt {
+    color: var(--accent-dark-orange);
     text-shadow: none;
-    font-weight: 600;
+    font-weight: 700;
   }
 
-  .new-search-btn {
-    background: rgba(184, 92, 58, 0.2);
-    border: 1px solid rgba(184, 92, 58, 0.5);
-    padding: 0.5rem 1rem;
-    color: var(--earth-sand);
-    text-decoration: none;
+  .search-results-info #search-query-text {
+    color: var(--theme-text-sage);
+    font-size: 1.15rem;
     font-weight: 400;
-    font-size: 1rem;
-    font-family: 'VT323', monospace;
-    transition: all 0.2s;
-    white-space: nowrap;
-    text-shadow:
-      0 0 6px rgba(212, 165, 116, 0.4);
+    text-shadow: 0 0 4px rgba(168, 197, 168, 0.3);
   }
 
-  [data-theme="light"] .new-search-btn {
-    background: white;
-    border: 2px solid var(--neutral-black);
+  [data-theme="light"] .search-results-info #search-query-text {
     color: var(--neutral-black);
     text-shadow: none;
     font-weight: 600;
   }
 
+  .new-search-btn {
+    background: rgba(168, 197, 168, 0.1);
+    border: 1px solid rgba(168, 197, 168, 0.3);
+    padding: 0.6rem 1.25rem;
+    color: var(--theme-text-sage);
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 1.05rem;
+    font-family: 'VT323', monospace;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  [data-theme="light"] .new-search-btn {
+    background: var(--accent-sage);
+    border: 2px solid var(--neutral-black);
+    color: var(--neutral-black);
+    text-shadow: none;
+    font-weight: 700;
+  }
+
   .new-search-btn:hover {
-    background: rgba(212, 165, 116, 0.3);
-    border-color: rgba(212, 165, 116, 0.8);
-    transform: translate(-1px, -1px);
-    box-shadow:
-      0 0 10px rgba(212, 165, 116, 0.5);
+    background: rgba(168, 197, 168, 0.2);
+    border-color: rgba(168, 197, 168, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(168, 197, 168, 0.4);
   }
 
   [data-theme="light"] .new-search-btn:hover {
-    background: var(--accent-copper);
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    background: var(--box-moss);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
   }
 
   .data-accuracy-notice {
@@ -638,12 +803,84 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
-  @media (max-width: 768px) {
-    .retro-page-header h1 {
-      font-size: 1.8rem;
+  /* =====================================
+     PROGRESSIVE REVEAL ANIMATIONS
+     ===================================== */
+
+  /* Result cards fade in sequentially */
+  .retro-card {
+    opacity: 0;
+    animation: revealCard 0.4s ease-out forwards;
+  }
+
+  @keyframes revealCard {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Light mode: slide in from side (catalog page turn) */
+  [data-theme="light"] .retro-card {
+    animation: revealCardLight 0.35s ease-out forwards;
+  }
+
+  @keyframes revealCardLight {
+    from {
+      opacity: 0;
+      transform: translateX(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Stagger animation delays - set via JS */
+  .retro-card:nth-child(1) { animation-delay: 0.05s; }
+  .retro-card:nth-child(2) { animation-delay: 0.1s; }
+  .retro-card:nth-child(3) { animation-delay: 0.15s; }
+  .retro-card:nth-child(4) { animation-delay: 0.2s; }
+  .retro-card:nth-child(5) { animation-delay: 0.25s; }
+  .retro-card:nth-child(6) { animation-delay: 0.3s; }
+  .retro-card:nth-child(7) { animation-delay: 0.35s; }
+  .retro-card:nth-child(8) { animation-delay: 0.4s; }
+  .retro-card:nth-child(9) { animation-delay: 0.45s; }
+  .retro-card:nth-child(10) { animation-delay: 0.5s; }
+
+  /* For cards beyond 10, cap the delay */
+  .retro-card:nth-child(n+11) { animation-delay: 0.5s; }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .retro-card {
+      animation: simpleFadeIn 0.2s ease-out forwards !important;
     }
 
-    .terminal-subtitle {
+    @keyframes simpleFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+
+  /* =====================================
+     RESPONSIVE
+     ===================================== */
+
+  @media (max-width: 768px) {
+    .results-header {
+      padding: 1.5rem 0;
+    }
+
+    .terminal-command {
+      font-size: 1.5rem;
+    }
+
+    .terminal-status {
       font-size: 1.1rem;
     }
 
