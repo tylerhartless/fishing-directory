@@ -474,6 +474,33 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
                 inset 0 0 10px rgba(154, 176, 135, 0.15);
   }
 
+  /* Explicit dark mode styles */
+  [data-theme="dark"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid var(--accent-sage);
+    box-shadow: 0 0 20px rgba(154, 176, 135, 0.4),
+                inset 0 0 10px rgba(154, 176, 135, 0.1);
+    color: var(--neutral-white);
+    backdrop-filter: blur(8px);
+  }
+
+  [data-theme="dark"] .theme-toggle:hover {
+    background: rgba(154, 176, 135, 0.15);
+    border-color: var(--neutral-white);
+    box-shadow: 0 0 30px rgba(154, 176, 135, 0.6),
+                0 0 40px rgba(255, 255, 255, 0.3),
+                inset 0 0 15px rgba(154, 176, 135, 0.2);
+    transform: translateY(-3px) scale(1.05);
+    color: var(--neutral-white);
+  }
+
+  [data-theme="dark"] .theme-toggle:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 15px rgba(154, 176, 135, 0.5),
+                inset 0 0 10px rgba(154, 176, 135, 0.15);
+  }
+
+  /* Light mode styles */
   [data-theme="light"] .theme-toggle {
     background: var(--accent-sage);
     border: 3px solid var(--neutral-black);
