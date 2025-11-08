@@ -186,14 +186,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     top: 0; /* Touch the top (sticky header is also at top: 0) */
     left: 0;
     right: 0;
-    height: 330px; /* Cover header area (80px) + extend into content */
+    height: 1000px; /* Extended gradient covering more of the page */
     background: linear-gradient(180deg,
-      rgba(13, 31, 13, 0.95) 0%,
-      rgba(13, 31, 13, 0.95) 24%, /* 80px / 330px ≈ 24% - solid through header */
-      rgba(13, 31, 13, 0.7) 36%,
-      rgba(17, 24, 17, 0.5) 52%,
-      rgba(21, 21, 21, 0.3) 70%,
-      rgba(26, 26, 26, 0.15) 85%,
+      rgba(13, 31, 13, 0.85) 0%,
+      rgba(13, 31, 13, 0.7) 12%,
+      rgba(13, 31, 13, 0.5) 25%,
+      rgba(17, 24, 17, 0.35) 40%,
+      rgba(21, 21, 21, 0.25) 55%,
+      rgba(26, 26, 26, 0.15) 70%,
+      rgba(26, 26, 26, 0.08) 85%,
       transparent 100%
     );
     pointer-events: none;
