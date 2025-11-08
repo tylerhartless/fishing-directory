@@ -199,20 +199,26 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
   // Scroll results into view when they appear
   useEffect(() => {
-    if (showResults && widgetRef.current) {
+    if (showResults) {
       setTimeout(() => {
-        const widget = widgetRef.current;
-        if (!widget) return;
+        // Get the search-container element (parent wrapper in index.astro)
+        const searchContainer = document.querySelector('.search-container');
+        if (!searchContainer) return;
 
-        // Get the widget's position relative to the document
-        const widgetRect = widget.getBoundingClientRect();
+        // Get the header element to calculate offset
+        const header = document.querySelector('header');
+        const headerHeight = header ? header.offsetHeight : 0;
+
+        // Get the search-container's position relative to the document
+        const containerRect = searchContainer.getBoundingClientRect();
         const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-        // Calculate absolute position of widget top
-        const widgetTopAbsolute = widgetRect.top + currentScrollY;
+        // Calculate absolute position of search-container top
+        const containerTopAbsolute = containerRect.top + currentScrollY;
 
-        // Scroll to widget top minus desired padding (8px = 0.5rem, matching horizontal padding on mobile)
-        const targetScrollPosition = widgetTopAbsolute - 8;
+        // Scroll to position container below header with 8px (0.5rem) padding
+        const padding = 8;
+        const targetScrollPosition = containerTopAbsolute - headerHeight - padding;
 
         window.scrollTo({
           top: targetScrollPosition,

@@ -171,8 +171,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     color: white;
     padding: 0;
     box-shadow: none;
-    position: relative;
+    position: sticky;
+    top: 0;
     overflow: visible;
+    z-index: 100;
     /* Persist across page transitions - never moves */
     view-transition-name: site-header;
   }
