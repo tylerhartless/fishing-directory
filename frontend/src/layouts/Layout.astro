@@ -485,6 +485,26 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
   }
 
+  [data-theme="dark"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    backdrop-filter: blur(8px);
+  }
+
+  [data-theme="dark"] .theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.05);
+  }
+
+  [data-theme="dark"] .theme-toggle:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
+  }
+
   [data-theme="light"] .theme-toggle {
     background: var(--accent-sage);
     border-color: var(--neutral-black);
