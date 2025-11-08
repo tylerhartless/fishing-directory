@@ -179,27 +179,28 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     view-transition-name: site-header;
   }
 
-  /* Gradient extending below sticky header - fixed to viewport */
-  header::after {
+  /* Dark mode gradient - behind all content, touching sticky header */
+  :global(body::after) {
     content: '';
     position: fixed;
-    top: 80px; /* Start below header */
+    top: 0; /* Touch the top (sticky header is also at top: 0) */
     left: 0;
     right: 0;
-    height: 250px;
+    height: 330px; /* Cover header area (80px) + extend into content */
     background: linear-gradient(180deg,
       rgba(13, 31, 13, 0.95) 0%,
-      rgba(13, 31, 13, 0.7) 15%,
-      rgba(17, 24, 17, 0.5) 35%,
-      rgba(21, 21, 21, 0.3) 60%,
-      rgba(26, 26, 26, 0.15) 80%,
+      rgba(13, 31, 13, 0.95) 24%, /* 80px / 330px ≈ 24% - solid through header */
+      rgba(13, 31, 13, 0.7) 36%,
+      rgba(17, 24, 17, 0.5) 52%,
+      rgba(21, 21, 21, 0.3) 70%,
+      rgba(26, 26, 26, 0.15) 85%,
       transparent 100%
     );
     pointer-events: none;
-    z-index: -1;
+    z-index: 0; /* Behind main content (z-index: 1) and header (z-index: 100) */
   }
 
-  [data-theme="light"] header::after {
+  :global([data-theme="light"] body::after) {
     display: none;
   }
 
@@ -436,10 +437,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       padding: 0 1rem;
     }
 
-    header::after {
-      top: 92px; /* Adjust for taller mobile header */
-    }
-
     .theme-toggle {
       bottom: 1.5rem;
       right: 1.5rem;
@@ -475,10 +472,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     nav.container {
       padding: 0 1rem;
     }
-
-    header::after {
-      top: 90px; /* Adjust for 640px breakpoint */
-    }
   }
 
   @media (max-width: 400px) {
@@ -507,10 +500,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
     nav.container {
       padding: 0 0.5rem;
-    }
-
-    header::after {
-      top: 85px; /* Adjust for 400px breakpoint */
     }
   }
 
