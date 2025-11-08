@@ -1986,17 +1986,29 @@
    ===================================== */
 
 @media (max-width: 640px) {
-  /* Widen the widget to almost touch screen edges */
+  /* Maximize width - remove all padding on mobile */
   .search-widget[data-show-results="true"] {
-    padding: 0 0.25rem;
+    padding: 0;
   }
 
-  /* Make results header more compact */
+  /* Add minimal padding to inner content instead */
+  .results-header,
+  .results-controls {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .results-container {
+    padding-left: 0.5rem;
+    padding-right: 0.25rem;
+  }
+
+  /* Make results header more compact and thinner */
   .results-header {
     flex-direction: row;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 
   .results-info {
@@ -2005,14 +2017,18 @@
   }
 
   .query-text {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .query-prompt {
+    font-size: 1.1rem;
   }
 
   .btn-new-search {
     width: auto;
     text-align: center;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.95rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
   }
 
   /* Consolidate controls into a compact single-row layout */
@@ -2045,7 +2061,7 @@
   }
 
   .filter-panel {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
 
   .filter-checkboxes {
@@ -2079,10 +2095,6 @@
     font-size: 0.9rem;
   }
 
-  /* Reduce margins on results container */
-  .results-container {
-    padding-right: 0.25rem;
-  }
 }
 
 /* Respect reduced motion */

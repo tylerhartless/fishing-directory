@@ -61,6 +61,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   // Infinite scroll state
   const [displayCount, setDisplayCount] = useState(20);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
 
   // Theme detection
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -194,6 +195,18 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       return () => resultsElement.removeEventListener('scroll', handleScroll);
     }
   }, [showResults, displayedSpots.length, filteredSpots.length]);
+
+  // Scroll results into view when they appear
+  useEffect(() => {
+    if (showResults && searchResultsRef.current) {
+      setTimeout(() => {
+        searchResultsRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 50); // Small delay to ensure DOM is ready
+    }
+  }, [showResults]);
 
   // Search by geolocation
   const handleUseLocation = async () => {
@@ -546,7 +559,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         </>
       ) : (
         // RESULTS MODE
-        <div class="search-results">
+        <div class="search-results" ref={searchResultsRef}>
           {/* Results Header */}
           <div class="results-header">
             <div class="results-info">
