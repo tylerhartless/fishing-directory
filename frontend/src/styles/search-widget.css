@@ -23,8 +23,6 @@
   margin: 0 auto;
   position: relative;
   overflow: hidden;
-  background: var(--theme-bg);
-  padding: 0;
 }
 
 /* Wipe-away animation when returning to search */
@@ -362,7 +360,7 @@
 .divider-text {
   display: inline-block;
   padding: 0 1rem;
-  background: var(--theme-bg);
+  background: transparent;
   font-family: 'VT323', monospace;
   font-size: 1rem;
   color: rgba(168, 197, 168, 0.5);
