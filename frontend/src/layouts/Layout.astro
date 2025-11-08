@@ -167,16 +167,32 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: var(--theme-bg); /* Block scrolling content, gradient shows through from z-index: 0 */
+    background: var(--theme-bg); /* Blocks scrolling content underneath */
     color: white;
     padding: 0;
     box-shadow: none;
     position: sticky;
     top: 0;
     overflow: visible;
-    z-index: 100;
+    z-index: 100; /* Above main content to block when scrolling */
     /* Persist across page transitions - never moves */
     view-transition-name: site-header;
+  }
+
+  /* Gradient overlay for header area */
+  header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg,
+      rgba(13, 31, 13, 0.6) 0%,
+      rgba(13, 31, 13, 0.5) 100%
+    );
+    pointer-events: none;
+    z-index: 0; /* Above header background, below nav */
   }
 
   /* Dark mode gradient - behind all content, touching sticky header */
@@ -207,7 +223,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       transparent 100%
     );
     pointer-events: none;
-    z-index: 0; /* Behind main content (z-index: 1) and header (z-index: 100) */
+    z-index: 0; /* Behind all content (main: 1, nav: 102, header: 100) */
   }
 
   :global([data-theme="light"] body::after) {
@@ -219,9 +235,13 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     border-bottom: 4px solid var(--accent-dark-orange);
   }
 
+  [data-theme="light"] header::after {
+    display: none; /* No gradient overlay in light mode */
+  }
+
   nav {
     position: relative;
-    z-index: 2;
+    z-index: 1; /* Above header::after gradient */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -331,7 +351,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   main {
     min-height: calc(100vh - 200px);
     position: relative;
-    z-index: 1;
+    z-index: 1; /* Below header (z-index: 100) so header blocks when scrolling */
   }
 
   footer {
