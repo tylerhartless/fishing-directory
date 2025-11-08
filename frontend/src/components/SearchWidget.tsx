@@ -44,6 +44,8 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
   // Results state
   const [showResults, setShowResults] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [allSpots, setAllSpots] = useState<Spot[]>([]);
   const [filteredSpots, setFilteredSpots] = useState<Spot[]>([]);
   const [displayedSpots, setDisplayedSpots] = useState<Spot[]>([]);
@@ -59,6 +61,29 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   // Infinite scroll state
   const [displayCount, setDisplayCount] = useState(20);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Theme detection
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const checkTheme = () => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        setIsDarkMode(theme !== 'light');
+      };
+
+      checkTheme();
+
+      // Watch for theme changes
+      const observer = new MutationObserver(checkTheme);
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+      });
+
+      return () => observer.disconnect();
+    }
+  }, []);
 
   // API URL
   const API_URL = typeof window !== 'undefined'
@@ -197,7 +222,14 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
           setIsLoadingLocation(false);
           setLoadingMessage('');
-          setShowResults(true);
+
+          // Show transition before results
+          setShowTransition(true);
+          setTimeout(() => {
+            setShowTransition(false);
+            setShowResults(true);
+          }, 800);
+
           setSortBy('distance');
         },
         (error) => {
@@ -265,8 +297,14 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
       setIsSearching(false);
       setLoadingMessage('');
-      setShowResults(true);
       setSearchQuery(''); // Clear search input after successful search
+
+      // Show transition before results
+      setShowTransition(true);
+      setTimeout(() => {
+        setShowTransition(false);
+        setShowResults(true);
+      }, 800);
 
     } catch (error) {
       console.error('Geocoding error:', error);
@@ -325,11 +363,22 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   const handleNewSearch = () => {
-    setShowResults(false);
-    setUserLocation(null);
-    setSearchContext('');
-    setTypeFilters(new Set());
-    setDisplayCount(20);
+    // Trigger wipe-away animation, then show transition, then return to search
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setShowTransition(true);
+      setShowResults(false);
+    }, 500); // Wait for wipe-away animation
+
+    setTimeout(() => {
+      setShowTransition(false);
+      setIsTransitioning(false);
+      setUserLocation(null);
+      setSearchContext('');
+      setTypeFilters(new Set());
+      setDisplayCount(20);
+    }, 1100); // Show transition screen briefly
   };
 
   const handleTypeFilterToggle = (type: string) => {
@@ -370,7 +419,30 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   return (
-    <div class="search-widget" data-show-results={showResults}>
+    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning}>
+      {/* Transition Loading Overlay */}
+      {showTransition && (
+        <div class="search-widget-transition">
+          {isDarkMode ? (
+            <div class="transition-loading-dark">
+              <div class="loading-text">LOADING...</div>
+              <div class="loading-bar"></div>
+              <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          ) : (
+            <div class="transition-loading-light">
+              <div class="loading-text">Loading</div>
+              <div class="loading-spinner"></div>
+              <div class="loading-message">Finding fishing spots...</div>
+            </div>
+          )}
+        </div>
+      )}
+
       {!showResults ? (
         // SEARCH MODE
         <>
