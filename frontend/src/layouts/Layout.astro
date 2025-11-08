@@ -169,7 +169,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   header {
     background: linear-gradient(180deg,
       var(--theme-bg) 0%,
-      var(--theme-bg) 75%,
+      var(--theme-bg) 50%,
+      rgba(26, 26, 26, 0.7) 75%,
+      rgba(26, 26, 26, 0.3) 90%,
       transparent 100%
     ); /* Fades at bottom to allow glows to show through */
     color: white;
@@ -209,22 +211,36 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     height: 1800px; /* Extended gradient covering more of the page */
     background: linear-gradient(180deg,
       rgba(13, 31, 13, 0.6) 0%,
-      rgba(13, 31, 13, 0.55) 8%,
-      rgba(13, 31, 13, 0.5) 15%,
-      rgba(14, 28, 14, 0.45) 22%,
-      rgba(15, 26, 15, 0.4) 28%,
-      rgba(16, 25, 16, 0.35) 35%,
-      rgba(17, 24, 17, 0.3) 42%,
-      rgba(18, 23, 18, 0.26) 48%,
-      rgba(19, 22, 19, 0.22) 54%,
-      rgba(20, 22, 20, 0.19) 60%,
-      rgba(22, 22, 22, 0.16) 66%,
-      rgba(23, 23, 23, 0.13) 72%,
-      rgba(25, 24, 25, 0.10) 78%,
-      rgba(26, 25, 26, 0.07) 84%,
-      rgba(26, 26, 26, 0.05) 90%,
-      rgba(26, 26, 26, 0.03) 95%,
-      transparent 100%
+      rgba(13, 30, 13, 0.58) 5%,
+      rgba(13, 30, 13, 0.56) 10%,
+      rgba(13, 29, 13, 0.54) 15%,
+      rgba(14, 28, 14, 0.52) 20%,
+      rgba(14, 28, 14, 0.50) 25%,
+      rgba(14, 27, 14, 0.48) 30%,
+      rgba(15, 26, 15, 0.46) 35%,
+      rgba(15, 26, 15, 0.44) 40%,
+      rgba(16, 25, 16, 0.42) 45%,
+      rgba(16, 24, 16, 0.40) 50%,
+      rgba(17, 24, 17, 0.38) 55%,
+      rgba(18, 23, 18, 0.36) 60%,
+      rgba(19, 23, 19, 0.34) 65%,
+      rgba(20, 22, 20, 0.32) 70%,
+      rgba(21, 22, 21, 0.30) 75%,
+      rgba(22, 22, 22, 0.28) 80%,
+      rgba(23, 22, 23, 0.26) 85%,
+      rgba(24, 23, 24, 0.24) 90%,
+      rgba(25, 24, 25, 0.22) 95%,
+      rgba(26, 25, 26, 0.20) 100%,
+      rgba(26, 25, 26, 0.18) 105%,
+      rgba(26, 26, 26, 0.16) 110%,
+      rgba(26, 26, 26, 0.14) 115%,
+      rgba(26, 26, 26, 0.12) 120%,
+      rgba(26, 26, 26, 0.10) 125%,
+      rgba(26, 26, 26, 0.08) 130%,
+      rgba(26, 26, 26, 0.06) 135%,
+      rgba(26, 26, 26, 0.04) 140%,
+      rgba(26, 26, 26, 0.02) 145%,
+      transparent 150%
     );
     pointer-events: none;
     z-index: 0; /* Behind all content (main: 1, nav: 102, header: 100) */
