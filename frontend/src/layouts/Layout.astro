@@ -169,17 +169,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   header {
     background: linear-gradient(180deg,
       var(--theme-bg) 0%,
-      var(--theme-bg) 55%,
-      rgba(26, 26, 26, 0.9) 60%,
-      rgba(26, 26, 26, 0.8) 65%,
-      rgba(26, 26, 26, 0.7) 70%,
-      rgba(26, 26, 26, 0.6) 75%,
-      rgba(26, 26, 26, 0.5) 80%,
-      rgba(26, 26, 26, 0.4) 85%,
-      rgba(26, 26, 26, 0.3) 90%,
-      rgba(26, 26, 26, 0.15) 95%,
+      var(--theme-bg) 60%,        /* Solid header top 60% */
+      rgba(26, 26, 26, 0.85) 63%, /* Quick fade zone starts */
+      rgba(26, 26, 26, 0.7) 66%,
+      rgba(26, 26, 26, 0.55) 69%,
+      rgba(26, 26, 26, 0.4) 72%,
+      rgba(26, 26, 26, 0.2) 75%,  /* Quick fade zone ends */
+      rgba(26, 26, 26, 0.05) 80%, /* Bottom 25% transparent */
+      transparent 85%,
       transparent 100%
-    ); /* Bottom 45% fades to allow glows to show through */
+    ); /* Bottom 40% fades, bottom 25% transparent for glows */
     color: white;
     padding: 0;
     box-shadow: none;
