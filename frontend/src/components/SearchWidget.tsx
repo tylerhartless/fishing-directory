@@ -228,7 +228,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setTimeout(() => {
             setShowTransition(false);
             setShowResults(true);
-          }, 800);
+          }, 400);
 
           setSortBy('distance');
         },
@@ -304,7 +304,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       setTimeout(() => {
         setShowTransition(false);
         setShowResults(true);
-      }, 800);
+      }, 400);
 
     } catch (error) {
       console.error('Geocoding error:', error);
@@ -551,7 +551,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           <div class="results-header">
             <div class="results-info">
               <span class="query-prompt">›</span>
-              <span class="query-text">{searchContext}</span>
+              <span class="query-text">{searchContext} ({filteredSpots.length} spot{filteredSpots.length !== 1 ? 's' : ''})</span>
             </div>
             <button class="btn-new-search" onClick={handleNewSearch}>
               ← New Search
@@ -577,10 +577,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                   {userLocation && <option value="distance">Distance</option>}
                   <option value="name">Name</option>
                 </select>
-              </div>
-
-              <div class="result-count">
-                {filteredSpots.length} spot{filteredSpots.length !== 1 ? 's' : ''}
               </div>
             </div>
 
@@ -689,20 +685,22 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       data-spot-type={spot.spot_type}
                       style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}
                     >
-                      <h3>{displayName}</h3>
-                      {spot.distance && (
-                        <div class="distance-indicator">{formatDistance(spot.distance)}</div>
-                      )}
-                      <div class="spot-meta">
-                        <span class="spot-type">{typeLabel}</span>
+                      <div class="card-header">
+                        <h3>{displayName}</h3>
+                        {spot.distance && (
+                          <div class="distance-indicator">{formatDistance(spot.distance)}</div>
+                        )}
                       </div>
-                      {prominentAmenities.length > 0 && (
-                        <div class="amenities-row">
-                          {prominentAmenities.map(amenity => (
-                            <span key={amenity} class="amenity-badge">{amenity}</span>
-                          ))}
-                        </div>
-                      )}
+                      <div class="card-body">
+                        <span class="spot-type">{typeLabel}</span>
+                        {prominentAmenities.length > 0 && (
+                          <>
+                            {prominentAmenities.map(amenity => (
+                              <span key={amenity} class="card-meta-item">{amenity}</span>
+                            ))}
+                          </>
+                        )}
+                      </div>
                     </a>
                   );
                 })}
