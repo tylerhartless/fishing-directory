@@ -212,7 +212,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           top: targetPosition,
           behavior: 'smooth'
         });
-      }, 50); // Small delay to ensure DOM is ready
+      }, 450); // Wait for transition to complete (400ms) + small buffer
     }
   }, [showResults]);
 
