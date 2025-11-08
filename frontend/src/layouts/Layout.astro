@@ -189,7 +189,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     height: 100px;
     background: linear-gradient(180deg, #0d1f0d 0%, #111811 30%, #151515 60%, #1a1a1a 100%);
     pointer-events: none;
-    z-index: 50;
+    z-index: 0;
   }
 
   [data-theme="light"] header::after {
@@ -312,6 +312,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   main {
     min-height: calc(100vh - 200px);
+    position: relative;
+    z-index: 1;
   }
 
   /* Page gradient removed - now using header::after gradient */
