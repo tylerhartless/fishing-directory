@@ -491,32 +491,74 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
      VIEW TRANSITIONS - THEME SPECIFIC
      ===================================== */
 
-  /* Dark Mode: Simple cross-fade - morph does the heavy lifting */
+  /* Dark Mode: Terminal screen flicker */
   ::view-transition-old(root) {
-    animation: simpleCrossFadeOut 0.2s ease-out;
+    animation: terminalFlickerOut 0.25s ease-out;
   }
 
   ::view-transition-new(root) {
-    animation: simpleCrossFadeIn 0.2s ease-in;
+    animation: terminalFlickerIn 0.25s ease-in;
   }
 
-  @keyframes simpleCrossFadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+  @keyframes terminalFlickerOut {
+    0% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 0.9;
+      filter: brightness(1.1);
+    }
+    100% {
+      opacity: 0;
+      filter: brightness(0.8);
+    }
   }
 
-  @keyframes simpleCrossFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  @keyframes terminalFlickerIn {
+    0% {
+      opacity: 0;
+      filter: brightness(1.2);
+    }
+    50% {
+      opacity: 0.8;
+      filter: brightness(1.1);
+    }
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
   }
 
-  /* Light Mode: Also use simple cross-fade */
+  /* Light Mode: Magazine page slide */
   [data-theme="light"] ::view-transition-old(root) {
-    animation: simpleCrossFadeOut 0.2s ease-out;
+    animation: magazineSlideOut 0.3s ease-out;
   }
 
   [data-theme="light"] ::view-transition-new(root) {
-    animation: simpleCrossFadeIn 0.2s ease-in;
+    animation: magazineSlideIn 0.3s ease-in;
+  }
+
+  @keyframes magazineSlideOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+  }
+
+  @keyframes magazineSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
   /* Respect reduced motion preference */
