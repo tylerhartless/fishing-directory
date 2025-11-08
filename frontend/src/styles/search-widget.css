@@ -794,6 +794,12 @@
   min-height: 400px;
 }
 
+/* Hide widget content when transition is showing */
+.search-widget:has(.search-widget-transition) > *:not(.search-widget-transition) {
+  opacity: 0;
+  pointer-events: none;
+}
+
 @keyframes fadeInOverlay {
   from {
     opacity: 0;
