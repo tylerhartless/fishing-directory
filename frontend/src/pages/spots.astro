@@ -1279,6 +1279,14 @@ const stateSlugLookup = {
     });
   });
 
-  // Load spots on page load
+  // Load spots on initial page load
   loadSpots();
+
+  // Re-load spots when navigating via View Transitions
+  document.addEventListener('astro:page-load', () => {
+    // Only run if we're on the spots page
+    if (window.location.pathname === '/spots') {
+      loadSpots();
+    }
+  });
 </script>

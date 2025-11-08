@@ -289,8 +289,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   main.main-content::before {
     content: '';
     display: block;
-    height: 300px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 10%, #0f2a0f 20%, #101010 40%, #151515 60%, #1a1a1a 100%);
+    height: 100px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
     transition: background 0.3s ease;
   }
 
@@ -298,9 +298,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: none;
   }
 
-  /* Hide gradient on pages that have hero/page-header sections */
+  /* Hide gradient on pages that have hero/page-header sections or spots page */
   main.main-content:has(.hero)::before,
-  main.main-content:has(.retro-page-header)::before {
+  main.main-content:has(.retro-page-header)::before,
+  main.main-content:has(.spots-page-container)::before {
     display: none;
   }
 
