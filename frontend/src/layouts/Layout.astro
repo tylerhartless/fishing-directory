@@ -167,7 +167,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   }
 
   header {
-    background: var(--theme-bg); /* Blocks scrolling content underneath */
+    background: linear-gradient(180deg,
+      var(--theme-bg) 0%,
+      var(--theme-bg) 75%,
+      transparent 100%
+    ); /* Fades at bottom to allow glows to show through */
     color: white;
     padding: 0;
     box-shadow: none;
