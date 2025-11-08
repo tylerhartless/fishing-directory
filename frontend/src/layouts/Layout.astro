@@ -298,11 +298,16 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: none;
   }
 
-  /* Hide gradient on pages that have hero/page-header sections or spots page */
+  /* Hide gradient on pages that have hero/page-header sections */
   main.main-content:has(.hero)::before,
-  main.main-content:has(.retro-page-header)::before,
-  main.main-content:has(.spots-page-container)::before {
+  main.main-content:has(.retro-page-header)::before {
     display: none;
+  }
+
+  /* Spots page gets a shorter gradient */
+  main.main-content:has(.spots-page-container)::before {
+    height: 150px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 30%, #0f2a0f 60%, #1a1a1a 100%);
   }
 
   footer {
