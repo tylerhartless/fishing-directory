@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/retro-colors.css';
 import '../styles/retro-common.css';
 import '../styles/search-widget.css';
@@ -37,6 +38,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <!-- View Transitions -->
+    <ViewTransitions />
   </head>
   <body>
     <header>
@@ -464,6 +468,80 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
     nav.container {
       padding: 0 0.5rem;
+    }
+  }
+
+  /* =====================================
+     VIEW TRANSITIONS - THEME SPECIFIC
+     ===================================== */
+
+  /* Dark Mode: CRT Screen Transition - Digital fade with scanline effect */
+  ::view-transition-old(root) {
+    animation: fadeOutScanline 0.3s ease-out;
+  }
+
+  ::view-transition-new(root) {
+    animation: fadeInScanline 0.3s ease-in;
+  }
+
+  @keyframes fadeOutScanline {
+    from {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    to {
+      opacity: 0;
+      filter: brightness(1.2) blur(2px);
+    }
+  }
+
+  @keyframes fadeInScanline {
+    from {
+      opacity: 0;
+      filter: brightness(1.2) blur(2px);
+    }
+    to {
+      opacity: 1;
+      filter: brightness(1);
+    }
+  }
+
+  /* Light Mode: Magazine Page Turn - Subtle slide effect */
+  [data-theme="light"] ::view-transition-old(root) {
+    animation: slideOutPage 0.35s ease-out;
+  }
+
+  [data-theme="light"] ::view-transition-new(root) {
+    animation: slideInPage 0.35s ease-in;
+  }
+
+  @keyframes slideOutPage {
+    from {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-30px) scale(0.98);
+    }
+  }
+
+  @keyframes slideInPage {
+    from {
+      opacity: 0;
+      transform: translateX(30px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none !important;
     }
   }
 </style>
