@@ -849,7 +849,7 @@
   width: 100%;
   background: var(--theme-text-sage);
   animation: terminalProgress 1.5s steps(20) infinite;
-  box-shadow: none;
+  box-shadow: 0 0 10px var(--theme-text-sage);
 }
 
 @keyframes terminalProgress {
@@ -875,7 +875,7 @@
   background: var(--theme-text-sage);
   border-radius: 0; /* Square blocks for retro terminal look */
   animation: blockPulse 1.4s ease-in-out infinite;
-  box-shadow: none;
+  box-shadow: 0 0 8px var(--theme-text-sage);
 }
 
 .transition-loading-dark .loading-dots span:nth-child(1) {
