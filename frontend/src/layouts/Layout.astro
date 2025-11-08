@@ -491,72 +491,82 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
      VIEW TRANSITIONS - THEME SPECIFIC
      ===================================== */
 
-  /* Dark Mode: CRT Screen Transition - Digital fade with scanline effect */
+  /* Dark Mode: Terminal screen flicker */
   ::view-transition-old(root) {
-    animation: fadeOutScanline 0.3s ease-out;
+    animation: terminalFlickerOut 0.25s ease-out;
   }
 
   ::view-transition-new(root) {
-    animation: fadeInScanline 0.3s ease-in;
+    animation: terminalFlickerIn 0.25s ease-in;
   }
 
-  @keyframes fadeOutScanline {
-    from {
+  @keyframes terminalFlickerOut {
+    0% {
       opacity: 1;
       filter: brightness(1);
     }
-    to {
+    50% {
+      opacity: 0.9;
+      filter: brightness(1.1);
+    }
+    100% {
       opacity: 0;
-      filter: brightness(1.2) blur(2px);
+      filter: brightness(0.8);
     }
   }
 
-  @keyframes fadeInScanline {
-    from {
+  @keyframes terminalFlickerIn {
+    0% {
       opacity: 0;
-      filter: brightness(1.2) blur(2px);
+      filter: brightness(1.2);
     }
-    to {
+    50% {
+      opacity: 0.8;
+      filter: brightness(1.1);
+    }
+    100% {
       opacity: 1;
       filter: brightness(1);
     }
   }
 
-  /* Light Mode: Magazine Page Turn - Subtle slide effect */
+  /* Light Mode: Magazine page slide */
   [data-theme="light"] ::view-transition-old(root) {
-    animation: slideOutPage 0.35s ease-out;
+    animation: magazineSlideOut 0.3s ease-out;
   }
 
   [data-theme="light"] ::view-transition-new(root) {
-    animation: slideInPage 0.35s ease-in;
+    animation: magazineSlideIn 0.3s ease-in;
   }
 
-  @keyframes slideOutPage {
+  @keyframes magazineSlideOut {
     from {
       opacity: 1;
-      transform: translateX(0) scale(1);
+      transform: translateX(0);
     }
     to {
       opacity: 0;
-      transform: translateX(-30px) scale(0.98);
+      transform: translateX(-20px);
     }
   }
 
-  @keyframes slideInPage {
+  @keyframes magazineSlideIn {
     from {
       opacity: 0;
-      transform: translateX(30px) scale(0.98);
+      transform: translateX(20px);
     }
     to {
       opacity: 1;
-      transform: translateX(0) scale(1);
+      transform: translateX(0);
     }
   }
 
   /* Respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
     ::view-transition-old(root),
-    ::view-transition-new(root) {
+    ::view-transition-new(root),
+    ::view-transition-old(search-container),
+    ::view-transition-new(search-container) {
       animation: none !important;
     }
   }
@@ -634,16 +644,4 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
   }
 
-  /* Reduced motion: simpler fade */
-  @media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(search-container),
-    ::view-transition-new(search-container) {
-      animation: simpleFade 0.3s ease !important;
-    }
-
-    @keyframes simpleFade {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  }
 </style>
