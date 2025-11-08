@@ -544,4 +544,90 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       animation: none !important;
     }
   }
+
+  /* =====================================
+     SEARCH WIDGET MORPH TRANSITION
+     ===================================== */
+
+  /* Search container morphing to results header */
+  ::view-transition-old(search-container),
+  ::view-transition-new(search-container) {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Dark Mode: Widget expands downward like terminal output */
+  ::view-transition-old(search-container) {
+    animation-name: expandOut;
+  }
+
+  ::view-transition-new(search-container) {
+    animation-name: expandIn;
+  }
+
+  @keyframes expandOut {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0.8;
+      transform: scale(1.05) translateY(-20px);
+    }
+  }
+
+  @keyframes expandIn {
+    from {
+      opacity: 0.8;
+      transform: scale(0.95) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Light Mode: Magazine page flip effect */
+  [data-theme="light"] ::view-transition-old(search-container) {
+    animation-name: pageFlipOut;
+  }
+
+  [data-theme="light"] ::view-transition-new(search-container) {
+    animation-name: pageFlipIn;
+  }
+
+  @keyframes pageFlipOut {
+    from {
+      opacity: 1;
+      transform: perspective(1000px) rotateX(0deg);
+    }
+    to {
+      opacity: 0;
+      transform: perspective(1000px) rotateX(-15deg) translateY(-30px);
+    }
+  }
+
+  @keyframes pageFlipIn {
+    from {
+      opacity: 0;
+      transform: perspective(1000px) rotateX(15deg) translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(1000px) rotateX(0deg) translateY(0);
+    }
+  }
+
+  /* Reduced motion: simpler fade */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(search-container),
+    ::view-transition-new(search-container) {
+      animation: simpleFade 0.3s ease !important;
+    }
+
+    @keyframes simpleFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
 </style>
