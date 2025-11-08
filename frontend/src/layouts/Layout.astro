@@ -179,6 +179,23 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     view-transition-name: site-header;
   }
 
+  /* Gradient extending below sticky header */
+  header::after {
+    content: '';
+    position: fixed;
+    top: 80px; /* Start below header */
+    left: 0;
+    right: 0;
+    height: 220px;
+    background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  [data-theme="light"] header::after {
+    display: none;
+  }
+
   [data-theme="light"] header {
     background: var(--theme-bg-forest);
     border-bottom: 4px solid var(--accent-dark-orange);
@@ -297,35 +314,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     min-height: calc(100vh - 200px);
   }
 
-  /* Gradient transition for pages without hero sections */
-  main.main-content::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 300px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
-    transition: background 0.3s ease;
-    pointer-events: none;
-    z-index: 50;
-  }
-
-  [data-theme="light"] main.main-content::before {
-    display: none;
-  }
-
-  /* Hide gradient on pages that have hero/page-header sections */
-  main.main-content:has(.hero)::before,
-  main.main-content:has(.retro-page-header)::before {
-    display: none;
-  }
-
-  /* Spots page gets same gradient as homepage */
-  main.main-content:has(.spots-page-container)::before {
-    height: 200px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
-  }
+  /* Page gradient removed - now using header::after gradient */
 
   footer {
     background: var(--theme-bg-forest);
@@ -440,6 +429,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       padding: 0 1rem;
     }
 
+    header::after {
+      top: 92px; /* Adjusted for taller mobile header */
+    }
+
     .theme-toggle {
       bottom: 1.5rem;
       right: 1.5rem;
@@ -475,6 +468,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     nav.container {
       padding: 0 1rem;
     }
+
+    header::after {
+      top: 90px; /* Adjusted for 640px breakpoint */
+    }
   }
 
   @media (max-width: 400px) {
@@ -503,6 +500,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
     nav.container {
       padding: 0 0.5rem;
+    }
+
+    header::after {
+      top: 85px; /* Adjusted for 400px breakpoint */
     }
   }
 
