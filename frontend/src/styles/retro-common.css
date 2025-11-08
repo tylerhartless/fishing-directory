@@ -2,7 +2,7 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: var(--theme-bg-forest);
+  background: transparent; /* Let the gradient show through in dark mode */
   color: white;
   padding: 0;
   text-align: left;
