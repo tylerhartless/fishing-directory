@@ -18,8 +18,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  height: 500px;
-  background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 15%, #0f2a0f 30%, #101010 50%, #151515 70%, #1a1a1a 100%);
+  height: 200px;
+  background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -92,7 +92,7 @@
 .retro-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0.25rem 2rem 2.5rem 2rem;
+  padding: 2rem 2rem 2.5rem 2rem;
   background: transparent;
   min-height: 60vh;
   position: relative;

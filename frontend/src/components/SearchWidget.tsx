@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { JSX } from 'preact';
+import { navigate } from 'astro:transitions/client';
 
 interface SearchWidgetProps {
   nominatimEmail?: string;
@@ -40,7 +41,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           const { latitude, longitude } = position.coords;
           setLoadingMessage('Location acquired!');
           setTimeout(() => {
-            window.location.href = `/spots?lat=${latitude}&lon=${longitude}`;
+            navigate(`/spots?lat=${latitude}&lon=${longitude}`);
           }, 500);
         },
         (error) => {
@@ -96,11 +97,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         const lon = data[0].lon;
         setLoadingMessage('Location found!');
         setTimeout(() => {
-          window.location.href = `/spots?lat=${lat}&lon=${lon}`;
+          navigate(`/spots?lat=${lat}&lon=${lon}`);
         }, 500);
       } else {
         // Fallback to text search
-        window.location.href = `/spots?q=${encodeURIComponent(query)}`;
+        navigate(`/spots?q=${encodeURIComponent(query)}`);
       }
     } catch (error) {
       console.error('Geocoding error:', error);
@@ -110,7 +111,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
       // Fallback to text search after a brief delay
       setTimeout(() => {
-        window.location.href = `/spots?q=${encodeURIComponent(query)}`;
+        navigate(`/spots?q=${encodeURIComponent(query)}`);
       }, 1500);
     }
   };
@@ -149,7 +150,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
   const handleSuggestionClick = (county: string) => {
     const countySlug = county.toLowerCase().replace(/\s+/g, '-');
-    window.location.href = `/texas/${countySlug}`;
+    navigate(`/texas/${countySlug}`);
   };
 
   const handleClickOutside = (e: MouseEvent) => {
