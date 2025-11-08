@@ -437,7 +437,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     bottom: 2rem;
     right: 2rem;
     background: rgba(0, 0, 0, 0.75);
-    border: 3px solid var(--accent-sage);
+    border: 3px solid var(--theme-toggle-border);
     padding: 0.8rem 1.2rem;
     cursor: pointer;
     font-size: 1.4rem;
@@ -450,7 +450,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
                 inset 0 0 10px rgba(154, 176, 135, 0.1);
     font-family: 'VT323', monospace;
     z-index: 1000;
-    color: var(--neutral-white);
+    color: var(--theme-toggle-text);
     letter-spacing: 0.05em;
     font-weight: 400;
     backdrop-filter: blur(8px);
@@ -475,14 +475,13 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   [data-theme="light"] .theme-toggle {
     background: var(--accent-sage);
-    border: 3px solid var(--neutral-black);
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
-    color: var(--neutral-black);
     backdrop-filter: none;
   }
 
   [data-theme="light"] .theme-toggle:hover {
     background: var(--box-moss);
+    border-color: var(--theme-toggle-border);
     transform: translate(-2px, -2px);
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   }
