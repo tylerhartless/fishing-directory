@@ -45,6 +45,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
         const stored = localStorage.getItem('theme');
         const theme = stored || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
+        // Disable transitions on page load to prevent initial transition artifacts
+        document.documentElement.classList.add('preload');
       })();
     </script>
 
@@ -104,7 +106,13 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
         };
 
         // Setup theme toggle on DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', setupThemeToggle);
+        document.addEventListener('DOMContentLoaded', () => {
+          setupThemeToggle();
+          // Re-enable transitions after page has loaded and rendered
+          setTimeout(() => {
+            document.documentElement.classList.remove('preload');
+          }, 100);
+        });
 
         // Re-apply theme after View Transitions navigation
         document.addEventListener('astro:page-load', () => {
@@ -430,6 +438,14 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   :global([data-theme="light"]) footer p {
     font-weight: 500;
+  }
+
+  /* Disable all transitions on page load to prevent initial render artifacts */
+  :global(.preload) *,
+  :global(.preload) *::before,
+  :global(.preload) *::after {
+    transition: none !important;
+    animation: none !important;
   }
 
   .theme-toggle {
