@@ -62,6 +62,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   const [displayCount, setDisplayCount] = useState(20);
   const resultsRef = useRef<HTMLDivElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
 
   // Theme detection
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -198,18 +199,23 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
   // Scroll results into view when they appear
   useEffect(() => {
-    if (showResults && searchResultsRef.current) {
+    if (showResults && widgetRef.current) {
       setTimeout(() => {
-        const element = searchResultsRef.current;
-        if (!element) return;
+        const widget = widgetRef.current;
+        if (!widget) return;
 
-        const rect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const offset = 16; // 0.5rem padding to match horizontal edges (16px)
-        const targetPosition = rect.top + scrollTop - offset;
+        // Get the widget's position relative to the document
+        const widgetRect = widget.getBoundingClientRect();
+        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+        // Calculate absolute position of widget top
+        const widgetTopAbsolute = widgetRect.top + currentScrollY;
+
+        // Scroll to widget top minus desired padding (16px = 0.5rem)
+        const targetScrollPosition = widgetTopAbsolute - 16;
 
         window.scrollTo({
-          top: targetPosition,
+          top: targetScrollPosition,
           behavior: 'smooth'
         });
       }, 300); // Wait for transition to complete (250ms) + small buffer
@@ -438,7 +444,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   return (
-    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning}>
+    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning} ref={widgetRef}>
       {/* Transition Loading Overlay */}
       {showTransition && (
         <div class="search-widget-transition">
