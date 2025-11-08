@@ -276,22 +276,6 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     font-weight: 600;
   }
 
-  /* Amenity placeholder styling */
-  :global(.amenity-placeholder) {
-    color: var(--theme-text-secondary);
-    font-size: 0.95rem;
-    font-family: 'VT323', monospace;
-    font-weight: 400;
-    font-style: italic;
-    opacity: 0.6;
-  }
-
-  :global([data-theme="light"] .amenity-placeholder) {
-    color: var(--neutral-gray);
-    font-weight: 500;
-    opacity: 0.7;
-  }
-
   /* Spot type badge styling */
   :global(.spot-type) {
     padding: 0.4rem 0.8rem;
