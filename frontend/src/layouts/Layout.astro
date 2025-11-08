@@ -169,18 +169,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   header {
     background: linear-gradient(180deg,
       var(--theme-bg) 0%,
-      var(--theme-bg) 70%,        /* Solid header top 70% */
-      rgba(26, 26, 26, 0.85) 73%, /* Bottom 30% smooth fade starts */
-      rgba(26, 26, 26, 0.7) 76%,
-      rgba(26, 26, 26, 0.55) 79%,
-      rgba(26, 26, 26, 0.4) 82%,
-      rgba(26, 26, 26, 0.3) 85%,
-      rgba(26, 26, 26, 0.2) 88%,
-      rgba(26, 26, 26, 0.15) 91%,
-      rgba(26, 26, 26, 0.1) 94%,
-      rgba(26, 26, 26, 0.05) 97%,
-      transparent 100%            /* Bottom 30% smooth fade ends */
-    ); /* Top 70% solid, bottom 30% smooth fade for glows */
+      var(--theme-bg) 85%,        /* Solid header top 85% */
+      rgba(26, 26, 26, 0.85) 87%, /* Bottom 15% ultra-smooth fade starts */
+      rgba(26, 26, 26, 0.7) 89%,
+      rgba(26, 26, 26, 0.55) 91%,
+      rgba(26, 26, 26, 0.4) 93%,
+      rgba(26, 26, 26, 0.25) 95%,
+      rgba(26, 26, 26, 0.1) 97%,
+      transparent 100%            /* Bottom 15% ultra-smooth fade ends */
+    ); /* Top 85% solid, bottom 15% ultra-smooth fade for glows */
     color: white;
     padding: 0;
     box-shadow: none;
