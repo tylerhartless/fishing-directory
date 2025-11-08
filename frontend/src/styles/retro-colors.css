@@ -62,6 +62,8 @@
   --theme-heading-color: #ffffff; /* White headers for dark mode */
   --theme-breadcrumb-color: #39ff14; /* Green for breadcrumbs in dark mode */
   --theme-breadcrumb-hover: #50ff30; /* Brighter green for hover/active */
+  --theme-toggle-border: #9ab087; /* Sage green border for dark mode */
+  --theme-toggle-text: #ffffff; /* White text for dark mode */
 
   /* Additional gray shades for UI elements */
   --gray-darkest: #333;
@@ -111,6 +113,8 @@
   --theme-heading-color: var(--boat-charcoal); /* Charcoal headers */
   --theme-breadcrumb-color: var(--boat-orange); /* Orange breadcrumbs */
   --theme-breadcrumb-hover: var(--boat-red); /* Red on hover */
+  --theme-toggle-border: var(--neutral-black); /* Black border for light mode */
+  --theme-toggle-text: var(--neutral-black); /* Black text for light mode */
 
   /* Button colors for vintage ad style */
   --theme-btn-primary-bg: var(--boat-orange);
