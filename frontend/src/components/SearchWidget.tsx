@@ -200,9 +200,17 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   useEffect(() => {
     if (showResults && searchResultsRef.current) {
       setTimeout(() => {
-        searchResultsRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
+        const element = searchResultsRef.current;
+        if (!element) return;
+
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 16; // 0.5rem padding to match horizontal edges (16px)
+        const targetPosition = rect.top + scrollTop - offset;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
         });
       }, 50); // Small delay to ensure DOM is ready
     }
