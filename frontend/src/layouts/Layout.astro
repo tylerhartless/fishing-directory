@@ -179,23 +179,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     view-transition-name: site-header;
   }
 
-  /* Gradient extending below sticky header */
-  header::after {
-    content: '';
-    position: fixed;
-    top: 80px; /* Start below header */
-    left: 0;
-    right: 0;
-    height: 100px;
-    background: linear-gradient(180deg, #0d1f0d 0%, #111811 30%, #151515 60%, #1a1a1a 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  [data-theme="light"] header::after {
-    display: none;
-  }
-
   [data-theme="light"] header {
     background: var(--theme-bg-forest);
     border-bottom: 4px solid var(--accent-dark-orange);
@@ -431,11 +414,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
       padding: 0 1rem;
     }
 
-    header::after {
-      top: 92px; /* Adjusted for taller mobile header */
-      height: 80px;
-    }
-
     .theme-toggle {
       bottom: 1.5rem;
       right: 1.5rem;
@@ -471,11 +449,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     nav.container {
       padding: 0 1rem;
     }
-
-    header::after {
-      top: 90px; /* Adjusted for 640px breakpoint */
-      height: 80px;
-    }
   }
 
   @media (max-width: 400px) {
@@ -504,11 +477,6 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
     nav.container {
       padding: 0 0.5rem;
-    }
-
-    header::after {
-      top: 85px; /* Adjusted for 400px breakpoint */
-      height: 70px;
     }
   }
 

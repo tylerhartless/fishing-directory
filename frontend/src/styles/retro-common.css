@@ -18,8 +18,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  height: 150px;
-  background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
+  height: 60px;
+  background: linear-gradient(180deg, #0d1f0d 0%, #111811 40%, #1a1a1a 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -30,7 +30,7 @@
 
 /* Light mode: Clean separator instead of gradient */
 [data-theme="light"] .retro-page-header::after {
-  height: 150px; /* Same height for consistent spacing */
+  height: 60px; /* Same height for consistent spacing */
   background: transparent; /* No gradient, just spacing */
 }
 
@@ -120,7 +120,7 @@
 
 /* When container follows a page header, reduce top padding (header gradient provides spacing) */
 .retro-page-header + .retro-container {
-  padding-top: 1.5rem;
+  padding-top: 3.5rem;
 }
 
 [data-theme="light"] .retro-container {
@@ -128,7 +128,7 @@
 }
 
 [data-theme="light"] .retro-page-header + .retro-container {
-  padding-top: 1.5rem;
+  padding-top: 3.5rem;
 }
 
 /* ===== CARDS ===== */
