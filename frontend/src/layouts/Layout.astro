@@ -301,7 +301,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   main.main-content::before {
     content: '';
     position: fixed;
-    top: 0;
+    top: 80px;
     left: 0;
     right: 0;
     height: 200px;
@@ -313,6 +313,19 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   [data-theme="light"] main.main-content::before {
     display: none;
+  }
+
+  /* Adjust gradient position on mobile to account for larger header padding */
+  @media (max-width: 768px) {
+    main.main-content::before {
+      top: 100px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    main.main-content::before {
+      top: 90px;
+    }
   }
 
   /* Hide gradient on pages that have hero/page-header sections */
