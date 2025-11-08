@@ -693,7 +693,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
               <div class="results-grid">
                 {displayedSpots.map((spot, index) => {
                   const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
-                  const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                   const countySlug = getCountySlug(spot.county);
                   const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
 
@@ -725,7 +724,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                         )}
                       </div>
                       <div class="card-body">
-                        <span class="spot-type">{typeLabel}</span>
                         {prominentAmenities.length > 0 && (
                           <>
                             {prominentAmenities.map(amenity => (
