@@ -33,35 +33,24 @@
 }
 
 .location-icon {
-  color: var(--theme-text-sage);
+  color: var(--neutral-white);
   margin-bottom: 1rem;
-  filter: drop-shadow(0 0 12px rgba(168, 197, 168, 0.6));
-  animation: iconPulse 3s ease-in-out infinite;
-}
-
-@keyframes iconPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 12px rgba(168, 197, 168, 0.6));
-  }
-  50% {
-    filter: drop-shadow(0 0 20px rgba(168, 197, 168, 0.9));
-  }
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
 }
 
 [data-theme="light"] .location-icon {
   color: var(--accent-dark-orange, #e85d2a);
   filter: none;
-  animation: none;
 }
 
 .location-title {
   font-size: 1.4rem;
   font-family: 'VT323', monospace;
-  color: var(--theme-text-sage);
+  color: var(--neutral-white);
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.08em;
-  text-shadow: 0 0 10px rgba(168, 197, 168, 0.5);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
 }
 
@@ -113,15 +102,15 @@
   overflow: hidden;
 }
 
-/* Dark Mode: Glowing CRT Button */
+/* Dark Mode: Minimal CRT Button */
 .btn-location-hero {
-  background: rgba(0, 0, 0, 0.8);
-  border: 3px solid var(--theme-breadcrumb-color);
-  color: var(--theme-breadcrumb-color);
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: var(--neutral-white);
   box-shadow:
-    0 0 20px rgba(57, 255, 20, 0.4),
-    inset 0 0 40px rgba(57, 255, 20, 0.05);
-  text-shadow: 0 0 10px rgba(57, 255, 20, 0.8);
+    0 0 15px rgba(255, 255, 255, 0.15),
+    inset 0 0 30px rgba(255, 255, 255, 0.03);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
 .btn-location-hero::before {
@@ -134,7 +123,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(57, 255, 20, 0.2),
+    rgba(255, 255, 255, 0.1),
     transparent
   );
   transition: left 0.5s ease;
@@ -145,18 +134,19 @@
 }
 
 .btn-location-hero:hover {
-  background: rgba(57, 255, 20, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 0 30px rgba(57, 255, 20, 0.6),
-    inset 0 0 40px rgba(57, 255, 20, 0.1);
+    0 0 20px rgba(255, 255, 255, 0.25),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
 }
 
 .btn-location-hero:active {
   transform: translateY(0) scale(0.98);
   box-shadow:
-    0 0 15px rgba(57, 255, 20, 0.5),
-    inset 0 0 30px rgba(57, 255, 20, 0.15);
+    0 0 15px rgba(255, 255, 255, 0.2),
+    inset 0 0 25px rgba(255, 255, 255, 0.08);
 }
 
 .btn-location-hero:disabled {
@@ -193,7 +183,7 @@
 /* Button Icons */
 .location-pin {
   flex-shrink: 0;
-  filter: drop-shadow(0 0 6px rgba(57, 255, 20, 0.8));
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
 }
 
 [data-theme="light"] .location-pin {
@@ -305,10 +295,10 @@
   background: var(--theme-bg);
   font-family: 'VT323', monospace;
   font-size: 1rem;
-  color: var(--theme-text-sage);
+  color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+  text-shadow: none;
   position: relative;
   z-index: 1;
 }
@@ -325,8 +315,8 @@
   top: 50%;
   left: 0;
   right: 0;
-  height: 2px;
-  background: rgba(168, 197, 168, 0.3);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
   z-index: 0;
 }
 
@@ -343,12 +333,12 @@
   position: relative;
 }
 
-/* Dark Mode: Minimal Terminal Box */
+/* Dark Mode: Minimal, Almost Invisible Box */
 .search-form-section {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(168, 197, 168, 0.3);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
 }
 
 /* Light Mode: Bold Double-Border Catalog Section */
@@ -373,8 +363,8 @@
 
 .search-prompt {
   font-size: 1.4rem;
-  color: var(--theme-breadcrumb-color);
-  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: none;
 }
 
 [data-theme="light"] .search-prompt {
@@ -386,7 +376,7 @@
 
 .search-label {
   font-size: 1.1rem;
-  color: var(--theme-text-sage);
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -425,47 +415,29 @@
   transition: all 0.2s;
 }
 
-/* Dark Mode: Terminal Input with Glowing Bottom Border */
+/* Dark Mode: Minimal - Just Text on Dark Background */
 .search-input {
-  background: rgba(0, 0, 0, 0.6);
-  border-bottom: 2px solid rgba(168, 197, 168, 0.5);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--neutral-white);
-  box-shadow: inset 0 -2px 10px rgba(168, 197, 168, 0.1);
+  box-shadow: none;
+  caret-color: var(--neutral-white);
 }
 
 .search-input::placeholder {
-  color: rgba(168, 197, 168, 0.4);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .search-input:focus {
-  background: rgba(0, 0, 0, 0.8);
-  border-bottom-color: var(--theme-breadcrumb-color);
-  box-shadow:
-    inset 0 -2px 10px rgba(57, 255, 20, 0.2),
-    0 0 15px rgba(57, 255, 20, 0.3);
+  background: transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  box-shadow: none;
 }
 
-/* Blinking Cursor (Dark Mode Only) */
+/* Remove custom cursor - use browser default */
 .input-cursor {
-  display: none;
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 60%;
-  background: var(--theme-breadcrumb-color);
-  animation: blink 1s step-end infinite;
-  box-shadow: 0 0 6px rgba(57, 255, 20, 0.8);
-}
-
-.search-input:focus ~ .input-cursor {
-  display: block;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  display: none !important;
 }
 
 /* Light Mode: Underline Fill-in Style */
@@ -509,18 +481,19 @@
   white-space: nowrap;
 }
 
-/* Dark Mode: Smaller Terminal Button */
+/* Dark Mode: Minimal Button */
 .btn-search {
-  background: rgba(57, 255, 20, 0.1);
-  border: 2px solid var(--theme-breadcrumb-color);
-  color: var(--theme-breadcrumb-color);
-  box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
-  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--neutral-white);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 }
 
 .btn-search:hover:not(:disabled) {
-  background: rgba(57, 255, 20, 0.2);
-  box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
 }
 
 .btn-search:active:not(:disabled) {
@@ -589,13 +562,11 @@
   animation: slideDown 0.2s ease-out;
 }
 
-/* Dark Mode: Terminal Output Style */
+/* Dark Mode: Minimal List */
 .suggestions {
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid rgba(168, 197, 168, 0.4);
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.5),
-    inset 0 0 20px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Light Mode: Clean List */
@@ -612,7 +583,7 @@
   gap: 0.75rem;
   padding: 0.9rem 1.25rem;
   cursor: pointer;
-  border-bottom: 1px solid rgba(168, 197, 168, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-family: 'VT323', monospace;
   font-size: 1.15rem;
   transition: all 0.15s;
@@ -626,19 +597,19 @@
 /* Dark Mode Suggestion */
 .suggestion-item {
   color: var(--neutral-white);
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+  text-shadow: none;
 }
 
 .suggestion-item:hover {
-  background: rgba(57, 255, 20, 0.15);
-  color: var(--theme-breadcrumb-color);
-  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--neutral-white);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 }
 
 .suggestion-prompt {
-  color: var(--theme-breadcrumb-color);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 1.3rem;
-  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  text-shadow: none;
 }
 
 .suggestion-text {
