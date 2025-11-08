@@ -1638,6 +1638,20 @@
   color: rgba(0, 0, 0, 0.3);
 }
 
+/* Amenity placeholder - shown when no amenities */
+.amenity-placeholder {
+  font-size: 1.1rem;
+  font-family: 'VT323', monospace;
+  color: rgba(168, 197, 168, 0.5);
+  font-weight: 400;
+  font-style: italic;
+}
+
+[data-theme="light"] .amenity-placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 600;
+}
+
 /* Spot type color coding - Dark Mode (using CSS variables) */
 .spot-card[data-spot-type="lake"] {
   border-color: color-mix(in srgb, var(--badge-lake) 40%, transparent);
