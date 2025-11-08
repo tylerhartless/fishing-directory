@@ -327,6 +327,22 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
+  /* Amenity placeholder styling */
+  .amenity-placeholder {
+    color: var(--theme-text-secondary);
+    font-size: 0.95rem;
+    font-family: 'VT323', monospace;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.6;
+  }
+
+  [data-theme="light"] .amenity-placeholder {
+    color: var(--neutral-gray);
+    font-weight: 500;
+    opacity: 0.7;
+  }
+
   /* Spot type badge styling */
   .spot-type {
     padding: 0.4rem 0.8rem;
@@ -1065,7 +1081,7 @@ const stateSlugLookup = {
 
       const amenitiesHtml = prominentAmenities.length > 0
         ? `<div class="amenities-row">${prominentAmenities.join('')}</div>`
-        : '';
+        : `<div class="amenities-row amenities-empty"><span class="amenity-placeholder">No amenities listed</span></div>`;
 
       const typeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
