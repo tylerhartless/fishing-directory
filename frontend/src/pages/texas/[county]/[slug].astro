@@ -60,7 +60,10 @@ export async function getStaticPaths() {
 
 const { spot } = Astro.props;
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
-const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${spot.longitude},${spot.latitude},14,0/600x400?access_token=${MAPBOX_TOKEN}`;
+// Use streets-v11 for light mode, dark-v11 for dark mode
+// Larger dimensions (900x600) for better mobile display
+const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
+const darkMapUrl = `https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
 
 // Get all counties for this spot (supports both legacy and new multi-county format)
 const spotCounties = getSpotCounties(spot);
@@ -103,7 +106,7 @@ const schema = {
           <a href={`/texas/${countySlug}`}>{primaryCounty} County</a>
         )} / {spot.name}
       </nav>
-      <h1>{spot.name}</h1>
+      <h1 transition:name={`spot-title-${spot.id}`}>{spot.name}</h1>
     </div>
   </section>
 
@@ -118,10 +121,13 @@ const schema = {
           <!-- Static Map Image (SEO-friendly, loads fast) -->
           <div class="map-container">
             <img
+              id="spot-map"
               src={mapUrl}
+              data-light-url={mapUrl}
+              data-dark-url={darkMapUrl}
               alt={`Map of ${spot.name}`}
-              width="600"
-              height="400"
+              width="900"
+              height="600"
               loading="eager"
             />
             <div class="map-overlay">
@@ -244,6 +250,50 @@ const schema = {
 
   <!-- Load dynamic content -->
   <script src="/js/load-spot-content.js" is:inline></script>
+
+  <!-- Theme-aware map switching with debouncing -->
+  <script is:inline>
+    (function() {
+      const mapImg = document.getElementById('spot-map');
+      if (!mapImg) return;
+
+      const lightUrl = mapImg.dataset.lightUrl;
+      const darkUrl = mapImg.dataset.darkUrl;
+      let debounceTimer;
+
+      // Preload both map images to avoid API calls on every theme switch
+      const lightImage = new Image();
+      const darkImage = new Image();
+      lightImage.src = lightUrl;
+      darkImage.src = darkUrl;
+
+      function updateMapTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        // Use preloaded images
+        if (isDark && mapImg.src !== darkUrl) {
+          mapImg.src = darkUrl;
+        } else if (!isDark && mapImg.src !== lightUrl) {
+          mapImg.src = lightUrl;
+        }
+      }
+
+      // Initial map theme
+      updateMapTheme();
+
+      // Watch for theme changes with debouncing
+      const observer = new MutationObserver(() => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(updateMapTheme, 100);
+      });
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+      });
+    })();
+  </script>
 </Layout>
 
 <style>
@@ -303,10 +353,25 @@ const schema = {
     height: auto;
     display: block;
     opacity: 0.9;
+    min-height: 400px;
+    object-fit: cover;
   }
 
   :global([data-theme="light"]) .map-container img {
     opacity: 1;
+  }
+
+  /* Mobile: Make map at least twice as big */
+  @media (max-width: 768px) {
+    .map-container img {
+      min-height: 500px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .map-container img {
+      min-height: 450px;
+    }
   }
 
   .map-overlay {

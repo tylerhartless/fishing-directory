@@ -11,14 +11,14 @@
   transition: background 0.3s ease;
 }
 
-/* Gradient extends below page header without adding spacing */
+/* Gradient extends below page header - consistent across themes */
 .retro-page-header::after {
   content: '';
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  height: 200px;
+  height: 150px;
   background: linear-gradient(180deg, #0d1f0d 0%, #0e250e 25%, #0f2a0f 50%, #101010 75%, #1a1a1a 100%);
   pointer-events: none;
   z-index: 0;
@@ -28,8 +28,10 @@
   background: var(--boat-cream); /* Warm cream background */
 }
 
+/* Light mode: Clean separator instead of gradient */
 [data-theme="light"] .retro-page-header::after {
-  display: none;
+  height: 150px; /* Same height for consistent spacing */
+  background: transparent; /* No gradient, just spacing */
 }
 
 /* Removed scanlines from page header for better alignment and visual consistency */
@@ -37,14 +39,18 @@
 .retro-page-header .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.25rem 2rem 0.25rem 2rem;
+  padding: 1.5rem 2rem 1.5rem 2rem;
   position: relative;
   z-index: 2;
 }
 
+[data-theme="light"] .retro-page-header .container {
+  padding: 2rem 2rem 2rem 2rem; /* Slightly more padding in light mode for breathing room */
+}
+
 .retro-page-header h1 {
   font-family: 'VT323', monospace;
-  font-size: 3rem;
+  font-size: 2rem; /* Mobile-first: readable on small screens */
   margin: 0 0 0.5rem 0;
   font-weight: 400;
   letter-spacing: 0.05em;
@@ -53,6 +59,13 @@
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4))
           drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
   line-height: 1.1;
+}
+
+/* Larger on desktop */
+@media (min-width: 768px) {
+  .retro-page-header h1 {
+    font-size: 3rem;
+  }
 }
 
 [data-theme="light"] .retro-page-header h1 {
@@ -66,13 +79,19 @@
 
 .retro-page-header .subtitle {
   font-family: 'VT323', monospace;
-  font-size: 1.6rem;
+  font-size: 1.25rem; /* Mobile-optimized */
   color: var(--theme-text-sage);
   text-shadow:
     0 0 8px rgba(168, 197, 168, 0.6),
     0 0 15px rgba(168, 197, 168, 0.4);
   margin: 0;
   font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .retro-page-header .subtitle {
+    font-size: 1.6rem;
+  }
 }
 
 [data-theme="light"] .retro-page-header .subtitle {
@@ -92,15 +111,24 @@
 .retro-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 2rem 2.5rem 2rem;
+  padding: 3rem 2rem 2.5rem 2rem; /* Top padding for pages without page header */
   background: transparent;
   min-height: 60vh;
   position: relative;
   z-index: 1;
 }
 
+/* When container follows a page header, reduce top padding (header gradient provides spacing) */
+.retro-page-header + .retro-container {
+  padding-top: 1.5rem;
+}
+
 [data-theme="light"] .retro-container {
   background: var(--boat-cream) !important; /* Warm cream background */
+}
+
+[data-theme="light"] .retro-page-header + .retro-container {
+  padding-top: 1.5rem;
 }
 
 /* ===== CARDS ===== */
@@ -611,33 +639,34 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600; /* Consistent with link weight */
 }
 
-/* In page header context - no need for override anymore */
+/* Mobile-first breadcrumb - simple back button style */
 .retro-page-header .retro-breadcrumb {
-  color: var(--secondary-text);
-}
-
-[data-theme="light"] .retro-page-header .retro-breadcrumb {
-  color: var(--boat-black); /* Black for current page in light mode */
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
 }
 
 .retro-page-header .retro-breadcrumb a {
-  color: var(--theme-breadcrumb-color);
-  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  color: var(--theme-text-sage);
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .retro-page-header .retro-breadcrumb a:hover {
-  color: var(--theme-breadcrumb-hover);
-  text-shadow: 0 0 10px rgba(80, 255, 48, 0.8), 0 0 20px rgba(80, 255, 48, 0.5);
+  opacity: 1;
+  transform: translateX(-2px);
 }
 
 [data-theme="light"] .retro-page-header .retro-breadcrumb a {
-  color: var(--theme-breadcrumb-color);
-  text-shadow: none;
+  color: var(--neutral-gray);
+  font-weight: 600;
 }
 
 [data-theme="light"] .retro-page-header .retro-breadcrumb a:hover {
-  color: var(--theme-breadcrumb-color);
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  color: var(--neutral-black);
 }
 
 /* ===== INFO BOXES ===== */

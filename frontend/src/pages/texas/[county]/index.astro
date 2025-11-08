@@ -125,8 +125,8 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
         }
 
         return (
-          <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="retro-card" data-spot-type={spot.spot_type} data-amenities={amenitiesJson}>
-            <h3>{spot.name}</h3>
+          <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="retro-card" data-spot-type={spot.spot_type} data-amenities={amenitiesJson} data-spot-id={spot.id}>
+            <h3 transition:name={`spot-title-${spot.id}`}>{spot.name}</h3>
             <div class="spot-meta">
               <span class="retro-badge spot-type">
                 {spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}

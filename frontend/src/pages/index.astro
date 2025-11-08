@@ -18,7 +18,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
   <section class="retro-container">
     <div class="search-section">
-      <div class="search-container" transition:name="search-container">
+      <div class="search-container">
         <SearchWidget nominatimEmail={nominatimEmail} client:idle />
       </div>
 

@@ -86,14 +86,20 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           localStorage.setItem('theme', theme);
         };
 
+        // Single global handler function to avoid multiple listeners
+        const handleThemeToggle = () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        };
+
         const setupThemeToggle = () => {
           const toggle = document.getElementById('theme-toggle');
           if (toggle) {
-            toggle.addEventListener('click', () => {
-              const current = document.documentElement.getAttribute('data-theme');
-              const next = current === 'dark' ? 'light' : 'dark';
-              setTheme(next);
-            });
+            // Remove old listener if it exists
+            toggle.removeEventListener('click', handleThemeToggle);
+            // Add fresh listener
+            toggle.addEventListener('click', handleThemeToggle);
           }
         };
 
@@ -167,6 +173,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     box-shadow: none;
     position: relative;
     overflow: visible;
+    /* Persist across page transitions - never moves */
+    view-transition-name: site-header;
   }
 
   [data-theme="light"] header {
@@ -180,8 +188,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 6.5rem 2rem;
+    padding: 2rem 2rem;
     overflow: visible;
+    /* Fixed height to prevent layout shift */
+    min-height: 100px;
   }
 
   .logo {
@@ -319,6 +329,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     font-size: 1.05rem;
     color: var(--theme-text-secondary);
     position: relative;
+    /* Persist across page transitions */
+    view-transition-name: site-footer;
   }
 
   /* Gradient transition before footer */
@@ -491,13 +503,18 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
      VIEW TRANSITIONS - THEME SPECIFIC
      ===================================== */
 
-  /* Dark Mode: Terminal screen flicker */
-  ::view-transition-old(root) {
-    animation: terminalFlickerOut 0.25s ease-out;
+  /* Header and footer never move - they're persistent anchors */
+  ::view-transition-old(site-header),
+  ::view-transition-new(site-header),
+  ::view-transition-old(site-footer),
+  ::view-transition-new(site-footer) {
+    animation: none !important;
   }
 
+  /* Disable root animations to prevent double-transition */
+  ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: terminalFlickerIn 0.25s ease-in;
+    animation: none !important;
   }
 
   @keyframes terminalFlickerOut {

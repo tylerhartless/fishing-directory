@@ -62,99 +62,97 @@ const stateSlugLookup = {
   <section class="retro-page-header">
     <div class="container">
       <h1>Search Results</h1>
-      <p class="subtitle" id="page-subtitle">Finding fishing spots near you...</p>
     </div>
   </section>
 
   <section class="retro-container">
-  <section class="spots-page-container" transition:name="search-container">
-    <div class="container">
-      <div class="results-wrapper">
-    <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
-      <div class="error-header">
-        <span class="error-prompt">✖</span>
-        <span>ERROR</span>
+    <div class="search-section">
+      <div class="search-container">
+        <!-- Results Header -->
+        <div class="results-header">
+          <div class="search-results-info" id="search-info">
+            <div class="query-display">
+              <span class="query-prompt">›</span>
+              <span id="search-query-text">Finding fishing spots near you...</span>
+            </div>
+            <a href="/" class="new-search-btn">← New Search</a>
+          </div>
+        </div>
+
+        <!-- Error Messages -->
+        <div class="retro-notice retro-notice-error" id="error-message" style="display: none;">
+          <div class="error-header">
+            <span class="error-prompt">✖</span>
+            <span>ERROR</span>
+          </div>
+          <p id="error-text"></p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <div class="filter-controls">
+            <label for="type-filter">Filter:</label>
+            <select id="type-filter" class="retro-select">
+              <option value="">All types</option>
+              <option value="lake">Lakes</option>
+              <option value="public_water">Public Waters</option>
+              <option value="state_park">State Parks</option>
+              <option value="river_access">River Access</option>
+              <option value="fishing_pier">Fishing Piers</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Results Grid -->
+        <div class="retro-grid retro-grid-spots" id="spots-container">
+          <div class="loading">Loading fishing spots...</div>
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="no-results" style="display: none;">
+          <p>No fishing spots found. Try a different search.</p>
+        </div>
+
+        <!-- Data Notice (collapsed by default) -->
+        <details class="data-accuracy-notice">
+          <summary>
+            <span class="notice-icon">⚠</span>
+            <strong>Data Notice</strong>
+            <span class="toggle-arrow">▼</span>
+          </summary>
+          <p>We're consolidating data from multiple TX agencies. Some duplicates exist. We're actively cleaning it up.</p>
+        </details>
       </div>
-      <p id="error-text"></p>
     </div>
-
-    <div class="search-results-info" id="search-info" style="display: none;">
-      <div class="query-display">
-        <span class="query-prompt">›</span>
-        <span id="search-query-text"></span>
-      </div>
-      <a href="/" class="new-search-btn">← New Search</a>
-    </div>
-
-    <details class="data-accuracy-notice">
-      <summary>
-        <span class="notice-icon">⚠</span>
-        <strong>Data Notice</strong>
-        <span class="toggle-arrow">▼</span>
-      </summary>
-      <p>Consolidating data from multiple TX agencies revealed some duplicates and naming quirks. We're actively cleaning it up. If something looks fishy, we're debugging it.</p>
-    </details>
-
-    <div class="filters">
-      <div class="filter-controls">
-        <label for="type-filter">Filter by type:</label>
-        <select id="type-filter" class="retro-select">
-          <option value="">All types</option>
-          <option value="lake">Lakes</option>
-          <option value="public_water">Public Waters</option>
-          <option value="state_park">State Parks</option>
-          <option value="river_access">River Access</option>
-          <option value="fishing_pier">Fishing Piers</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="retro-grid retro-grid-spots" id="spots-container">
-      <div class="loading">Loading fishing spots...</div>
-    </div>
-
-    <div class="no-results" id="no-results" style="display: none;">
-      <p>No fishing spots found. Try adjusting your search or filters.</p>
-    </div>
-
-      </div>
-    </div>
-  </section>
   </section>
 </Layout>
 
 <style is:global>
   /* =====================================
-     RESULTS PAGE - COHESIVE WITH SEARCH WIDGET
+     RESULTS PAGE - MORPHS FROM SEARCH WIDGET
      ===================================== */
 
-  /* Main container - matches widget container position */
-  .spots-page-container {
-    margin: 0 auto;
-    max-width: 700px;
+  /* Reduce the gradient spacer height for spots page only */
+  .retro-page-header::after {
+    height: 50px !important;
   }
 
-  .spots-page-container .container {
-    padding: 0;
+  /* Tighten spacing after page header */
+  .retro-page-header + .retro-container {
+    padding-top: 0.5rem !important;
   }
 
-  /* Results wrapper - the visible box that matches widget */
-  .results-wrapper {
-    background: rgba(30, 30, 30, 0.8);
-    border: 2px solid rgba(168, 197, 168, 0.5);
-    border-radius: 0;
-    padding: 2rem;
-    box-shadow:
-      0 0 20px rgba(168, 197, 168, 0.3),
-      inset 0 0 30px rgba(0, 0, 0, 0.5);
-    color: var(--theme-text);
-    transition: all 0.3s ease;
+  /* Results header - minimal spacing */
+  .results-header {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0;
+    margin-top: 0;
+    padding-top: 0;
+    border-bottom: 2px solid rgba(168, 197, 168, 0.2);
   }
 
-  [data-theme="light"] .results-wrapper {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+  [data-theme="light"] .results-header {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   }
 
 
@@ -564,23 +562,13 @@ const stateSlugLookup = {
     font-weight: 600;
   }
 
-  /* Search Results Info */
+  /* Search Results Info - clean and integrated */
   .search-results-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
-    background: rgba(168, 197, 168, 0.05);
-    border: 1px solid rgba(168, 197, 168, 0.2);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
     font-family: 'VT323', monospace;
-  }
-
-  [data-theme="light"] .search-results-info {
-    background: rgba(0, 0, 0, 0.02);
-    border: 2px solid rgba(0, 0, 0, 0.1);
-    box-shadow: none;
   }
 
   .query-display {
@@ -872,12 +860,39 @@ const stateSlugLookup = {
       text-align: center;
     }
   }
+
+  /* Stylistic fade-in animation for results */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Dark mode: subtle glow on fade-in */
+  [data-theme="dark"] .retro-card {
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+
+  /* Light mode: clean slide-in */
+  [data-theme="light"] .retro-card {
+    animation: fadeInUp 0.3s ease-out forwards;
+  }
 </style>
 
 <script define:vars={{ stateSlugLookup }}>
-  // API URL - use /api for production, localhost:8000 for local development
-  const API_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:8000'
+  // API URL - dynamically construct based on environment
+  const isDev = window.location.hostname === 'localhost' ||
+                window.location.hostname.startsWith('100.') || // Tailscale IP
+                window.location.hostname.startsWith('127.') || // Localhost variations
+                window.location.port === '4321'; // Astro dev server
+
+  const API_URL = isDev
+    ? `http://${window.location.hostname}:8000` // Use same hostname but port 8000
     : `${window.location.protocol}//${window.location.host}/api`;
   let allSpots = [];
   let filteredSpots = [];
@@ -888,15 +903,14 @@ const stateSlugLookup = {
   const userLat = urlParams.get('lat') ? parseFloat(urlParams.get('lat')) : null;
   const userLon = urlParams.get('lon') ? parseFloat(urlParams.get('lon')) : null;
 
-  // Update search input and UI with terminal-style messages
-  const searchInput = document.getElementById('search-input');
-  if (searchQuery && searchInput) {
-    searchInput.value = searchQuery;
-    document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `Searching for: "${searchQuery}"`;
+  // Update search query text (always visible)
+  const searchQueryTextEl = document.getElementById('search-query-text');
+  if (searchQuery) {
+    searchQueryTextEl.textContent = `Searching for: "${searchQuery}"`;
   } else if (userLat && userLon) {
-    document.getElementById('search-info').style.display = 'block';
-    document.getElementById('search-query-text').textContent = `Searching near: ${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
+    searchQueryTextEl.textContent = `Searching near: ${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
+  } else {
+    searchQueryTextEl.textContent = `Loading fishing spots...`;
   }
 
   // Load spots from API (all states)
@@ -977,15 +991,15 @@ const stateSlugLookup = {
       filteredSpots = filteredSpots.slice(0, 100);
     }
 
-    // Update page subtitle in header
-    const pageSubtitle = document.getElementById('page-subtitle');
-    if (pageSubtitle) {
+    // Update search query text
+    const searchQueryText = document.getElementById('search-query-text');
+    if (searchQueryText) {
       if (userLat && userLon) {
-        pageSubtitle.textContent = `Found ${filteredSpots.length} spots nearby • Sorted by distance`;
+        searchQueryText.textContent = `Found ${filteredSpots.length} spots nearby`;
       } else if (searchQuery) {
-        pageSubtitle.textContent = `${filteredSpots.length} spots found for "${searchQuery}"`;
+        searchQueryText.textContent = `${filteredSpots.length} results for "${searchQuery}"`;
       } else {
-        pageSubtitle.textContent = `${filteredSpots.length} fishing spots in Texas`;
+        searchQueryText.textContent = `${filteredSpots.length} fishing spots in Texas`;
       }
     }
 
@@ -1021,7 +1035,11 @@ const stateSlugLookup = {
 
     noResults.style.display = 'none';
 
-    container.innerHTML = spots.map(spot => {
+    // Add a stylistic delay before showing results (terminal-like loading)
+    container.innerHTML = '<div class="loading">Processing results...</div>';
+
+    setTimeout(() => {
+      container.innerHTML = spots.map(spot => {
       const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
       const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
       const amenitiesJson = JSON.stringify(amenities);
@@ -1060,8 +1078,8 @@ const stateSlugLookup = {
         : '';
 
       return `
-        <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}'>
-          <h3>${displayName}</h3>
+        <a href="/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}" class="retro-card" data-spot-type="${spot.spot_type}" data-amenities='${amenitiesJson}' data-spot-id="${spot.id}">
+          <h3 style="view-transition-name: spot-title-${spot.id};">${displayName}</h3>
           ${distanceHtml}
           <div class="spot-meta">
             <span class="retro-badge spot-type">${typeLabel}</span>
@@ -1069,7 +1087,15 @@ const stateSlugLookup = {
           ${amenitiesHtml}
         </a>
       `;
-    }).join('');
+      }).join('');
+
+      // Fade in results with CSS animation
+      const cards = container.querySelectorAll('.retro-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.animation = `fadeInUp 0.4s ease-out ${index * 0.03}s forwards`;
+      });
+    }, 300); // 300ms delay - just enough to feel intentional
   }
 
   function showError(message) {
