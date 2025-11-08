@@ -211,8 +211,8 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         // Calculate absolute position of widget top
         const widgetTopAbsolute = widgetRect.top + currentScrollY;
 
-        // Scroll to widget top minus desired padding (16px = 0.5rem)
-        const targetScrollPosition = widgetTopAbsolute - 16;
+        // Scroll to widget top minus desired padding (8px = 0.5rem, matching horizontal padding on mobile)
+        const targetScrollPosition = widgetTopAbsolute - 8;
 
         window.scrollTo({
           top: targetScrollPosition,
