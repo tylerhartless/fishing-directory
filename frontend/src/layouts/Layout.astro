@@ -491,72 +491,40 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
      VIEW TRANSITIONS - THEME SPECIFIC
      ===================================== */
 
-  /* Dark Mode: CRT Screen Transition - Digital fade with scanline effect */
+  /* Dark Mode: Simple cross-fade - morph does the heavy lifting */
   ::view-transition-old(root) {
-    animation: fadeOutScanline 0.3s ease-out;
+    animation: simpleCrossFadeOut 0.2s ease-out;
   }
 
   ::view-transition-new(root) {
-    animation: fadeInScanline 0.3s ease-in;
+    animation: simpleCrossFadeIn 0.2s ease-in;
   }
 
-  @keyframes fadeOutScanline {
-    from {
-      opacity: 1;
-      filter: brightness(1);
-    }
-    to {
-      opacity: 0;
-      filter: brightness(1.2) blur(2px);
-    }
+  @keyframes simpleCrossFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
   }
 
-  @keyframes fadeInScanline {
-    from {
-      opacity: 0;
-      filter: brightness(1.2) blur(2px);
-    }
-    to {
-      opacity: 1;
-      filter: brightness(1);
-    }
+  @keyframes simpleCrossFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
-  /* Light Mode: Magazine Page Turn - Subtle slide effect */
+  /* Light Mode: Also use simple cross-fade */
   [data-theme="light"] ::view-transition-old(root) {
-    animation: slideOutPage 0.35s ease-out;
+    animation: simpleCrossFadeOut 0.2s ease-out;
   }
 
   [data-theme="light"] ::view-transition-new(root) {
-    animation: slideInPage 0.35s ease-in;
-  }
-
-  @keyframes slideOutPage {
-    from {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(-30px) scale(0.98);
-    }
-  }
-
-  @keyframes slideInPage {
-    from {
-      opacity: 0;
-      transform: translateX(30px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-    }
+    animation: simpleCrossFadeIn 0.2s ease-in;
   }
 
   /* Respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
     ::view-transition-old(root),
-    ::view-transition-new(root) {
+    ::view-transition-new(root),
+    ::view-transition-old(search-container),
+    ::view-transition-new(search-container) {
       animation: none !important;
     }
   }
@@ -634,16 +602,4 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
   }
 
-  /* Reduced motion: simpler fade */
-  @media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(search-container),
-    ::view-transition-new(search-container) {
-      animation: simpleFade 0.3s ease !important;
-    }
-
-    @keyframes simpleFade {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  }
 </style>
