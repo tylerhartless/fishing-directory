@@ -2,14 +2,13 @@
 
 /* ===== PAGE HEADERS ===== */
 .retro-page-header {
-  background: var(--theme-bg-forest);
+  background: transparent; /* Let the gradient show through in dark mode */
   color: white;
   padding: 0;
   text-align: left;
   position: relative;
   overflow: visible;
   transition: background 0.3s ease;
-  z-index: 2; /* Above the body::after gradient */
 }
 
 [data-theme="light"] .retro-page-header {
