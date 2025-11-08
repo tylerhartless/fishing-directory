@@ -363,22 +363,20 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   const handleNewSearch = () => {
-    // Trigger wipe-away animation, then show transition, then return to search
+    // Trigger wipe-away animation, then return to search (no loading overlay)
     setIsTransitioning(true);
 
     setTimeout(() => {
-      setShowTransition(true);
       setShowResults(false);
-    }, 500); // Wait for wipe-away animation
-
-    setTimeout(() => {
-      setShowTransition(false);
-      setIsTransitioning(false);
       setUserLocation(null);
       setSearchContext('');
       setTypeFilters(new Set());
       setDisplayCount(20);
-    }, 1100); // Show transition screen briefly
+    }, 500); // Wait for wipe-away animation
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 900); // Reset transitioning state
   };
 
   const handleTypeFilterToggle = (type: string) => {
