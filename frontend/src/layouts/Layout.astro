@@ -201,7 +201,17 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     bottom: 0;
     background: linear-gradient(180deg,
       rgba(13, 31, 13, 0.6) 0%,
-      rgba(13, 31, 13, 0.5) 100%
+      rgba(13, 31, 13, 0.55) 50%,
+      rgba(13, 31, 13, 0.5) 85%,        /* Green gradient top 85% */
+      rgba(13, 31, 13, 0.4375) 85.4%,   /* Quick 3% fade zone with 9 stops */
+      rgba(13, 31, 13, 0.375) 85.8%,
+      rgba(13, 31, 13, 0.3125) 86.2%,
+      rgba(13, 31, 13, 0.25) 86.6%,
+      rgba(13, 31, 13, 0.1875) 87%,
+      rgba(13, 31, 13, 0.125) 87.4%,
+      rgba(13, 31, 13, 0.0625) 87.8%,
+      transparent 88%,                  /* Bottom 12% transparent */
+      transparent 100%
     );
     pointer-events: none;
     z-index: 0; /* Above header background, below nav */
