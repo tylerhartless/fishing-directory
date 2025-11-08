@@ -61,6 +61,8 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   // Infinite scroll state
   const [displayCount, setDisplayCount] = useState(20);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
 
   // Theme detection
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -195,6 +197,37 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     }
   }, [showResults, displayedSpots.length, filteredSpots.length]);
 
+  // Scroll results into view when they appear
+  useEffect(() => {
+    if (showResults) {
+      setTimeout(() => {
+        // Get the search-container element (parent wrapper in index.astro)
+        const searchContainer = document.querySelector('.search-container');
+        if (!searchContainer) return;
+
+        // Get the header element to calculate offset
+        const header = document.querySelector('header');
+        const headerHeight = header ? header.offsetHeight : 0;
+
+        // Get the search-container's position relative to the document
+        const containerRect = searchContainer.getBoundingClientRect();
+        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+        // Calculate absolute position of search-container top
+        const containerTopAbsolute = containerRect.top + currentScrollY;
+
+        // Scroll to position container below header with 8px (0.5rem) padding
+        const padding = 8;
+        const targetScrollPosition = containerTopAbsolute - headerHeight - padding;
+
+        window.scrollTo({
+          top: targetScrollPosition,
+          behavior: 'smooth'
+        });
+      }, 300); // Wait for transition to complete (250ms) + small buffer
+    }
+  }, [showResults]);
+
   // Search by geolocation
   const handleUseLocation = async () => {
     if ('geolocation' in navigator) {
@@ -228,7 +261,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setTimeout(() => {
             setShowTransition(false);
             setShowResults(true);
-          }, 800);
+          }, 250);
 
           setSortBy('distance');
         },
@@ -304,7 +337,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       setTimeout(() => {
         setShowTransition(false);
         setShowResults(true);
-      }, 800);
+      }, 250);
 
     } catch (error) {
       console.error('Geocoding error:', error);
@@ -417,7 +450,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   return (
-    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning}>
+    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning} ref={widgetRef}>
       {/* Transition Loading Overlay */}
       {showTransition && (
         <div class="search-widget-transition">
@@ -546,12 +579,12 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         </>
       ) : (
         // RESULTS MODE
-        <div class="search-results">
+        <div class="search-results" ref={searchResultsRef}>
           {/* Results Header */}
           <div class="results-header">
             <div class="results-info">
               <span class="query-prompt">›</span>
-              <span class="query-text">{searchContext}</span>
+              <span class="query-text">{searchContext} ({filteredSpots.length} spot{filteredSpots.length !== 1 ? 's' : ''})</span>
             </div>
             <button class="btn-new-search" onClick={handleNewSearch}>
               ← New Search
@@ -577,10 +610,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                   {userLocation && <option value="distance">Distance</option>}
                   <option value="name">Name</option>
                 </select>
-              </div>
-
-              <div class="result-count">
-                {filteredSpots.length} spot{filteredSpots.length !== 1 ? 's' : ''}
               </div>
             </div>
 
@@ -689,20 +718,22 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       data-spot-type={spot.spot_type}
                       style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}
                     >
-                      <h3>{displayName}</h3>
-                      {spot.distance && (
-                        <div class="distance-indicator">{formatDistance(spot.distance)}</div>
-                      )}
-                      <div class="spot-meta">
-                        <span class="spot-type">{typeLabel}</span>
+                      <div class="card-header">
+                        <h3>{displayName}</h3>
+                        {spot.distance && (
+                          <div class="distance-indicator">{formatDistance(spot.distance)}</div>
+                        )}
                       </div>
-                      {prominentAmenities.length > 0 && (
-                        <div class="amenities-row">
-                          {prominentAmenities.map(amenity => (
-                            <span key={amenity} class="amenity-badge">{amenity}</span>
-                          ))}
-                        </div>
-                      )}
+                      <div class="card-body">
+                        <span class="spot-type">{typeLabel}</span>
+                        {prominentAmenities.length > 0 && (
+                          <>
+                            {prominentAmenities.map(amenity => (
+                              <span key={amenity} class="card-meta-item">{amenity}</span>
+                            ))}
+                          </>
+                        )}
+                      </div>
                     </a>
                   );
                 })}

@@ -1397,6 +1397,37 @@
   overflow-x: hidden;
   padding-right: 0.5rem;
   animation: fadeInResults 0.6s ease-out 0.3s backwards;
+  position: relative;
+}
+
+/* Gradient fade at bottom - Dark Mode */
+.search-results::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(
+    to top,
+    var(--neutral-black, #0a0a0a) 0%,
+    rgba(10, 10, 10, 0.95) 20%,
+    rgba(10, 10, 10, 0.7) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Gradient fade at bottom - Light Mode */
+[data-theme="light"] .search-results::after {
+  background: linear-gradient(
+    to top,
+    var(--neutral-white, #f9f9f9) 0%,
+    rgba(249, 249, 249, 0.9) 30%,
+    rgba(249, 249, 249, 0.5) 60%,
+    transparent 100%
+  );
 }
 
 @keyframes fadeInResults {
@@ -1478,7 +1509,7 @@
 
 .spot-card {
   display: block;
-  padding: 1.5rem;
+  padding: 1rem;
   background: rgba(30, 30, 30, 0.8);
   border: 2px solid rgba(168, 197, 168, 0.3);
   text-decoration: none;
@@ -1549,14 +1580,31 @@
   }
 }
 
+/* Card Header - Title + Distance on same row */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(168, 197, 168, 0.15);
+}
+
+[data-theme="light"] .card-header {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
 .spot-card h3 {
-  margin: 0 0 0.75rem 0;
+  margin: 0;
   color: var(--neutral-white);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
   letter-spacing: 0.02em;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4);
+  text-align: left;
+  flex: 1;
 }
 
 [data-theme="light"] .spot-card h3 {
@@ -1565,14 +1613,15 @@
   text-shadow: none;
 }
 
-/* Distance Indicator */
+/* Distance Indicator - inline with title */
 .distance-indicator {
   color: var(--earth-sand);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
-  margin-bottom: 0.75rem;
   text-shadow: 0 0 8px rgba(212, 165, 116, 0.6), 0 0 12px rgba(212, 165, 116, 0.4);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 [data-theme="light"] .distance-indicator {
@@ -1581,21 +1630,50 @@
   font-weight: 700;
 }
 
-.spot-meta {
+/* Card Body - All metadata in one row */
+.card-body {
   display: flex;
-  gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-/* Spot Type Badge */
+/* Spot Type Badge - now inline */
 .spot-type {
-  padding: 0.4rem 0.8rem;
-  font-size: 1rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.95rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+/* Card Metadata Items - inline with bullets */
+.card-meta-item {
+  font-size: 0.95rem;
+  font-family: 'VT323', monospace;
+  color: rgba(168, 197, 168, 0.8);
+  font-weight: 400;
+}
+
+.card-meta-item::before {
+  content: '•';
+  margin: 0 0.4rem;
+  color: rgba(168, 197, 168, 0.4);
+}
+
+.card-meta-item:first-of-type::before {
+  content: '•';
+  margin-left: 0;
+}
+
+[data-theme="light"] .card-meta-item {
+  color: var(--neutral-black);
+  font-weight: 600;
+}
+
+[data-theme="light"] .card-meta-item::before {
+  color: rgba(0, 0, 0, 0.3);
 }
 
 /* Spot type color coding - Dark Mode (using CSS variables) */
@@ -1725,32 +1803,7 @@
   font-weight: 700;
 }
 
-/* Amenities Row */
-.amenities-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.75rem;
-}
-
-.amenity-badge {
-  background: rgba(168, 197, 168, 0.15);
-  border: 1px solid rgba(168, 197, 168, 0.3);
-  color: var(--theme-text-sage);
-  padding: 0.3rem 0.6rem;
-  font-size: 0.95rem;
-  font-family: 'VT323', monospace;
-  font-weight: 400;
-  text-shadow: none;
-}
-
-[data-theme="light"] .amenity-badge {
-  background: rgba(122, 132, 80, 0.1);
-  border: 1px solid rgba(122, 132, 80, 0.3);
-  color: #5a6450;
-  text-shadow: none;
-  font-weight: 600;
-}
+/* Note: Amenities are now displayed inline using .card-meta-item in .card-body */
 
 /* =====================================
    LOADING & EMPTY STATES
@@ -1933,33 +1986,82 @@
    ===================================== */
 
 @media (max-width: 640px) {
+  /* Maximize width - remove all padding on mobile */
+  .search-widget[data-show-results="true"] {
+    padding: 0;
+  }
+
+  /* Add minimal padding to inner content instead */
+  .results-header,
+  .results-controls {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .results-container {
+    padding-left: 0.5rem;
+    padding-right: 0.25rem;
+  }
+
+  /* Make results header more compact and thinner */
   .results-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .results-info {
+    min-width: unset;
+    flex: 1;
+  }
+
+  .query-text {
+    font-size: 0.95rem;
+  }
+
+  .query-prompt {
+    font-size: 1.1rem;
   }
 
   .btn-new-search {
-    width: 100%;
+    width: auto;
     text-align: center;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  /* Consolidate controls into a compact single-row layout */
+  .results-controls {
+    margin-bottom: 1rem;
   }
 
   .controls-row {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
     align-items: stretch;
   }
 
-  .btn-filter-toggle,
-  .sort-control,
-  .result-count {
+  .btn-filter-toggle {
     width: 100%;
   }
 
   .sort-control {
+    width: 100%;
     min-width: unset;
   }
 
+  .sort-control label {
+    display: none; /* Hide "Sort:" label on mobile */
+  }
+
+  .sort-control select {
+    width: 100%;
+  }
+
   .filter-panel {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
 
   .filter-checkboxes {
@@ -1974,6 +2076,25 @@
     font-size: 0.75rem;
     padding: 0.15rem 0.4rem;
   }
+
+  /* Reduce padding on spot cards for more width */
+  .spot-card {
+    padding: 0.85rem;
+  }
+
+  .card-header {
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .spot-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .distance-indicator {
+    font-size: 0.9rem;
+  }
+
 }
 
 /* Respect reduced motion */

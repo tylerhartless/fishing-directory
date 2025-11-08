@@ -171,8 +171,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     color: white;
     padding: 0;
     box-shadow: none;
-    position: relative;
+    position: sticky;
+    top: 0;
     overflow: visible;
+    z-index: 100;
     /* Persist across page transitions - never moves */
     view-transition-name: site-header;
   }
@@ -188,10 +190,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem 2rem;
+    padding: 1rem 2rem;
     overflow: visible;
     /* Fixed height to prevent layout shift */
-    min-height: 100px;
+    min-height: 80px;
   }
 
   .logo {
@@ -298,10 +300,15 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
   /* Gradient transition for pages without hero sections */
   main.main-content::before {
     content: '';
-    display: block;
-    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
     background: linear-gradient(180deg, #0d1f0d 0%, #0f2a0f 50%, #1a1a1a 100%);
     transition: background 0.3s ease;
+    pointer-events: none;
+    z-index: 50;
   }
 
   [data-theme="light"] main.main-content::before {
@@ -426,7 +433,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 
   @media (max-width: 768px) {
     nav {
-      padding: 3.5rem 1rem;
+      padding: 1.75rem 1rem;
     }
 
     nav.container {
@@ -462,7 +469,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     nav {
-      padding: 3.5rem 0;
+      padding: 1.75rem 0;
     }
 
     nav.container {
@@ -491,7 +498,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     }
 
     nav {
-      padding: 3rem 0;
+      padding: 1.5rem 0;
     }
 
     nav.container {
