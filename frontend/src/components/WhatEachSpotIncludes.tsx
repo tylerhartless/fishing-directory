@@ -1,35 +1,36 @@
 /**
  * What Each Spot Includes Component
  * Shows the features available for each fishing spot listing
+ * Uses retro-section for container styling
  */
 
 export default function WhatEachSpotIncludes() {
   return (
-    <div class="spot-features-section">
-      <h2 class="section-header">
-        <span class="header-prompt">›</span> WHAT EACH SPOT INCLUDES
+    <div class="retro-section">
+      <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
+        › WHAT EACH SPOT INCLUDES
       </h2>
 
-      <ul class="features-list">
-        <li>
-          <span class="feature-icon">📍</span>
-          <span class="feature-text">Address or GPS coordinates</span>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+        <li style="display: flex; align-items: center; gap: 1rem; font-family: 'VT323', monospace; font-size: 1.15rem;">
+          <span style="font-size: 1.5rem; flex-shrink: 0;">📍</span>
+          <span>Address or GPS coordinates</span>
         </li>
-        <li>
-          <span class="feature-icon">🅿️</span>
-          <span class="feature-text">Amenities when available</span>
+        <li style="display: flex; align-items: center; gap: 1rem; font-family: 'VT323', monospace; font-size: 1.15rem;">
+          <span style="font-size: 1.5rem; flex-shrink: 0;">🅿️</span>
+          <span>Amenities when available</span>
         </li>
-        <li>
-          <span class="feature-icon">🐟</span>
-          <span class="feature-text">Fish species caught there</span>
+        <li style="display: flex; align-items: center; gap: 1rem; font-family: 'VT323', monospace; font-size: 1.15rem;">
+          <span style="font-size: 1.5rem; flex-shrink: 0;">🐟</span>
+          <span>Fish species caught there</span>
         </li>
-        <li>
-          <span class="feature-icon">🗺️</span>
-          <span class="feature-text">Map with navigation link</span>
+        <li style="display: flex; align-items: center; gap: 1rem; font-family: 'VT323', monospace; font-size: 1.15rem;">
+          <span style="font-size: 1.5rem; flex-shrink: 0;">🗺️</span>
+          <span>Map with navigation link</span>
         </li>
-        <li>
-          <span class="feature-icon">⭐</span>
-          <span class="feature-text">Quality ranking data</span>
+        <li style="display: flex; align-items: center; gap: 1rem; font-family: 'VT323', monospace; font-size: 1.15rem;">
+          <span style="font-size: 1.5rem; flex-shrink: 0;">⭐</span>
+          <span>Quality ranking data</span>
         </li>
       </ul>
     </div>

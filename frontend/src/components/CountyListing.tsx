@@ -124,30 +124,31 @@ export default function CountyListing() {
   }
 
   return (
-    <div class="county-listing-section">
-      <h2 class="section-header">
-        <span class="header-prompt">›</span> FISHING SPOTS NEAR YOU
+    <div class="retro-section">
+      <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
+        › FISHING SPOTS NEAR YOU
       </h2>
 
-      <div class="county-list">
+      <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
         {counties.map((county) => (
           <a
             key={county.slug}
             href={`/${location.stateSlug}/${county.slug}`}
             class="county-item"
+            style="display: flex; align-items: center; padding: 0.75rem 0; text-decoration: none; font-family: 'VT323', monospace; font-size: 1.15rem; border-bottom: 1px solid rgba(168, 197, 168, 0.2);"
           >
-            <span class="county-name">{county.name} County</span>
-            <span class="county-dots"></span>
-            <span class="county-count">{county.spot_count}</span>
+            <span style="flex-shrink: 0;">{county.name} County</span>
+            <span style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, rgba(168, 197, 168, 0.4) 0, rgba(168, 197, 168, 0.4) 4px, transparent 4px, transparent 8px); margin: 0 1rem;"></span>
+            <span style="flex-shrink: 0;">{county.spot_count}</span>
           </a>
         ))}
       </div>
 
-      <div class="county-actions">
-        <a href={`/${location.stateSlug}`} class="btn-county-all">
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+        <a href={`/${location.stateSlug}`} class="retro-btn retro-btn-search" style="text-decoration: none; text-align: center;">
           → See All {location.stateName} Counties
         </a>
-        <a href="/states" class="btn-county-browse">
+        <a href="/states" class="retro-btn retro-btn-secondary" style="text-decoration: none; text-align: center;">
           → Browse Other States
         </a>
       </div>
