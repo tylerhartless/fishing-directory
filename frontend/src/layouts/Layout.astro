@@ -89,10 +89,14 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
         };
 
         // Single global handler function to avoid multiple listeners
-        const handleThemeToggle = () => {
+        const handleThemeToggle = (e) => {
           const current = document.documentElement.getAttribute('data-theme');
           const next = current === 'dark' ? 'light' : 'dark';
           setTheme(next);
+          // Blur the button to remove hover state and prevent glow from persisting
+          if (e && e.currentTarget) {
+            e.currentTarget.blur();
+          }
         };
 
         const setupThemeToggle = () => {
