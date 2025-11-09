@@ -113,6 +113,7 @@
   --rgba-black-15: rgba(0, 0, 0, 0.15);   /* Scanlines, subtle effects */
   --rgba-black-20: rgba(0, 0, 0, 0.2);    /* Light shadows */
   --rgba-black-30: rgba(0, 0, 0, 0.3);    /* Most common - shadows, overlays */
+  --rgba-black-40: rgba(0, 0, 0, 0.4);    /* Medium shadows */
   --rgba-black-50: rgba(0, 0, 0, 0.5);    /* Medium overlays */
   --rgba-black-60: rgba(0, 0, 0, 0.6);    /* Dark inputs */
   --rgba-black-80: rgba(0, 0, 0, 0.8);    /* Very dark overlays */
@@ -154,6 +155,13 @@
 
   /* Sand/tan color (212, 165, 116) */
   --rgba-sand-30: rgba(212, 165, 116, 0.3);
+
+  /* Bright green (57, 255, 20) - for breadcrumbs in dark mode */
+  --rgba-bright-green-60: rgba(57, 255, 20, 0.6);
+
+  /* Bright green hover (80, 255, 48) - for breadcrumb hover in dark mode */
+  --rgba-bright-green-hover-50: rgba(80, 255, 48, 0.5);
+  --rgba-bright-green-hover-80: rgba(80, 255, 48, 0.8);
 }
 
 /* Dark Mode - Explicit declaration for equal specificity with light mode */
