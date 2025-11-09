@@ -102,6 +102,91 @@
   --badge-pier: #ffb84d;              /* Gold for fishing piers */
   --badge-pier-light: #d4a574;        /* Sandy tan (light mode card/badge) */
   --badge-pier-border-light: #c49564; /* Darker tan border (light mode) */
+
+  /* ===== COMMONLY USED RGBA VALUES ===== */
+  /* These are the most frequently duplicated color values across the site.
+     Converting these to variables for consistency and easy theme updates. */
+
+  /* Black with varying opacity - most common across all files */
+  --rgba-black-01: rgba(0, 0, 0, 0.01);   /* Scanlines in light mode */
+  --rgba-black-02: rgba(0, 0, 0, 0.02);   /* Very subtle effects */
+  --rgba-black-03: rgba(0, 0, 0, 0.03);   /* Very subtle effects */
+  --rgba-black-05: rgba(0, 0, 0, 0.05);   /* Very subtle effects */
+  --rgba-black-10: rgba(0, 0, 0, 0.1);    /* Subtle shadows */
+  --rgba-black-15: rgba(0, 0, 0, 0.15);   /* Scanlines, subtle effects */
+  --rgba-black-20: rgba(0, 0, 0, 0.2);    /* Light shadows */
+  --rgba-black-30: rgba(0, 0, 0, 0.3);    /* Most common - shadows, overlays */
+  --rgba-black-40: rgba(0, 0, 0, 0.4);    /* Medium shadows */
+  --rgba-black-50: rgba(0, 0, 0, 0.5);    /* Medium overlays */
+  --rgba-black-60: rgba(0, 0, 0, 0.6);    /* Dark inputs */
+  --rgba-black-80: rgba(0, 0, 0, 0.8);    /* Very dark overlays */
+
+  /* Sage green (168, 197, 168) - signature color with varying opacity */
+  --rgba-sage-05: rgba(168, 197, 168, 0.05);   /* Very subtle tint */
+  --rgba-sage-08: rgba(168, 197, 168, 0.08);   /* Very subtle tint */
+  --rgba-sage-10: rgba(168, 197, 168, 0.1);    /* Subtle hover effects */
+  --rgba-sage-15: rgba(168, 197, 168, 0.15);   /* Light tint */
+  --rgba-sage-20: rgba(168, 197, 168, 0.2);    /* Common for borders, glows */
+  --rgba-sage-25: rgba(168, 197, 168, 0.25);   /* Medium-light */
+  --rgba-sage-30: rgba(168, 197, 168, 0.3);    /* Very common - borders, shadows */
+  --rgba-sage-40: rgba(168, 197, 168, 0.4);    /* Very common - glows, shadows */
+  --rgba-sage-50: rgba(168, 197, 168, 0.5);    /* Medium opacity */
+  --rgba-sage-60: rgba(168, 197, 168, 0.6);    /* Common for glows */
+  --rgba-sage-70: rgba(168, 197, 168, 0.7);    /* Hover effects */
+  --rgba-sage-80: rgba(168, 197, 168, 0.8);    /* Strong effects */
+
+  /* White with varying opacity - for glows and overlays */
+  --rgba-white-10: rgba(255, 255, 255, 0.1);
+  --rgba-white-15: rgba(255, 255, 255, 0.15);
+  --rgba-white-20: rgba(255, 255, 255, 0.2);
+  --rgba-white-30: rgba(255, 255, 255, 0.3);
+  --rgba-white-40: rgba(255, 255, 255, 0.4);
+  --rgba-white-60: rgba(255, 255, 255, 0.6);
+  --rgba-white-80: rgba(255, 255, 255, 0.8);
+
+  /* Gray (100, 100, 100) - used in inset shadows */
+  --rgba-gray-20: rgba(100, 100, 100, 0.2);
+  --rgba-gray-30: rgba(100, 100, 100, 0.3);
+
+  /* Dark background (30, 30, 30) - card backgrounds */
+  --rgba-dark-bg-80: rgba(30, 30, 30, 0.8);
+
+  /* Orange (232, 93, 42) - accent color with opacity */
+  --rgba-orange-20: rgba(232, 93, 42, 0.2);
+
+  /* State park badge color (168, 217, 110) */
+  --rgba-park-badge-08: rgba(168, 217, 110, 0.08);
+  --rgba-park-badge-12: rgba(168, 217, 110, 0.12);
+  --rgba-park-badge-20: rgba(168, 217, 110, 0.2);
+  --rgba-park-badge-30: rgba(168, 217, 110, 0.3);
+  --rgba-park-badge-40: rgba(168, 217, 110, 0.4);
+
+  /* Sand/tan color (212, 165, 116) */
+  --rgba-sand-30: rgba(212, 165, 116, 0.3);
+  --rgba-sand-40: rgba(212, 165, 116, 0.4);
+  --rgba-sand-60: rgba(212, 165, 116, 0.6);
+
+  /* Moss green (122, 132, 80) */
+  --rgba-moss-05: rgba(122, 132, 80, 0.05);
+
+  /* Lighter sage variant (154, 176, 135) */
+  --rgba-light-sage-10: rgba(154, 176, 135, 0.1);
+  --rgba-light-sage-15: rgba(154, 176, 135, 0.15);
+
+  /* Bright green (57, 255, 20) - for breadcrumbs in dark mode */
+  --rgba-bright-green-60: rgba(57, 255, 20, 0.6);
+
+  /* Bright green hover (80, 255, 48) - for breadcrumb hover in dark mode */
+  --rgba-bright-green-hover-50: rgba(80, 255, 48, 0.5);
+  --rgba-bright-green-hover-80: rgba(80, 255, 48, 0.8);
+
+  /* Red (255, 68, 68) - for error states and warnings */
+  --rgba-red-10: rgba(255, 68, 68, 0.1);
+  --rgba-red-15: rgba(255, 68, 68, 0.15);
+  --rgba-red-20: rgba(255, 68, 68, 0.2);
+  --rgba-red-30: rgba(255, 68, 68, 0.3);
+  --rgba-red-40: rgba(255, 68, 68, 0.4);
+  --rgba-red-50: rgba(255, 68, 68, 0.5);
 }
 
 /* Dark Mode - Explicit declaration for equal specificity with light mode */

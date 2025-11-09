@@ -36,9 +36,9 @@
   font-weight: 400;
   letter-spacing: 0.05em;
   color: var(--theme-heading-color);
-  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4))
-          drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  text-shadow: 2px 2px 0 var(--rgba-black-30);
+  filter: drop-shadow(0 0 4px var(--rgba-white-40))
+          drop-shadow(0 0 8px var(--rgba-white-20));
   line-height: 1.1;
 }
 
@@ -51,7 +51,7 @@
 
 [data-theme="light"] .retro-page-header h1 {
   color: var(--theme-heading-color);
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15); /* Subtle letterpress effect */
+  text-shadow: 2px 2px 0px var(--rgba-black-15); /* Subtle letterpress effect */
   filter: none;
   font-weight: 700;
   text-transform: capitalize;
@@ -63,8 +63,8 @@
   font-size: 1.25rem; /* Mobile-optimized */
   color: var(--theme-text-sage);
   text-shadow:
-    0 0 8px rgba(168, 197, 168, 0.6),
-    0 0 15px rgba(168, 197, 168, 0.4);
+    0 0 8px var(--rgba-sage-60),
+    0 0 15px var(--rgba-sage-40);
   margin: 0;
   font-weight: 400;
 }
@@ -114,7 +114,7 @@
 
 /* ===== CARDS ===== */
 .retro-card {
-  background: rgba(30, 30, 30, 0.8);
+  background: var(--rgba-dark-bg-80);
   border: 2px solid;
   border-radius: 0;
   padding: 1.5rem;
@@ -124,8 +124,8 @@
   display: flex;
   flex-direction: column;
   box-shadow:
-    0 0 15px rgba(168, 197, 168, 0.3),
-    inset 0 0 30px rgba(100, 100, 100, 0.3);
+    0 0 15px var(--rgba-sage-30),
+    inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
 }
@@ -139,10 +139,10 @@
   bottom: 0;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.15) 0px,
+    var(--rgba-black-15) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.15) 3px
+    var(--rgba-black-15) 3px
   );
   pointer-events: none;
   z-index: 1;
@@ -156,7 +156,7 @@
 [data-theme="light"] .retro-card {
   background: #ffffff !important; /* White cards on cream background */
   border: 4px solid var(--boat-black); /* Thick black borders */
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2); /* Strong shadow for depth */
+  box-shadow: 6px 6px 0 var(--rgba-black-20); /* Strong shadow for depth */
   color: var(--boat-black) !important;
   border-radius: 0; /* Boxy, square corners */
   position: relative;
@@ -177,23 +177,23 @@
 [data-theme="light"] .retro-card::before {
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.01) 0px,
+    var(--rgba-black-01) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.01) 3px
+    var(--rgba-black-01) 3px
   ) !important;
 }
 
 .retro-card:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 0 20px rgba(168, 197, 168, 0.5),
-    inset 0 0 30px rgba(100, 100, 100, 0.3);
+    0 0 20px var(--rgba-sage-50),
+    inset 0 0 30px var(--rgba-gray-30);
 }
 
 [data-theme="light"] .retro-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0 rgba(0,0,0,0.3);
+  box-shadow: 9px 9px 0 var(--rgba-black-30);
 }
 
 /* Card color variants */
@@ -224,7 +224,7 @@
   border-radius: 0;
   cursor: pointer;
   font-weight: 700;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  box-shadow: 4px 4px 0 var(--rgba-black-30);
   transition: all 0.1s;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -235,12 +235,12 @@
 
 .retro-btn:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+  box-shadow: 6px 6px 0 var(--rgba-black-30);
 }
 
 .retro-btn:active {
   transform: translate(0, 0);
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 0 var(--rgba-black-30);
 }
 
 .retro-btn-primary {
@@ -264,15 +264,15 @@
 
 .retro-btn-search {
   font-family: 'VT323', monospace;
-  background: rgba(168, 197, 168, 0.15);
+  background: var(--rgba-sage-15);
   color: var(--theme-text-sage);
-  border: 2px solid rgba(168, 197, 168, 0.5);
+  border: 2px solid var(--rgba-sage-50);
   font-size: 1.15rem;
   font-weight: 400;
   box-shadow:
-    0 0 10px rgba(168, 197, 168, 0.3),
-    inset 0 0 20px rgba(100, 100, 100, 0.2);
-  text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+    0 0 10px var(--rgba-sage-30),
+    inset 0 0 20px var(--rgba-gray-20);
+  text-shadow: 0 0 6px var(--rgba-sage-40);
 }
 
 [data-theme="light"] .retro-btn-search {
@@ -280,24 +280,24 @@
   color: white;
   border: 4px solid var(--boat-black); /* Thick black border */
   font-weight: 900; /* Extra bold for vintage ad */
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Glossy text effect */
+  box-shadow: 4px 4px 0 var(--rgba-black-30);
+  text-shadow: 1px 1px 2px var(--rgba-black-30); /* Glossy text effect */
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .retro-btn-search:hover {
-  background: rgba(168, 197, 168, 0.25);
-  border-color: rgba(168, 197, 168, 0.8);
+  background: var(--rgba-sage-25);
+  border-color: var(--rgba-sage-80);
   box-shadow:
-    0 0 15px rgba(168, 197, 168, 0.5),
-    inset 0 0 20px rgba(100, 100, 100, 0.2);
+    0 0 15px var(--rgba-sage-50),
+    inset 0 0 20px var(--rgba-gray-20);
 }
 
 [data-theme="light"] .retro-btn-search:hover {
   background: linear-gradient(180deg, var(--boat-red) 0%, #a01510 100%); /* Red gradient on hover */
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.4);
+  box-shadow: 6px 6px 0 var(--rgba-black-40);
   border-color: var(--boat-black);
 }
 
@@ -306,37 +306,37 @@
   padding: 1rem;
   font-size: 1rem;
   font-family: 'VT323', monospace;
-  border: 2px solid rgba(168, 197, 168, 0.5);
+  border: 2px solid var(--rgba-sage-50);
   border-radius: 0;
   transition: all 0.2s;
   font-weight: 400;
   box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--rgba-black-60);
   color: var(--theme-text);
   box-shadow:
-    0 0 10px rgba(168, 197, 168, 0.2),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
+    0 0 10px var(--rgba-sage-20),
+    inset 0 0 20px var(--rgba-black-50);
 }
 
 [data-theme="light"] .retro-input {
   background: white;
   color: var(--boat-black);
   border: 3px solid var(--boat-black); /* Thick black borders */
-  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1); /* Slight inset for depth */
+  box-shadow: inset 2px 2px 4px var(--rgba-black-10); /* Slight inset for depth */
   font-weight: 600;
 }
 
 .retro-input:focus {
   outline: none;
-  border-color: rgba(168, 197, 168, 0.8);
+  border-color: var(--rgba-sage-80);
   box-shadow:
-    0 0 15px rgba(168, 197, 168, 0.4),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
+    0 0 15px var(--rgba-sage-40),
+    inset 0 0 20px var(--rgba-black-50);
 }
 
 [data-theme="light"] .retro-input:focus {
   border-color: var(--boat-orange); /* Orange focus for catalog style */
-  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.2), inset 2px 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 0 0 3px var(--rgba-orange-20), inset 2px 2px 4px var(--rgba-black-10);
 }
 
 .retro-input::placeholder {
@@ -351,45 +351,45 @@
   padding: 1rem;
   font-size: 1rem;
   font-family: 'VT323', monospace;
-  border: 2px solid rgba(168, 197, 168, 0.5);
+  border: 2px solid var(--rgba-sage-50);
   border-radius: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--rgba-black-60);
   color: var(--theme-text);
   cursor: pointer;
   font-weight: 400;
   box-shadow:
-    0 0 10px rgba(168, 197, 168, 0.2),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
+    0 0 10px var(--rgba-sage-20),
+    inset 0 0 20px var(--rgba-black-50);
 }
 
 [data-theme="light"] .retro-select {
   background: white;
   color: var(--boat-black);
   border: 3px solid var(--boat-black); /* Thick black borders */
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.2); /* Box shadow for depth */
+  box-shadow: 2px 2px 0 var(--rgba-black-20); /* Box shadow for depth */
   font-weight: 700;
 }
 
 .retro-select:hover {
-  border-color: rgba(168, 197, 168, 0.7);
+  border-color: var(--rgba-sage-70);
 }
 
 [data-theme="light"] .retro-select:hover {
   border-color: var(--boat-orange); /* Orange hover */
-  box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+  box-shadow: 3px 3px 0 var(--rgba-black-30);
 }
 
 .retro-select:focus {
   outline: none;
-  border-color: rgba(168, 197, 168, 0.8);
+  border-color: var(--rgba-sage-80);
   box-shadow:
-    0 0 15px rgba(168, 197, 168, 0.4),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
+    0 0 15px var(--rgba-sage-40),
+    inset 0 0 20px var(--rgba-black-50);
 }
 
 [data-theme="light"] .retro-select:focus {
   border-color: var(--boat-orange);
-  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.2), 2px 2px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 0 0 3px var(--rgba-orange-20), 2px 2px 0 var(--rgba-black-20);
 }
 
 /* ===== BADGES ===== */
@@ -412,7 +412,7 @@
   border: 2px solid var(--boat-black);
   font-weight: 900;
   padding: 0.5rem 1rem;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 0 var(--rgba-black-30);
 }
 
 .retro-badge-large {
@@ -493,13 +493,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Terminal-style sections for dark mode (default) */
 .retro-section {
   margin: 2.5rem 0;
-  background: rgba(30, 30, 30, 0.8);
-  border: 2px solid rgba(168, 197, 168, 0.6);
+  background: var(--rgba-dark-bg-80);
+  border: 2px solid var(--rgba-sage-60);
   border-radius: 0;
   padding: 2rem;
   box-shadow:
-    0 0 15px rgba(168, 197, 168, 0.3),
-    inset 0 0 30px rgba(100, 100, 100, 0.3);
+    0 0 15px var(--rgba-sage-30),
+    inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
   color: var(--theme-text-secondary);
@@ -514,10 +514,10 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.15) 0px,
+    var(--rgba-black-15) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.15) 3px
+    var(--rgba-black-15) 3px
   );
   pointer-events: none;
   z-index: 1;
@@ -531,7 +531,7 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .retro-section {
   background: #ffffff !important; /* White sections on cream background */
   border: 4px solid var(--boat-black) !important; /* Thick borders */
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
+  box-shadow: 6px 6px 0 var(--rgba-black-20) !important;
   color: var(--boat-black) !important;
   padding: 2.5rem !important; /* Generous padding like print ads */
   position: relative;
@@ -553,10 +553,10 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .retro-section::before {
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.01) 0px,
+    var(--rgba-black-01) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.01) 3px
+    var(--rgba-black-01) 3px
   ) !important;
 }
 
@@ -588,14 +588,14 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--theme-breadcrumb-color);
   text-decoration: none;
   font-weight: 500; /* Standardized weight */
-  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  text-shadow: 0 0 6px var(--rgba-bright-green-60);
   transition: all 0.2s;
 }
 
 .retro-breadcrumb a:hover,
 .retro-breadcrumb .active {
   color: var(--theme-breadcrumb-hover);
-  text-shadow: 0 0 10px rgba(80, 255, 48, 0.8), 0 0 20px rgba(80, 255, 48, 0.5);
+  text-shadow: 0 0 10px var(--rgba-bright-green-hover-80), 0 0 20px var(--rgba-bright-green-hover-50);
   font-weight: 500; /* Consistent weight on hover */
 }
 
@@ -653,14 +653,14 @@ h1, h2, h3, h4, h5, h6 {
 /* ===== INFO BOXES ===== */
 /* Terminal-style info boxes for dark mode (default) */
 .retro-info-box {
-  background: rgba(30, 30, 30, 0.8);
-  border: 2px solid rgba(168, 197, 168, 0.6);
+  background: var(--rgba-dark-bg-80);
+  border: 2px solid var(--rgba-sage-60);
   border-radius: 0;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow:
-    0 0 15px rgba(168, 197, 168, 0.3),
-    inset 0 0 30px rgba(100, 100, 100, 0.3);
+    0 0 15px var(--rgba-sage-30),
+    inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
   color: var(--theme-text-secondary);
@@ -675,10 +675,10 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.15) 0px,
+    var(--rgba-black-15) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.15) 3px
+    var(--rgba-black-15) 3px
   );
   pointer-events: none;
   z-index: 1;
@@ -692,7 +692,7 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .retro-info-box {
   background: #ffffff !important; /* White box on cream background */
   border: 4px solid var(--boat-black) !important; /* Thick black border */
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2) !important;
+  box-shadow: 6px 6px 0 var(--rgba-black-20) !important;
   color: var(--boat-black) !important;
   padding: 2rem !important; /* Generous padding */
 }
@@ -700,10 +700,10 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .retro-info-box::before {
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.01) 0px,
+    var(--rgba-black-01) 0px,
     transparent 1px,
     transparent 2px,
-    rgba(0, 0, 0, 0.01) 3px
+    var(--rgba-black-01) 3px
   ) !important;
 }
 
@@ -715,7 +715,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'VT323', monospace;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 8px rgba(168, 197, 168, 0.4);
+  text-shadow: 0 0 8px var(--rgba-sage-40);
 }
 
 [data-theme="light"] .retro-info-box h3 {
@@ -736,7 +736,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   border-radius: 0;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  box-shadow: 6px 6px 0 var(--rgba-black-20);
   font-weight: 700;
   border: 3px solid;
 }
