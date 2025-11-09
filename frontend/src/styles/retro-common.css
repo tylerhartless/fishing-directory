@@ -456,7 +456,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .retro-heading-lg {
   font-family: var(--font-terminal);
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin: 0 0 1rem 0;
   font-weight: 400;
   color: var(--theme-heading-color);
@@ -472,7 +472,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .retro-heading-md {
   font-family: var(--font-terminal);
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin: 0 0 1rem 0;
   font-weight: 400;
   color: var(--theme-heading-color);
@@ -488,7 +488,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .retro-heading-sm {
   font-family: var(--font-terminal);
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   margin: 0;
   font-weight: 400;
   color: var(--theme-heading-color);
