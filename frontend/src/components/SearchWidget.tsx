@@ -573,7 +573,13 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
               ) : (
                 <>
                   <svg class="location-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="6" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="2" stroke-width="2"/>
+                    <line x1="12" y1="0" x2="12" y2="5" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="12" y1="19" x2="12" y2="24" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="0" y1="12" x2="5" y2="12" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="19" y1="12" x2="24" y2="12" stroke-width="2" stroke-linecap="round"/>
                   </svg>
                   <span class="btn-location-text">Use Current Location</span>
                 </>
