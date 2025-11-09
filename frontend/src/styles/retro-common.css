@@ -448,27 +448,58 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .retro-heading {
+  font-family: var(--font-terminal);
   font-weight: 900;
   color: var(--theme-heading-color);
   letter-spacing: 0.05em;
 }
 
 .retro-heading-lg {
+  font-family: var(--font-terminal);
   font-size: 2.5rem;
   margin: 0 0 1rem 0;
+  font-weight: 400;
   color: var(--theme-heading-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="light"] .retro-heading-lg {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
 
 .retro-heading-md {
+  font-family: var(--font-terminal);
   font-size: 1.8rem;
   margin: 0 0 1rem 0;
+  font-weight: 400;
   color: var(--theme-heading-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="light"] .retro-heading-md {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
 
 .retro-heading-sm {
+  font-family: var(--font-terminal);
   font-size: 1.3rem;
   margin: 0;
+  font-weight: 400;
   color: var(--theme-heading-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="light"] .retro-heading-sm {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
 }
 
 /* Heading with rainbow underline */

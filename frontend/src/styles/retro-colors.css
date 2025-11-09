@@ -187,6 +187,12 @@
   --rgba-red-30: rgba(255, 68, 68, 0.3);
   --rgba-red-40: rgba(255, 68, 68, 0.4);
   --rgba-red-50: rgba(255, 68, 68, 0.5);
+
+  /* ===== TYPOGRAPHY VARIABLES ===== */
+  /* Font families - easily update site-wide fonts */
+  --font-terminal: 'VT323', monospace;           /* Terminal/retro monospace font */
+  --font-display: 'Press Start 2P', monospace;   /* Pixel font for special displays */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Fallback body font */
 }
 
 /* Dark Mode - Explicit declaration for equal specificity with light mode */

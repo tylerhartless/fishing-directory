@@ -2,6 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import SearchWidget from '../components/SearchWidget.tsx';
 import DynamicSubtitle from '../components/DynamicSubtitle.tsx';
+import ValuePropositionBadges from '../components/ValuePropositionBadges.tsx';
+import StateParkNoLicenseCallout from '../components/StateParkNoLicenseCallout.tsx';
+import WhatEachSpotIncludes from '../components/WhatEachSpotIncludes.tsx';
+import CountyListing from '../components/CountyListing.tsx';
 
 const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
 ---
@@ -23,143 +27,34 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         <SearchWidget nominatimEmail={nominatimEmail} client:idle />
       </div>
 
-      <div class="status-banner">
-        🚧 Currently covering Texas only • More states & user submissions coming soon
-      </div>
+      <!-- New Homepage Sections: Mobile-First Design -->
+      <div class="homepage-content">
+        <!-- Scroll Prompt - Interstitial Element -->
+        <div class="scroll-prompt">
+          <span class="scroll-arrow">↓</span>
+          <span class="scroll-text">WHY USE THIS DIRECTORY?</span>
+          <span class="scroll-arrow">↓</span>
+        </div>
 
-      <div class="quick-stats">
-        <div class="stat retro-card" style="border-color: var(--earth-rust);">
-          <strong>3,300+</strong>
-          <span>Fishing Spots</span>
-        </div>
-        <div class="stat retro-card" style="border-color: var(--earth-forest);">
-          <strong>Texas</strong>
-          <span>Available Now</span>
-        </div>
-        <div class="stat retro-card" style="border-color: var(--earth-slate);">
-          <strong>100%</strong>
-          <span>Public Access</span>
-        </div>
-      </div>
-    </div>
-  </section>
+        <!-- Value Proposition Badges -->
+        <ValuePropositionBadges client:load />
 
-  <section class="container popular-locations">
-    <h2>Popular Fishing Locations</h2>
-    <p class="section-subtitle">Most enriched areas with complete amenity data</p>
+        <!-- State Parks No-License Callout (conditional, dynamic by state) -->
+        <StateParkNoLicenseCallout client:load />
 
-    <div class="location-grid">
-      <a href="/texas/harris" class="location-card retro-card">
-        <div class="location-header">
-          <h3>Harris County</h3>
-          <span class="spot-count">450+ spots</span>
-        </div>
-        <p>Houston metro area with diverse fishing opportunities</p>
-        <div class="location-features">
-          <span class="feature-badge">📍 GPS Data</span>
-          <span class="feature-badge">🚤 Boat Ramps</span>
-          <span class="feature-badge">🅿️ Parking Info</span>
-        </div>
-      </a>
+        <!-- What Each Spot Includes -->
+        <WhatEachSpotIncludes client:load />
 
-      <a href="/texas/travis" class="location-card retro-card">
-        <div class="location-header">
-          <h3>Travis County</h3>
-          <span class="spot-count">280+ spots</span>
-        </div>
-        <p>Austin lakes and Colorado River access</p>
-        <div class="location-features">
-          <span class="feature-badge">📍 GPS Data</span>
-          <span class="feature-badge">🎣 Pier Access</span>
-          <span class="feature-badge">🏞️ Parks</span>
-        </div>
-      </a>
-
-      <a href="/texas/tarrant" class="location-card retro-card">
-        <div class="location-header">
-          <h3>Tarrant County</h3>
-          <span class="spot-count">220+ spots</span>
-        </div>
-        <p>Fort Worth area urban fishing destinations</p>
-        <div class="location-features">
-          <span class="feature-badge">📍 GPS Data</span>
-          <span class="feature-badge">🌊 Lakes</span>
-          <span class="feature-badge">🎯 Easy Access</span>
-        </div>
-      </a>
-
-      <a href="/texas/bexar" class="location-card retro-card">
-        <div class="location-header">
-          <h3>Bexar County</h3>
-          <span class="spot-count">180+ spots</span>
-        </div>
-        <p>San Antonio fishing lakes and rivers</p>
-        <div class="location-features">
-          <span class="feature-badge">📍 GPS Data</span>
-          <span class="feature-badge">🏕️ Recreation</span>
-          <span class="feature-badge">🌳 Nature</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="browse-all">
-      <a href="/texas" class="btn-secondary">Browse All Texas Locations →</a>
-    </div>
-  </section>
-
-  <section class="features-section">
-    <div class="container">
-      <h2>Why Fishermen Love This Directory</h2>
-      <div class="features-grid">
-        <div class="feature retro-card">
-          <div class="feature-icon">📍</div>
-          <h3>Exact GPS Coordinates</h3>
-          <p>Navigate directly to every fishing spot with precise location data</p>
-        </div>
-        <div class="feature retro-card">
-          <div class="feature-icon">✅</div>
-          <h3>Sourced from State Data</h3>
-          <p>Data from official sources - we're actively improving accuracy and removing duplicates</p>
-        </div>
-        <div class="feature retro-card">
-          <div class="feature-icon">🚤</div>
-          <h3>Amenities Listed</h3>
-          <p>Know before you go: parking, restrooms, boat ramps, and facilities</p>
-        </div>
-        <div class="feature retro-card">
-          <div class="feature-icon">🆓</div>
-          <h3>Public Fishing Access</h3>
-          <p>All locations allow public fishing. Most are free, though some parks and facilities may charge entrance fees.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="container coverage-section">
-    <h2>Current Coverage</h2>
-    <div class="coverage-info">
-      <div class="coverage-state active retro-card">
-        <h3>🎣 Texas</h3>
-        <p><strong>3,300+ spots</strong> across 254 counties</p>
-        <ul>
-          <li>Boat ramps, fishing piers, and lake access</li>
-          <li>State parks and public waters</li>
-          <li>GPS coordinates for every location</li>
-        </ul>
-      </div>
-      <div class="coverage-state coming-soon retro-card">
-        <h3>🚧 Coming Soon</h3>
-        <p>Florida, Louisiana, Georgia & more southern states</p>
-        <p class="stay-tuned">Building comprehensive directories with the same attention to detail</p>
+        <!-- County Listing (dynamic by IP-detected state) -->
+        <CountyListing client:load />
       </div>
     </div>
   </section>
 </Layout>
 
 <style>
-  /* Page-specific styles only - common styles in retro-common.css */
+  /* Homepage-specific styles - all container styling uses retro-common.css classes */
 
-  /* Search section container */
   .search-section {
     text-align: center;
     margin-bottom: 3rem;
@@ -185,380 +80,189 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .status-banner {
+  .homepage-content {
     max-width: 900px;
-    margin: 0 auto 2.5rem;
-    background: rgba(30, 30, 30, 0.9);
-    border: 2px solid rgba(168, 197, 168, 0.5);
-    padding: 0.75rem 1.5rem;
-    text-align: center;
-    color: var(--theme-text-sage);
-    font-family: 'VT323', monospace;
-    font-weight: 400;
-    font-size: 1.05rem;
-    transition: all 0.3s ease;
-    box-shadow:
-      0 0 10px rgba(168, 197, 168, 0.3),
-      inset 0 0 20px rgba(0, 0, 0, 0.3);
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
-  }
-
-  :global([data-theme="light"]) .status-banner {
-    background: var(--accent-cream);
-    border: 3px solid var(--neutral-black);
-    color: var(--neutral-black);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
-    text-shadow: none;
-    font-weight: 600;
-  }
-
-  /* Quick stats using retro-card base */
-  .quick-stats {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .stat {
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    min-width: 140px;
-    padding: 1.5rem 2rem;
+    gap: 2.5rem;
   }
 
-  .stat strong {
-    font-size: 2.5rem;
-    display: block;
-    font-family: 'VT323', monospace;
-    font-weight: 400;
-    color: var(--theme-heading-color);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4);
-  }
-
-  :global([data-theme="light"]) .stat strong {
-    font-weight: 900;
-    text-shadow: none;
-  }
-
-  .stat span {
-    font-size: 0.9rem;
-    font-family: 'VT323', monospace;
-    font-weight: 400;
-    color: var(--theme-text-sage);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
-  }
-
-  :global([data-theme="light"]) .stat span {
-    color: var(--neutral-gray);
-    font-weight: 600;
-    text-shadow: none;
-  }
-
-  /* Section headings */
-  .container h2 {
-    font-family: 'VT323', monospace;
-    font-size: 2.5rem;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    color: var(--theme-heading-color);
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  [data-theme="light"] .container h2 {
-    font-weight: 700;
-  }
-
-  .section-subtitle {
-    font-family: 'VT323', monospace;
-    text-align: center;
-    color: var(--theme-text-secondary);
-    font-size: 1.4rem;
-    margin-bottom: 2rem;
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .section-subtitle {
-    color: var(--gray-medium);
-  }
-
-  /* Popular locations grid */
-  .location-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .location-header {
+  /* Value Proposition Badges */
+  :global(.value-badge) {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-  }
-
-  .location-header h3 {
-    margin: 0;
-    color: var(--theme-heading-color);
-    font-size: 1.4rem;
-    font-weight: 400;
-    font-family: 'VT323', monospace;
-    letter-spacing: 0.02em;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-  }
-
-  :global([data-theme="light"]) .location-header h3 {
-    font-weight: 900;
-    text-shadow: none;
-  }
-
-  .spot-count {
-    background: var(--neutral-black);
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border-radius: 0;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .location-card > p {
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0;
+    font-family: var(--font-terminal);
     color: var(--theme-text-secondary);
-    margin: 0 0 1rem 0;
-    line-height: 1.5;
-    font-family: 'VT323', monospace;
-    font-size: 1.05rem;
-    font-weight: 400;
   }
 
-  :global([data-theme="light"]) .location-card > p {
-    color: var(--gray-dark);
-    font-weight: 500;
+  :global([data-theme="light"] .value-badge) {
+    color: var(--boat-black);
   }
 
-  .location-features {
+  /* Scroll Prompt - Interstitial element between sections */
+  .scroll-prompt {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .feature-badge {
-    background: var(--neutral-black);
-    color: white;
-    padding: 0.4rem 0.7rem;
-    border-radius: 0;
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .browse-all {
-    text-align: center;
-    margin-top: 1.5rem;
-  }
-
-  .btn-secondary {
-    display: inline-block;
-    padding: 1rem 2rem;
-    font-family: 'VT323', monospace;
-    background: rgba(168, 197, 168, 0.15);
-    color: var(--theme-text-sage);
-    border: 2px solid rgba(168, 197, 168, 0.5);
-    border-radius: 0;
-    text-decoration: none;
-    font-size: 1.15rem;
-    font-weight: 400;
-    transition: all 0.2s;
-    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3), inset 0 0 20px rgba(100, 100, 100, 0.2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
-    min-height: 44px;
-    display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    margin: 0 0 -1rem 0;
+    font-family: var(--font-terminal);
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--theme-text-sage);
+    text-align: center;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 
-  :global([data-theme="light"]) .btn-secondary {
-    background: var(--box-clay);
-    color: var(--primary-text);
-    border: 3px solid var(--neutral-black);
-    font-weight: 700;
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-    text-shadow: none;
+  .scroll-arrow {
+    font-size: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
   }
 
-  .btn-secondary:hover {
-    background: rgba(168, 197, 168, 0.25);
-    border-color: rgba(168, 197, 168, 0.8);
-    box-shadow: 0 0 15px rgba(168, 197, 168, 0.5), inset 0 0 20px rgba(100, 100, 100, 0.2);
+  .scroll-text {
+    text-transform: uppercase;
+  }
+
+  :global([data-theme="light"]) .scroll-prompt {
+    color: var(--boat-charcoal);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
+    }
+    50% {
+      text-shadow: 0 0 15px rgba(168, 197, 168, 0.8);
+    }
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(5px);
+    }
+  }
+
+  :global([data-theme="light"]) .scroll-prompt {
+    animation: none;
+  }
+
+  :global([data-theme="light"]) .scroll-arrow {
+    animation: none;
+  }
+
+  /* No-License Callout - Different border color to make it stand out */
+  :global(.no-license-callout) {
+    border-color: var(--accent-rust) !important;
+    box-shadow:
+      0 0 15px rgba(184, 92, 58, 0.3),
+      inset 0 0 30px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  :global([data-theme="light"] .no-license-callout) {
+    border-color: var(--boat-orange) !important;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* County Items - Button-like styling */
+  :global(.county-item) {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    font-family: var(--font-terminal);
+    font-size: 1.15rem;
+    background: rgba(168, 197, 168, 0.08);
+    border: 2px solid rgba(168, 197, 168, 0.3);
+    border-radius: 0;
+    color: var(--theme-text-sage);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  :global(.county-item:hover) {
+    background: rgba(168, 197, 168, 0.15);
+    border-color: rgba(168, 197, 168, 0.5);
+    transform: translateX(4px);
     text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
   }
 
-  :global([data-theme="light"]) .btn-secondary:hover {
-    background: var(--accent-sage);
+  :global([data-theme="light"] .county-item) {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+    color: var(--neutral-black);
+    font-weight: 600;
+  }
+
+  :global([data-theme="light"] .county-item:hover) {
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+    border-color: var(--boat-orange);
     text-shadow: none;
   }
 
-  /* Features section using retro-grid */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+  /* County dots separator */
+  :global(.county-dots) {
+    flex: 1;
+    height: 1px;
+    background-image: repeating-linear-gradient(to right, rgba(168, 197, 168, 0.4) 0, rgba(168, 197, 168, 0.4) 4px, transparent 4px, transparent 8px);
+    margin: 0 1rem;
   }
 
-  .feature {
-    text-align: center;
-    padding: 2rem 1.5rem;
+  :global([data-theme="light"] .county-dots) {
+    background-image: repeating-linear-gradient(to right, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0.2) 4px, transparent 4px, transparent 8px);
   }
 
-  /* Feature card color overrides for light mode */
-  :global([data-theme="light"]) .feature:nth-child(4n+1) {
-    background: var(--box-sage);
-  }
-
-  :global([data-theme="light"]) .feature:nth-child(4n+2) {
-    background: var(--box-moss);
-  }
-
-  :global([data-theme="light"]) .feature:nth-child(4n+3) {
-    background: var(--box-tan);
-  }
-
-  :global([data-theme="light"]) .feature:nth-child(4n+4) {
-    background: var(--box-rust);
-  }
-
-  .feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-
-  .feature h3 {
-    margin: 0 0 0.75rem 0;
-    color: var(--theme-heading-color);
-    font-size: 1.2rem;
-    font-family: 'VT323', monospace;
+  /* Browse Other States Button - Custom styling for dark mode */
+  :global(.county-browse-btn) {
+    font-family: var(--font-terminal);
+    background: rgba(122, 132, 80, 0.2);
+    color: var(--box-moss);
+    border: 2px solid var(--box-moss);
+    font-size: 1.15rem;
     font-weight: 400;
+    padding: 1rem 2rem;
+    box-shadow:
+      0 0 10px rgba(122, 132, 80, 0.3),
+      inset 0 0 20px rgba(100, 100, 100, 0.2);
+    text-shadow: 0 0 6px rgba(122, 132, 80, 0.4);
+    transition: all 0.2s;
+  }
+
+  :global(.county-browse-btn:hover) {
+    background: rgba(122, 132, 80, 0.3);
+    border-color: var(--accent-sage);
+    box-shadow:
+      0 0 15px rgba(168, 197, 168, 0.5),
+      inset 0 0 20px rgba(100, 100, 100, 0.2);
+  }
+
+  :global([data-theme="light"] .county-browse-btn) {
+    background: linear-gradient(180deg, var(--box-moss) 0%, #6a7440 100%);
+    color: white;
+    border: 4px solid var(--boat-black);
+    font-weight: 900;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.08em;
   }
 
-  :global([data-theme="light"]) .feature h3 {
-    font-weight: 900;
-    text-shadow: none;
-  }
-
-  .feature p {
-    margin: 0;
-    color: var(--theme-text-secondary);
-    line-height: 1.6;
-    font-family: 'VT323', monospace;
-    font-size: 1.05rem;
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .feature p {
-    color: var(--neutral-black);
-    font-weight: 600;
-  }
-
-  /* Coverage section */
-  .coverage-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .coverage-state {
-    padding: 2rem;
-  }
-
-  .coverage-state.active {
-    border-color: rgba(168, 197, 168, 0.6);
-  }
-
-  :global([data-theme="light"]) .coverage-state.active {
-    border-color: var(--earth-forest);
-    background: var(--box-moss);
-  }
-
-  .coverage-state.coming-soon {
-    border-color: rgba(144, 164, 136, 0.4);
-  }
-
-  :global([data-theme="light"]) .coverage-state.coming-soon {
-    background: var(--neutral-white);
-    border-color: var(--neutral-gray);
-  }
-
-  .coverage-state h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.5rem;
-    text-align: left;
-    font-family: 'VT323', monospace;
-    font-weight: 400;
-    color: var(--theme-heading-color);
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-  }
-
-  :global([data-theme="light"]) .coverage-state h3 {
-    font-weight: 900;
-    text-shadow: none;
-  }
-
-  .coverage-state p {
-    margin: 0 0 1rem 0;
-    color: var(--theme-text-secondary);
-    font-family: 'VT323', monospace;
-    font-size: 1.05rem;
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .coverage-state p {
-    color: var(--neutral-black);
-    font-weight: 600;
-  }
-
-  .coverage-state ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .coverage-state li {
-    padding: 0.5rem 0;
-    color: var(--theme-text-secondary);
-    font-family: 'VT323', monospace;
-    font-size: 1.05rem;
-    border-bottom: 1px solid rgba(168, 197, 168, 0.2);
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .coverage-state li {
-    color: var(--neutral-black);
-    border-bottom: 2px solid rgba(0,0,0,0.1);
-    font-weight: 600;
-  }
-
-  .coverage-state li:last-child {
-    border-bottom: none;
-  }
-
-  .stay-tuned {
-    font-style: italic;
-    font-size: 0.95rem;
+  :global([data-theme="light"] .county-browse-btn:hover) {
+    background: linear-gradient(180deg, #6a7440 0%, #5a6430 100%);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
+    border-color: var(--boat-black);
   }
 
   @media (max-width: 768px) {
@@ -568,27 +272,13 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
       margin-bottom: 1.5rem;
     }
 
-    .quick-stats {
-      gap: 1rem;
-      margin-top: 1.5rem;
+    .homepage-content {
+      gap: 2rem;
     }
 
-    .stat {
-      min-width: 120px;
-      padding: 1rem 1.5rem;
-    }
-
-    .stat strong {
-      font-size: 2rem;
-    }
-
-    .location-grid {
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-
-    .container h2 {
-      font-size: 2rem;
+    .scroll-prompt {
+      font-size: 1.1rem;
+      gap: 0.75rem;
     }
   }
 </style>
