@@ -125,8 +125,8 @@ export default function CountyListing() {
 
   return (
     <div class="retro-section">
-      <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
-        › FISHING SPOTS NEAR YOU
+      <h2 class="retro-heading-md" style="text-align: left; margin-bottom: 1.5rem;">
+        › TOP COUNTIES IN YOUR STATE
       </h2>
 
       <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">

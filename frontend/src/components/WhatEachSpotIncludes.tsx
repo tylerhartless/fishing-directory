@@ -7,7 +7,7 @@
 export default function WhatEachSpotIncludes() {
   return (
     <div class="retro-section">
-      <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
+      <h2 class="retro-heading-md" style="text-align: left; margin-bottom: 1.5rem;">
         › WHAT EACH SPOT INCLUDES
       </h2>
 
