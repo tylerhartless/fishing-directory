@@ -552,7 +552,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         // SEARCH MODE
         <>
           <div class="location-prompt">
-            <p class="location-title">Get Started</p>
+            <p class="location-title">Where can I fish</p>
           </div>
 
           <div class="search-actions">
