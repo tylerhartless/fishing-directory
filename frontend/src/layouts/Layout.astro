@@ -105,9 +105,26 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           }
         };
 
+        // Logo click handler to reset search state
+        const handleLogoClick = (e) => {
+          // Clear search widget state from sessionStorage
+          sessionStorage.removeItem('searchWidgetState');
+        };
+
+        const setupLogoReset = () => {
+          const logo = document.querySelector('.logo');
+          if (logo) {
+            // Remove old listener if it exists
+            logo.removeEventListener('click', handleLogoClick);
+            // Add fresh listener
+            logo.addEventListener('click', handleLogoClick);
+          }
+        };
+
         // Setup theme toggle on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
           setupThemeToggle();
+          setupLogoReset();
           // Re-enable transitions after page has loaded and rendered
           setTimeout(() => {
             document.documentElement.classList.remove('preload');
@@ -123,6 +140,8 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
           }
           // Re-setup toggle button
           setupThemeToggle();
+          // Re-setup logo reset handler
+          setupLogoReset();
         });
       })();
     </script>

@@ -287,6 +287,22 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         }
       }, 1000);
 
+      // Check if Permissions API is available and check geolocation permission state
+      let permissionDenied = false;
+      if ('permissions' in navigator && 'query' in navigator.permissions) {
+        try {
+          const result = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+          if (result.state === 'denied') {
+            permissionDenied = true;
+            // Even if denied, we'll still try - user might have just reset permissions
+            console.log('Geolocation permission previously denied, attempting anyway...');
+          }
+        } catch (e) {
+          // Permissions API might not support geolocation query in all browsers
+          console.log('Unable to query geolocation permission:', e);
+        }
+      }
+
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
@@ -316,7 +332,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setLoadingMessage('');
 
           if (error.code === error.PERMISSION_DENIED) {
-            setErrorMessage('Location access denied. Please enable location permissions in your browser settings to use this feature.');
+            setErrorMessage('Location access denied. To enable: Click the location icon in your browser\'s address bar, allow location access, then click "Use Current Location" again.');
           } else if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost') {
             setErrorMessage('Location requires HTTPS. Please search manually or enable HTTPS.');
           } else {
