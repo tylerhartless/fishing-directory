@@ -11,6 +11,7 @@ interface Props {
 
 const { title, description = 'Find public fishing spots nationwide. Free boat ramps, bank fishing, and pier access locations with GPS coordinates.' } = Astro.props;
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
+const isStaging = siteUrl.includes('staging');
 ---
 
 <!doctype html>
@@ -21,6 +22,9 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
+    {/* Prevent search engine indexing on staging */}
+    {isStaging && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

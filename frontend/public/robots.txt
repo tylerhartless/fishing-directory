@@ -1,0 +1,4 @@
+# Disallow all search engines from indexing this site
+# This robots.txt is for the staging environment
+User-agent: *
+Disallow: /
