@@ -376,19 +376,11 @@
 }
 
 .search-divider::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(168, 197, 168, 0.2);
-  z-index: 0;
+  display: none;
 }
 
 [data-theme="light"] .search-divider::before {
-  height: 3px;
-  background: var(--gray-lighter, #ddd);
+  display: none;
 }
 
 /* =====================================
@@ -431,6 +423,8 @@
   font-size: 1.4rem;
   color: rgba(168, 197, 168, 0.7);
   text-shadow: none;
+  flex-shrink: 0;
+  font-family: 'VT323', monospace;
 }
 
 [data-theme="light"] .search-prompt {
@@ -466,6 +460,9 @@
 .input-wrapper {
   flex: 1;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Search Input */
