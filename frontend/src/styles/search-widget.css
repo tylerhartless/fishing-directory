@@ -95,6 +95,7 @@
 
 .location-prompt {
   text-align: center;
+  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -110,7 +111,7 @@
 }
 
 .location-title {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-family: 'VT323', monospace;
   color: var(--theme-text-sage);
   margin: 0;
@@ -121,7 +122,7 @@
 }
 
 [data-theme="light"] .location-title {
-  font-size: 1.6rem;
+  font-size: 2rem;
   color: var(--neutral-black, #1a1a1a);
   font-weight: 700;
   text-shadow: none;
@@ -724,11 +725,11 @@
   }
 
   .location-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   [data-theme="light"] .location-title {
-    font-size: 1.4rem;
+    font-size: 1.7rem;
   }
 
   .search-form-section {
