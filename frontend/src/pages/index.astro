@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SearchWidget from '../components/SearchWidget.tsx';
+import DynamicSubtitle from '../components/DynamicSubtitle.tsx';
 
 const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
 ---
@@ -12,7 +13,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   <section class="retro-page-header">
     <div class="container">
       <h1>Fishing Spot Finder</h1>
-      <p class="subtitle">Stop fishing for spots near you and catch one here! 🎣</p>
+      <DynamicSubtitle client:load />
     </div>
   </section>
 
