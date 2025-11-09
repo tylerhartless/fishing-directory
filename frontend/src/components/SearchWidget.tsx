@@ -607,7 +607,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                   <input
                     type="text"
                     class="search-input"
-                    placeholder="Enter city or zip code"
+                    placeholder="City or zip code"
                     autocomplete="off"
                     value={searchQuery}
                     onInput={handleInputChange}
