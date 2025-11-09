@@ -495,7 +495,7 @@
 .search-input:focus {
   background: transparent;
   border-bottom-color: rgba(168, 197, 168, 0.4);
-  box-shadow: 0 0 10px rgba(168, 197, 168, 0.15);
+  box-shadow: none;
 }
 
 /* Remove custom cursor - use browser default */
