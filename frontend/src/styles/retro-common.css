@@ -533,7 +533,7 @@ h1, h2, h3, h4, h5, h6 {
     inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
-  color: var(--theme-text-secondary);
+  color: var(--theme-text-sage);
 }
 
 .retro-section::before {
@@ -694,7 +694,7 @@ h1, h2, h3, h4, h5, h6 {
     inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
-  color: var(--theme-text-secondary);
+  color: var(--theme-text-sage);
 }
 
 .retro-info-box::before {
