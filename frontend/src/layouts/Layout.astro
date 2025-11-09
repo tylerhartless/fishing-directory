@@ -473,6 +473,40 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
     line-height: 1;
   }
 
+  .theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.3) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.3) 3px
+    );
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: multiply;
+  }
+
+  [data-theme="light"] .theme-toggle::after {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.01) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.01) 3px
+    );
+  }
+
+  .theme-icon {
+    position: relative;
+    z-index: 5;
+  }
+
   .theme-toggle:hover {
     background: var(--theme-toggle-hover-bg);
     border-color: var(--theme-toggle-hover-border);
