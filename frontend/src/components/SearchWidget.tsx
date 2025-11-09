@@ -580,18 +580,14 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
             )}
 
             <div class="search-divider">
-              <span class="divider-text">or search manually</span>
+              <span class="divider-text">or search by location</span>
             </div>
 
             {/* Secondary action: Manual Search */}
             <div class="search-form-section">
-              <div class="search-form-header">
-                <span class="search-prompt">›</span>
-                <span class="search-label">Search by Location</span>
-              </div>
-
               <form class="search-form" onSubmit={handleSearchSubmit}>
                 <div class="input-wrapper">
+                  <span class="search-prompt">›</span>
                   <input
                     type="text"
                     class="search-input"
