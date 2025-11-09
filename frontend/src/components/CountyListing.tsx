@@ -129,17 +129,16 @@ export default function CountyListing() {
         › FISHING SPOTS NEAR YOU
       </h2>
 
-      <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
         {counties.map((county) => (
           <a
             key={county.slug}
             href={`/${location.stateSlug}/${county.slug}`}
             class="county-item"
-            style="display: flex; align-items: center; padding: 0.75rem 0; text-decoration: none; font-family: 'VT323', monospace; font-size: 1.15rem; border-bottom: 1px solid rgba(168, 197, 168, 0.2);"
           >
             <span style="flex-shrink: 0;">{county.name} County</span>
-            <span style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, rgba(168, 197, 168, 0.4) 0, rgba(168, 197, 168, 0.4) 4px, transparent 4px, transparent 8px); margin: 0 1rem;"></span>
-            <span style="flex-shrink: 0;">{county.spot_count}</span>
+            <span class="county-dots"></span>
+            <span style="flex-shrink: 0; font-weight: 700;">{county.spot_count}</span>
           </a>
         ))}
       </div>
@@ -148,7 +147,7 @@ export default function CountyListing() {
         <a href={`/${location.stateSlug}`} class="retro-btn retro-btn-search" style="text-decoration: none; text-align: center;">
           → See All {location.stateName} Counties
         </a>
-        <a href="/states" class="retro-btn retro-btn-secondary" style="text-decoration: none; text-align: center;">
+        <a href="/states" class="retro-btn county-browse-btn" style="text-decoration: none; text-align: center;">
           → Browse Other States
         </a>
       </div>
