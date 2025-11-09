@@ -250,10 +250,12 @@
 /* Button Icons */
 .location-pin {
   flex-shrink: 0;
-  filter: drop-shadow(0 0 6px var(--rgba-sage-60));
+  stroke: #ff6f61;
+  filter: drop-shadow(0 0 6px rgba(255, 111, 97, 0.6));
 }
 
 [data-theme="light"] .location-pin {
+  stroke: #e63946;
   filter: drop-shadow(2px 2px 0 var(--rgba-black-30));
 }
 
