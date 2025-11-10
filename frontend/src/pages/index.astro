@@ -12,7 +12,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
 <Layout
   title="Find Fishing Spots Near You - Public Fishing Directory"
-  description="Stop searching 'fishing spots near me' - find your perfect fishing location here! Discover thousands of public boat ramps, piers, and bank fishing spots with GPS coordinates, amenities, and real catches."
+  description="Find public fishing spots near you. Thousands of boat ramps, piers, and bank fishing locations with GPS coordinates, amenities, and real catches."
 >
   <section class="retro-page-header">
     <div class="container">
@@ -53,7 +53,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 </Layout>
 
 <style>
-  /* Homepage-specific styles - all container styling uses retro-common.css classes */
+  /* Homepage-specific layout styles only - component styles in retro-common.css */
 
   .search-section {
     text-align: center;
@@ -88,141 +88,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
     gap: 1.5rem;
   }
 
-  /* Value Proposition Badges */
-  :global(.value-badge) {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0;
-    font-family: var(--font-terminal);
-    color: var(--theme-text-sage);
-  }
-
-  :global([data-theme="light"] .value-badge) {
-    color: var(--boat-black);
-  }
-
-  /* Scroll Prompt - Interstitial element between sections */
-  .scroll-prompt {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1.5rem 0;
-    margin: 0 0 -1rem 0;
-    font-family: var(--font-terminal);
-    font-size: 1.5rem;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    color: var(--theme-text-sage);
-    text-align: center;
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .scroll-arrow {
-    font-size: 1.5rem;
-    animation: bounce 2s ease-in-out infinite;
-  }
-
-  .scroll-text {
-    text-transform: uppercase;
-  }
-
-  :global([data-theme="light"]) .scroll-prompt {
-    color: var(--boat-charcoal);
-    font-weight: 900;
-    letter-spacing: 0.08em;
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
-    }
-    50% {
-      text-shadow: 0 0 15px rgba(168, 197, 168, 0.8);
-    }
-  }
-
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(5px);
-    }
-  }
-
-  :global([data-theme="light"]) .scroll-prompt {
-    animation: none;
-  }
-
-  :global([data-theme="light"]) .scroll-arrow {
-    animation: none;
-  }
-
-  /* No-License Callout - Different border color to make it stand out */
-  :global(.no-license-callout) {
-    border-color: var(--accent-rust) !important;
-    box-shadow:
-      0 0 15px rgba(184, 92, 58, 0.3),
-      inset 0 0 30px rgba(0, 0, 0, 0.5) !important;
-  }
-
-  :global([data-theme="light"] .no-license-callout) {
-    border-color: var(--boat-orange) !important;
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2) !important;
-  }
-
-  /* County Items - Button-like styling */
-  :global(.county-item) {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    font-family: var(--font-terminal);
-    font-size: 1.3rem;
-    background: rgba(168, 197, 168, 0.08);
-    border: 2px solid rgba(168, 197, 168, 0.3);
-    border-radius: 0;
-    color: var(--theme-text-sage);
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  :global(.county-item:hover) {
-    background: rgba(168, 197, 168, 0.15);
-    border-color: rgba(168, 197, 168, 0.5);
-    transform: translateX(4px);
-    text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
-  }
-
-  :global([data-theme="light"] .county-item) {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
-    color: var(--neutral-black);
-    font-weight: 600;
-  }
-
-  :global([data-theme="light"] .county-item:hover) {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
-    border-color: var(--boat-orange);
-    text-shadow: none;
-  }
-
-  /* County dots separator */
-  :global(.county-dots) {
-    flex: 1;
-    height: 1px;
-    background-image: repeating-linear-gradient(to right, rgba(168, 197, 168, 0.4) 0, rgba(168, 197, 168, 0.4) 4px, transparent 4px, transparent 8px);
-    margin: 0 1rem;
-  }
-
-  :global([data-theme="light"] .county-dots) {
-    background-image: repeating-linear-gradient(to right, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0.2) 4px, transparent 4px, transparent 8px);
-  }
-
   @media (max-width: 768px) {
     .search-container {
       padding: 0.75rem;
@@ -232,11 +97,6 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
 
     .homepage-content {
       gap: 1.25rem;
-    }
-
-    .scroll-prompt {
-      font-size: 1.25rem;
-      gap: 0.75rem;
     }
   }
 </style>
