@@ -267,7 +267,7 @@
   background: var(--rgba-sage-15);
   color: var(--theme-text-sage);
   border: 2px solid var(--rgba-sage-50);
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-weight: 400;
   box-shadow:
     0 0 10px var(--rgba-sage-30),
@@ -307,7 +307,7 @@
   background: rgba(122, 132, 80, 0.2);
   color: var(--box-moss);
   border: 2px solid var(--box-moss);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 400;
   padding: 1rem 2rem;
   box-shadow:
