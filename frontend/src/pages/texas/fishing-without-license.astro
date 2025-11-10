@@ -68,6 +68,21 @@ const stateParksJson = JSON.stringify(stateParks);
         </div>
       </div>
 
+      <!-- Find State Parks Section -->
+      <div class="find-parks-section retro-section">
+        <h2>Use our directory to find all Texas state parks where you can fish.</h2>
+        <p style="font-family: 'VT323', monospace;">
+          Each listing includes:
+        </p>
+        <ul class="features-list">
+          <li>📍 Exact GPS coordinates and address</li>
+          <li>🅿️ Parking and amenities information</li>
+          <li>🐟 Fish species caught at the park</li>
+          <li>🗺️ Map with navigation links</li>
+          <li>⭐ Community ratings and catches</li>
+        </ul>
+      </div>
+
       <!-- FAQ Section -->
       <div class="faq-section retro-section">
         <h2>Frequently Asked Questions</h2>
@@ -112,30 +127,6 @@ const stateParksJson = JSON.stringify(stateParks);
             <li>Allowed fishing methods</li>
             <li>Species-specific regulations</li>
           </ul>
-        </div>
-      </div>
-
-      <!-- Find State Parks Section -->
-      <div class="find-parks-section retro-section">
-        <h2>Find Texas State Parks with Fishing</h2>
-        <p style="font-family: 'VT323', monospace;">
-          Use our directory to find all Texas state parks where you can fish. Each listing includes:
-        </p>
-        <ul class="features-list">
-          <li>📍 Exact GPS coordinates and address</li>
-          <li>🅿️ Parking and amenities information</li>
-          <li>🐟 Fish species caught at the park</li>
-          <li>🗺️ Map with navigation links</li>
-          <li>⭐ Community ratings and catches</li>
-        </ul>
-
-        <div class="cta-buttons">
-          <a href="/texas?type=state_park" class="retro-btn retro-btn-search" style="text-decoration: none; text-align: center;">
-            → View All Texas State Parks
-          </a>
-          <a href="/texas" class="retro-btn county-browse-btn" style="text-decoration: none; text-align: center;">
-            → Browse All Texas Fishing Spots
-          </a>
         </div>
       </div>
 
@@ -639,19 +630,6 @@ const stateParksJson = JSON.stringify(stateParks);
   :global([data-theme="light"]) .features-list li {
     color: #555555;
     font-weight: 600;
-  }
-
-  .cta-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-
-  @media (min-width: 640px) {
-    .cta-buttons {
-      flex-direction: row;
-    }
   }
 
   .resources-section ul {
