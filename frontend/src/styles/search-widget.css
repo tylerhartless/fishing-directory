@@ -401,7 +401,7 @@
   background: transparent;
   border: 1px solid var(--rgba-sage-30);
   padding: 1.5rem;
-  box-shadow: 0 0 15px var(--rgba-sage-15);
+  box-shadow: 0 0 8px var(--rgba-sage-15);
 }
 
 /* Light Mode: Dashed Outline Like Catalogue Ad Clipping */
@@ -424,7 +424,7 @@
 
 .search-prompt {
   font-size: 1.4rem;
-  color: var(--rgba-sage-70);
+  color: var(--rgba-sage-50);
   text-shadow: none;
   flex-shrink: 0;
   font-family: 'VT323', monospace;
@@ -492,7 +492,7 @@
 }
 
 .search-input::placeholder {
-  color: var(--rgba-sage-30);
+  color: var(--rgba-sage-70);
 }
 
 .search-input:focus {
