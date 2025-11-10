@@ -136,7 +136,8 @@
 .search-actions {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
+  padding-top: 1rem;
 }
 
 /* =====================================
@@ -355,7 +356,7 @@
 .search-divider {
   text-align: center;
   position: relative;
-  margin: 0.5rem 0;
+  margin: 1rem 0;
 }
 
 .divider-text {
