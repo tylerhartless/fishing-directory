@@ -404,7 +404,7 @@
   box-shadow: 0 0 15px var(--rgba-sage-15);
 }
 
-/* Light Mode: Bold Double-Border Catalog Section */
+/* Light Mode: Dashed Outline Like Catalogue Ad Clipping */
 [data-theme="light"] .search-form-section {
   background: white;
   border: 3px dashed var(--neutral-black, #1a1a1a);
