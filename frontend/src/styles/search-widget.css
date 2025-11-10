@@ -1212,13 +1212,38 @@
   font-size: 1.05rem;
   cursor: pointer;
   min-height: 44px;
+  /* Remove native appearance to use custom styling on mobile */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Add custom dropdown arrow */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(168, 197, 168, 0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.2em;
+  padding-right: 2rem;
 }
 
 [data-theme="light"] .sort-control select {
-  background: var(--neutral-white);
+  background-color: var(--neutral-white);
   border: 2px solid var(--neutral-black);
   color: var(--neutral-black);
   font-weight: 600;
+  /* Custom dropdown arrow for light mode */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Dark mode: Style dropdown options */
+.sort-control select option {
+  background: #1a1a1a;
+  color: var(--theme-text-sage);
+  padding: 0.5rem;
+}
+
+/* Light mode: Style dropdown options */
+[data-theme="light"] .sort-control select option {
+  background: var(--neutral-white);
+  color: var(--neutral-black);
 }
 
 /* Result Count */
@@ -1398,6 +1423,86 @@
   padding-right: 0.5rem;
   animation: fadeInResults 0.6s ease-out 0.3s backwards;
   position: relative;
+  /* Default: Only fade at bottom (when at top of scroll) */
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 97%,
+    transparent 100%
+  );
+  transition: mask-image 0.2s ease;
+}
+
+/* When scrolled from top: Show fade at top */
+.results-container.scrolled-from-top {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+}
+
+/* When not scrolled from bottom (at bottom): No bottom fade */
+.results-container:not(.scrolled-from-bottom) {
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 100%
+  );
+}
+
+/* When scrolled from top AND scrolled from bottom: Both fades */
+.results-container.scrolled-from-top.scrolled-from-bottom {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+}
+
+/* When scrolled from top but NOT from bottom (at bottom): Only top fade */
+.results-container.scrolled-from-top:not(.scrolled-from-bottom) {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 3%,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 3%,
+    black 100%
+  );
 }
 
 /* Fade effect removed to allow users to see content below */

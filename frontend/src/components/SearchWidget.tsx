@@ -226,8 +226,25 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     if (!resultsRef.current) return;
 
     const { scrollTop, scrollHeight, clientHeight } = resultsRef.current;
+
+    // Update fade classes based on scroll position
+    const isScrolledFromTop = scrollTop > 10;
+    const isScrolledFromBottom = scrollTop + clientHeight < scrollHeight - 10;
+
+    if (isScrolledFromTop) {
+      resultsRef.current.classList.add('scrolled-from-top');
+    } else {
+      resultsRef.current.classList.remove('scrolled-from-top');
+    }
+
+    if (isScrolledFromBottom) {
+      resultsRef.current.classList.add('scrolled-from-bottom');
+    } else {
+      resultsRef.current.classList.remove('scrolled-from-bottom');
+    }
+
+    // Load more when scrolled to 150% of viewport
     if (scrollHeight - scrollTop <= clientHeight * 1.5) {
-      // Load more when scrolled to 150% of viewport
       if (displayedSpots.length < filteredSpots.length) {
         setDisplayCount(prev => prev + 20);
       }
@@ -654,13 +671,13 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         <div class="search-results" ref={searchResultsRef}>
           {/* Results Header */}
           <div class="results-header">
+            <button class="btn-new-search" onClick={handleNewSearch}>
+              ← New Search
+            </button>
             <div class="results-info">
               <span class="query-prompt">›</span>
               <span class="query-text">{searchContext} ({filteredSpots.length} spot{filteredSpots.length !== 1 ? 's' : ''})</span>
             </div>
-            <button class="btn-new-search" onClick={handleNewSearch}>
-              ← New Search
-            </button>
           </div>
 
           {/* Filter & Sort Controls */}
@@ -678,9 +695,9 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
               <div class="sort-control">
                 <label>Sort:</label>
-                <select value={sortBy} onChange={(e) => setSortBy((e.target as HTMLSelectElement).value as any)}>
+                <select value={sortBy} onChange={(e) => setSortBy((e.target as HTMLSelectElement).value as any)} class="custom-select">
                   {userLocation && <option value="distance">Distance</option>}
-                  <option value="name">Name</option>
+                  <option value="name">Alphabetical</option>
                 </select>
               </div>
             </div>

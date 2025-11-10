@@ -88,17 +88,17 @@ export default function StateParkNoLicenseCallout() {
   }
 
   return (
-    <div class="retro-info-box no-license-callout" style="display: flex; align-items: center; gap: 1.5rem;">
-      <div style="font-size: 3rem; flex-shrink: 0;">🎣</div>
-      <div style="flex: 1;">
-        <h3 class="retro-heading-sm" style="margin-bottom: 0.75rem;">FISH WITHOUT A LICENSE</h3>
-        <p style="margin: 0 0 1rem 0; font-family: var(--font-terminal); font-size: 1.25rem; line-height: 1.5;">
-          {stateInfo.stateName} state parks don't require fishing licenses. Find all state parks with fishing.
-        </p>
-        <a href={`/${stateInfo.stateSlug}/fishing-without-license`} class="retro-btn retro-btn-search" style="display: inline-block; text-decoration: none;">
-          → View State Parks
-        </a>
-      </div>
+    <div class="retro-info-box no-license-callout">
+      <h3 class="retro-heading-sm" style="margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+        <span>🎣</span>
+        <span>FISH WITHOUT A LICENSE</span>
+      </h3>
+      <p style="margin: 0 0 1rem 0; font-family: var(--font-terminal); font-size: 1.25rem; line-height: 1.5;">
+        {stateInfo.stateName} state parks don't require fishing licenses. Find all state parks with fishing.
+      </p>
+      <a href={`/${stateInfo.stateSlug}/fishing-without-license`} class="retro-btn retro-btn-search" style="display: inline-block; text-decoration: none;">
+        → View State Parks
+      </a>
     </div>
   );
 }
