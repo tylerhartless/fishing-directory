@@ -7,8 +7,8 @@
 export default function WhatEachSpotIncludes() {
   return (
     <div class="retro-section">
-      <h2 class="retro-heading-md" style="text-align: left; margin-bottom: 1.5rem;">
-        › WHAT EACH SPOT INCLUDES
+      <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
+        WHAT EACH SPOT INCLUDES
       </h2>
 
       <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
