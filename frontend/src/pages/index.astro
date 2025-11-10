@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import SearchWidget from '../components/SearchWidget.tsx';
 import DynamicSubtitle from '../components/DynamicSubtitle.tsx';
 import ValuePropositionBadges from '../components/ValuePropositionBadges.tsx';
-import StateParkNoLicenseCallout from '../components/StateParkNoLicenseCallout.tsx';
+import SpecialLandingPageCallout from '../components/SpecialLandingPageCallout.tsx';
 import WhatEachSpotIncludes from '../components/WhatEachSpotIncludes.tsx';
 import CountyListing from '../components/CountyListing.tsx';
 
@@ -40,7 +40,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         <ValuePropositionBadges client:load />
 
         <!-- State Parks No-License Callout (conditional, dynamic by state) -->
-        <StateParkNoLicenseCallout client:load />
+        <SpecialLandingPageCallout geolocateOnly={true} client:load />
 
         <!-- What Each Spot Includes -->
         <WhatEachSpotIncludes client:load />

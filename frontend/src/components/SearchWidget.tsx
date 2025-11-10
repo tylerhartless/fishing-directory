@@ -276,8 +276,10 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         // Calculate absolute position of search-container top
         const containerTopAbsolute = containerRect.top + currentScrollY;
 
-        // Scroll to position container below header with 16px (1rem) padding
-        const padding = 16;
+        // Scroll to position container below header with responsive padding
+        // Desktop: 8px padding (just enough clearance for border glow), Mobile: 16px padding
+        const isDesktop = window.innerWidth >= 768;
+        const padding = isDesktop ? 8 : 16;
         const targetScrollPosition = containerTopAbsolute - headerHeight - padding;
 
         window.scrollTo({

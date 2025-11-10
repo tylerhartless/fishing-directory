@@ -1,15 +1,26 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getSpots } from '../../lib/database';
 
 const pageTitle = "Where Can I Fish Without a License in Texas? - State Parks Guide";
 const pageDescription = "Fish without a fishing license in Texas state parks! Complete guide to all Texas state parks where you can fish license-free, including locations, amenities, and what you need to know.";
+
+// Get all Texas state park spots
+const allSpots = await getSpots();
+const stateParks = allSpots.filter(spot =>
+  (spot.state === 'TX' || spot.state === 'Texas') &&
+  spot.spot_type === 'state_park'
+);
+
+// Serialize for client-side
+const stateParksJson = JSON.stringify(stateParks);
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="retro-page-header">
     <div class="container">
       <nav class="retro-breadcrumb">
-        <a href="/">← Directory</a> / <a href="/texas">Texas</a> / Fishing Without a License
+        <a href="/">← Home</a> / <a href="/texas">Texas</a> / Fishing Without a License
       </nav>
       <h1>Fishing Without a License in Texas</h1>
       <p class="subtitle" style="font-family: 'VT323', monospace;">Texas State Parks Don't Require Fishing Licenses</p>
@@ -27,6 +38,48 @@ const pageDescription = "Fish without a fishing license in Texas state parks! Co
         <div class="highlight-box">
           <strong>Important:</strong> While you don't need a fishing license, you still need to pay park entrance fees. Daily passes typically cost $3-8 per person (ages 13+).
         </div>
+      </div>
+
+      <!-- State Parks Search -->
+      <div class="spots-list-section">
+        <div class="search-widget-style">
+          <!-- Header -->
+          <div class="results-header">
+            <div class="results-info">
+              <span class="query-prompt">›</span>
+              <span class="query-text"><span id="filtered-count">{stateParks.length}</span> Texas State Parks with Fishing</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls-bar">
+            <button id="sort-btn" class="control-button">
+              <span class="control-label">Sort:</span>
+              <span id="sort-display">Alphabetical</span>
+            </button>
+          </div>
+
+          <!-- State Parks Grid -->
+          <div class="results-container" id="parks-scroll-container">
+            <div id="parks-container" class="results-grid">
+              <!-- Will be populated by JavaScript on load -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Find State Parks Section -->
+      <div class="find-parks-section retro-section">
+        <p style="font-family: 'VT323', monospace;">
+          Each listing includes:
+        </p>
+        <ul class="features-list">
+          <li>📍 Exact GPS coordinates and address</li>
+          <li>🅿️ Parking and amenities information (if available)</li>
+          <li>🐟 Fish species caught at the park</li>
+          <li>🗺️ Map with navigation links</li>
+          <li>⭐ Community ratings and catches</li>
+        </ul>
       </div>
 
       <!-- FAQ Section -->
@@ -76,30 +129,6 @@ const pageDescription = "Fish without a fishing license in Texas state parks! Co
         </div>
       </div>
 
-      <!-- Find State Parks Section -->
-      <div class="find-parks-section retro-section">
-        <h2>Find Texas State Parks with Fishing</h2>
-        <p style="font-family: 'VT323', monospace;">
-          Use our directory to find all Texas state parks where you can fish. Each listing includes:
-        </p>
-        <ul class="features-list">
-          <li>📍 Exact GPS coordinates and address</li>
-          <li>🅿️ Parking and amenities information</li>
-          <li>🐟 Fish species caught at the park</li>
-          <li>🗺️ Map with navigation links</li>
-          <li>⭐ Community ratings and catches</li>
-        </ul>
-
-        <div class="cta-buttons">
-          <a href="/texas?type=state_park" class="retro-btn retro-btn-search" style="text-decoration: none; text-align: center;">
-            → View All Texas State Parks
-          </a>
-          <a href="/texas" class="retro-btn county-browse-btn" style="text-decoration: none; text-align: center;">
-            → Browse All Texas Fishing Spots
-          </a>
-        </div>
-      </div>
-
       <!-- Additional Resources -->
       <div class="resources-section retro-section">
         <h2>Additional Resources</h2>
@@ -125,10 +154,343 @@ const pageDescription = "Fish without a fishing license in Texas state parks! Co
   </section>
 </Layout>
 
+<script define:vars={{ stateParksJson }}>
+  const allSpots = JSON.parse(stateParksJson);
+  let currentSort = 'alphabetical';
+  let userLocation = null;
+
+  const sortBtn = document.getElementById('sort-btn');
+  const sortDisplay = document.getElementById('sort-display');
+  const parksContainer = document.getElementById('parks-container');
+  const filteredCount = document.getElementById('filtered-count');
+  const scrollContainer = document.getElementById('parks-scroll-container');
+
+  // Handle scroll fade effects
+  function handleScrollFade() {
+    if (!scrollContainer) return;
+
+    const scrollTop = scrollContainer.scrollTop;
+    const scrollHeight = scrollContainer.scrollHeight;
+    const clientHeight = scrollContainer.clientHeight;
+    const scrollBottom = scrollHeight - scrollTop - clientHeight;
+
+    // Add/remove classes based on scroll position
+    if (scrollTop > 10) {
+      scrollContainer.classList.add('scrolled-from-top');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-top');
+    }
+
+    if (scrollBottom > 10) {
+      scrollContainer.classList.add('scrolled-from-bottom');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-bottom');
+    }
+  }
+
+  // Attach scroll listener
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', handleScrollFade);
+    // Initial check
+    handleScrollFade();
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  function sortSpots() {
+    let sorted = [...allSpots];
+
+    // Calculate distance and sort if sorting by distance
+    if (currentSort === 'distance' && userLocation) {
+      sorted = sorted.map(spot => ({
+        ...spot,
+        distance: calculateDistance(
+          userLocation.lat,
+          userLocation.lon,
+          parseFloat(spot.latitude),
+          parseFloat(spot.longitude)
+        )
+      }));
+
+      // Sort by distance
+      sorted.sort((a, b) => a.distance - b.distance);
+    } else {
+      // Sort alphabetically
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    renderSpots(sorted);
+  }
+
+  function renderSpots(spotsToRender) {
+    if (!parksContainer) {
+      console.error('Parks container not found');
+      return;
+    }
+
+    parksContainer.innerHTML = spotsToRender.map(spot => {
+      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+      const prominentAmenities = [];
+      const amenityIcons = {
+        'boat_ramp': '🚤 Boat Ramp',
+        'fishing_pier': '🎣 Pier',
+        'fish_cleaning': '🔪 Cleaning',
+        'restrooms': '🚻 Restrooms',
+        'parking': '🅿️ Parking',
+      };
+
+      for (const [key, label] of Object.entries(amenityIcons)) {
+        if (amenities[key] === true) {
+          prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
+        }
+      }
+
+      const amenitiesHtml = prominentAmenities.length > 0
+        ? prominentAmenities.join('')
+        : `<span class="amenity-placeholder">No amenities listed</span>`;
+
+      const distanceHtml = spot.distance
+        ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
+        : '';
+
+      // Construct URL safely
+      const countySlug = spot.county_slug || spot.county?.toLowerCase().replace(/\s+/g, '-') || 'unknown';
+      const spotSlug = spot.slug || spot.name.toLowerCase().replace(/\s+/g, '-');
+
+      return `
+        <a href="/texas/${countySlug}/${spotSlug}" class="spot-card" data-spot-type="${spot.spot_type}">
+          <div class="card-header">
+            <h3>${spot.name}</h3>
+            ${distanceHtml}
+          </div>
+          <div class="card-body">
+            ${amenitiesHtml}
+          </div>
+        </a>
+      `;
+    }).join('');
+
+    if (filteredCount) {
+      filteredCount.textContent = spotsToRender.length;
+    }
+
+    // Re-check fade after rendering
+    setTimeout(handleScrollFade, 100);
+  }
+
+  // Handle sort changes
+  if (sortBtn) {
+    sortBtn.addEventListener('click', () => {
+    if (currentSort === 'alphabetical') {
+      // Switch to distance sorting - prompt for location
+      if (navigator.geolocation) {
+        if (sortDisplay) sortDisplay.textContent = 'Getting location...';
+        sortBtn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLocation = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            };
+            currentSort = 'distance';
+            if (sortDisplay) sortDisplay.textContent = 'Distance';
+            sortBtn.disabled = false;
+            sortSpots();
+          },
+          (error) => {
+            if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
+            sortBtn.disabled = false;
+            alert('Unable to get your location. Please enable location services to sort by distance.');
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    } else {
+      // Switch back to alphabetical
+      currentSort = 'alphabetical';
+      if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
+      sortSpots();
+    }
+    });
+  }
+
+  // Initial render (alphabetical)
+  sortSpots();
+
+  // Handle back/forward navigation (bfcache)
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      // Page was restored from bfcache, re-render if needed
+      if (parksContainer && (!parksContainer.innerHTML || parksContainer.innerHTML.trim() === '')) {
+        sortSpots();
+      }
+    }
+  });
+</script>
+
 <style>
   .no-license-page {
     max-width: 900px;
     margin: 0 auto;
+  }
+
+  /* Spots list section - reuse search widget styles */
+  .spots-list-section {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .search-widget-style {
+    background: var(--rgba-dark-bg-80);
+    border: 2px solid var(--rgba-sage-50);
+    border-radius: 0;
+    padding: 1.5rem;
+    box-shadow:
+      0 0 20px var(--rgba-sage-30),
+      inset 0 0 30px var(--rgba-black-50);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Scanlines */
+  .search-widget-style::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rgba-black-15) 0px,
+      transparent 1px,
+      transparent 2px,
+      var(--rgba-black-15) 3px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .search-widget-style > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  :global([data-theme="light"]) .search-widget-style {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 var(--rgba-black-20);
+  }
+
+  :global([data-theme="light"]) .search-widget-style::before {
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rgba-black-01) 0px,
+      transparent 1px,
+      transparent 2px,
+      var(--rgba-black-01) 3px
+    );
+  }
+
+  /* Results header */
+  .results-header {
+    margin-bottom: 1rem;
+  }
+
+  .results-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    color: var(--theme-text-sage);
+    font-weight: 400;
+  }
+
+  :global([data-theme="light"]) .results-info {
+    color: var(--neutral-black);
+    font-weight: 700;
+  }
+
+  .query-prompt {
+    color: var(--theme-text-sage);
+    font-weight: 700;
+    text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  :global([data-theme="light"]) .query-prompt {
+    color: var(--boat-orange);
+    text-shadow: none;
+  }
+
+  /* Controls bar */
+  .controls-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .control-button {
+    background: var(--rgba-sage-15);
+    border: 2px solid var(--rgba-sage-50);
+    color: var(--theme-text-sage);
+    padding: 0.75rem 1.25rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 10px var(--rgba-sage-30);
+  }
+
+  :global([data-theme="light"]) .control-button {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    color: var(--neutral-black);
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--rgba-black-20);
+  }
+
+  .control-button:hover {
+    background: var(--rgba-sage-25);
+    border-color: var(--rgba-sage-80);
+    box-shadow: 0 0 15px var(--rgba-sage-50);
+  }
+
+  :global([data-theme="light"]) .control-button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--rgba-black-30);
+    border-color: var(--boat-orange);
+  }
+
+  .control-label {
+    opacity: 0.7;
+  }
+
+  #sort-display {
+    font-weight: 700;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  :global([data-theme="light"]) #sort-display {
+    color: var(--boat-orange);
+    text-shadow: none;
   }
 
   .retro-section {
@@ -267,19 +629,6 @@ const pageDescription = "Fish without a fishing license in Texas state parks! Co
   :global([data-theme="light"]) .features-list li {
     color: #555555;
     font-weight: 600;
-  }
-
-  .cta-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-
-  @media (min-width: 640px) {
-    .cta-buttons {
-      flex-direction: row;
-    }
   }
 
   .resources-section ul {
