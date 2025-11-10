@@ -15,7 +15,9 @@
       "Bash(docker compose:*)",
       "Bash(docker logs:*)",
       "Bash(tailscale ip:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []

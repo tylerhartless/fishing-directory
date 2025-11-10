@@ -1,15 +1,26 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getSpots } from '../../lib/database';
 
 const pageTitle = "Where Can I Fish Without a License in Texas? - State Parks Guide";
 const pageDescription = "Fish without a fishing license in Texas state parks! Complete guide to all Texas state parks where you can fish license-free, including locations, amenities, and what you need to know.";
+
+// Get all Texas state park spots
+const allSpots = await getSpots();
+const stateParks = allSpots.filter(spot =>
+  (spot.state === 'TX' || spot.state === 'Texas') &&
+  spot.spot_type === 'state_park'
+);
+
+// Serialize for client-side
+const stateParksJson = JSON.stringify(stateParks);
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="retro-page-header">
     <div class="container">
       <nav class="retro-breadcrumb">
-        <a href="/">← Directory</a> / <a href="/texas">Texas</a> / Fishing Without a License
+        <a href="/">← Home</a> / <a href="/texas">Texas</a> / Fishing Without a License
       </nav>
       <h1>Fishing Without a License in Texas</h1>
       <p class="subtitle" style="font-family: 'VT323', monospace;">Texas State Parks Don't Require Fishing Licenses</p>
@@ -26,6 +37,34 @@ const pageDescription = "Fish without a fishing license in Texas state parks! Co
         </p>
         <div class="highlight-box">
           <strong>Important:</strong> While you don't need a fishing license, you still need to pay park entrance fees. Daily passes typically cost $3-8 per person (ages 13+).
+        </div>
+      </div>
+
+      <!-- State Parks Search -->
+      <div class="state-parks-search-section">
+        <div class="search-widget-style">
+          <!-- Header -->
+          <div class="results-header">
+            <div class="results-info">
+              <span class="query-prompt">›</span>
+              <span class="query-text"><span id="filtered-count">{stateParks.length}</span> Texas State Parks with Fishing</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls-bar">
+            <button id="sort-btn" class="control-button">
+              <span class="control-label">Sort:</span>
+              <span id="sort-display">Distance</span>
+            </button>
+          </div>
+
+          <!-- State Parks Grid -->
+          <div class="results-container" id="parks-scroll-container">
+            <div id="parks-container" class="results-grid">
+              <!-- Will be populated by JavaScript on load -->
+            </div>
+          </div>
         </div>
       </div>
 
