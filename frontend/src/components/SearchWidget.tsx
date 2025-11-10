@@ -209,9 +209,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
       // Always sort by distance when user location is available
       filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
-
-      // Limit to top 100 for performance
-      filtered = filtered.slice(0, 100);
     } else {
       // If no user location, sort alphabetically
       filtered.sort((a, b) => a.name.localeCompare(b.name));
