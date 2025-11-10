@@ -56,7 +56,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   // Filter state
   const [showFilters, setShowFilters] = useState(false);
   const [typeFilters, setTypeFilters] = useState<Set<string>>(new Set());
-  const [sortBy, setSortBy] = useState<'distance' | 'name'>('distance');
+  const [searchRadius, setSearchRadius] = useState<number>(100); // Default to 100 miles
 
   // Infinite scroll state
   const [displayCount, setDisplayCount] = useState(20);
@@ -107,7 +107,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setSearchContext(state.searchContext);
           setAllSpots(state.allSpots);
           setTypeFilters(new Set(state.typeFilters));
-          setSortBy(state.sortBy);
+          setSearchRadius(state.searchRadius || 100);
           setDisplayCount(state.displayCount);
           setShowResults(true);
         } catch (error) {
@@ -126,12 +126,12 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         searchContext,
         allSpots,
         typeFilters: Array.from(typeFilters),
-        sortBy,
+        searchRadius,
         displayCount,
       };
       sessionStorage.setItem('searchWidgetState', JSON.stringify(state));
     }
-  }, [showResults, userLocation, searchContext, allSpots, typeFilters, sortBy, displayCount]);
+  }, [showResults, userLocation, searchContext, allSpots, typeFilters, searchRadius, displayCount]);
 
   // API URL
   const API_URL = typeof window !== 'undefined'
@@ -203,23 +203,23 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           parseFloat(spot.longitude)
         )
       }));
-    }
 
-    // Sort
-    if (sortBy === 'distance' && userLocation) {
+      // Filter by search radius
+      filtered = filtered.filter(spot => (spot.distance || 0) <= searchRadius);
+
+      // Always sort by distance when user location is available
       filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
-    } else if (sortBy === 'name') {
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
-    }
 
-    // Limit to top 100 for performance if using distance
-    if (userLocation) {
+      // Limit to top 100 for performance
       filtered = filtered.slice(0, 100);
+    } else {
+      // If no user location, sort alphabetically
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     setFilteredSpots(filtered);
     setDisplayedSpots(filtered.slice(0, displayCount));
-  }, [allSpots, typeFilters, sortBy, userLocation, showResults, displayCount]);
+  }, [allSpots, typeFilters, searchRadius, userLocation, showResults, displayCount]);
 
   // Infinite scroll handler
   const handleScroll = () => {
@@ -341,8 +341,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
             setShowTransition(false);
             setShowResults(true);
           }, 250);
-
-          setSortBy('distance');
         },
         (error) => {
           setIsLoadingLocation(false);
@@ -393,12 +391,10 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         const lon = parseFloat(data[0].lon);
         setUserLocation({ lat, lon });
         setSearchContext(`Near ${query}`);
-        setSortBy('distance');
       } else {
         // Geocoding failed - use text search
         setUserLocation(null);
         setSearchContext(`Search: "${query}"`);
-        setSortBy('name');
       }
 
       // Load spots if not already loaded
@@ -672,7 +668,12 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
             </button>
             <div class="results-info">
               <span class="query-prompt">›</span>
-              <span class="query-text">{searchContext} ({filteredSpots.length} spot{filteredSpots.length !== 1 ? 's' : ''})</span>
+              <span class="query-text">
+                {userLocation
+                  ? `${filteredSpots.length} spot${filteredSpots.length !== 1 ? 's' : ''} within ${searchRadius} mile${searchRadius !== 1 ? 's' : ''}`
+                  : searchContext
+                }
+              </span>
             </div>
           </div>
 
@@ -689,13 +690,18 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                 Filters {typeFilters.size > 0 && `(${typeFilters.size})`}
               </button>
 
-              <div class="sort-control">
-                <label>Sort:</label>
-                <select value={sortBy} onChange={(e) => setSortBy((e.target as HTMLSelectElement).value as any)} class="custom-select">
-                  {userLocation && <option value="distance">Distance</option>}
-                  <option value="name">Alphabetical</option>
-                </select>
-              </div>
+              {userLocation && (
+                <div class="sort-control">
+                  <label>Radius:</label>
+                  <select value={searchRadius} onChange={(e) => setSearchRadius(parseInt((e.target as HTMLSelectElement).value))} class="custom-select">
+                    <option value="10">10 miles</option>
+                    <option value="25">25 miles</option>
+                    <option value="50">50 miles</option>
+                    <option value="100">100 miles</option>
+                    <option value="200">200 miles</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Collapsible Filter Panel */}
