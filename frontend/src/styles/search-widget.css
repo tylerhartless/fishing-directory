@@ -405,11 +405,9 @@
 /* Light Mode: Bold Double-Border Catalog Section */
 [data-theme="light"] .search-form-section {
   background: white;
-  border: 4px solid var(--neutral-black, #1a1a1a);
+  border: 2px dashed var(--neutral-black, #1a1a1a);
   padding: 1.5rem;
-  box-shadow:
-    inset 0 0 0 2px white,
-    inset 0 0 0 6px var(--neutral-black, #1a1a1a);
+  box-shadow: none;
   position: relative;
 }
 
