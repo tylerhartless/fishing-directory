@@ -55,7 +55,7 @@ const stateParksJson = JSON.stringify(stateParks);
           <div class="controls-bar">
             <button id="sort-btn" class="control-button">
               <span class="control-label">Sort:</span>
-              <span id="sort-display">Distance</span>
+              <span id="sort-display">Alphabetical</span>
             </button>
           </div>
 
@@ -163,6 +163,168 @@ const stateParksJson = JSON.stringify(stateParks);
     </div>
   </section>
 </Layout>
+
+<script define:vars={{ stateParksJson }}>
+  const allSpots = JSON.parse(stateParksJson);
+  let currentSort = 'alphabetical';
+  let userLocation = null;
+
+  const sortBtn = document.getElementById('sort-btn');
+  const sortDisplay = document.getElementById('sort-display');
+  const parksContainer = document.getElementById('parks-container');
+  const filteredCount = document.getElementById('filtered-count');
+  const scrollContainer = document.getElementById('parks-scroll-container');
+
+  // Handle scroll fade effects
+  function handleScrollFade() {
+    if (!scrollContainer) return;
+
+    const scrollTop = scrollContainer.scrollTop;
+    const scrollHeight = scrollContainer.scrollHeight;
+    const clientHeight = scrollContainer.clientHeight;
+    const scrollBottom = scrollHeight - scrollTop - clientHeight;
+
+    // Add/remove classes based on scroll position
+    if (scrollTop > 10) {
+      scrollContainer.classList.add('scrolled-from-top');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-top');
+    }
+
+    if (scrollBottom > 10) {
+      scrollContainer.classList.add('scrolled-from-bottom');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-bottom');
+    }
+  }
+
+  // Attach scroll listener
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', handleScrollFade);
+    // Initial check
+    handleScrollFade();
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  function sortSpots() {
+    let sorted = [...allSpots];
+
+    // Calculate distance and sort if sorting by distance
+    if (currentSort === 'distance' && userLocation) {
+      sorted = sorted.map(spot => ({
+        ...spot,
+        distance: calculateDistance(
+          userLocation.lat,
+          userLocation.lon,
+          parseFloat(spot.latitude),
+          parseFloat(spot.longitude)
+        )
+      }));
+
+      // Sort by distance
+      sorted.sort((a, b) => a.distance - b.distance);
+    } else {
+      // Sort alphabetically
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    renderSpots(sorted);
+  }
+
+  function renderSpots(spotsToRender) {
+    parksContainer.innerHTML = spotsToRender.map(spot => {
+      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+      const prominentAmenities = [];
+      const amenityIcons = {
+        'boat_ramp': '🚤 Boat Ramp',
+        'fishing_pier': '🎣 Pier',
+        'fish_cleaning': '🔪 Cleaning',
+        'restrooms': '🚻 Restrooms',
+        'parking': '🅿️ Parking',
+      };
+
+      for (const [key, label] of Object.entries(amenityIcons)) {
+        if (amenities[key] === true) {
+          prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
+        }
+      }
+
+      const amenitiesHtml = prominentAmenities.length > 0
+        ? prominentAmenities.join('')
+        : `<span class="amenity-placeholder">No amenities listed</span>`;
+
+      const distanceHtml = spot.distance
+        ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
+        : '';
+
+      return `
+        <a href="/texas/${spot.county_slug}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}">
+          <div class="card-header">
+            <h3>${spot.name}</h3>
+            ${distanceHtml}
+          </div>
+          <div class="card-body">
+            ${amenitiesHtml}
+          </div>
+        </a>
+      `;
+    }).join('');
+
+    filteredCount.textContent = spotsToRender.length;
+
+    // Re-check fade after rendering
+    setTimeout(handleScrollFade, 100);
+  }
+
+  // Handle sort changes
+  sortBtn.addEventListener('click', () => {
+    if (currentSort === 'alphabetical') {
+      // Switch to distance sorting - prompt for location
+      if (navigator.geolocation) {
+        sortDisplay.textContent = 'Getting location...';
+        sortBtn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLocation = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            };
+            currentSort = 'distance';
+            sortDisplay.textContent = 'Distance';
+            sortBtn.disabled = false;
+            sortSpots();
+          },
+          (error) => {
+            sortDisplay.textContent = 'Alphabetical';
+            sortBtn.disabled = false;
+            alert('Unable to get your location. Please enable location services to sort by distance.');
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    } else {
+      // Switch back to alphabetical
+      currentSort = 'alphabetical';
+      sortDisplay.textContent = 'Alphabetical';
+      sortSpots();
+    }
+  });
+
+  // Initial render (alphabetical)
+  sortSpots();
+</script>
 
 <style>
   .no-license-page {
