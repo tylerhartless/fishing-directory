@@ -1,0 +1,765 @@
+---
+/**
+ * ResultsWidget - Reusable results display widget
+ * Used across states, counties, and spots listing pages
+ *
+ * @param items - Array of items to display (states/counties/spots)
+ * @param itemType - Type of items: 'state' | 'county' | 'spot'
+ * @param backButton - { url: string, text: string } for back button
+ * @param showFilters - Whether to show filter controls (default: false)
+ * @param spotTypes - Array of spot types for filtering (required if showFilters=true)
+ * @param scrollContainerId - Custom ID for scroll container (default: 'results-scroll-container')
+ * @param resultsContainerId - Custom ID for results container (default: 'results-container')
+ */
+
+interface Props {
+  items: any[];
+  itemType: 'state' | 'county' | 'spot';
+  backButton: {
+    url: string;
+    text: string;
+  };
+  showFilters?: boolean;
+  spotTypes?: string[];
+  scrollContainerId?: string;
+  resultsContainerId?: string;
+}
+
+const {
+  items,
+  itemType,
+  backButton,
+  showFilters = false,
+  spotTypes = [],
+  scrollContainerId = 'results-scroll-container',
+  resultsContainerId = 'results-container',
+} = Astro.props;
+
+// Serialize for client-side
+const itemsJson = JSON.stringify(items);
+const spotTypesJson = JSON.stringify(spotTypes);
+
+// Generate unique widget ID for scroll position storage
+const widgetId = `results-widget-${itemType}`;
+---
+
+<div class="search-widget-style" id={widgetId}>
+  <!-- Controls -->
+  <div class="controls-bar">
+    <a href={backButton.url} class="control-button back-button">
+      <span class="back-arrow">←</span>
+      <span class="back-text">{backButton.text}</span>
+    </a>
+    <button id="sort-btn" class="control-button">
+      <span class="control-label">Sort:</span>
+      <span id="sort-display">Alphabetical</span>
+    </button>
+    {showFilters && (
+      <button id="filters-btn" class="control-button">
+        <span class="control-label">Filters</span>
+        <span id="filter-count"></span>
+      </button>
+    )}
+  </div>
+
+  <!-- Filter Panel (Collapsible) -->
+  {showFilters && (
+    <div id="filter-panel" class="filter-panel" style="display: none;">
+      <div class="filter-section">
+        <h4>Spot Type</h4>
+        <div class="filter-checkboxes" id="type-filters">
+          {spotTypes.map(type => {
+            const isBoatRamp = type === 'boat_ramp';
+            const displayName = type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            return (
+              <label class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  value={type}
+                  checked={!isBoatRamp}
+                  data-filter-type="spot_type"
+                />
+                <span>{displayName}</span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  )}
+
+  <!-- Results Grid -->
+  <div class="results-container" id={scrollContainerId}>
+    <div id={resultsContainerId} class="results-grid">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-widget-style {
+    background: var(--rgba-dark-bg-80);
+    border: 2px solid var(--rgba-sage-50);
+    border-radius: 0;
+    padding: 1.5rem;
+    box-shadow:
+      0 0 20px var(--rgba-sage-30),
+      inset 0 0 30px var(--rgba-black-50);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Scanlines */
+  .search-widget-style::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rgba-black-15) 0px,
+      transparent 1px,
+      transparent 2px,
+      var(--rgba-black-15) 3px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .search-widget-style > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  :global([data-theme="light"]) .search-widget-style {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 var(--rgba-black-20);
+  }
+
+  :global([data-theme="light"]) .search-widget-style::before {
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rgba-black-01) 0px,
+      transparent 1px,
+      transparent 2px,
+      var(--rgba-black-01) 3px
+    );
+  }
+
+  /* Controls bar */
+  .controls-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .control-button {
+    background: var(--rgba-sage-15);
+    border: 2px solid var(--rgba-sage-50);
+    color: var(--theme-text-sage);
+    padding: 0.75rem 1.25rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 10px var(--rgba-sage-30);
+    text-decoration: none;
+  }
+
+  .back-button {
+    white-space: nowrap;
+  }
+
+  .back-arrow {
+    font-size: 1.2rem;
+    opacity: 0.7;
+  }
+
+  .back-text {
+    font-weight: 700;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  :global([data-theme="light"]) .back-text {
+    color: var(--boat-orange);
+    text-shadow: none;
+  }
+
+  :global([data-theme="light"]) .control-button {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    color: var(--neutral-black);
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--rgba-black-20);
+  }
+
+  .control-button:hover {
+    background: var(--rgba-sage-25);
+    border-color: var(--rgba-sage-80);
+    box-shadow: 0 0 15px var(--rgba-sage-50);
+  }
+
+  :global([data-theme="light"]) .control-button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--rgba-black-30);
+    border-color: var(--boat-orange);
+  }
+
+  .control-label {
+    opacity: 0.7;
+  }
+
+  #sort-display, #filter-count {
+    font-weight: 700;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  :global([data-theme="light"]) #sort-display,
+  :global([data-theme="light"]) #filter-count {
+    color: var(--boat-orange);
+    text-shadow: none;
+  }
+
+  /* Filter panel */
+  .filter-panel {
+    background: var(--rgba-black-30);
+    border: 1px solid var(--rgba-sage-40);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0;
+  }
+
+  :global([data-theme="light"]) .filter-panel {
+    background: rgba(0, 0, 0, 0.03);
+    border: 2px solid var(--neutral-black);
+  }
+
+  .filter-section h4 {
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    color: var(--theme-text-sage);
+    font-weight: 400;
+    margin: 0 0 0.75rem 0;
+    text-shadow: 0 0 6px var(--rgba-sage-40);
+  }
+
+  :global([data-theme="light"]) .filter-section h4 {
+    color: var(--neutral-black);
+    font-weight: 700;
+    text-shadow: none;
+  }
+
+  .filter-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: var(--theme-text-secondary);
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    background: var(--rgba-sage-10);
+    border: 1px solid var(--rgba-sage-30);
+    transition: all 0.2s;
+  }
+
+  :global([data-theme="light"]) .filter-checkbox {
+    background: white;
+    border: 2px solid var(--neutral-black);
+    color: var(--neutral-black);
+    font-weight: 600;
+  }
+
+  .filter-checkbox:hover {
+    background: var(--rgba-sage-20);
+    border-color: var(--rgba-sage-50);
+  }
+
+  :global([data-theme="light"]) .filter-checkbox:hover {
+    background: rgba(255, 140, 66, 0.1);
+    border-color: var(--boat-orange);
+  }
+
+  .filter-checkbox input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .search-widget-style {
+      padding: 1rem;
+    }
+
+    .controls-bar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+
+    .control-button {
+      flex-shrink: 0;
+    }
+
+    .filter-checkboxes {
+      flex-direction: column;
+    }
+
+    .filter-checkbox {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .back-text {
+      display: none;
+    }
+
+    .back-button {
+      padding: 0.75rem;
+    }
+  }
+</style>
+
+<script define:vars={{ itemsJson, spotTypesJson, itemType, showFilters, scrollContainerId, resultsContainerId, widgetId }}>
+  const allItems = JSON.parse(itemsJson);
+  const spotTypes = showFilters ? JSON.parse(spotTypesJson) : [];
+  let currentSort = 'alphabetical';
+  let userLocation = null;
+  let activeFilters = showFilters ? new Set(spotTypes.filter(t => t !== 'boat_ramp')) : null;
+
+  const filtersBtn = document.getElementById('filters-btn');
+  const sortBtn = document.getElementById('sort-btn');
+  const sortDisplay = document.getElementById('sort-display');
+  const filterCount = document.getElementById('filter-count');
+  const filterPanel = document.getElementById('filter-panel');
+  const itemsContainer = document.getElementById(resultsContainerId);
+  const scrollContainer = document.getElementById(scrollContainerId);
+  const visibleCount = document.getElementById('visible-count');
+  const widgetElement = document.getElementById(widgetId);
+
+  // Handle scroll fade effects
+  function handleScrollFade() {
+    if (!scrollContainer) return;
+
+    const scrollTop = scrollContainer.scrollTop;
+    const scrollHeight = scrollContainer.scrollHeight;
+    const clientHeight = scrollContainer.clientHeight;
+    const scrollBottom = scrollHeight - scrollTop - clientHeight;
+
+    // Add/remove classes based on scroll position
+    if (scrollTop > 10) {
+      scrollContainer.classList.add('scrolled-from-top');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-top');
+    }
+
+    if (scrollBottom > 10) {
+      scrollContainer.classList.add('scrolled-from-bottom');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-bottom');
+    }
+  }
+
+  // Attach scroll listener
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', handleScrollFade);
+    // Initial check
+    handleScrollFade();
+  }
+
+  // Scroll widget into view (only on mobile, only when controls are used)
+  function scrollWidgetIntoView() {
+    // Only scroll on mobile
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile || !widgetElement) return;
+
+    // Get the header element to calculate offset
+    const header = document.querySelector('header');
+    const headerHeight = header ? header.offsetHeight : 0;
+
+    // Get the widget's position relative to the document
+    const widgetRect = widgetElement.getBoundingClientRect();
+    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Calculate absolute position of widget top
+    const widgetTopAbsolute = widgetRect.top + currentScrollY;
+
+    // Scroll to position widget below header with padding
+    // 20px padding on mobile to ensure subtitle is hidden
+    const padding = 20;
+    const targetScrollPosition = widgetTopAbsolute - headerHeight - padding;
+
+    window.scrollTo({
+      top: targetScrollPosition,
+      behavior: 'smooth'
+    });
+  }
+
+  // Save scroll position and set flag for destination page to scroll into view (only on mobile)
+  function saveScrollPosition() {
+    // Only save scroll on mobile
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile || !scrollContainer) return;
+
+    const scrollData = {
+      containerScroll: scrollContainer.scrollTop,
+      windowScroll: window.pageYOffset || document.documentElement.scrollTop,
+      timestamp: Date.now()
+    };
+
+    sessionStorage.setItem(`scroll-${widgetId}`, JSON.stringify(scrollData));
+
+    // Set flag for destination page to scroll its widget into view
+    sessionStorage.setItem('shouldScrollWidgetIntoView', 'true');
+  }
+
+  // Restore scroll position on back navigation (only on mobile)
+  function restoreScrollPosition() {
+    // Only restore scroll on mobile
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile) return;
+
+    const savedData = sessionStorage.getItem(`scroll-${widgetId}`);
+    if (!savedData) return;
+
+    try {
+      const scrollData = JSON.parse(savedData);
+
+      // Only restore if saved within last 5 minutes
+      if (Date.now() - scrollData.timestamp > 5 * 60 * 1000) {
+        sessionStorage.removeItem(`scroll-${widgetId}`);
+        return;
+      }
+
+      // Restore container scroll
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollData.containerScroll;
+      }
+
+      // Restore window scroll
+      window.scrollTo({
+        top: scrollData.windowScroll,
+        behavior: 'instant'
+      });
+
+      // Clear the saved position after restoring
+      sessionStorage.removeItem(`scroll-${widgetId}`);
+    } catch (e) {
+      console.error('Failed to restore scroll position:', e);
+    }
+  }
+
+  // Handle scroll on page load
+  setTimeout(() => {
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile) return;
+
+    // Check if we're restoring from browser back navigation
+    const isBackNavigation = window.performance &&
+      window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD;
+
+    if (isBackNavigation) {
+      // Restore exact scroll position when using browser back button
+      restoreScrollPosition();
+    } else {
+      // Check if we should scroll into view (set by clicking back button control or result cards)
+      const shouldScroll = sessionStorage.getItem('shouldScrollWidgetIntoView');
+      if (shouldScroll === 'true') {
+        sessionStorage.removeItem('shouldScrollWidgetIntoView');
+        scrollWidgetIntoView();
+      }
+    }
+  }, 100);
+
+  // Handle back/forward navigation (bfcache)
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) return;
+
+      // Page was restored from bfcache - restore scroll position
+      restoreScrollPosition();
+    }
+  });
+
+  // Save scroll position when navigating away
+  if (itemsContainer) {
+    itemsContainer.addEventListener('click', (e) => {
+      const target = e.target;
+      // Check if clicked element or its parent is a link
+      const link = target.closest('a');
+      if (link) {
+        saveScrollPosition();
+      }
+    });
+  }
+
+  // Save scroll position when clicking back button
+  const backButton = widgetElement?.querySelector('.back-button');
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      saveScrollPosition();
+    });
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  function filterAndSortItems() {
+    let filtered = allItems;
+
+    // Apply filters if enabled
+    if (showFilters && activeFilters) {
+      filtered = allItems.filter(item => activeFilters.has(item.spot_type));
+    }
+
+    // Calculate distance and sort if sorting by distance
+    if (currentSort === 'distance' && userLocation) {
+      filtered = filtered.map(item => {
+        const lat = itemType === 'spot' ? parseFloat(item.latitude) : item.lat;
+        const lon = itemType === 'spot' ? parseFloat(item.longitude) : item.lon;
+        return {
+          ...item,
+          distance: calculateDistance(
+            userLocation.lat,
+            userLocation.lon,
+            lat,
+            lon
+          )
+        };
+      });
+
+      // Sort by distance
+      filtered.sort((a, b) => a.distance - b.distance);
+    } else {
+      // Sort alphabetically
+      if (itemType === 'state' || itemType === 'county') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+    }
+
+    renderItems(filtered);
+    if (showFilters) {
+      updateFilterCount();
+    }
+  }
+
+  function renderItems(itemsToRender) {
+    if (!itemsContainer) return;
+
+    itemsContainer.innerHTML = itemsToRender.map(item => {
+      if (itemType === 'state') {
+        return renderStateCard(item);
+      } else if (itemType === 'county') {
+        return renderCountyCard(item);
+      } else {
+        return renderSpotCard(item);
+      }
+    }).join('');
+
+    // Update visible count if element exists
+    if (visibleCount) {
+      visibleCount.textContent = itemsToRender.length;
+    }
+
+    // Re-check fade after rendering
+    setTimeout(handleScrollFade, 100);
+  }
+
+  function renderStateCard(state) {
+    const distanceHtml = state.distance
+      ? `<div class="distance-indicator">${Math.round(state.distance)} mi</div>`
+      : '';
+
+    return `
+      <a href="/${state.slug}" class="spot-card state-card" data-state-name="${state.name}">
+        <div class="card-header">
+          <h3>${state.name}</h3>
+          ${distanceHtml}
+        </div>
+        <div class="card-body">
+          <span class="card-meta-item">${state.countyCount} ${state.countyCount === 1 ? 'county' : 'counties'}</span>
+          <span class="card-meta-item">${state.spotCount} ${state.spotCount === 1 ? 'spot' : 'spots'}</span>
+        </div>
+      </a>
+    `;
+  }
+
+  function renderCountyCard(county) {
+    const distanceHtml = county.distance
+      ? `<div class="distance-indicator">${Math.round(county.distance)} mi</div>`
+      : '';
+
+    return `
+      <a href="/texas/${county.slug}" class="spot-card county-card" data-county-name="${county.name}">
+        <div class="card-header">
+          <h3>${county.name} County</h3>
+          ${distanceHtml}
+        </div>
+        <div class="card-body">
+          <span class="card-meta-item">${county.count} ${county.count === 1 ? 'spot' : 'spots'}</span>
+        </div>
+      </a>
+    `;
+  }
+
+  function renderSpotCard(spot) {
+    const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+    const prominentAmenities = [];
+    const amenityIcons = {
+      'boat_ramp': '🚤 Boat Ramp',
+      'fishing_pier': '🎣 Pier',
+      'fish_cleaning': '🔪 Cleaning',
+      'restrooms': '🚻 Restrooms',
+      'parking': '🅿️ Parking',
+    };
+
+    for (const [key, label] of Object.entries(amenityIcons)) {
+      if (amenities[key] === true) {
+        prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
+      }
+    }
+
+    const amenitiesHtml = prominentAmenities.length > 0
+      ? prominentAmenities.join('')
+      : `<span class="amenity-placeholder">No amenities listed</span>`;
+
+    const distanceHtml = spot.distance
+      ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
+      : '';
+
+    // Construct URL safely
+    const countySlug = spot.county_slug || spot.county?.toLowerCase().replace(/\s+/g, '-') || 'unknown';
+    const spotSlug = spot.slug || spot.name.toLowerCase().replace(/\s+/g, '-');
+
+    return `
+      <a href="/texas/${countySlug}/${spotSlug}" class="spot-card" data-spot-type="${spot.spot_type}">
+        <div class="card-header">
+          <h3>${spot.name}</h3>
+          ${distanceHtml}
+        </div>
+        <div class="card-body">
+          ${amenitiesHtml}
+        </div>
+      </a>
+    `;
+  }
+
+  function updateFilterCount() {
+    if (!showFilters || !activeFilters || !filterCount) return;
+
+    const totalTypes = spotTypes.length;
+    const activeCount = activeFilters.size;
+
+    if (activeCount === totalTypes) {
+      filterCount.textContent = '';
+    } else {
+      filterCount.textContent = `(${activeCount})`;
+    }
+  }
+
+  // Toggle filters panel
+  if (filtersBtn && filterPanel) {
+    filtersBtn.addEventListener('click', () => {
+      const isVisible = filterPanel.style.display !== 'none';
+      filterPanel.style.display = isVisible ? 'none' : 'block';
+
+      // Scroll widget into view when toggling filters
+      setTimeout(() => scrollWidgetIntoView(), 100);
+    });
+  }
+
+  // Handle filter changes
+  if (filterPanel) {
+    filterPanel.addEventListener('change', (e) => {
+      if (e.target.type === 'checkbox' && activeFilters) {
+        const value = e.target.value;
+        if (e.target.checked) {
+          activeFilters.add(value);
+        } else {
+          activeFilters.delete(value);
+        }
+        filterAndSortItems();
+
+        // Scroll widget into view after filtering
+        setTimeout(() => scrollWidgetIntoView(), 100);
+      }
+    });
+  }
+
+  // Handle sort changes
+  if (sortBtn) {
+    sortBtn.addEventListener('click', () => {
+      if (currentSort === 'alphabetical') {
+        // Switch to distance sorting - prompt for location
+        if (navigator.geolocation) {
+          if (sortDisplay) sortDisplay.textContent = 'Getting location...';
+          sortBtn.disabled = true;
+
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              userLocation = {
+                lat: position.coords.latitude,
+                lon: position.coords.longitude
+              };
+              currentSort = 'distance';
+              if (sortDisplay) sortDisplay.textContent = 'Distance';
+              sortBtn.disabled = false;
+              filterAndSortItems();
+
+              // Scroll widget into view after sorting
+              setTimeout(() => scrollWidgetIntoView(), 100);
+            },
+            (error) => {
+              if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
+              sortBtn.disabled = false;
+              alert('Unable to get your location. Please enable location services to sort by distance.');
+            }
+          );
+        } else {
+          alert('Geolocation is not supported by your browser.');
+        }
+      } else {
+        // Switch back to alphabetical
+        currentSort = 'alphabetical';
+        if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
+        filterAndSortItems();
+
+        // Scroll widget into view after sorting
+        setTimeout(() => scrollWidgetIntoView(), 100);
+      }
+    });
+  }
+
+  // Initial render
+  if (showFilters) {
+    filterAndSortItems();
+    updateFilterCount();
+  }
+</script>
