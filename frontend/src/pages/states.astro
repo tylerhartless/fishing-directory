@@ -1,0 +1,250 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSpots } from '../lib/database';
+
+// State lookup mappings
+const stateNameLookup: Record<string, string> = {
+  'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+  'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+  'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+  'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+  'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+  'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+  'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+  'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+  'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+  'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+};
+
+const stateSlugLookup: Record<string, string> = {
+  'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
+  'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
+  'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
+  'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
+  'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
+  'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
+  'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
+  'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
+  'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
+  'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
+};
+
+// Get all spots and group by state
+const allSpots = await getSpots();
+
+// Group spots by state
+const stateData = allSpots.reduce((acc, spot) => {
+  const stateCode = spot.state;
+
+  if (!stateCode) {
+    return acc;
+  }
+
+  if (!acc[stateCode]) {
+    acc[stateCode] = {
+      code: stateCode,
+      name: stateNameLookup[stateCode] || stateCode,
+      slug: stateSlugLookup[stateCode] || stateCode.toLowerCase(),
+      spotCount: 0,
+      counties: new Set<string>(),
+      totalLat: 0,
+      totalLon: 0
+    };
+  }
+
+  acc[stateCode].spotCount++;
+  acc[stateCode].totalLat += parseFloat(spot.latitude);
+  acc[stateCode].totalLon += parseFloat(spot.longitude);
+
+  // Track unique counties
+  let countyName = spot.county || '';
+  if (countyName.includes(',')) {
+    countyName = countyName.split(',')[0].trim();
+  }
+  countyName = countyName.replace(/\s+County$/i, '').trim();
+  if (countyName && countyName !== 'Multiple Counties') {
+    acc[stateCode].counties.add(countyName);
+  }
+
+  return acc;
+}, {} as Record<string, {
+  code: string;
+  name: string;
+  slug: string;
+  spotCount: number;
+  counties: Set<string>;
+  totalLat: number;
+  totalLon: number;
+}>);
+
+// Convert to array with average coordinates
+const states = Object.values(stateData)
+  .map(state => ({
+    code: state.code,
+    name: state.name,
+    slug: state.slug,
+    spotCount: state.spotCount,
+    countyCount: state.counties.size,
+    lat: state.totalLat / state.spotCount,
+    lon: state.totalLon / state.spotCount
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+// Serialize for client-side JS
+const statesJson = JSON.stringify(states);
+const totalSpots = allSpots.length;
+---
+
+<Layout
+  title="Browse Fishing Spots by State - Public Access Directory"
+  description="Explore fishing spots across all U.S. states. Find boat ramps, piers, and bank fishing spots by state."
+>
+  <section class="retro-page-header">
+    <div class="container">
+      <nav class="retro-breadcrumb">
+        <a href="/">← Home</a> / States
+      </nav>
+      <h1>Browse by State</h1>
+      <p class="subtitle">
+        {totalSpots.toLocaleString()} fishing spots across {states.length} {states.length === 1 ? 'state' : 'states'}
+      </p>
+    </div>
+  </section>
+
+  <section class="retro-container">
+    <div class="states-list-section">
+      <div class="search-widget-style">
+
+        <!-- States Grid -->
+        <div class="results-container" id="states-scroll-container">
+          <div id="states-container" class="results-grid">
+            {states.map((state) => (
+              <a href={`/${state.slug}`} class="spot-card state-card" data-state-name={state.name} data-lat={state.lat} data-lon={state.lon}>
+                <div class="card-header">
+                  <h3>{state.name}</h3>
+                </div>
+                <div class="card-body">
+                  <span class="card-meta-item">{state.countyCount} {state.countyCount === 1 ? 'county' : 'counties'}</span>
+                  <span class="card-meta-item">{state.spotCount} {state.spotCount === 1 ? 'spot' : 'spots'}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* States list section - reuse search widget styles */
+  .states-list-section {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .search-widget-style {
+    background: var(--rgba-dark-bg-80);
+    border: 2px solid var(--rgba-sage-50);
+    border-radius: 0;
+    padding: 1.5rem;
+    box-shadow:
+      0 0 20px var(--rgba-sage-30),
+      inset 0 0 30px var(--rgba-black-50);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Scanlines */
+  .search-widget-style::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rgba-black-15) 0px,
+      transparent 1px,
+      transparent 2px,
+      var(--rgba-black-15) 3px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .search-widget-style > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  :global([data-theme="light"]) .search-widget-style {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 6px 6px 0 var(--rgba-black-20);
+  }
+
+  :global([data-theme="light"]) .search-widget-style::before {
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rgba-black-01) 0px,
+      transparent 1px,
+      transparent 2px,
+      var(--rgba-black-01) 3px
+    );
+  }
+
+  /* State cards inherit from spot-card in search-widget.css */
+  :global(.state-card) {
+    border-color: var(--rgba-sage-30);
+    box-shadow: 0 0 12px var(--rgba-sage-20);
+  }
+
+  :global([data-theme="light"] .state-card) {
+    border-color: var(--neutral-black);
+    box-shadow: 4px 4px 0 var(--rgba-black-20);
+  }
+
+  @media (max-width: 768px) {
+    .search-widget-style {
+      padding: 1rem;
+    }
+  }
+</style>
+
+<script define:vars={{ statesJson }}>
+  const states = JSON.parse(statesJson);
+  const scrollContainer = document.getElementById('states-scroll-container');
+
+  // Handle scroll fade effects
+  function handleScrollFade() {
+    if (!scrollContainer) return;
+
+    const scrollTop = scrollContainer.scrollTop;
+    const scrollHeight = scrollContainer.scrollHeight;
+    const clientHeight = scrollContainer.clientHeight;
+    const scrollBottom = scrollHeight - scrollTop - clientHeight;
+
+    // Add/remove classes based on scroll position
+    if (scrollTop > 10) {
+      scrollContainer.classList.add('scrolled-from-top');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-top');
+    }
+
+    if (scrollBottom > 10) {
+      scrollContainer.classList.add('scrolled-from-bottom');
+    } else {
+      scrollContainer.classList.remove('scrolled-from-bottom');
+    }
+  }
+
+  // Attach scroll listener
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', handleScrollFade);
+    // Initial check
+    handleScrollFade();
+  }
+</script>
+</Layout>
