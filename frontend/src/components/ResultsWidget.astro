@@ -383,9 +383,11 @@ const widgetId = `results-widget-${itemType}`;
     handleScrollFade();
   }
 
-  // Scroll widget into view on mount
+  // Scroll widget into view (only on mobile, only when controls are used)
   function scrollWidgetIntoView() {
-    if (!widgetElement) return;
+    // Only scroll on mobile
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile || !widgetElement) return;
 
     // Get the header element to calculate offset
     const header = document.querySelector('header');
@@ -398,10 +400,9 @@ const widgetId = `results-widget-${itemType}`;
     // Calculate absolute position of widget top
     const widgetTopAbsolute = widgetRect.top + currentScrollY;
 
-    // Scroll to position widget below header with responsive padding
-    // Desktop: 8px padding, Mobile: 20px padding (more padding on mobile to ensure subtitle is hidden)
-    const isDesktop = window.innerWidth >= 768;
-    const padding = isDesktop ? 8 : 20;
+    // Scroll to position widget below header with padding
+    // 20px padding on mobile to ensure subtitle is hidden
+    const padding = 20;
     const targetScrollPosition = widgetTopAbsolute - headerHeight - padding;
 
     window.scrollTo({
@@ -410,9 +411,11 @@ const widgetId = `results-widget-${itemType}`;
     });
   }
 
-  // Save scroll position before navigation
+  // Save scroll position and set flag for destination page to scroll into view (only on mobile)
   function saveScrollPosition() {
-    if (!scrollContainer) return;
+    // Only save scroll on mobile
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile || !scrollContainer) return;
 
     const scrollData = {
       containerScroll: scrollContainer.scrollTop,
@@ -421,10 +424,17 @@ const widgetId = `results-widget-${itemType}`;
     };
 
     sessionStorage.setItem(`scroll-${widgetId}`, JSON.stringify(scrollData));
+
+    // Set flag for destination page to scroll its widget into view
+    sessionStorage.setItem('shouldScrollWidgetIntoView', 'true');
   }
 
-  // Restore scroll position on back navigation
+  // Restore scroll position on back navigation (only on mobile)
   function restoreScrollPosition() {
+    // Only restore scroll on mobile
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile) return;
+
     const savedData = sessionStorage.getItem(`scroll-${widgetId}`);
     if (!savedData) return;
 
@@ -455,23 +465,35 @@ const widgetId = `results-widget-${itemType}`;
     }
   }
 
-  // Scroll into view on mount (with delay to ensure layout is ready)
+  // Handle scroll on page load
   setTimeout(() => {
-    // Check if we're restoring from back navigation
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile) return;
+
+    // Check if we're restoring from browser back navigation
     const isBackNavigation = window.performance &&
       window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD;
 
     if (isBackNavigation) {
+      // Restore exact scroll position when using browser back button
       restoreScrollPosition();
     } else {
-      scrollWidgetIntoView();
+      // Check if we should scroll into view (set by clicking back button control or result cards)
+      const shouldScroll = sessionStorage.getItem('shouldScrollWidgetIntoView');
+      if (shouldScroll === 'true') {
+        sessionStorage.removeItem('shouldScrollWidgetIntoView');
+        scrollWidgetIntoView();
+      }
     }
   }, 100);
 
   // Handle back/forward navigation (bfcache)
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
-      // Page was restored from bfcache
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) return;
+
+      // Page was restored from bfcache - restore scroll position
       restoreScrollPosition();
     }
   });
