@@ -4,7 +4,7 @@ import SearchWidget from '../components/SearchWidget.tsx';
 import DynamicSubtitle from '../components/DynamicSubtitle.tsx';
 import ValuePropositionBadges from '../components/ValuePropositionBadges.tsx';
 import SpecialLandingPageCallout from '../components/SpecialLandingPageCallout.tsx';
-import WhatEachSpotIncludes from '../components/WhatEachSpotIncludes.tsx';
+import WhatEachListingIncludes from '../components/WhatEachListingIncludes.tsx';
 import CountyListing from '../components/CountyListing.tsx';
 
 const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
@@ -42,8 +42,8 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         <!-- State Parks No-License Callout (conditional, dynamic by state) -->
         <SpecialLandingPageCallout geolocateOnly={true} client:load />
 
-        <!-- What Each Spot Includes -->
-        <WhatEachSpotIncludes client:load />
+        <!-- What Each Listing Includes -->
+        <WhatEachListingIncludes client:load />
 
         <!-- County Listing (dynamic by IP-detected state) -->
         <CountyListing client:load />

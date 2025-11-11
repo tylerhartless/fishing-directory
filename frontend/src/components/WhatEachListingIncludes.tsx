@@ -1,14 +1,14 @@
 /**
- * What Each Spot Includes Component
+ * What Each Listing Includes Component
  * Shows the features available for each fishing spot listing
  * Uses retro-section for container styling
  */
 
-export default function WhatEachSpotIncludes() {
+export default function WhatEachListingIncludes() {
   return (
     <div class="retro-section">
       <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
-        WHAT EACH SPOT INCLUDES
+        WHAT EACH LISTING INCLUDES
       </h2>
 
       <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">

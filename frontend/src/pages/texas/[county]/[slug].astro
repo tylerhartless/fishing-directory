@@ -309,6 +309,22 @@ const schema = {
     font-family: 'VT323', monospace;
   }
 
+  /* Ensure all elements use border-box for proper sizing */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Prevent horizontal overflow */
+  .spot-detail {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .main-content,
+  .sidebar {
+    min-width: 0; /* Allow flex/grid items to shrink below content size */
+  }
+
   .verified {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.5);
@@ -346,6 +362,8 @@ const schema = {
     box-shadow:
       0 0 15px rgba(184, 92, 58, 0.3),
       inset 0 0 30px rgba(100, 100, 100, 0.3);
+    width: 100%;
+    max-width: 100%;
   }
 
   :global([data-theme="light"]) .map-container {
@@ -355,6 +373,7 @@ const schema = {
 
   .map-container img {
     width: 100%;
+    max-width: 100%;
     height: auto;
     display: block;
     opacity: 0.9;
@@ -375,7 +394,13 @@ const schema = {
 
   @media (max-width: 480px) {
     .map-container img {
-      min-height: 450px;
+      min-height: 350px; /* Reduce on very small screens to prevent overflow */
+    }
+
+    .map-overlay {
+      bottom: 0.5rem;
+      left: 0.5rem;
+      right: 0.5rem;
     }
   }
 
@@ -391,6 +416,13 @@ const schema = {
   .retro-section {
     padding: 1.5rem;
     margin-bottom: 2rem;
+  }
+
+  /* Reduce padding on very small screens to prevent horizontal overflow */
+  @media (max-width: 480px) {
+    .retro-section {
+      padding: 1rem;
+    }
   }
 
   .retro-section h2 {
@@ -683,21 +715,47 @@ const schema = {
     box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
-  @media (max-width: 768px) {
+  /* Tablet breakpoint - stack earlier to prevent squishing */
+  @media (max-width: 1024px) {
     .spot-grid {
       grid-template-columns: 1fr;
     }
 
     .sidebar {
       position: static;
+      max-width: 100%;
     }
+  }
 
+  @media (max-width: 768px) {
     .retro-heading-lg {
       font-size: 2.2rem;
     }
 
     .retro-section h2 {
       font-size: 1.6rem;
+    }
+  }
+
+  /* Extra small screens - prevent overflow */
+  @media (max-width: 480px) {
+    .retro-section h2 {
+      font-size: 1.4rem;
+    }
+
+    .retro-btn {
+      font-size: 1.1rem;
+      padding: 0.6rem 1rem;
+    }
+
+    .amenity-list {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .amenity-list li {
+      font-size: 1.1rem;
+      padding: 0.6rem 0.8rem;
     }
   }
 </style>
