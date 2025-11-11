@@ -1,81 +1,118 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SpecialLandingPageCallout from '../components/SpecialLandingPageCallout.tsx';
 import { getSpots } from '../lib/database';
 
-// Get all Texas spots
+// State lookup mappings
+const stateNameLookup: Record<string, string> = {
+  'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+  'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+  'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+  'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+  'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+  'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+  'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+  'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+  'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+  'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+};
+
+const stateSlugLookup: Record<string, string> = {
+  'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
+  'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
+  'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
+  'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
+  'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
+  'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
+  'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
+  'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
+  'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
+  'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
+};
+
+// Get all spots and group by state
 const allSpots = await getSpots();
-const texasSpots = allSpots.filter(spot => spot.state === 'TX' || spot.state === 'Texas');
 
-// Group spots by county and count them
-const countyData = texasSpots.reduce((acc, spot) => {
-  let countyName = spot.county || 'Unknown';
+// Group spots by state
+const stateData = allSpots.reduce((acc, spot) => {
+  const stateCode = spot.state;
 
-  // Handle multi-county entries - use first county
-  if (countyName.includes(',')) {
-    countyName = countyName.split(',')[0].trim();
-  }
-
-  // Remove "County" suffix if present
-  countyName = countyName.replace(/\s+County$/i, '').trim();
-
-  // Skip "Multiple Counties" from county list
-  if (countyName === 'Multiple Counties') {
+  if (!stateCode) {
     return acc;
   }
 
-  if (!acc[countyName]) {
-    acc[countyName] = {
-      count: 0,
-      // Calculate average lat/lon for distance sorting
+  if (!acc[stateCode]) {
+    acc[stateCode] = {
+      code: stateCode,
+      name: stateNameLookup[stateCode] || stateCode,
+      slug: stateSlugLookup[stateCode] || stateCode.toLowerCase(),
+      spotCount: 0,
+      counties: new Set<string>(),
       totalLat: 0,
-      totalLon: 0,
-      spots: []
+      totalLon: 0
     };
   }
 
-  acc[countyName].count++;
-  acc[countyName].totalLat += parseFloat(spot.latitude);
-  acc[countyName].totalLon += parseFloat(spot.longitude);
-  acc[countyName].spots.push(spot);
+  acc[stateCode].spotCount++;
+  acc[stateCode].totalLat += parseFloat(spot.latitude);
+  acc[stateCode].totalLon += parseFloat(spot.longitude);
+
+  // Track unique counties
+  let countyName = spot.county || '';
+  if (countyName.includes(',')) {
+    countyName = countyName.split(',')[0].trim();
+  }
+  countyName = countyName.replace(/\s+County$/i, '').trim();
+  if (countyName && countyName !== 'Multiple Counties') {
+    acc[stateCode].counties.add(countyName);
+  }
 
   return acc;
-}, {} as Record<string, { count: number; totalLat: number; totalLon: number; spots: any[] }>);
+}, {} as Record<string, {
+  code: string;
+  name: string;
+  slug: string;
+  spotCount: number;
+  counties: Set<string>;
+  totalLat: number;
+  totalLon: number;
+}>);
 
 // Convert to array with average coordinates
-const counties = Object.entries(countyData)
-  .map(([name, data]) => ({
-    name,
-    count: data.count,
-    slug: name.toLowerCase().replace(/\s+/g, '-'),
-    lat: data.totalLat / data.count,
-    lon: data.totalLon / data.count
+const states = Object.values(stateData)
+  .map(state => ({
+    code: state.code,
+    name: state.name,
+    slug: state.slug,
+    spotCount: state.spotCount,
+    countyCount: state.counties.size,
+    lat: state.totalLat / state.spotCount,
+    lon: state.totalLon / state.spotCount
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
 // Serialize for client-side JS
-const countiesJson = JSON.stringify(counties);
+const statesJson = JSON.stringify(states);
+const totalSpots = allSpots.length;
 ---
 
 <Layout
-  title="Texas Fishing Spots by County - Public Access Directory"
-  description="Browse fishing spots in Texas by county. Find boat ramps, piers, and bank fishing spots across all 254 Texas counties."
+  title="Browse Fishing Spots by State - Public Access Directory"
+  description="Explore fishing spots across all U.S. states. Find boat ramps, piers, and bank fishing spots by state."
 >
   <section class="retro-page-header">
     <div class="container">
       <nav class="retro-breadcrumb">
-        <a href="/">← Home</a> / <a href="/states">States</a> / Texas
+        <a href="/">← Home</a> / States
       </nav>
-      <h1>Texas Fishing Spots</h1>
+      <h1>Browse by State</h1>
       <p class="subtitle">
-        {texasSpots.length} fishing spots across {counties.length} counties
+        {totalSpots.toLocaleString()} fishing spots across {states.length} {states.length === 1 ? 'state' : 'states'}
       </p>
     </div>
   </section>
 
   <section class="retro-container">
-    <!-- Counties List Section -->
-    <div class="counties-list-section">
+    <div class="states-list-section">
       <div class="search-widget-style">
 
         <!-- Controls -->
@@ -86,16 +123,17 @@ const countiesJson = JSON.stringify(counties);
           </button>
         </div>
 
-        <!-- Counties Grid -->
-        <div class="results-container" id="counties-scroll-container">
-          <div id="counties-container" class="results-grid">
-            {counties.map((county) => (
-              <a href={`/texas/${county.slug}`} class="spot-card county-card" data-county-name={county.name} data-lat={county.lat} data-lon={county.lon}>
+        <!-- States Grid -->
+        <div class="results-container" id="states-scroll-container">
+          <div id="states-container" class="results-grid">
+            {states.map((state) => (
+              <a href={`/${state.slug}`} class="spot-card state-card" data-state-name={state.name} data-lat={state.lat} data-lon={state.lon}>
                 <div class="card-header">
-                  <h3>{county.name} County</h3>
+                  <h3>{state.name}</h3>
                 </div>
                 <div class="card-body">
-                  <span class="card-meta-item">{county.count} {county.count === 1 ? 'spot' : 'spots'}</span>
+                  <span class="card-meta-item">{state.countyCount} {state.countyCount === 1 ? 'county' : 'counties'}</span>
+                  <span class="card-meta-item">{state.spotCount} {state.spotCount === 1 ? 'spot' : 'spots'}</span>
                 </div>
               </a>
             ))}
@@ -103,23 +141,12 @@ const countiesJson = JSON.stringify(counties);
         </div>
       </div>
     </div>
-
-    <!-- Special Landing Pages Section -->
-    <div class="special-pages-section">
-      <SpecialLandingPageCallout forceState="TX" client:load />
-    </div>
   </section>
 </Layout>
 
 <style>
-  /* Special pages section - same width as counties list */
-  .special-pages-section {
-    max-width: 900px;
-    margin: 2rem auto 0;
-  }
-
-  /* Counties list section - reuse search widget styles */
-  .counties-list-section {
+  /* States list section - reuse search widget styles */
+  .states-list-section {
     max-width: 900px;
     margin: 0 auto;
   }
@@ -174,37 +201,6 @@ const countiesJson = JSON.stringify(counties);
       transparent 2px,
       var(--rgba-black-01) 3px
     );
-  }
-
-  /* Results header */
-  .results-header {
-    margin-bottom: 1rem;
-  }
-
-  .results-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'VT323', monospace;
-    font-size: 1.3rem;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .results-info {
-    color: var(--neutral-black);
-    font-weight: 700;
-  }
-
-  .query-prompt {
-    color: var(--theme-text-sage);
-    font-weight: 700;
-    text-shadow: 0 0 8px var(--rgba-sage-60);
-  }
-
-  :global([data-theme="light"]) .query-prompt {
-    color: var(--boat-orange);
-    text-shadow: none;
   }
 
   /* Controls bar */
@@ -266,14 +262,13 @@ const countiesJson = JSON.stringify(counties);
     text-shadow: none;
   }
 
-  /* County cards inherit from spot-card in search-widget.css */
-  /* Override spot type coloring for counties - use neutral sage border */
-  :global(.county-card) {
+  /* State cards inherit from spot-card in search-widget.css */
+  :global(.state-card) {
     border-color: var(--rgba-sage-30);
     box-shadow: 0 0 12px var(--rgba-sage-20);
   }
 
-  :global([data-theme="light"] .county-card) {
+  :global([data-theme="light"] .state-card) {
     border-color: var(--neutral-black);
     box-shadow: 4px 4px 0 var(--rgba-black-20);
   }
@@ -282,28 +277,18 @@ const countiesJson = JSON.stringify(counties);
     .search-widget-style {
       padding: 1rem;
     }
-
-    .county-header {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .spot-count {
-      align-self: flex-start;
-    }
   }
 </style>
 
-<script define:vars={{ countiesJson }}>
-  const counties = JSON.parse(countiesJson);
+<script define:vars={{ statesJson }}>
+  const states = JSON.parse(statesJson);
   let currentSort = 'alphabetical';
   let userLocation = null;
 
   const sortBtn = document.getElementById('sort-btn');
   const sortDisplay = document.getElementById('sort-display');
-  const countiesContainer = document.getElementById('counties-container');
-  const countyCount = document.getElementById('county-count');
-  const scrollContainer = document.getElementById('counties-scroll-container');
+  const statesContainer = document.getElementById('states-container');
+  const scrollContainer = document.getElementById('states-scroll-container');
 
   // Handle scroll fade effects
   function handleScrollFade() {
@@ -346,40 +331,41 @@ const countiesJson = JSON.stringify(counties);
     return R * c;
   }
 
-  function sortCounties(sortBy) {
-    let sorted = [...counties];
+  function sortStates(sortBy) {
+    let sorted = [...states];
 
     if (sortBy === 'distance' && userLocation) {
-      sorted = sorted.map(county => ({
-        ...county,
+      sorted = sorted.map(state => ({
+        ...state,
         distance: calculateDistance(
           userLocation.lat,
           userLocation.lon,
-          county.lat,
-          county.lon
+          state.lat,
+          state.lon
         )
       })).sort((a, b) => a.distance - b.distance);
     } else {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
     }
 
-    renderCounties(sorted);
+    renderStates(sorted);
   }
 
-  function renderCounties(countiesToRender) {
-    countiesContainer.innerHTML = countiesToRender.map(county => {
-      const distanceHtml = county.distance
-        ? `<div class="distance-indicator">${Math.round(county.distance)} mi</div>`
+  function renderStates(statesToRender) {
+    statesContainer.innerHTML = statesToRender.map(state => {
+      const distanceHtml = state.distance
+        ? `<div class="distance-indicator">${Math.round(state.distance)} mi</div>`
         : '';
 
       return `
-        <a href="/texas/${county.slug}" class="spot-card county-card" data-county-name="${county.name}">
+        <a href="/${state.slug}" class="spot-card state-card" data-state-name="${state.name}">
           <div class="card-header">
-            <h3>${county.name} County</h3>
+            <h3>${state.name}</h3>
             ${distanceHtml}
           </div>
           <div class="card-body">
-            <span class="card-meta-item">${county.count} ${county.count === 1 ? 'spot' : 'spots'}</span>
+            <span class="card-meta-item">${state.countyCount} ${state.countyCount === 1 ? 'county' : 'counties'}</span>
+            <span class="card-meta-item">${state.spotCount} ${state.spotCount === 1 ? 'spot' : 'spots'}</span>
           </div>
         </a>
       `;
@@ -405,7 +391,7 @@ const countiesJson = JSON.stringify(counties);
             currentSort = 'distance';
             sortDisplay.textContent = 'Distance';
             sortBtn.disabled = false;
-            sortCounties('distance');
+            sortStates('distance');
           },
           (error) => {
             sortDisplay.textContent = 'Alphabetical';
@@ -420,7 +406,7 @@ const countiesJson = JSON.stringify(counties);
       // Switch back to alphabetical
       currentSort = 'alphabetical';
       sortDisplay.textContent = 'Alphabetical';
-      sortCounties('alphabetical');
+      sortStates('alphabetical');
     }
   });
 </script>
