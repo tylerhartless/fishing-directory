@@ -314,6 +314,17 @@ const schema = {
     box-sizing: border-box;
   }
 
+  /* Prevent horizontal overflow */
+  .spot-detail {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .main-content,
+  .sidebar {
+    min-width: 0; /* Allow flex/grid items to shrink below content size */
+  }
+
   .verified {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.5);
@@ -351,6 +362,8 @@ const schema = {
     box-shadow:
       0 0 15px rgba(184, 92, 58, 0.3),
       inset 0 0 30px rgba(100, 100, 100, 0.3);
+    width: 100%;
+    max-width: 100%;
   }
 
   :global([data-theme="light"]) .map-container {
