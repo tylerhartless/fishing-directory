@@ -38,9 +38,12 @@ const {
 // Serialize for client-side
 const itemsJson = JSON.stringify(items);
 const spotTypesJson = JSON.stringify(spotTypes);
+
+// Generate unique widget ID for scroll position storage
+const widgetId = `results-widget-${itemType}`;
 ---
 
-<div class="search-widget-style">
+<div class="search-widget-style" id={widgetId}>
   <!-- Controls -->
   <div class="controls-bar">
     <a href={backButton.url} class="control-button back-button">
@@ -333,7 +336,7 @@ const spotTypesJson = JSON.stringify(spotTypes);
   }
 </style>
 
-<script define:vars={{ itemsJson, spotTypesJson, itemType, showFilters, scrollContainerId, resultsContainerId }}>
+<script define:vars={{ itemsJson, spotTypesJson, itemType, showFilters, scrollContainerId, resultsContainerId, widgetId }}>
   const allItems = JSON.parse(itemsJson);
   const spotTypes = showFilters ? JSON.parse(spotTypesJson) : [];
   let currentSort = 'alphabetical';
@@ -348,6 +351,7 @@ const spotTypesJson = JSON.stringify(spotTypes);
   const itemsContainer = document.getElementById(resultsContainerId);
   const scrollContainer = document.getElementById(scrollContainerId);
   const visibleCount = document.getElementById('visible-count');
+  const widgetElement = document.getElementById(widgetId);
 
   // Handle scroll fade effects
   function handleScrollFade() {
@@ -377,6 +381,119 @@ const spotTypesJson = JSON.stringify(spotTypes);
     scrollContainer.addEventListener('scroll', handleScrollFade);
     // Initial check
     handleScrollFade();
+  }
+
+  // Scroll widget into view on mount
+  function scrollWidgetIntoView() {
+    if (!widgetElement) return;
+
+    // Get the header element to calculate offset
+    const header = document.querySelector('header');
+    const headerHeight = header ? header.offsetHeight : 0;
+
+    // Get the widget's position relative to the document
+    const widgetRect = widgetElement.getBoundingClientRect();
+    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Calculate absolute position of widget top
+    const widgetTopAbsolute = widgetRect.top + currentScrollY;
+
+    // Scroll to position widget below header with responsive padding
+    // Desktop: 8px padding, Mobile: 20px padding (more padding on mobile to ensure subtitle is hidden)
+    const isDesktop = window.innerWidth >= 768;
+    const padding = isDesktop ? 8 : 20;
+    const targetScrollPosition = widgetTopAbsolute - headerHeight - padding;
+
+    window.scrollTo({
+      top: targetScrollPosition,
+      behavior: 'smooth'
+    });
+  }
+
+  // Save scroll position before navigation
+  function saveScrollPosition() {
+    if (!scrollContainer) return;
+
+    const scrollData = {
+      containerScroll: scrollContainer.scrollTop,
+      windowScroll: window.pageYOffset || document.documentElement.scrollTop,
+      timestamp: Date.now()
+    };
+
+    sessionStorage.setItem(`scroll-${widgetId}`, JSON.stringify(scrollData));
+  }
+
+  // Restore scroll position on back navigation
+  function restoreScrollPosition() {
+    const savedData = sessionStorage.getItem(`scroll-${widgetId}`);
+    if (!savedData) return;
+
+    try {
+      const scrollData = JSON.parse(savedData);
+
+      // Only restore if saved within last 5 minutes
+      if (Date.now() - scrollData.timestamp > 5 * 60 * 1000) {
+        sessionStorage.removeItem(`scroll-${widgetId}`);
+        return;
+      }
+
+      // Restore container scroll
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollData.containerScroll;
+      }
+
+      // Restore window scroll
+      window.scrollTo({
+        top: scrollData.windowScroll,
+        behavior: 'instant'
+      });
+
+      // Clear the saved position after restoring
+      sessionStorage.removeItem(`scroll-${widgetId}`);
+    } catch (e) {
+      console.error('Failed to restore scroll position:', e);
+    }
+  }
+
+  // Scroll into view on mount (with delay to ensure layout is ready)
+  setTimeout(() => {
+    // Check if we're restoring from back navigation
+    const isBackNavigation = window.performance &&
+      window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD;
+
+    if (isBackNavigation) {
+      restoreScrollPosition();
+    } else {
+      scrollWidgetIntoView();
+    }
+  }, 100);
+
+  // Handle back/forward navigation (bfcache)
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      // Page was restored from bfcache
+      restoreScrollPosition();
+    }
+  });
+
+  // Save scroll position when navigating away
+  if (itemsContainer) {
+    itemsContainer.addEventListener('click', (e) => {
+      const target = e.target;
+      // Check if clicked element or its parent is a link
+      const link = target.closest('a');
+      if (link) {
+        saveScrollPosition();
+      }
+    });
+  }
+
+  // Save scroll position when clicking back button
+  const backButton = widgetElement?.querySelector('.back-button');
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      saveScrollPosition();
+    });
   }
 
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -550,6 +667,9 @@ const spotTypesJson = JSON.stringify(spotTypes);
     filtersBtn.addEventListener('click', () => {
       const isVisible = filterPanel.style.display !== 'none';
       filterPanel.style.display = isVisible ? 'none' : 'block';
+
+      // Scroll widget into view when toggling filters
+      setTimeout(() => scrollWidgetIntoView(), 100);
     });
   }
 
@@ -564,6 +684,9 @@ const spotTypesJson = JSON.stringify(spotTypes);
           activeFilters.delete(value);
         }
         filterAndSortItems();
+
+        // Scroll widget into view after filtering
+        setTimeout(() => scrollWidgetIntoView(), 100);
       }
     });
   }
@@ -587,6 +710,9 @@ const spotTypesJson = JSON.stringify(spotTypes);
               if (sortDisplay) sortDisplay.textContent = 'Distance';
               sortBtn.disabled = false;
               filterAndSortItems();
+
+              // Scroll widget into view after sorting
+              setTimeout(() => scrollWidgetIntoView(), 100);
             },
             (error) => {
               if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
@@ -602,6 +728,9 @@ const spotTypesJson = JSON.stringify(spotTypes);
         currentSort = 'alphabetical';
         if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
         filterAndSortItems();
+
+        // Scroll widget into view after sorting
+        setTimeout(() => scrollWidgetIntoView(), 100);
       }
     });
   }
