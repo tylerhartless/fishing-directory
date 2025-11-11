@@ -238,6 +238,18 @@ const totalSpots = allSpots.length;
 
   .back-arrow {
     font-size: 1.2rem;
+    opacity: 0.7;
+  }
+
+  .back-text {
+    font-weight: 700;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  :global([data-theme="light"]) .back-text {
+    color: var(--boat-orange);
+    text-shadow: none;
   }
 
   :global([data-theme="light"]) .control-button {
@@ -290,7 +302,9 @@ const totalSpots = allSpots.length;
     .search-widget-style {
       padding: 1rem;
     }
+  }
 
+  @media (max-width: 500px) {
     .back-text {
       display: none;
     }
