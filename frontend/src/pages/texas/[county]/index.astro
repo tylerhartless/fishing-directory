@@ -86,14 +86,19 @@ const spotTypesJson = JSON.stringify(spotTypes);
       
         <!-- Controls -->
         <div class="controls-bar">
-          <button id="filters-btn" class="control-button">
-            <span class="control-label">Filters</span>
-            <span id="filter-count"></span>
-          </button>
+          <a href="/texas" class="control-button back-button">
+            <span class="back-arrow">←</span>
+            <span class="back-text">Texas</span>
+          </a>
 
           <button id="sort-btn" class="control-button">
             <span class="control-label">Sort:</span>
             <span id="sort-display">Alphabetical</span>
+          </button>
+
+          <button id="filters-btn" class="control-button">
+            <span class="control-label">Filters</span>
+            <span id="filter-count"></span>
           </button>
         </div>
 
@@ -279,6 +284,15 @@ const spotTypesJson = JSON.stringify(spotTypes);
     align-items: center;
     gap: 0.5rem;
     box-shadow: 0 0 10px var(--rgba-sage-30);
+    text-decoration: none;
+  }
+
+  .back-button {
+    white-space: nowrap;
+  }
+
+  .back-arrow {
+    font-size: 1.2rem;
   }
 
   :global([data-theme="light"]) .control-button {
@@ -397,12 +411,20 @@ const spotTypesJson = JSON.stringify(spotTypes);
     }
 
     .controls-bar {
-      flex-direction: column;
+      flex-wrap: nowrap;
+      overflow-x: auto;
     }
 
     .control-button {
-      width: 100%;
-      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .back-text {
+      display: none;
+    }
+
+    .back-button {
+      padding: 0.75rem;
     }
 
     .filter-checkboxes {

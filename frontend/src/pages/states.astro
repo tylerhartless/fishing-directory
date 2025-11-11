@@ -117,6 +117,10 @@ const totalSpots = allSpots.length;
 
         <!-- Controls -->
         <div class="controls-bar">
+          <a href="/" class="control-button back-button">
+            <span class="back-arrow">←</span>
+            <span class="back-text">Home</span>
+          </a>
           <button id="sort-btn" class="control-button">
             <span class="control-label">Sort:</span>
             <span id="sort-display">Alphabetical</span>
@@ -225,6 +229,15 @@ const totalSpots = allSpots.length;
     align-items: center;
     gap: 0.5rem;
     box-shadow: 0 0 10px var(--rgba-sage-30);
+    text-decoration: none;
+  }
+
+  .back-button {
+    white-space: nowrap;
+  }
+
+  .back-arrow {
+    font-size: 1.2rem;
   }
 
   :global([data-theme="light"]) .control-button {
@@ -276,6 +289,14 @@ const totalSpots = allSpots.length;
   @media (max-width: 768px) {
     .search-widget-style {
       padding: 1rem;
+    }
+
+    .back-text {
+      display: none;
+    }
+
+    .back-button {
+      padding: 0.75rem;
     }
   }
 </style>
