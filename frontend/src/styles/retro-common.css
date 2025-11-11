@@ -1014,3 +1014,22 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.75rem;
   }
 }
+
+/* Extra small screens - prevent horizontal overflow */
+@media (max-width: 480px) {
+  .retro-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .retro-section {
+    padding: 1rem;
+  }
+
+  .retro-info-box {
+    padding: 1rem;
+  }
+
+  .retro-page-header {
+    padding: 1.5rem 0 1rem;
+  }
+}
