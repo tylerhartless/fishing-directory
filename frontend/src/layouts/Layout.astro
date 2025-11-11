@@ -444,7 +444,23 @@ const isStaging = siteUrl.includes('staging');
     view-transition-name: site-footer;
   }
 
-  /* Gradient transition before footer - removed to eliminate gap */
+  /* Quick feathered edge before footer for dark mode */
+  footer::before {
+    content: '';
+    display: block;
+    height: 40px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(13, 31, 13, 0.3) 50%,
+      rgba(13, 31, 13, 0.7) 80%,
+      #0d1f0d 100%
+    );
+    margin-bottom: 0;
+  }
+
+  [data-theme="light"] footer::before {
+    display: none;
+  }
 
   [data-theme="light"] footer {
     background: var(--theme-bg-forest);
