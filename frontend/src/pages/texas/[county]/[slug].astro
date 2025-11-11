@@ -309,6 +309,11 @@ const schema = {
     font-family: 'VT323', monospace;
   }
 
+  /* Ensure all elements use border-box for proper sizing */
+  * {
+    box-sizing: border-box;
+  }
+
   .verified {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.5);
@@ -355,6 +360,7 @@ const schema = {
 
   .map-container img {
     width: 100%;
+    max-width: 100%;
     height: auto;
     display: block;
     opacity: 0.9;
@@ -375,7 +381,13 @@ const schema = {
 
   @media (max-width: 480px) {
     .map-container img {
-      min-height: 450px;
+      min-height: 350px; /* Reduce on very small screens to prevent overflow */
+    }
+
+    .map-overlay {
+      bottom: 0.5rem;
+      left: 0.5rem;
+      right: 0.5rem;
     }
   }
 
@@ -391,6 +403,13 @@ const schema = {
   .retro-section {
     padding: 1.5rem;
     margin-bottom: 2rem;
+  }
+
+  /* Reduce padding on very small screens to prevent horizontal overflow */
+  @media (max-width: 480px) {
+    .retro-section {
+      padding: 1rem;
+    }
   }
 
   .retro-section h2 {
@@ -702,6 +721,28 @@ const schema = {
 
     .retro-section h2 {
       font-size: 1.6rem;
+    }
+  }
+
+  /* Extra small screens - prevent overflow */
+  @media (max-width: 480px) {
+    .retro-section h2 {
+      font-size: 1.4rem;
+    }
+
+    .retro-btn {
+      font-size: 1.1rem;
+      padding: 0.6rem 1rem;
+    }
+
+    .amenity-list {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .amenity-list li {
+      font-size: 1.1rem;
+      padding: 0.6rem 0.8rem;
     }
   }
 </style>
