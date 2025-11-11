@@ -683,15 +683,19 @@ const schema = {
     box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
   }
 
-  @media (max-width: 768px) {
+  /* Tablet breakpoint - stack earlier to prevent squishing */
+  @media (max-width: 1024px) {
     .spot-grid {
       grid-template-columns: 1fr;
     }
 
     .sidebar {
       position: static;
+      max-width: 100%;
     }
+  }
 
+  @media (max-width: 768px) {
     .retro-heading-lg {
       font-size: 2.2rem;
     }
