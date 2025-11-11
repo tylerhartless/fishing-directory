@@ -337,429 +337,443 @@ const widgetId = `results-widget-${itemType}`;
 </style>
 
 <script define:vars={{ itemsJson, spotTypesJson, itemType, showFilters, scrollContainerId, resultsContainerId, widgetId }}>
-  const allItems = JSON.parse(itemsJson);
-  const spotTypes = showFilters ? JSON.parse(spotTypesJson) : [];
-  let currentSort = 'alphabetical';
-  let userLocation = null;
-  let activeFilters = showFilters ? new Set(spotTypes.filter(t => t !== 'boat_ramp')) : null;
+  // Wrap initialization in a function to support view transitions
+  function initializeWidget() {
+    const allItems = JSON.parse(itemsJson);
+    const spotTypes = showFilters ? JSON.parse(spotTypesJson) : [];
+    let currentSort = 'alphabetical';
+    let userLocation = null;
+    let activeFilters = showFilters ? new Set(spotTypes.filter(t => t !== 'boat_ramp')) : null;
 
-  const filtersBtn = document.getElementById('filters-btn');
-  const sortBtn = document.getElementById('sort-btn');
-  const sortDisplay = document.getElementById('sort-display');
-  const filterCount = document.getElementById('filter-count');
-  const filterPanel = document.getElementById('filter-panel');
-  const itemsContainer = document.getElementById(resultsContainerId);
-  const scrollContainer = document.getElementById(scrollContainerId);
-  const visibleCount = document.getElementById('visible-count');
-  const widgetElement = document.getElementById(widgetId);
+    const filtersBtn = document.getElementById('filters-btn');
+    const sortBtn = document.getElementById('sort-btn');
+    const sortDisplay = document.getElementById('sort-display');
+    const filterCount = document.getElementById('filter-count');
+    const filterPanel = document.getElementById('filter-panel');
+    const itemsContainer = document.getElementById(resultsContainerId);
+    const scrollContainer = document.getElementById(scrollContainerId);
+    const visibleCount = document.getElementById('visible-count');
+    const widgetElement = document.getElementById(widgetId);
 
-  // Handle scroll fade effects
-  function handleScrollFade() {
-    if (!scrollContainer) return;
+    // Skip initialization if widget element doesn't exist (different page)
+    if (!widgetElement) return;
 
-    const scrollTop = scrollContainer.scrollTop;
-    const scrollHeight = scrollContainer.scrollHeight;
-    const clientHeight = scrollContainer.clientHeight;
-    const scrollBottom = scrollHeight - scrollTop - clientHeight;
-
-    // Add/remove classes based on scroll position
-    if (scrollTop > 10) {
-      scrollContainer.classList.add('scrolled-from-top');
-    } else {
-      scrollContainer.classList.remove('scrolled-from-top');
-    }
-
-    if (scrollBottom > 10) {
-      scrollContainer.classList.add('scrolled-from-bottom');
-    } else {
-      scrollContainer.classList.remove('scrolled-from-bottom');
-    }
-  }
-
-  // Attach scroll listener
-  if (scrollContainer) {
-    scrollContainer.addEventListener('scroll', handleScrollFade);
-    // Initial check
-    handleScrollFade();
-  }
-
-  // Scroll widget into view (only on mobile, only when controls are used)
-  function scrollWidgetIntoView() {
-    // Only scroll on mobile
-    const isMobile = window.innerWidth < 768;
-    if (!isMobile || !widgetElement) return;
-
-    // Get the header element to calculate offset
-    const header = document.querySelector('header');
-    const headerHeight = header ? header.offsetHeight : 0;
-
-    // Get the widget's position relative to the document
-    const widgetRect = widgetElement.getBoundingClientRect();
-    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-
-    // Calculate absolute position of widget top
-    const widgetTopAbsolute = widgetRect.top + currentScrollY;
-
-    // Scroll to position widget below header with padding
-    // 20px padding on mobile to ensure subtitle is hidden
-    const padding = 20;
-    const targetScrollPosition = widgetTopAbsolute - headerHeight - padding;
-
-    window.scrollTo({
-      top: targetScrollPosition,
-      behavior: 'smooth'
-    });
-  }
-
-  // Save scroll position and set flag for destination page to scroll into view (only on mobile)
-  function saveScrollPosition() {
-    // Only save scroll on mobile
-    const isMobile = window.innerWidth < 768;
-    if (!isMobile || !scrollContainer) return;
-
-    const scrollData = {
-      containerScroll: scrollContainer.scrollTop,
-      windowScroll: window.pageYOffset || document.documentElement.scrollTop,
-      timestamp: Date.now()
-    };
-
-    sessionStorage.setItem(`scroll-${widgetId}`, JSON.stringify(scrollData));
-
-    // Set flag for destination page to scroll its widget into view
-    sessionStorage.setItem('shouldScrollWidgetIntoView', 'true');
-  }
-
-  // Restore scroll position on back navigation (only on mobile)
-  function restoreScrollPosition() {
-    // Only restore scroll on mobile
-    const isMobile = window.innerWidth < 768;
-    if (!isMobile) return;
-
-    const savedData = sessionStorage.getItem(`scroll-${widgetId}`);
-    if (!savedData) return;
-
-    try {
-      const scrollData = JSON.parse(savedData);
-
-      // Only restore if saved within last 5 minutes
-      if (Date.now() - scrollData.timestamp > 5 * 60 * 1000) {
-        sessionStorage.removeItem(`scroll-${widgetId}`);
-        return;
+    // Handle scroll fade effects
+    function handleScrollFade() {
+      if (!scrollContainer) return;
+  
+      const scrollTop = scrollContainer.scrollTop;
+      const scrollHeight = scrollContainer.scrollHeight;
+      const clientHeight = scrollContainer.clientHeight;
+      const scrollBottom = scrollHeight - scrollTop - clientHeight;
+  
+      // Add/remove classes based on scroll position
+      if (scrollTop > 10) {
+        scrollContainer.classList.add('scrolled-from-top');
+      } else {
+        scrollContainer.classList.remove('scrolled-from-top');
       }
-
-      // Restore container scroll
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollData.containerScroll;
+  
+      if (scrollBottom > 10) {
+        scrollContainer.classList.add('scrolled-from-bottom');
+      } else {
+        scrollContainer.classList.remove('scrolled-from-bottom');
       }
-
-      // Restore window scroll
+    }
+  
+    // Attach scroll listener
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScrollFade);
+      // Initial check
+      handleScrollFade();
+    }
+  
+    // Scroll widget into view (only on mobile, only when controls are used)
+    function scrollWidgetIntoView() {
+      // Only scroll on mobile
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile || !widgetElement) return;
+  
+      // Get the header element to calculate offset
+      const header = document.querySelector('header');
+      const headerHeight = header ? header.offsetHeight : 0;
+  
+      // Get the widget's position relative to the document
+      const widgetRect = widgetElement.getBoundingClientRect();
+      const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+  
+      // Calculate absolute position of widget top
+      const widgetTopAbsolute = widgetRect.top + currentScrollY;
+  
+      // Scroll to position widget below header with padding
+      // 20px padding on mobile to ensure subtitle is hidden
+      const padding = 20;
+      const targetScrollPosition = widgetTopAbsolute - headerHeight - padding;
+  
       window.scrollTo({
-        top: scrollData.windowScroll,
-        behavior: 'instant'
+        top: targetScrollPosition,
+        behavior: 'smooth'
       });
-
-      // Clear the saved position after restoring
-      sessionStorage.removeItem(`scroll-${widgetId}`);
-    } catch (e) {
-      console.error('Failed to restore scroll position:', e);
     }
-  }
-
-  // Handle scroll on page load
-  setTimeout(() => {
-    const isMobile = window.innerWidth < 768;
-    if (!isMobile) return;
-
-    // Check if we're restoring from browser back navigation
-    const isBackNavigation = window.performance &&
-      window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD;
-
-    if (isBackNavigation) {
-      // Restore exact scroll position when using browser back button
-      restoreScrollPosition();
-    } else {
-      // Check if we should scroll into view (set by clicking back button control or result cards)
-      const shouldScroll = sessionStorage.getItem('shouldScrollWidgetIntoView');
-      if (shouldScroll === 'true') {
-        sessionStorage.removeItem('shouldScrollWidgetIntoView');
-        scrollWidgetIntoView();
-      }
+  
+    // Save scroll position and set flag for destination page to scroll into view (only on mobile)
+    function saveScrollPosition() {
+      // Only save scroll on mobile
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile || !scrollContainer) return;
+  
+      const scrollData = {
+        containerScroll: scrollContainer.scrollTop,
+        windowScroll: window.pageYOffset || document.documentElement.scrollTop,
+        timestamp: Date.now()
+      };
+  
+      sessionStorage.setItem(`scroll-${widgetId}`, JSON.stringify(scrollData));
+  
+      // Set flag for destination page to scroll its widget into view
+      sessionStorage.setItem('shouldScrollWidgetIntoView', 'true');
     }
-  }, 100);
-
-  // Handle back/forward navigation (bfcache)
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
+  
+    // Restore scroll position on back navigation (only on mobile)
+    function restoreScrollPosition() {
+      // Only restore scroll on mobile
       const isMobile = window.innerWidth < 768;
       if (!isMobile) return;
-
-      // Page was restored from bfcache - restore scroll position
-      restoreScrollPosition();
+  
+      const savedData = sessionStorage.getItem(`scroll-${widgetId}`);
+      if (!savedData) return;
+  
+      try {
+        const scrollData = JSON.parse(savedData);
+  
+        // Only restore if saved within last 5 minutes
+        if (Date.now() - scrollData.timestamp > 5 * 60 * 1000) {
+          sessionStorage.removeItem(`scroll-${widgetId}`);
+          return;
+        }
+  
+        // Restore container scroll
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollData.containerScroll;
+        }
+  
+        // Restore window scroll
+        window.scrollTo({
+          top: scrollData.windowScroll,
+          behavior: 'instant'
+        });
+  
+        // Clear the saved position after restoring
+        sessionStorage.removeItem(`scroll-${widgetId}`);
+      } catch (e) {
+        console.error('Failed to restore scroll position:', e);
+      }
     }
-  });
-
-  // Save scroll position when navigating away
-  if (itemsContainer) {
-    itemsContainer.addEventListener('click', (e) => {
-      const target = e.target;
-      // Check if clicked element or its parent is a link
-      const link = target.closest('a');
-      if (link) {
-        saveScrollPosition();
+  
+    // Handle scroll on page load
+    setTimeout(() => {
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) return;
+  
+      // Check if we're restoring from browser back navigation
+      const isBackNavigation = window.performance &&
+        window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD;
+  
+      if (isBackNavigation) {
+        // Restore exact scroll position when using browser back button
+        restoreScrollPosition();
+      } else {
+        // Check if we should scroll into view (set by clicking back button control or result cards)
+        const shouldScroll = sessionStorage.getItem('shouldScrollWidgetIntoView');
+        if (shouldScroll === 'true') {
+          sessionStorage.removeItem('shouldScrollWidgetIntoView');
+          scrollWidgetIntoView();
+        }
+      }
+    }, 100);
+  
+    // Handle back/forward navigation (bfcache)
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        const isMobile = window.innerWidth < 768;
+        if (!isMobile) return;
+  
+        // Page was restored from bfcache - restore scroll position
+        restoreScrollPosition();
       }
     });
-  }
-
-  // Save scroll position when clicking back button
-  const backButton = widgetElement?.querySelector('.back-button');
-  if (backButton) {
-    backButton.addEventListener('click', () => {
-      saveScrollPosition();
-    });
-  }
-
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 3959; // Earth's radius in miles
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  }
-
-  function filterAndSortItems() {
-    let filtered = allItems;
-
-    // Apply filters if enabled
-    if (showFilters && activeFilters) {
-      filtered = allItems.filter(item => activeFilters.has(item.spot_type));
-    }
-
-    // Calculate distance and sort if sorting by distance
-    if (currentSort === 'distance' && userLocation) {
-      filtered = filtered.map(item => {
-        const lat = itemType === 'spot' ? parseFloat(item.latitude) : item.lat;
-        const lon = itemType === 'spot' ? parseFloat(item.longitude) : item.lon;
-        return {
-          ...item,
-          distance: calculateDistance(
-            userLocation.lat,
-            userLocation.lon,
-            lat,
-            lon
-          )
-        };
+  
+    // Save scroll position when navigating away
+    if (itemsContainer) {
+      itemsContainer.addEventListener('click', (e) => {
+        const target = e.target;
+        // Check if clicked element or its parent is a link
+        const link = target.closest('a');
+        if (link) {
+          saveScrollPosition();
+        }
       });
-
-      // Sort by distance
-      filtered.sort((a, b) => a.distance - b.distance);
-    } else {
-      // Sort alphabetically
-      if (itemType === 'state' || itemType === 'county') {
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+  
+    // Save scroll position when clicking back button
+    const backButton = widgetElement?.querySelector('.back-button');
+    if (backButton) {
+      backButton.addEventListener('click', () => {
+        saveScrollPosition();
+      });
+    }
+  
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 3959; // Earth's radius in miles
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+  
+    function filterAndSortItems() {
+      let filtered = allItems;
+  
+      // Apply filters if enabled
+      if (showFilters && activeFilters) {
+        filtered = allItems.filter(item => activeFilters.has(item.spot_type));
+      }
+  
+      // Calculate distance and sort if sorting by distance
+      if (currentSort === 'distance' && userLocation) {
+        filtered = filtered.map(item => {
+          const lat = itemType === 'spot' ? parseFloat(item.latitude) : item.lat;
+          const lon = itemType === 'spot' ? parseFloat(item.longitude) : item.lon;
+          return {
+            ...item,
+            distance: calculateDistance(
+              userLocation.lat,
+              userLocation.lon,
+              lat,
+              lon
+            )
+          };
+        });
+  
+        // Sort by distance
+        filtered.sort((a, b) => a.distance - b.distance);
       } else {
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-      }
-    }
-
-    renderItems(filtered);
-    if (showFilters) {
-      updateFilterCount();
-    }
-  }
-
-  function renderItems(itemsToRender) {
-    if (!itemsContainer) return;
-
-    itemsContainer.innerHTML = itemsToRender.map(item => {
-      if (itemType === 'state') {
-        return renderStateCard(item);
-      } else if (itemType === 'county') {
-        return renderCountyCard(item);
-      } else {
-        return renderSpotCard(item);
-      }
-    }).join('');
-
-    // Update visible count if element exists
-    if (visibleCount) {
-      visibleCount.textContent = itemsToRender.length;
-    }
-
-    // Re-check fade after rendering
-    setTimeout(handleScrollFade, 100);
-  }
-
-  function renderStateCard(state) {
-    const distanceHtml = state.distance
-      ? `<div class="distance-indicator">${Math.round(state.distance)} mi</div>`
-      : '';
-
-    return `
-      <a href="/${state.slug}" class="spot-card state-card" data-state-name="${state.name}">
-        <div class="card-header">
-          <h3>${state.name}</h3>
-          ${distanceHtml}
-        </div>
-        <div class="card-body">
-          <span class="card-meta-item">${state.countyCount} ${state.countyCount === 1 ? 'county' : 'counties'}</span>
-          <span class="card-meta-item">${state.spotCount} ${state.spotCount === 1 ? 'spot' : 'spots'}</span>
-        </div>
-      </a>
-    `;
-  }
-
-  function renderCountyCard(county) {
-    const distanceHtml = county.distance
-      ? `<div class="distance-indicator">${Math.round(county.distance)} mi</div>`
-      : '';
-
-    return `
-      <a href="/texas/${county.slug}" class="spot-card county-card" data-county-name="${county.name}">
-        <div class="card-header">
-          <h3>${county.name} County</h3>
-          ${distanceHtml}
-        </div>
-        <div class="card-body">
-          <span class="card-meta-item">${county.count} ${county.count === 1 ? 'spot' : 'spots'}</span>
-        </div>
-      </a>
-    `;
-  }
-
-  function renderSpotCard(spot) {
-    const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
-    const prominentAmenities = [];
-    const amenityIcons = {
-      'boat_ramp': '🚤 Boat Ramp',
-      'fishing_pier': '🎣 Pier',
-      'fish_cleaning': '🔪 Cleaning',
-      'restrooms': '🚻 Restrooms',
-      'parking': '🅿️ Parking',
-    };
-
-    for (const [key, label] of Object.entries(amenityIcons)) {
-      if (amenities[key] === true) {
-        prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
-      }
-    }
-
-    const amenitiesHtml = prominentAmenities.length > 0
-      ? prominentAmenities.join('')
-      : `<span class="amenity-placeholder">No amenities listed</span>`;
-
-    const distanceHtml = spot.distance
-      ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
-      : '';
-
-    // Construct URL safely
-    const countySlug = spot.county_slug || spot.county?.toLowerCase().replace(/\s+/g, '-') || 'unknown';
-    const spotSlug = spot.slug || spot.name.toLowerCase().replace(/\s+/g, '-');
-
-    return `
-      <a href="/texas/${countySlug}/${spotSlug}" class="spot-card" data-spot-type="${spot.spot_type}">
-        <div class="card-header">
-          <h3>${spot.name}</h3>
-          ${distanceHtml}
-        </div>
-        <div class="card-body">
-          ${amenitiesHtml}
-        </div>
-      </a>
-    `;
-  }
-
-  function updateFilterCount() {
-    if (!showFilters || !activeFilters || !filterCount) return;
-
-    const totalTypes = spotTypes.length;
-    const activeCount = activeFilters.size;
-
-    if (activeCount === totalTypes) {
-      filterCount.textContent = '';
-    } else {
-      filterCount.textContent = `(${activeCount})`;
-    }
-  }
-
-  // Toggle filters panel
-  if (filtersBtn && filterPanel) {
-    filtersBtn.addEventListener('click', () => {
-      const isVisible = filterPanel.style.display !== 'none';
-      filterPanel.style.display = isVisible ? 'none' : 'block';
-
-      // Scroll widget into view when toggling filters
-      setTimeout(() => scrollWidgetIntoView(), 100);
-    });
-  }
-
-  // Handle filter changes
-  if (filterPanel) {
-    filterPanel.addEventListener('change', (e) => {
-      if (e.target.type === 'checkbox' && activeFilters) {
-        const value = e.target.value;
-        if (e.target.checked) {
-          activeFilters.add(value);
+        // Sort alphabetically
+        if (itemType === 'state' || itemType === 'county') {
+          filtered.sort((a, b) => a.name.localeCompare(b.name));
         } else {
-          activeFilters.delete(value);
+          filtered.sort((a, b) => a.name.localeCompare(b.name));
         }
-        filterAndSortItems();
-
-        // Scroll widget into view after filtering
-        setTimeout(() => scrollWidgetIntoView(), 100);
       }
-    });
-  }
-
-  // Handle sort changes
-  if (sortBtn) {
-    sortBtn.addEventListener('click', () => {
-      if (currentSort === 'alphabetical') {
-        // Switch to distance sorting - prompt for location
-        if (navigator.geolocation) {
-          if (sortDisplay) sortDisplay.textContent = 'Getting location...';
-          sortBtn.disabled = true;
-
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              userLocation = {
-                lat: position.coords.latitude,
-                lon: position.coords.longitude
-              };
-              currentSort = 'distance';
-              if (sortDisplay) sortDisplay.textContent = 'Distance';
-              sortBtn.disabled = false;
-              filterAndSortItems();
-
-              // Scroll widget into view after sorting
-              setTimeout(() => scrollWidgetIntoView(), 100);
-            },
-            (error) => {
-              if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
-              sortBtn.disabled = false;
-              alert('Unable to get your location. Please enable location services to sort by distance.');
-            }
-          );
+  
+      renderItems(filtered);
+      if (showFilters) {
+        updateFilterCount();
+      }
+    }
+  
+    function renderItems(itemsToRender) {
+      if (!itemsContainer) return;
+  
+      itemsContainer.innerHTML = itemsToRender.map(item => {
+        if (itemType === 'state') {
+          return renderStateCard(item);
+        } else if (itemType === 'county') {
+          return renderCountyCard(item);
         } else {
-          alert('Geolocation is not supported by your browser.');
+          return renderSpotCard(item);
         }
-      } else {
-        // Switch back to alphabetical
-        currentSort = 'alphabetical';
-        if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
-        filterAndSortItems();
-
-        // Scroll widget into view after sorting
-        setTimeout(() => scrollWidgetIntoView(), 100);
+      }).join('');
+  
+      // Update visible count if element exists
+      if (visibleCount) {
+        visibleCount.textContent = itemsToRender.length;
       }
-    });
+  
+      // Re-check fade after rendering
+      setTimeout(handleScrollFade, 100);
+    }
+  
+    function renderStateCard(state) {
+      const distanceHtml = state.distance
+        ? `<div class="distance-indicator">${Math.round(state.distance)} mi</div>`
+        : '';
+  
+      return `
+        <a href="/${state.slug}" class="spot-card state-card" data-state-name="${state.name}">
+          <div class="card-header">
+            <h3>${state.name}</h3>
+            ${distanceHtml}
+          </div>
+          <div class="card-body">
+            <span class="card-meta-item">${state.countyCount} ${state.countyCount === 1 ? 'county' : 'counties'}</span>
+            <span class="card-meta-item">${state.spotCount} ${state.spotCount === 1 ? 'spot' : 'spots'}</span>
+          </div>
+        </a>
+      `;
+    }
+  
+    function renderCountyCard(county) {
+      const distanceHtml = county.distance
+        ? `<div class="distance-indicator">${Math.round(county.distance)} mi</div>`
+        : '';
+  
+      return `
+        <a href="/texas/${county.slug}" class="spot-card county-card" data-county-name="${county.name}">
+          <div class="card-header">
+            <h3>${county.name} County</h3>
+            ${distanceHtml}
+          </div>
+          <div class="card-body">
+            <span class="card-meta-item">${county.count} ${county.count === 1 ? 'spot' : 'spots'}</span>
+          </div>
+        </a>
+      `;
+    }
+  
+    function renderSpotCard(spot) {
+      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+      const prominentAmenities = [];
+      const amenityIcons = {
+        'boat_ramp': '🚤 Boat Ramp',
+        'fishing_pier': '🎣 Pier',
+        'fish_cleaning': '🔪 Cleaning',
+        'restrooms': '🚻 Restrooms',
+        'parking': '🅿️ Parking',
+      };
+  
+      for (const [key, label] of Object.entries(amenityIcons)) {
+        if (amenities[key] === true) {
+          prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
+        }
+      }
+  
+      const amenitiesHtml = prominentAmenities.length > 0
+        ? prominentAmenities.join('')
+        : `<span class="amenity-placeholder">No amenities listed</span>`;
+  
+      const distanceHtml = spot.distance
+        ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
+        : '';
+  
+      // Construct URL safely
+      const countySlug = spot.county_slug || spot.county?.toLowerCase().replace(/\s+/g, '-') || 'unknown';
+      const spotSlug = spot.slug || spot.name.toLowerCase().replace(/\s+/g, '-');
+  
+      return `
+        <a href="/texas/${countySlug}/${spotSlug}" class="spot-card" data-spot-type="${spot.spot_type}">
+          <div class="card-header">
+            <h3>${spot.name}</h3>
+            ${distanceHtml}
+          </div>
+          <div class="card-body">
+            ${amenitiesHtml}
+          </div>
+        </a>
+      `;
+    }
+  
+    function updateFilterCount() {
+      if (!showFilters || !activeFilters || !filterCount) return;
+  
+      const totalTypes = spotTypes.length;
+      const activeCount = activeFilters.size;
+  
+      if (activeCount === totalTypes) {
+        filterCount.textContent = '';
+      } else {
+        filterCount.textContent = `(${activeCount})`;
+      }
+    }
+  
+    // Toggle filters panel
+    if (filtersBtn && filterPanel) {
+      filtersBtn.addEventListener('click', () => {
+        const isVisible = filterPanel.style.display !== 'none';
+        filterPanel.style.display = isVisible ? 'none' : 'block';
+  
+        // Scroll widget into view when toggling filters
+        setTimeout(() => scrollWidgetIntoView(), 100);
+      });
+    }
+  
+    // Handle filter changes
+    if (filterPanel) {
+      filterPanel.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox' && activeFilters) {
+          const value = e.target.value;
+          if (e.target.checked) {
+            activeFilters.add(value);
+          } else {
+            activeFilters.delete(value);
+          }
+          filterAndSortItems();
+  
+          // Scroll widget into view after filtering
+          setTimeout(() => scrollWidgetIntoView(), 100);
+        }
+      });
+    }
+  
+    // Handle sort changes
+    if (sortBtn) {
+      sortBtn.addEventListener('click', () => {
+        if (currentSort === 'alphabetical') {
+          // Switch to distance sorting - prompt for location
+          if (navigator.geolocation) {
+            if (sortDisplay) sortDisplay.textContent = 'Getting location...';
+            sortBtn.disabled = true;
+  
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                userLocation = {
+                  lat: position.coords.latitude,
+                  lon: position.coords.longitude
+                };
+                currentSort = 'distance';
+                if (sortDisplay) sortDisplay.textContent = 'Distance';
+                sortBtn.disabled = false;
+                filterAndSortItems();
+  
+                // Scroll widget into view after sorting
+                setTimeout(() => scrollWidgetIntoView(), 100);
+              },
+              (error) => {
+                if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
+                sortBtn.disabled = false;
+                alert('Unable to get your location. Please enable location services to sort by distance.');
+              }
+            );
+          } else {
+            alert('Geolocation is not supported by your browser.');
+          }
+        } else {
+          // Switch back to alphabetical
+          currentSort = 'alphabetical';
+          if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
+          filterAndSortItems();
+  
+          // Scroll widget into view after sorting
+          setTimeout(() => scrollWidgetIntoView(), 100);
+        }
+      });
+    }
+  
+      // Initial render
+      if (showFilters) {
+        filterAndSortItems();
+        updateFilterCount();
+      }
   }
 
-  // Initial render
-  if (showFilters) {
-    filterAndSortItems();
-    updateFilterCount();
-  }
+  // Initialize on first load
+  initializeWidget();
+
+  // Re-initialize after view transitions
+  document.addEventListener('astro:page-load', () => {
+    initializeWidget();
+  });
 </script>
