@@ -271,10 +271,16 @@ const schema = {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-        // Use preloaded images
-        if (isDark && mapImg.src !== darkUrl) {
+        // Check the style in the URL instead of full URL comparison
+        // This avoids issues with URL normalization
+        const currentSrc = mapImg.getAttribute('src') || mapImg.src;
+        const isCurrentlyDark = currentSrc.includes('dark-v11');
+        const isCurrentlyLight = currentSrc.includes('streets-v11');
+
+        // Update map if theme doesn't match current map style
+        if (isDark && !isCurrentlyDark) {
           mapImg.src = darkUrl;
-        } else if (!isDark && mapImg.src !== lightUrl) {
+        } else if (!isDark && !isCurrentlyLight) {
           mapImg.src = lightUrl;
         }
       }
