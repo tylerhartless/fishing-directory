@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import ResultsWidget from '../../../components/ResultsWidget.astro';
 import { getSpots } from '../../../lib/database';
 
 export async function getStaticPaths() {
@@ -60,10 +61,6 @@ const { countyName, spots, totalSpots } = Astro.props;
 
 // Get unique spot types for filter
 const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
-
-// Serialize for client-side
-const spotsJson = JSON.stringify(spots);
-const spotTypesJson = JSON.stringify(spotTypes);
 ---
 
 <Layout
@@ -82,92 +79,52 @@ const spotTypesJson = JSON.stringify(spotTypes);
 
   <section class="retro-container">
     <div class="spots-list-section">
-      <div class="search-widget-style">
-      
-        <!-- Controls -->
-        <div class="controls-bar">
-          <a href="/texas" class="control-button back-button">
-            <span class="back-arrow">←</span>
-            <span class="back-text">Texas</span>
-          </a>
+      <ResultsWidget
+        items={spots}
+        itemType="spot"
+        backButton={{ url: '/texas', text: 'Texas' }}
+        showFilters={true}
+        spotTypes={spotTypes}
+        scrollContainerId="spots-scroll-container"
+        resultsContainerId="spots-container"
+      >
+        {spots.sort((a, b) => a.name.localeCompare(b.name)).map(spot => {
+          const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+          const prominentAmenities = [];
+          const amenityIcons = {
+            'boat_ramp': '🚤 Boat Ramp',
+            'fishing_pier': '🎣 Pier',
+            'fish_cleaning': '🔪 Cleaning',
+            'restrooms': '🚻 Restrooms',
+            'parking': '🅿️ Parking',
+          };
 
-          <button id="sort-btn" class="control-button">
-            <span class="control-label">Sort:</span>
-            <span id="sort-display">Alphabetical</span>
-          </button>
-
-          <button id="filters-btn" class="control-button">
-            <span class="control-label">Filters</span>
-            <span id="filter-count"></span>
-          </button>
-        </div>
-
-        <!-- Filter Panel (Collapsible) -->
-        <div id="filter-panel" class="filter-panel" style="display: none;">
-          <div class="filter-section">
-            <h4>Spot Type</h4>
-            <div class="filter-checkboxes" id="type-filters">
-              {spotTypes.map(type => {
-                const isBoatRamp = type === 'boat_ramp';
-                const displayName = type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                return (
-                  <label class="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      value={type}
-                      checked={!isBoatRamp}
-                      data-filter-type="spot_type"
-                    />
-                    <span>{displayName}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <!-- Spots Grid -->
-        <div class="results-container" id="spots-scroll-container">
-          <div id="spots-container" class="results-grid">
-            {spots.sort((a, b) => a.name.localeCompare(b.name)).map(spot => {
-            const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
-            const prominentAmenities = [];
-            const amenityIcons = {
-              'boat_ramp': '🚤 Boat Ramp',
-              'fishing_pier': '🎣 Pier',
-              'fish_cleaning': '🔪 Cleaning',
-              'restrooms': '🚻 Restrooms',
-              'parking': '🅿️ Parking',
-            };
-
-            for (const [key, label] of Object.entries(amenityIcons)) {
-              if (amenities[key] === true) {
-                prominentAmenities.push(label);
-              }
+          for (const [key, label] of Object.entries(amenityIcons)) {
+            if (amenities[key] === true) {
+              prominentAmenities.push(label);
             }
+          }
 
-            return (
-              <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="spot-card" data-spot-type={spot.spot_type} data-spot-id={spot.id}>
-                <div class="card-header">
-                  <h3 transition:name={`spot-title-${spot.id}`}>{spot.name}</h3>
-                </div>
-                <div class="card-body">
-                  {prominentAmenities.length > 0 ? (
-                    <>
-                      {prominentAmenities.map(label => (
-                        <span class="card-meta-item">{label}</span>
-                      ))}
-                    </>
-                  ) : (
-                    <span class="amenity-placeholder">No amenities listed</span>
-                  )}
-                </div>
-              </a>
-            );
-          })}
-          </div>
-        </div>
-      </div>
+          return (
+            <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="spot-card" data-spot-type={spot.spot_type} data-spot-id={spot.id}>
+              <div class="card-header">
+                <h3 transition:name={`spot-title-${spot.id}`}>{spot.name}</h3>
+              </div>
+              <div class="card-body">
+                {prominentAmenities.length > 0 ? (
+                  <>
+                    {prominentAmenities.map(label => (
+                      <span class="card-meta-item">{label}</span>
+                    ))}
+                  </>
+                ) : (
+                  <span class="amenity-placeholder">No amenities listed</span>
+                )}
+              </div>
+            </a>
+          );
+        })}
+      </ResultsWidget>
     </div>
   </section>
 </Layout>
@@ -178,478 +135,4 @@ const spotTypesJson = JSON.stringify(spotTypes);
     max-width: 900px;
     margin: 0 auto;
   }
-
-  .search-widget-style {
-    background: var(--rgba-dark-bg-80);
-    border: 2px solid var(--rgba-sage-50);
-    border-radius: 0;
-    padding: 1.5rem;
-    box-shadow:
-      0 0 20px var(--rgba-sage-30),
-      inset 0 0 30px var(--rgba-black-50);
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Scanlines */
-  .search-widget-style::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      var(--rgba-black-15) 0px,
-      transparent 1px,
-      transparent 2px,
-      var(--rgba-black-15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .search-widget-style > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  :global([data-theme="light"]) .search-widget-style {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 6px 6px 0 var(--rgba-black-20);
-  }
-
-  :global([data-theme="light"]) .search-widget-style::before {
-    background: repeating-linear-gradient(
-      0deg,
-      var(--rgba-black-01) 0px,
-      transparent 1px,
-      transparent 2px,
-      var(--rgba-black-01) 3px
-    );
-  }
-
-  /* Results header */
-  .results-header {
-    margin-bottom: 1rem;
-  }
-
-  .results-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'VT323', monospace;
-    font-size: 1.3rem;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-  }
-
-  :global([data-theme="light"]) .results-info {
-    color: var(--neutral-black);
-    font-weight: 700;
-  }
-
-  .query-prompt {
-    color: var(--theme-text-sage);
-    font-weight: 700;
-    text-shadow: 0 0 8px var(--rgba-sage-60);
-  }
-
-  :global([data-theme="light"]) .query-prompt {
-    color: var(--boat-orange);
-    text-shadow: none;
-  }
-
-  /* Controls bar */
-  .controls-bar {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .control-button {
-    background: var(--rgba-sage-15);
-    border: 2px solid var(--rgba-sage-50);
-    color: var(--theme-text-sage);
-    padding: 0.75rem 1.25rem;
-    font-family: 'VT323', monospace;
-    font-size: 1.1rem;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 0 10px var(--rgba-sage-30);
-    text-decoration: none;
-  }
-
-  .back-button {
-    white-space: nowrap;
-  }
-
-  .back-arrow {
-    font-size: 1.2rem;
-    opacity: 0.7;
-  }
-
-  .back-text {
-    font-weight: 700;
-    color: var(--theme-text-sage);
-    text-shadow: 0 0 8px var(--rgba-sage-60);
-  }
-
-  :global([data-theme="light"]) .back-text {
-    color: var(--boat-orange);
-    text-shadow: none;
-  }
-
-  :global([data-theme="light"]) .control-button {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    color: var(--neutral-black);
-    font-weight: 700;
-    box-shadow: 3px 3px 0 var(--rgba-black-20);
-  }
-
-  .control-button:hover {
-    background: var(--rgba-sage-25);
-    border-color: var(--rgba-sage-80);
-    box-shadow: 0 0 15px var(--rgba-sage-50);
-  }
-
-  :global([data-theme="light"]) .control-button:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--rgba-black-30);
-    border-color: var(--boat-orange);
-  }
-
-  .control-label {
-    opacity: 0.7;
-  }
-
-  #sort-display, #filter-count {
-    font-weight: 700;
-    color: var(--theme-text-sage);
-    text-shadow: 0 0 8px var(--rgba-sage-60);
-  }
-
-  :global([data-theme="light"]) #sort-display,
-  :global([data-theme="light"]) #filter-count {
-    color: var(--boat-orange);
-    text-shadow: none;
-  }
-
-  /* Filter panel */
-  .filter-panel {
-    background: var(--rgba-black-30);
-    border: 1px solid var(--rgba-sage-40);
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 0;
-  }
-
-  :global([data-theme="light"]) .filter-panel {
-    background: rgba(0, 0, 0, 0.03);
-    border: 2px solid var(--neutral-black);
-  }
-
-  .filter-section h4 {
-    font-family: 'VT323', monospace;
-    font-size: 1.2rem;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-    margin: 0 0 0.75rem 0;
-    text-shadow: 0 0 6px var(--rgba-sage-40);
-  }
-
-  :global([data-theme="light"]) .filter-section h4 {
-    color: var(--neutral-black);
-    font-weight: 700;
-    text-shadow: none;
-  }
-
-  .filter-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .filter-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'VT323', monospace;
-    font-size: 1.1rem;
-    color: var(--theme-text-secondary);
-    cursor: pointer;
-    padding: 0.5rem 0.75rem;
-    background: var(--rgba-sage-10);
-    border: 1px solid var(--rgba-sage-30);
-    transition: all 0.2s;
-  }
-
-  :global([data-theme="light"]) .filter-checkbox {
-    background: white;
-    border: 2px solid var(--neutral-black);
-    color: var(--neutral-black);
-    font-weight: 600;
-  }
-
-  .filter-checkbox:hover {
-    background: var(--rgba-sage-20);
-    border-color: var(--rgba-sage-50);
-  }
-
-  :global([data-theme="light"]) .filter-checkbox:hover {
-    background: rgba(255, 140, 66, 0.1);
-    border-color: var(--boat-orange);
-  }
-
-  .filter-checkbox input[type="checkbox"] {
-    width: 1.2rem;
-    height: 1.2rem;
-    cursor: pointer;
-  }
-
-  /* Spot cards inherit from spot-card in search-widget.css */
-
-  @media (max-width: 768px) {
-    .search-widget-style {
-      padding: 1rem;
-    }
-
-    .controls-bar {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-    }
-
-    .control-button {
-      flex-shrink: 0;
-    }
-
-    .filter-checkboxes {
-      flex-direction: column;
-    }
-
-    .filter-checkbox {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 500px) {
-    .back-text {
-      display: none;
-    }
-
-    .back-button {
-      padding: 0.75rem;
-    }
-  }
 </style>
-
-<script define:vars={{ spotsJson, spotTypesJson }}>
-  const allSpots = JSON.parse(spotsJson);
-  const spotTypes = JSON.parse(spotTypesJson);
-  let currentSort = 'alphabetical';
-  let userLocation = null;
-  let activeFilters = new Set(spotTypes.filter(t => t !== 'boat_ramp'));
-
-  const filtersBtn = document.getElementById('filters-btn');
-  const sortBtn = document.getElementById('sort-btn');
-  const sortDisplay = document.getElementById('sort-display');
-  const filterCount = document.getElementById('filter-count');
-  const filterPanel = document.getElementById('filter-panel');
-  const spotsContainer = document.getElementById('spots-container');
-  const filteredCount = document.getElementById('filtered-count');
-  const visibleCount = document.getElementById('visible-count');
-  const scrollContainer = document.getElementById('spots-scroll-container');
-
-  // Handle scroll fade effects
-  function handleScrollFade() {
-    if (!scrollContainer) return;
-
-    const scrollTop = scrollContainer.scrollTop;
-    const scrollHeight = scrollContainer.scrollHeight;
-    const clientHeight = scrollContainer.clientHeight;
-    const scrollBottom = scrollHeight - scrollTop - clientHeight;
-
-    // Add/remove classes based on scroll position
-    if (scrollTop > 10) {
-      scrollContainer.classList.add('scrolled-from-top');
-    } else {
-      scrollContainer.classList.remove('scrolled-from-top');
-    }
-
-    if (scrollBottom > 10) {
-      scrollContainer.classList.add('scrolled-from-bottom');
-    } else {
-      scrollContainer.classList.remove('scrolled-from-bottom');
-    }
-  }
-
-  // Attach scroll listener
-  if (scrollContainer) {
-    scrollContainer.addEventListener('scroll', handleScrollFade);
-    // Initial check
-    handleScrollFade();
-  }
-
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 3959; // Earth's radius in miles
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  }
-
-  function filterAndSortSpots() {
-    let filtered = allSpots.filter(spot => activeFilters.has(spot.spot_type));
-
-    // Calculate distance and sort if sorting by distance
-    if (currentSort === 'distance' && userLocation) {
-      filtered = filtered.map(spot => ({
-        ...spot,
-        distance: calculateDistance(
-          userLocation.lat,
-          userLocation.lon,
-          parseFloat(spot.latitude),
-          parseFloat(spot.longitude)
-        )
-      }));
-
-      // Sort by distance (no radius filter - show all spots)
-      filtered.sort((a, b) => a.distance - b.distance);
-    } else {
-      // Sort alphabetically
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    renderSpots(filtered);
-    updateFilterCount();
-  }
-
-  function renderSpots(spotsToRender) {
-    const countySlug = window.location.pathname.split('/')[2];
-
-    spotsContainer.innerHTML = spotsToRender.map(spot => {
-      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
-      const prominentAmenities = [];
-      const amenityIcons = {
-        'boat_ramp': '🚤 Boat Ramp',
-        'fishing_pier': '🎣 Pier',
-        'fish_cleaning': '🔪 Cleaning',
-        'restrooms': '🚻 Restrooms',
-        'parking': '🅿️ Parking',
-      };
-
-      for (const [key, label] of Object.entries(amenityIcons)) {
-        if (amenities[key] === true) {
-          prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
-        }
-      }
-
-      const amenitiesHtml = prominentAmenities.length > 0
-        ? prominentAmenities.join('')
-        : `<span class="amenity-placeholder">No amenities listed</span>`;
-
-      const distanceHtml = spot.distance
-        ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
-        : '';
-
-      return `
-        <a href="/texas/${countySlug}/${spot.slug}" class="spot-card" data-spot-type="${spot.spot_type}">
-          <div class="card-header">
-            <h3>${spot.name}</h3>
-            ${distanceHtml}
-          </div>
-          <div class="card-body">
-            ${amenitiesHtml}
-          </div>
-        </a>
-      `;
-    }).join('');
-
-    filteredCount.textContent = spotsToRender.length;
-    visibleCount.textContent = spotsToRender.length;
-
-    // Re-check fade after rendering
-    setTimeout(handleScrollFade, 100);
-  }
-
-  function updateFilterCount() {
-    const totalTypes = spotTypes.length;
-    const activeCount = activeFilters.size;
-
-    if (activeCount === totalTypes) {
-      filterCount.textContent = '';
-    } else {
-      filterCount.textContent = `(${activeCount})`;
-    }
-  }
-
-  // Toggle filters panel
-  filtersBtn.addEventListener('click', () => {
-    const isVisible = filterPanel.style.display !== 'none';
-    filterPanel.style.display = isVisible ? 'none' : 'block';
-  });
-
-  // Handle filter changes
-  filterPanel.addEventListener('change', (e) => {
-    if (e.target.type === 'checkbox') {
-      const value = e.target.value;
-      if (e.target.checked) {
-        activeFilters.add(value);
-      } else {
-        activeFilters.delete(value);
-      }
-      filterAndSortSpots();
-    }
-  });
-
-  // Handle sort changes
-  sortBtn.addEventListener('click', () => {
-    if (currentSort === 'alphabetical') {
-      // Switch to distance sorting - prompt for location
-      if (navigator.geolocation) {
-        sortDisplay.textContent = 'Getting location...';
-        sortBtn.disabled = true;
-
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            userLocation = {
-              lat: position.coords.latitude,
-              lon: position.coords.longitude
-            };
-            currentSort = 'distance';
-            sortDisplay.textContent = 'Distance';
-            sortBtn.disabled = false;
-            filterAndSortSpots();
-          },
-          (error) => {
-            sortDisplay.textContent = 'Alphabetical';
-            sortBtn.disabled = false;
-            alert('Unable to get your location. Please enable location services to sort by distance.');
-          }
-        );
-      } else {
-        alert('Geolocation is not supported by your browser.');
-      }
-    } else {
-      // Switch back to alphabetical
-      currentSort = 'alphabetical';
-      sortDisplay.textContent = 'Alphabetical';
-      filterAndSortSpots();
-    }
-  });
-
-  // Initial filter count update
-  updateFilterCount();
-</script>
-</Layout>
