@@ -116,7 +116,7 @@
   color: var(--theme-text-sage);
   margin: 0;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-shadow: 0 0 6px var(--rgba-sage-40);
   text-transform: uppercase;
 }
@@ -153,9 +153,9 @@
 
   /* Typography */
   font-family: 'VT323', monospace;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 
   /* Display */
@@ -231,7 +231,7 @@
   box-shadow: 6px 6px 0 var(--rgba-black-30);
   text-shadow: 2px 2px 0 var(--rgba-black-30);
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.25rem;
 }
 
 [data-theme="light"] .btn-location-hero::before {
@@ -273,7 +273,7 @@
 }
 
 .loading-text {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   animation: textPulse 1.5s ease-in-out infinite;
 }
 
@@ -310,7 +310,7 @@
   border: 2px solid #ff4444;
   border-radius: 0;
   font-family: 'VT323', monospace;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #ff6666;
   text-shadow: 0 0 6px var(--rgba-red-40);
 }
@@ -365,7 +365,7 @@
   padding: 0 1rem;
   background: transparent;
   font-family: 'VT323', monospace;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--rgba-sage-50);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -423,7 +423,7 @@
 }
 
 .search-prompt {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--rgba-sage-50);
   text-shadow: none;
   flex-shrink: 0;
@@ -433,12 +433,12 @@
 [data-theme="light"] .search-prompt {
   color: var(--accent-dark-orange, #e85d2a);
   text-shadow: none;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   font-weight: 700;
 }
 
 .search-label {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   color: var(--rgba-sage-60);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -447,7 +447,7 @@
 [data-theme="light"] .search-label {
   color: var(--neutral-black, #1a1a1a);
   font-weight: 700;
-  font-size: 1.45rem;
+  font-size: 1.35rem;
 }
 
 /* =====================================
@@ -474,7 +474,7 @@
   min-height: 48px;
   padding: 0.75rem 1rem;
   font-family: 'VT323', monospace;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   border: none;
   border-radius: 0;
   outline: none;
@@ -537,7 +537,7 @@
   min-width: 120px;
   padding: 0.75rem 1.5rem;
   font-family: 'VT323', monospace;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -651,7 +651,7 @@
   cursor: pointer;
   border-bottom: 1px solid var(--rgba-sage-15);
   font-family: 'VT323', monospace;
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   transition: all 0.15s;
   min-height: 48px;
 }
@@ -674,7 +674,7 @@
 
 .suggestion-prompt {
   color: var(--rgba-sage-70);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   text-shadow: none;
 }
 
@@ -741,7 +741,7 @@
   }
 
   .searching-state {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .btn-location-hero {
@@ -1070,7 +1070,7 @@
 }
 
 .query-prompt {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--rgba-sage-70);
   font-family: 'VT323', monospace;
   text-shadow: none;
@@ -1083,7 +1083,7 @@
 
 .query-text {
   font-family: 'VT323', monospace;
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   color: var(--theme-text-sage);
   font-weight: 400;
   text-shadow: 0 0 4px var(--rgba-sage-30);
@@ -1102,7 +1102,7 @@
   color: var(--theme-text-sage);
   text-decoration: none;
   font-weight: 400;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-family: 'VT323', monospace;
   transition: all 0.2s;
   cursor: pointer;
@@ -1184,7 +1184,7 @@
   border: 1px solid var(--rgba-sage-30);
   color: var(--theme-text-sage);
   font-family: 'VT323', monospace;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s;
   min-height: 44px;
@@ -1223,7 +1223,7 @@
 }
 
 .sort-control label {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--theme-text-sage);
   font-weight: 400;
 }
@@ -1240,7 +1240,7 @@
   border: 1px solid var(--rgba-sage-30);
   color: var(--theme-text-sage);
   font-family: 'VT323', monospace;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   cursor: pointer;
   min-height: 44px;
   /* Remove native appearance to use custom styling on mobile */
@@ -1280,7 +1280,7 @@
 /* Result Count */
 .result-count {
   font-family: 'VT323', monospace;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   color: var(--theme-text-sage);
   padding: 0.6rem 1rem;
   background: var(--rgba-sage-05);
@@ -1364,7 +1364,7 @@
 
 .checkbox-label {
   font-family: 'VT323', monospace;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: var(--theme-text-sage);
   font-weight: 400;
   cursor: pointer;
@@ -1401,7 +1401,7 @@
 }
 
 .no-license-badge {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   padding: 0.2rem 0.5rem;
   background: var(--rgba-park-badge-20);
   border: 1px solid var(--rgba-park-badge-40);
@@ -1426,7 +1426,7 @@
   border: 1px solid var(--rgba-red-30);
   color: #ff6666;
   font-family: 'VT323', monospace;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -1724,7 +1724,7 @@
 /* Distance Indicator - inline with title */
 .distance-indicator {
   color: var(--earth-sand);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-family: 'VT323', monospace;
   font-weight: 400;
   text-shadow: 0 0 8px var(--rgba-sand-60), 0 0 12px var(--rgba-sand-40);
@@ -1748,7 +1748,7 @@
 
 /* Card Metadata Items - inline with bullets */
 .card-meta-item {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-family: 'VT323', monospace;
   color: var(--rgba-sage-80);
   font-weight: 400;
@@ -1776,7 +1776,7 @@
 
 /* Amenity placeholder - shown when no amenities */
 .amenity-placeholder {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-family: 'VT323', monospace;
   color: var(--rgba-sage-50);
   font-weight: 400;
@@ -1855,7 +1855,7 @@
 
 .loading-state {
   color: var(--theme-text-sage);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1967,7 +1967,7 @@
 
 .empty-state {
   color: var(--earth-sand);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
 }
 
 .empty-state p {
@@ -1980,7 +1980,7 @@
   border: 1px solid var(--rgba-sage-30);
   color: var(--theme-text-sage);
   font-family: 'VT323', monospace;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -2009,7 +2009,7 @@
   gap: 0.75rem;
   padding: 2rem 1rem;
   font-family: 'VT323', monospace;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--theme-text-sage);
 }
 
@@ -2059,18 +2059,18 @@
   }
 
   .query-text {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .query-prompt {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
   }
 
   .btn-new-search {
     width: auto;
     text-align: center;
     padding: 0.4rem 0.6rem;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   /* Consolidate controls into a compact single-row layout */
@@ -2115,7 +2115,7 @@
   }
 
   .no-license-badge {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     padding: 0.15rem 0.4rem;
   }
 
@@ -2134,7 +2134,7 @@
   }
 
   .distance-indicator {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
 }
