@@ -150,26 +150,24 @@ const schema = {
             ) : (
               <p>Public fishing access in {isMultiCounty ? countyDisplay : primaryCounty + ' County'}, Texas.</p>
             )}
-          </section>
 
-          <!-- Amenities -->
-          <section class="retro-section amenities">
-            <h2 class="retro-heading retro-heading-md retro-heading-underline">Amenities</h2>
+            {/* Amenities within About This Spot */}
             {spot.amenities && (Object.values(spot.amenities).some(v => v === true)) ? (
-              <ul class="amenity-list">
-                {spot.amenities.boat_ramp && <li>🚤 Boat Ramp</li>}
-                {spot.amenities.parking && <li>🅿️ Parking Available</li>}
-                {spot.amenities.restrooms && <li>🚻 Restrooms</li>}
-                {spot.amenities.lighting && <li>💡 Lighting</li>}
-                {spot.amenities.fish_cleaning && <li>🔪 Fish Cleaning Station</li>}
-                {spot.amenities.boat_trailer_parking && <li>🚢 Boat Trailer Parking</li>}
-                {spot.amenities.camping && <li>⛺ Camping</li>}
-                {spot.amenities.fishing_pier && <li>🎣 Fishing Pier</li>}
-                {spot.amenities.picnic_area && <li>🧺 Picnic Area</li>}
-              </ul>
-            ) : (
-              <p class="amenities-empty-message">No amenities information available for this location.</p>
-            )}
+              <div class="amenities-subsection">
+                <h3 class="amenities-subheading">Amenities</h3>
+                <ul class="amenity-list">
+                  {spot.amenities.boat_ramp && <li>🚤 Boat Ramp</li>}
+                  {spot.amenities.parking && <li>🅿️ Parking Available</li>}
+                  {spot.amenities.restrooms && <li>🚻 Restrooms</li>}
+                  {spot.amenities.lighting && <li>💡 Lighting</li>}
+                  {spot.amenities.fish_cleaning && <li>🔪 Fish Cleaning Station</li>}
+                  {spot.amenities.boat_trailer_parking && <li>🚢 Boat Trailer Parking</li>}
+                  {spot.amenities.camping && <li>⛺ Camping</li>}
+                  {spot.amenities.fishing_pier && <li>🎣 Fishing Pier</li>}
+                  {spot.amenities.picnic_area && <li>🧺 Picnic Area</li>}
+                </ul>
+              </div>
+            ) : null}
           </section>
 
           <!-- Dynamic Content: Fishing Reports -->
@@ -200,7 +198,7 @@ const schema = {
             <h3>Quick Info</h3>
             <dl>
               <dt>Type:</dt>
-              <dd>{spot.spot_type.replace(/_/g, ' ')}</dd>
+              <dd>{spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</dd>
 
               <dt>{isMultiCounty ? 'Counties:' : 'County:'}</dt>
               <dd>
@@ -332,7 +330,6 @@ const schema = {
     display: grid;
     grid-template-columns: 1fr 320px;
     gap: 2rem;
-    margin-top: 2rem;
   }
 
   .map-container {
@@ -416,6 +413,31 @@ const schema = {
   :global([data-theme="light"]) .description p {
     color: var(--neutral-black);
     font-weight: 500;
+  }
+
+  .amenities-subsection {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(168, 197, 168, 0.3);
+  }
+
+  :global([data-theme="light"]) .amenities-subsection {
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .amenities-subheading {
+    font-family: 'VT323', monospace;
+    color: var(--theme-text-sage);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0 0 1rem 0;
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  :global([data-theme="light"]) .amenities-subheading {
+    color: var(--earth-rust);
+    font-weight: 700;
+    text-shadow: none;
   }
 
   .amenity-list {
@@ -508,6 +530,29 @@ const schema = {
   :global([data-theme="light"]) dd {
     color: var(--neutral-black) !important;
     font-weight: 500;
+  }
+
+  dd a {
+    color: var(--theme-text-sage);
+    text-decoration: none;
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+    transition: all 0.2s;
+  }
+
+  dd a:hover {
+    color: var(--earth-sand);
+    text-shadow: 0 0 8px rgba(212, 165, 116, 0.5);
+  }
+
+  :global([data-theme="light"]) dd a {
+    color: var(--earth-forest);
+    text-shadow: none;
+    font-weight: 600;
+  }
+
+  :global([data-theme="light"]) dd a:hover {
+    color: var(--boat-orange);
+    text-shadow: none;
   }
 
   .copy-coords {
