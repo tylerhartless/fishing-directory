@@ -115,6 +115,14 @@ const totalSpots = allSpots.length;
     <div class="states-list-section">
       <div class="search-widget-style">
 
+        <!-- Controls -->
+        <div class="controls-bar">
+          <button id="sort-btn" class="control-button">
+            <span class="control-label">Sort:</span>
+            <span id="sort-display">Alphabetical</span>
+          </button>
+        </div>
+
         <!-- States Grid -->
         <div class="results-container" id="states-scroll-container">
           <div id="states-container" class="results-grid">
@@ -195,6 +203,65 @@ const totalSpots = allSpots.length;
     );
   }
 
+  /* Controls bar */
+  .controls-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .control-button {
+    background: var(--rgba-sage-15);
+    border: 2px solid var(--rgba-sage-50);
+    color: var(--theme-text-sage);
+    padding: 0.75rem 1.25rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 10px var(--rgba-sage-30);
+  }
+
+  :global([data-theme="light"]) .control-button {
+    background: white;
+    border: 3px solid var(--neutral-black);
+    color: var(--neutral-black);
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--rgba-black-20);
+  }
+
+  .control-button:hover {
+    background: var(--rgba-sage-25);
+    border-color: var(--rgba-sage-80);
+    box-shadow: 0 0 15px var(--rgba-sage-50);
+  }
+
+  :global([data-theme="light"]) .control-button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--rgba-black-30);
+    border-color: var(--boat-orange);
+  }
+
+  .control-label {
+    opacity: 0.7;
+  }
+
+  #sort-display {
+    font-weight: 700;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  :global([data-theme="light"]) #sort-display {
+    color: var(--boat-orange);
+    text-shadow: none;
+  }
+
   /* State cards inherit from spot-card in search-widget.css */
   :global(.state-card) {
     border-color: var(--rgba-sage-30);
@@ -215,6 +282,12 @@ const totalSpots = allSpots.length;
 
 <script define:vars={{ statesJson }}>
   const states = JSON.parse(statesJson);
+  let currentSort = 'alphabetical';
+  let userLocation = null;
+
+  const sortBtn = document.getElementById('sort-btn');
+  const sortDisplay = document.getElementById('sort-display');
+  const statesContainer = document.getElementById('states-container');
   const scrollContainer = document.getElementById('states-scroll-container');
 
   // Handle scroll fade effects
@@ -246,5 +319,95 @@ const totalSpots = allSpots.length;
     // Initial check
     handleScrollFade();
   }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  function sortStates(sortBy) {
+    let sorted = [...states];
+
+    if (sortBy === 'distance' && userLocation) {
+      sorted = sorted.map(state => ({
+        ...state,
+        distance: calculateDistance(
+          userLocation.lat,
+          userLocation.lon,
+          state.lat,
+          state.lon
+        )
+      })).sort((a, b) => a.distance - b.distance);
+    } else {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    renderStates(sorted);
+  }
+
+  function renderStates(statesToRender) {
+    statesContainer.innerHTML = statesToRender.map(state => {
+      const distanceHtml = state.distance
+        ? `<div class="distance-indicator">${Math.round(state.distance)} mi</div>`
+        : '';
+
+      return `
+        <a href="/${state.slug}" class="spot-card state-card" data-state-name="${state.name}">
+          <div class="card-header">
+            <h3>${state.name}</h3>
+            ${distanceHtml}
+          </div>
+          <div class="card-body">
+            <span class="card-meta-item">${state.countyCount} ${state.countyCount === 1 ? 'county' : 'counties'}</span>
+            <span class="card-meta-item">${state.spotCount} ${state.spotCount === 1 ? 'spot' : 'spots'}</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+
+    // Re-check fade after rendering
+    setTimeout(handleScrollFade, 100);
+  }
+
+  sortBtn.addEventListener('click', () => {
+    if (currentSort === 'alphabetical') {
+      // Switch to distance sorting - prompt for location
+      if (navigator.geolocation) {
+        sortDisplay.textContent = 'Getting location...';
+        sortBtn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLocation = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            };
+            currentSort = 'distance';
+            sortDisplay.textContent = 'Distance';
+            sortBtn.disabled = false;
+            sortStates('distance');
+          },
+          (error) => {
+            sortDisplay.textContent = 'Alphabetical';
+            sortBtn.disabled = false;
+            alert('Unable to get your location. Please enable location services to sort by distance.');
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    } else {
+      // Switch back to alphabetical
+      currentSort = 'alphabetical';
+      sortDisplay.textContent = 'Alphabetical';
+      sortStates('alphabetical');
+    }
+  });
 </script>
 </Layout>
