@@ -62,31 +62,6 @@
   /* Accent Stripe - Solid Color */
   --rainbow-gradient: var(--earth-rust);
 
-  /* Theme Colors - Default Dark Mode */
-  --theme-bg: #1a1a1a;          /* Darker background for dark mode */
-  --theme-bg-alt: #202020;
-  --theme-bg-forest: #0d1f0d;   /* Dark forest green background */
-  --theme-text: #e5e5e5;
-  --theme-text-secondary: #b0b0b0;
-  --theme-text-sage: #a8c5a8;   /* Sage green accent text */
-  --theme-card-bg: #252525;
-  --theme-card-border: rgba(255, 255, 255, 0.1);
-  --theme-shadow: rgba(0, 0, 0, 0.5);
-  --theme-input-bg: #252525;
-  --theme-input-border: rgba(212, 165, 116, 0.3);
-  --theme-heading-color: #ffffff; /* White headers for dark mode */
-  --theme-breadcrumb-color: #39ff14; /* Green for breadcrumbs in dark mode */
-  --theme-breadcrumb-hover: #50ff30; /* Brighter green for hover/active */
-  --theme-toggle-bg: rgba(0, 0, 0, 0.3);
-  --theme-toggle-border: rgba(255, 255, 255, 0.8); /* White border for dark mode */
-  --theme-toggle-text: #ffffff; /* White text for dark mode */
-  --theme-toggle-shadow: 0 0 25px rgba(255, 255, 255, 0.5), inset 0 0 12px rgba(255, 255, 255, 0.15);
-  --theme-toggle-hover-bg: rgba(255, 255, 255, 0.15);
-  --theme-toggle-hover-border: #ffffff;
-  --theme-toggle-hover-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
-  --theme-toggle-active-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
-  --theme-toggle-backdrop-filter: blur(8px);
-
   /* Additional gray shades for UI elements */
   --gray-darkest: #333;
   --gray-darker: #444;
@@ -267,4 +242,63 @@
   --theme-btn-primary-bg: var(--boat-orange);
   --theme-btn-primary-hover: var(--boat-red);
   --theme-btn-border: var(--boat-black);
+}
+
+/* System Preference Defaults - Applied when no data-theme attribute is set */
+/* Dark mode as system default */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --theme-bg: #1a1a1a;
+    --theme-bg-alt: #202020;
+    --theme-bg-forest: #0d1f0d;
+    --theme-text: #e5e5e5;
+    --theme-text-secondary: #b0b0b0;
+    --theme-text-sage: #a8c5a8;
+    --theme-card-bg: #252525;
+    --theme-card-border: rgba(255, 255, 255, 0.1);
+    --theme-shadow: rgba(0, 0, 0, 0.5);
+    --theme-input-bg: #252525;
+    --theme-input-border: rgba(212, 165, 116, 0.3);
+    --theme-heading-color: #ffffff;
+    --theme-breadcrumb-color: #39ff14;
+    --theme-breadcrumb-hover: #50ff30;
+    --theme-toggle-bg: rgba(0, 0, 0, 0.3);
+    --theme-toggle-border: rgba(255, 255, 255, 0.8);
+    --theme-toggle-text: #ffffff;
+    --theme-toggle-shadow: 0 0 25px rgba(255, 255, 255, 0.5), inset 0 0 12px rgba(255, 255, 255, 0.15);
+    --theme-toggle-hover-bg: rgba(255, 255, 255, 0.15);
+    --theme-toggle-hover-border: #ffffff;
+    --theme-toggle-hover-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
+    --theme-toggle-active-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
+    --theme-toggle-backdrop-filter: blur(8px);
+  }
+}
+
+/* Light mode as system default */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --theme-bg: var(--boat-cream);
+    --theme-bg-alt: #ffffff;
+    --theme-bg-forest: #0d1f0d;
+    --theme-text: var(--boat-black);
+    --theme-text-secondary: #555555;
+    --theme-text-sage: #4a6741;
+    --theme-card-bg: #ffffff;
+    --theme-card-border: var(--boat-black);
+    --theme-shadow: rgba(0, 0, 0, 0.2);
+    --theme-input-bg: #ffffff;
+    --theme-input-border: var(--boat-black);
+    --theme-heading-color: var(--boat-charcoal);
+    --theme-breadcrumb-color: var(--boat-orange);
+    --theme-breadcrumb-hover: var(--boat-red);
+    --theme-toggle-bg: var(--accent-sage);
+    --theme-toggle-border: var(--neutral-black);
+    --theme-toggle-text: var(--neutral-black);
+    --theme-toggle-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    --theme-toggle-hover-bg: var(--box-moss);
+    --theme-toggle-hover-border: var(--neutral-black);
+    --theme-toggle-hover-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+    --theme-toggle-active-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    --theme-toggle-backdrop-filter: none;
+  }
 }
