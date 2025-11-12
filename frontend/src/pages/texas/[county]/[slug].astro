@@ -120,16 +120,37 @@ const schema = {
         <div class="main-content">
           <!-- Static Map Image (SEO-friendly, loads fast) -->
           <div class="map-container">
-            <img
-              id="spot-map"
-              src={mapUrl}
-              data-light-url={mapUrl}
-              data-dark-url={darkMapUrl}
-              alt={`Map of ${spot.name}`}
-              width="900"
-              height="600"
-              loading="eager"
-            />
+            <!-- Set correct map URL immediately based on theme to prevent flash -->
+            <script is:inline data-light-url={mapUrl} data-dark-url={darkMapUrl} data-spot-name={spot.name}>
+              (function() {
+                const script = document.currentScript;
+                const lightUrl = script.getAttribute('data-light-url');
+                const darkUrl = script.getAttribute('data-dark-url');
+                const spotName = script.getAttribute('data-spot-name');
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                const correctUrl = isDark ? darkUrl : lightUrl;
+
+                document.write(`<img
+                  id="spot-map"
+                  src="${correctUrl}"
+                  data-light-url="${lightUrl}"
+                  data-dark-url="${darkUrl}"
+                  alt="Map of ${spotName}"
+                  width="900"
+                  height="600"
+                  loading="eager"
+                />`);
+              })();
+            </script>
+            <noscript>
+              <img
+                src={mapUrl}
+                alt={`Map of ${spot.name}`}
+                width="900"
+                height="600"
+              />
+            </noscript>
             <div class="map-overlay">
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${spot.latitude},${spot.longitude}`}
