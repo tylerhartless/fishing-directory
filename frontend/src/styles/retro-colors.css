@@ -27,6 +27,9 @@
   /* Tournament V-17 Boat Colors - Light Mode Palette */
   --boat-cream: #f2ebe0;        /* Warm cream background (boat racing stripe) */
   --boat-orange: #e85d2a;       /* Orange racing stripe (CTAs, primary accents) */
+  --boat-orange-hover: #d15820; /* Darker orange for button hover states */
+  --boat-orange-active: #b84d1a; /* Darkest orange for button active/click states */
+  --boat-orange-darkest: #a04315; /* Even darker orange (used in some gradients) */
   --boat-red: #c41e1a;          /* Red thin stripe (secondary accents) */
   --boat-charcoal: #3a3a3a;     /* Motor cowling charcoal (headers) */
   --boat-black: #1a1a1a;        /* Black stripe outlines (text, borders) */
@@ -41,8 +44,20 @@
   --box-sage: #9ab087;          /* Sage green */
   --box-tan: #d4a574;           /* Warm tan */
   --box-moss: #7a8450;          /* Moss green */
+  --box-moss-hover: #6a7440;    /* Darker moss for button hover states */
+  --box-moss-active: #5a6430;   /* Darkest moss for button active/click states */
+  --box-moss-darkest: #4a5420;  /* Even darker moss (used in some gradients) */
   --box-rust: #b85c3a;          /* Rust */
   --box-clay: #9b6b5c;          /* Clay brown */
+
+  /* Error/Warning Colors - Light Mode Red States */
+  --error-light-bg: #ffe0e0;    /* Light red background */
+  --error-light-hover: #ffcccc; /* Darker pink/red on hover */
+  --error-light-active: #ffb3b3; /* Even darker pink/red on click */
+  --error-border: #cc0000;      /* Base red border */
+  --error-border-hover: #aa0000; /* Darker red border on hover */
+  --error-border-active: #880000; /* Darkest red border on click */
+  --error-text: #990000;        /* Red text color */
 
   /* Accent Stripe - Solid Color */
   --rainbow-gradient: var(--earth-rust);

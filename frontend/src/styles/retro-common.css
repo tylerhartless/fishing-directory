@@ -295,14 +295,14 @@
 }
 
 [data-theme="light"] .retro-btn-search:hover {
-  background: linear-gradient(180deg, #d15820 0%, #b84d1a 100%); /* Darker orange gradient on hover */
+  background: linear-gradient(180deg, var(--boat-orange-hover) 0%, var(--boat-orange-active) 100%); /* Darker orange gradient on hover */
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--rgba-black-40);
   border-color: var(--boat-black);
 }
 
 [data-theme="light"] .retro-btn-search:active {
-  background: linear-gradient(180deg, #b84d1a 0%, #a04315 100%); /* Even darker orange on click */
+  background: linear-gradient(180deg, var(--boat-orange-active) 0%, var(--boat-orange-darkest) 100%); /* Even darker orange on click */
   transform: translate(0, 0);
   box-shadow: 3px 3px 0 var(--rgba-black-40);
 }
@@ -343,14 +343,14 @@
 }
 
 [data-theme="light"] .county-browse-btn:hover {
-  background: linear-gradient(180deg, #6a7440 0%, #5a6430 100%);
+  background: linear-gradient(180deg, var(--box-moss-hover) 0%, var(--box-moss-active) 100%);
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
   border-color: var(--boat-black);
 }
 
 [data-theme="light"] .county-browse-btn:active {
-  background: linear-gradient(180deg, #5a6430 0%, #4a5420 100%); /* Even darker moss on click */
+  background: linear-gradient(180deg, var(--box-moss-active) 0%, var(--box-moss-darkest) 100%); /* Even darker moss on click */
   transform: translate(0, 0);
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
 }
