@@ -170,25 +170,18 @@ const schema = {
             ) : null}
           </section>
 
-          <!-- Dynamic Content: Fishing Reports -->
-          <section class="retro-section fishing-reports">
-            <h2 class="retro-heading retro-heading-md retro-heading-underline">Recent Fishing Reports</h2>
-            <div id="reports-container">
-              <p class="loading">Loading recent catches...</p>
+          <!-- Heat List: Species Prevalence System -->
+          <section class="retro-section heat-list-section">
+            <h2 class="retro-heading retro-heading-md retro-heading-underline">What's Biting Here?</h2>
+            <p class="heat-list-description">Species ranked by recent catch activity. Click any species to log a catch!</p>
+
+            <div id="heat-list-container">
+              <p class="loading">Loading species data...</p>
             </div>
 
-            <button class="retro-btn retro-btn-secondary" id="add-report-btn">
-              Add Your Fishing Report
+            <button class="retro-btn retro-btn-primary" id="log-catch-btn">
+              🎣 Log a Catch
             </button>
-          </section>
-
-          <!-- Dynamic Content: Fish Species Votes -->
-          <section class="retro-section fish-votes">
-            <h2 class="retro-heading retro-heading-md retro-heading-underline">What Fish Are Here?</h2>
-            <p>Help other anglers by voting on what species you've caught here:</p>
-            <div id="fish-votes-container">
-              <p class="loading">Loading...</p>
-            </div>
           </section>
         </div>
 
@@ -248,8 +241,8 @@ const schema = {
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <!-- Load dynamic content -->
-  <script src="/js/load-spot-content.js" is:inline></script>
+  <!-- Load heat list (species prevalence system) -->
+  <script src="/js/heat-list.js" is:inline></script>
 
   <!-- Theme-aware map switching with debouncing -->
   <script is:inline>
@@ -756,6 +749,401 @@ const schema = {
     .amenity-list li {
       font-size: 1.1rem;
       padding: 0.6rem 0.8rem;
+    }
+  }
+
+  /* ============================================
+     HEAT LIST (SPECIES PREVALENCE SYSTEM)
+     ============================================ */
+
+  .heat-list-description {
+    font-family: 'VT323', monospace;
+    color: var(--theme-text-secondary);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  :global([data-theme="light"]) .heat-list-description {
+    color: var(--neutral-black);
+    font-weight: 500;
+  }
+
+  .heat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .species-item {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    font-family: 'VT323', monospace;
+    background: rgba(168, 197, 168, 0.15);
+    border: 2px solid rgba(168, 197, 168, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  :global([data-theme="light"]) .species-item {
+    background: var(--box-sage);
+    border: 2px solid var(--neutral-black);
+  }
+
+  .species-item:hover {
+    background: rgba(168, 197, 168, 0.25);
+    border-color: rgba(168, 197, 168, 0.5);
+    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3);
+  }
+
+  :global([data-theme="light"]) .species-item:hover {
+    background: var(--theme-text-sage);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  }
+
+  .species-indicator {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .species-icon {
+    font-size: 1.5rem;
+  }
+
+  .species-name {
+    font-size: 1.3rem;
+    color: var(--theme-text-primary);
+    font-weight: 400;
+  }
+
+  :global([data-theme="light"]) .species-name {
+    color: var(--neutral-black);
+    font-weight: 700;
+  }
+
+  .species-tier {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .species-subtitle {
+    font-size: 1.1rem;
+    color: var(--theme-text-secondary);
+    font-style: italic;
+  }
+
+  :global([data-theme="light"]) .species-subtitle {
+    color: var(--neutral-gray);
+    font-weight: 500;
+  }
+
+  /* Tier-specific colors */
+  .species-item.common {
+    border-color: rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.1);
+  }
+
+  .species-item.uncommon {
+    border-color: rgba(234, 88, 12, 0.4);
+    background: rgba(234, 88, 12, 0.1);
+  }
+
+  .species-item.rare {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .species-item.unreported {
+    border-color: rgba(156, 163, 175, 0.3);
+    background: rgba(156, 163, 175, 0.05);
+  }
+
+  :global([data-theme="light"]) .species-item.common {
+    border-color: var(--neutral-black);
+    background: rgba(220, 38, 38, 0.15);
+  }
+
+  :global([data-theme="light"]) .species-item.uncommon {
+    border-color: var(--neutral-black);
+    background: rgba(234, 88, 12, 0.15);
+  }
+
+  :global([data-theme="light"]) .species-item.rare {
+    border-color: var(--neutral-black);
+    background: rgba(59, 130, 246, 0.15);
+  }
+
+  :global([data-theme="light"]) .species-item.unreported {
+    border-color: var(--neutral-black);
+    background: rgba(156, 163, 175, 0.1);
+  }
+
+  .show-all-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    background: rgba(168, 197, 168, 0.2);
+    color: var(--theme-text-sage);
+    border: 2px solid rgba(168, 197, 168, 0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  :global([data-theme="light"]) .show-all-btn {
+    background: var(--neutral-black);
+    color: white;
+    border: none;
+    font-weight: 700;
+  }
+
+  .show-all-btn:hover {
+    background: rgba(168, 197, 168, 0.3);
+    border-color: rgba(168, 197, 168, 0.6);
+    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3);
+  }
+
+  :global([data-theme="light"]) .show-all-btn:hover {
+    background: var(--accent-copper);
+    color: var(--neutral-black);
+  }
+
+  .all-species-list {
+    margin-top: 1rem;
+  }
+
+  /* ============================================
+     LOG CATCH MODAL
+     ============================================ */
+
+  :global(.modal-overlay) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+  }
+
+  :global(.modal-content) {
+    background: var(--bg-primary);
+    border: 2px solid rgba(168, 197, 168, 0.5);
+    box-shadow: 0 0 30px rgba(168, 197, 168, 0.3);
+    max-width: 500px;
+    width: 100%;
+    font-family: 'VT323', monospace;
+  }
+
+  :global([data-theme="light"]) :global(.modal-content) {
+    background: var(--earth-ivory);
+    border: 4px solid var(--neutral-black);
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+  }
+
+  :global(.modal-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 2px solid rgba(168, 197, 168, 0.3);
+  }
+
+  :global([data-theme="light"]) :global(.modal-header) {
+    border-bottom: 2px solid var(--neutral-black);
+  }
+
+  :global(.modal-header h3) {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--theme-heading-color);
+    text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
+  }
+
+  :global([data-theme="light"]) :global(.modal-header h3) {
+    color: var(--theme-heading-color);
+    font-weight: 700;
+    text-shadow: none;
+  }
+
+  :global(.modal-close) {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--theme-text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :global(.modal-close:hover) {
+    color: var(--earth-sand);
+  }
+
+  :global([data-theme="light"]) :global(.modal-close:hover) {
+    color: var(--boat-orange);
+  }
+
+  :global(#log-catch-form) {
+    padding: 1.5rem;
+  }
+
+  :global(.form-group) {
+    margin-bottom: 1.5rem;
+  }
+
+  :global(.form-group label) {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    color: var(--theme-text-sage);
+    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+  }
+
+  :global([data-theme="light"]) :global(.form-group label) {
+    color: var(--neutral-black);
+    font-weight: 700;
+    text-shadow: none;
+  }
+
+  :global(.form-group select),
+  :global(.form-group input) {
+    width: 100%;
+    padding: 0.75rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    background: rgba(168, 197, 168, 0.1);
+    border: 2px solid rgba(168, 197, 168, 0.3);
+    color: var(--theme-text-primary);
+  }
+
+  :global([data-theme="light"]) :global(.form-group select),
+  :global([data-theme="light"]) :global(.form-group input) {
+    background: white;
+    border: 2px solid var(--neutral-black);
+    color: var(--neutral-black);
+    font-weight: 500;
+  }
+
+  :global(.form-group select:focus),
+  :global(.form-group input:focus) {
+    outline: none;
+    border-color: rgba(168, 197, 168, 0.6);
+    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3);
+  }
+
+  :global([data-theme="light"]) :global(.form-group select:focus),
+  :global([data-theme="light"]) :global(.form-group input:focus) {
+    border-color: var(--earth-forest);
+    box-shadow: none;
+  }
+
+  :global(.form-group small) {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: var(--theme-text-secondary);
+  }
+
+  :global([data-theme="light"]) :global(.form-group small) {
+    color: var(--neutral-gray);
+    font-weight: 500;
+  }
+
+  :global(.form-actions) {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+  }
+
+  :global(.btn-cancel),
+  :global(.btn-submit) {
+    padding: 0.75rem 1.5rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  :global(.btn-cancel) {
+    background: transparent;
+    color: var(--theme-text-secondary);
+    border-color: rgba(168, 197, 168, 0.3);
+  }
+
+  :global(.btn-cancel:hover) {
+    background: rgba(168, 197, 168, 0.1);
+    border-color: rgba(168, 197, 168, 0.5);
+  }
+
+  :global([data-theme="light"]) :global(.btn-cancel) {
+    color: var(--neutral-black);
+    border-color: var(--neutral-black);
+    font-weight: 700;
+  }
+
+  :global([data-theme="light"]) :global(.btn-cancel:hover) {
+    background: var(--neutral-gray);
+    color: white;
+  }
+
+  :global(.btn-submit) {
+    background: rgba(168, 197, 168, 0.9);
+    color: #1a3a1a;
+    border-color: rgba(168, 197, 168, 1);
+    box-shadow: 0 0 10px rgba(168, 197, 168, 0.5);
+  }
+
+  :global(.btn-submit:hover) {
+    background: rgba(168, 197, 168, 1);
+    box-shadow: 0 0 15px rgba(168, 197, 168, 0.7);
+  }
+
+  :global([data-theme="light"]) :global(.btn-submit) {
+    background: var(--earth-forest);
+    color: white;
+    border-color: var(--neutral-black);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    font-weight: 700;
+  }
+
+  :global([data-theme="light"]) :global(.btn-submit:hover) {
+    background: var(--theme-text-sage);
+    color: var(--neutral-black);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 480px) {
+    :global(.modal-content) {
+      max-width: 95%;
+    }
+
+    .species-item {
+      grid-template-columns: auto auto 1fr;
+      gap: 0.5rem;
+    }
+
+    .species-tier,
+    .species-subtitle {
+      grid-column: 1 / -1;
+      padding-left: 3.5rem;
     }
   }
 </style>
