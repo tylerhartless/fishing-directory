@@ -53,7 +53,7 @@
   color: var(--theme-heading-color);
   text-shadow: 2px 2px 0px var(--rgba-black-15); /* Subtle letterpress effect */
   filter: none;
-  font-weight: 700;
+  font-weight: 400;
   text-transform: capitalize;
   letter-spacing: 0.05em;
 }
@@ -78,7 +78,7 @@
 [data-theme="light"] .retro-page-header .subtitle {
   color: var(--neutral-black);
   text-shadow: none;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .retro-page-header .description {
@@ -279,7 +279,7 @@
   background: linear-gradient(180deg, var(--boat-orange) 0%, #d15820 100%); /* Orange gradient */
   color: white;
   border: 4px solid var(--boat-black); /* Thick black border */
-  font-weight: 900; /* Extra bold for vintage ad */
+  font-weight: 400;
   box-shadow: 4px 4px 0 var(--rgba-black-30);
   text-shadow: 1px 1px 2px var(--rgba-black-30); /* Glossy text effect */
   text-transform: uppercase;
@@ -335,7 +335,7 @@
   background: linear-gradient(180deg, var(--box-moss) 0%, #6a7440 100%);
   color: white;
   border: 4px solid var(--boat-black);
-  font-weight: 900;
+  font-weight: 400;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   text-transform: uppercase;
@@ -377,7 +377,7 @@
   color: var(--boat-black);
   border: 3px solid var(--boat-black); /* Thick black borders */
   box-shadow: inset 2px 2px 4px var(--rgba-black-10); /* Slight inset for depth */
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .retro-input:focus {
@@ -421,7 +421,7 @@
   color: var(--boat-black);
   border: 3px solid var(--boat-black); /* Thick black borders */
   box-shadow: 2px 2px 0 var(--rgba-black-20); /* Box shadow for depth */
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .retro-select:hover {
@@ -464,7 +464,7 @@
   background: var(--boat-black);
   color: white;
   border: 2px solid var(--boat-black);
-  font-weight: 900;
+  font-weight: 700;
   padding: 0.5rem 1rem;
   box-shadow: 2px 2px 0 var(--rgba-black-30);
 }
@@ -496,7 +496,7 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] h5,
 [data-theme="light"] h6 {
   color: var(--theme-heading-color);
-  font-weight: 900; /* Extra bold for vintage catalog */
+  font-weight: 700;
   text-transform: capitalize;
   letter-spacing: 0.05em;
 }
@@ -519,7 +519,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-heading-lg {
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
@@ -535,7 +535,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-heading-md {
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
@@ -551,7 +551,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="light"] .retro-heading-sm {
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 0.05em;
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
 }
@@ -672,7 +672,7 @@ h1, h2, h3, h4, h5, h6 {
 .retro-breadcrumb a {
   color: var(--theme-breadcrumb-color);
   text-decoration: none;
-  font-weight: 500; /* Standardized weight */
+  font-weight: 400;
   text-shadow: 0 0 6px var(--rgba-bright-green-60);
   transition: all 0.2s;
 }
@@ -681,19 +681,19 @@ h1, h2, h3, h4, h5, h6 {
 .retro-breadcrumb .active {
   color: var(--theme-breadcrumb-hover);
   text-shadow: 0 0 10px var(--rgba-bright-green-hover-80), 0 0 20px var(--rgba-bright-green-hover-50);
-  font-weight: 500; /* Consistent weight on hover */
+  font-weight: 400;
 }
 
 /* Light Mode Breadcrumbs - Orange links, black current page */
 [data-theme="light"] .retro-breadcrumb {
-  font-weight: 500; /* Standardized weight */
+  font-weight: 400;
   color: var(--boat-black); /* Black for current page text */
 }
 
 [data-theme="light"] .retro-breadcrumb a {
   color: var(--theme-breadcrumb-color); /* Orange */
   text-shadow: none;
-  font-weight: 600; /* Slightly bolder for links to stand out */
+  font-weight: 400;
   text-decoration: underline;
 }
 
@@ -702,7 +702,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--theme-breadcrumb-hover); /* Red on hover */
   text-shadow: none;
   text-decoration: none;
-  font-weight: 600; /* Consistent with link weight */
+  font-weight: 400;
 }
 
 /* Mobile-first breadcrumb - simple back button style */
@@ -728,7 +728,7 @@ h1, h2, h3, h4, h5, h6 {
 
 [data-theme="light"] .retro-page-header .retro-breadcrumb a {
   color: var(--neutral-gray);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 [data-theme="light"] .retro-page-header .retro-breadcrumb a:hover {
@@ -805,7 +805,7 @@ h1, h2, h3, h4, h5, h6 {
 
 [data-theme="light"] .retro-info-box h3 {
   color: var(--boat-charcoal) !important;
-  font-weight: 900 !important; /* Extra bold for vintage catalog */
+  font-weight: 400 !important;
   text-shadow: none !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -829,7 +829,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Light mode notice styles (vintage catalog) */
 [data-theme="light"] .retro-notice {
   border-width: 4px;
-  font-weight: 900;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -899,7 +899,7 @@ h1, h2, h3, h4, h5, h6 {
 
 [data-theme="light"] .scroll-prompt {
   color: var(--boat-charcoal);
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 0.05em;
   animation: none;
 }
@@ -967,7 +967,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 3px solid var(--neutral-black);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   color: var(--neutral-black);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 [data-theme="light"] .county-item:hover {
