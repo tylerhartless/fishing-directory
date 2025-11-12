@@ -1,7 +1,7 @@
 # WhereCanIFish.com - Work Tickets
 **Pre-Launch Development Roadmap**
 
-**Last Updated:** November 7, 2025
+**Last Updated:** November 12, 2025
 **Status:** Pre-Launch
 **Estimate:** 129-167 hours total
 
@@ -75,10 +75,10 @@ Set up project management infrastructure.
 
 ---
 
-### TICKET-034: County Many-to-Many Relationship Schema ✅ COMPLETE
+### TICKET-034: County Many-to-Many Relationship Schema 🔴 BLOCKER
 **Estimate:** 4-6 hours
 **Depends on:** TICKET-001
-**Completed:** 2025-11-07
+**Status:** Needs Review
 
 **Description:**
 Update spot data model to support association with multiple counties. Large water bodies often span multiple counties, and the current "Multiple Counties" label is ambiguous and poor for SEO.
@@ -296,9 +296,10 @@ Update light mode palette to match Tournament V-17 racing stripes.
 
 ---
 
-### TICKET-033: Light Mode Vintage Ad Aesthetic ✅ COMPLETE
+### TICKET-033: Light Mode Vintage Ad Aesthetic 🔴 BLOCKER
 **Estimate:** 8-10 hours
 **Depends on:** TICKET-032, TICKET-005
+**Status:** Needs Review
 
 **Description:**
 Make light mode look like a 1980s Bass Pro Shops catalog advertisement.
@@ -432,9 +433,10 @@ Maps don't switch to dark tiles when dark mode is active on spot pages.
 
 ## Sprint 3: Spot Page Redesign (Mobile-First)
 
-### TICKET-011: Build Spot Page Base Layout (Mobile-First) 🔴 BLOCKER
-**Estimate:** 8-10 hours  
+### TICKET-011: Build Spot Page Base Layout (Mobile-First) 🟡 PENDING REVIEW
+**Estimate:** 8-10 hours
 **Depends on:** TICKET-031, TICKET-033
+**Status:** On feature branch, pending review
 
 **Description:**  
 Create new terminal-style spot page layout, designed mobile-first, leveraging Astro SSG.
@@ -478,9 +480,10 @@ Create new terminal-style spot page layout, designed mobile-first, leveraging As
 
 ---
 
-### TICKET-012: Add Spot Page Interactivity (Astro Islands) 🔴 BLOCKER
-**Estimate:** 4-5 hours  
+### TICKET-012: Add Spot Page Interactivity (Astro Islands) 🟡 PENDING REVIEW
+**Estimate:** 4-5 hours
 **Depends on:** TICKET-011, TICKET-031
+**Status:** On feature branch, pending review
 
 **Description:**  
 Add JavaScript functionality using Astro's islands architecture to minimize bundle size.
@@ -584,9 +587,10 @@ Add community engagement button for spot relevancy with time decay algorithm to 
 
 ---
 
-### TICKET-014: Implement Species Voting System (Mobile-First) 🔴 BLOCKER
+### TICKET-014: Implement Species Voting System (Mobile-First) 🟡 PENDING REVIEW
 **Estimate:** 8-10 hours
 **Depends on:** TICKET-011, TICKET-013
+**Status:** On feature branch, pending review
 
 **Description:**
 Community species reporting via simple voting buttons. Works together with "I Fish Here" check-ins (TICKET-013) to build unified spot relevancy. Anonymous voting, no detailed fishing reports, no photos.
@@ -672,9 +676,10 @@ Community species reporting via simple voting buttons. Works together with "I Fi
 
 ## Sprint 4: Listing Pages & Cards (Mobile-First)
 
-### TICKET-015: Make Spot Cards More Clickable (Mobile-First) 🔴 BLOCKER
-**Estimate:** 4-5 hours  
+### TICKET-015: Make Spot Cards More Clickable (Mobile-First) ✅ COMPLETE
+**Estimate:** 4-5 hours
 **Depends on:** None
+**Completed:** 2025-11-12
 
 **Description:**  
 Improve card hover states and clickability, optimized for mobile touch.
@@ -712,9 +717,10 @@ Improve card hover states and clickability, optimized for mobile touch.
 
 ---
 
-### TICKET-016: Design Unified Listing Page Layout (Mobile-First) 🔴 BLOCKER
+### TICKET-016: Design Unified Listing Page Layout (Mobile-First) ✅ COMPLETE
 **Estimate:** 8-10 hours
 **Depends on:** TICKET-015
+**Completed:** 2025-11-12
 
 **Description:**
 Create standard template for all spot listing pages, mobile-optimized.
@@ -758,9 +764,10 @@ Create standard template for all spot listing pages, mobile-optimized.
 
 ---
 
-### TICKET-035: State Park "No License Required" Feature 🔴 BLOCKER
+### TICKET-035: State Park "No License Required" Feature ✅ COMPLETE
 **Estimate:** 5-7 hours
 **Depends on:** TICKET-015, TICKET-016
+**Completed:** 2025-11-12
 
 **Description:**
 Highlight that fishing at Texas State Parks doesn't require a fishing license. Add visual indicators to spot cards and update search filter logic to make this benefit discoverable.
@@ -1669,10 +1676,15 @@ The current ambiguity between the `/spots` page and the search results page need
 
 ---
 
-**Document Version:** 3.1
-**Last Updated:** November 7, 2025
+**Document Version:** 3.2
+**Last Updated:** November 12, 2025
 **Status:** Ready for implementation
-**Next Step:** Get repo access and start TICKET-001
+
+**Changelog v3.2:**
+- Reopened TICKET-033 & TICKET-034 for additional review
+- Updated Sprint 3 tickets (TICKET-011, 012, 014) to "Pending Review" status - on feature branch
+- Marked Sprint 4 complete: TICKET-015, 016, 035
+- TICKET-013 ("I Fish Here" check-ins) still in active development
 
 **Changelog v3.1:**
 - **MAJOR:** Updated TICKET-013 & TICKET-014 to use anonymous check-ins/voting (no accounts required for MVP)
