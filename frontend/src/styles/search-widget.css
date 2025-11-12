@@ -122,7 +122,7 @@
 }
 
 [data-theme="light"] .location-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: var(--neutral-black, #1a1a1a);
   font-weight: 700;
   text-shadow: none;
@@ -433,7 +433,7 @@
 [data-theme="light"] .search-prompt {
   color: var(--accent-dark-orange, #e85d2a);
   text-shadow: none;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
@@ -447,7 +447,7 @@
 [data-theme="light"] .search-label {
   color: var(--neutral-black, #1a1a1a);
   font-weight: 700;
-  font-size: 1.45rem;
+  font-size: 1.35rem;
 }
 
 /* =====================================
@@ -762,7 +762,7 @@
   }
 
   [data-theme="light"] .location-title {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
   }
 
   .search-form-section {
