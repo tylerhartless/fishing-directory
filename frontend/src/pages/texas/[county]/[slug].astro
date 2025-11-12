@@ -757,7 +757,7 @@ const schema = {
      ============================================ */
 
   .heat-list-description {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-terminal);
     color: var(--theme-text-secondary);
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
@@ -781,9 +781,9 @@ const schema = {
     align-items: center;
     gap: 0.75rem;
     padding: 1rem;
-    font-family: 'VT323', monospace;
-    background: rgba(168, 197, 168, 0.15);
-    border: 2px solid rgba(168, 197, 168, 0.3);
+    font-family: var(--font-terminal);
+    background: var(--rgba-sage-15);
+    border: 2px solid var(--rgba-sage-30);
     cursor: pointer;
     transition: all 0.2s;
   }
@@ -794,15 +794,15 @@ const schema = {
   }
 
   .species-item:hover {
-    background: rgba(168, 197, 168, 0.25);
-    border-color: rgba(168, 197, 168, 0.5);
-    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3);
+    background: var(--rgba-sage-25);
+    border-color: var(--rgba-sage-50);
+    box-shadow: 0 0 10px var(--rgba-sage-30);
   }
 
   :global([data-theme="light"]) .species-item:hover {
     background: var(--theme-text-sage);
     transform: translateY(-2px);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    box-shadow: 4px 4px 0 var(--rgba-black-20);
   }
 
   .species-indicator {
@@ -816,7 +816,7 @@ const schema = {
 
   .species-name {
     font-size: 1.3rem;
-    color: var(--theme-text-primary);
+    color: var(--theme-text);
     font-weight: 400;
   }
 
@@ -843,55 +843,55 @@ const schema = {
     font-weight: 500;
   }
 
-  /* Tier-specific colors */
+  /* Tier-specific colors - using existing color variables */
   .species-item.common {
-    border-color: rgba(220, 38, 38, 0.4);
-    background: rgba(220, 38, 38, 0.1);
+    border-color: var(--rgba-red-40);
+    background: var(--rgba-red-10);
   }
 
   .species-item.uncommon {
-    border-color: rgba(234, 88, 12, 0.4);
-    background: rgba(234, 88, 12, 0.1);
+    border-color: var(--rgba-orange-20);
+    background: var(--rgba-orange-20);
   }
 
   .species-item.rare {
-    border-color: rgba(59, 130, 246, 0.4);
-    background: rgba(59, 130, 246, 0.1);
+    border-color: color-mix(in srgb, var(--badge-lake) 40%, transparent);
+    background: color-mix(in srgb, var(--badge-lake) 10%, transparent);
   }
 
   .species-item.unreported {
-    border-color: rgba(156, 163, 175, 0.3);
-    background: rgba(156, 163, 175, 0.05);
+    border-color: color-mix(in srgb, var(--neutral-gray) 30%, transparent);
+    background: color-mix(in srgb, var(--neutral-gray) 5%, transparent);
   }
 
   :global([data-theme="light"]) .species-item.common {
     border-color: var(--neutral-black);
-    background: rgba(220, 38, 38, 0.15);
+    background: var(--rgba-red-15);
   }
 
   :global([data-theme="light"]) .species-item.uncommon {
     border-color: var(--neutral-black);
-    background: rgba(234, 88, 12, 0.15);
+    background: var(--rgba-orange-20);
   }
 
   :global([data-theme="light"]) .species-item.rare {
     border-color: var(--neutral-black);
-    background: rgba(59, 130, 246, 0.15);
+    background: color-mix(in srgb, var(--badge-lake) 15%, transparent);
   }
 
   :global([data-theme="light"]) .species-item.unreported {
     border-color: var(--neutral-black);
-    background: rgba(156, 163, 175, 0.1);
+    background: color-mix(in srgb, var(--neutral-gray) 10%, transparent);
   }
 
   .show-all-btn {
     margin-top: 1rem;
     padding: 0.75rem 1.5rem;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-terminal);
     font-size: 1.2rem;
-    background: rgba(168, 197, 168, 0.2);
+    background: var(--rgba-sage-20);
     color: var(--theme-text-sage);
-    border: 2px solid rgba(168, 197, 168, 0.4);
+    border: 2px solid var(--rgba-sage-40);
     cursor: pointer;
     transition: all 0.2s;
   }
@@ -904,9 +904,9 @@ const schema = {
   }
 
   .show-all-btn:hover {
-    background: rgba(168, 197, 168, 0.3);
-    border-color: rgba(168, 197, 168, 0.6);
-    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3);
+    background: var(--rgba-sage-30);
+    border-color: var(--rgba-sage-60);
+    box-shadow: 0 0 10px var(--rgba-sage-30);
   }
 
   :global([data-theme="light"]) .show-all-btn:hover {
@@ -928,7 +928,7 @@ const schema = {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--rgba-black-80);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -937,18 +937,18 @@ const schema = {
   }
 
   :global(.modal-content) {
-    background: var(--bg-primary);
-    border: 2px solid rgba(168, 197, 168, 0.5);
-    box-shadow: 0 0 30px rgba(168, 197, 168, 0.3);
+    background: var(--theme-bg);
+    border: 2px solid var(--rgba-sage-50);
+    box-shadow: 0 0 30px var(--rgba-sage-30);
     max-width: 500px;
     width: 100%;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-terminal);
   }
 
   :global([data-theme="light"]) :global(.modal-content) {
     background: var(--earth-ivory);
     border: 4px solid var(--neutral-black);
-    box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+    box-shadow: 8px 8px 0 var(--rgba-black-30);
   }
 
   :global(.modal-header) {
@@ -956,7 +956,7 @@ const schema = {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 2px solid rgba(168, 197, 168, 0.3);
+    border-bottom: 2px solid var(--rgba-sage-30);
   }
 
   :global([data-theme="light"]) :global(.modal-header) {
@@ -967,7 +967,7 @@ const schema = {
     margin: 0;
     font-size: 1.8rem;
     color: var(--theme-heading-color);
-    text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
   }
 
   :global([data-theme="light"]) :global(.modal-header h3) {
@@ -1011,7 +1011,7 @@ const schema = {
     margin-bottom: 0.5rem;
     font-size: 1.3rem;
     color: var(--theme-text-sage);
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
+    text-shadow: 0 0 6px var(--rgba-sage-40);
   }
 
   :global([data-theme="light"]) :global(.form-group label) {
@@ -1024,11 +1024,11 @@ const schema = {
   :global(.form-group input) {
     width: 100%;
     padding: 0.75rem;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-terminal);
     font-size: 1.2rem;
-    background: rgba(168, 197, 168, 0.1);
-    border: 2px solid rgba(168, 197, 168, 0.3);
-    color: var(--theme-text-primary);
+    background: var(--rgba-sage-10);
+    border: 2px solid var(--rgba-sage-30);
+    color: var(--theme-text);
   }
 
   :global([data-theme="light"]) :global(.form-group select),
@@ -1042,8 +1042,8 @@ const schema = {
   :global(.form-group select:focus),
   :global(.form-group input:focus) {
     outline: none;
-    border-color: rgba(168, 197, 168, 0.6);
-    box-shadow: 0 0 10px rgba(168, 197, 168, 0.3);
+    border-color: var(--rgba-sage-60);
+    box-shadow: 0 0 10px var(--rgba-sage-30);
   }
 
   :global([data-theme="light"]) :global(.form-group select:focus),
@@ -1074,7 +1074,7 @@ const schema = {
   :global(.btn-cancel),
   :global(.btn-submit) {
     padding: 0.75rem 1.5rem;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-terminal);
     font-size: 1.3rem;
     border: 2px solid;
     cursor: pointer;
@@ -1084,12 +1084,12 @@ const schema = {
   :global(.btn-cancel) {
     background: transparent;
     color: var(--theme-text-secondary);
-    border-color: rgba(168, 197, 168, 0.3);
+    border-color: var(--rgba-sage-30);
   }
 
   :global(.btn-cancel:hover) {
-    background: rgba(168, 197, 168, 0.1);
-    border-color: rgba(168, 197, 168, 0.5);
+    background: var(--rgba-sage-10);
+    border-color: var(--rgba-sage-50);
   }
 
   :global([data-theme="light"]) :global(.btn-cancel) {
@@ -1104,22 +1104,22 @@ const schema = {
   }
 
   :global(.btn-submit) {
-    background: rgba(168, 197, 168, 0.9);
-    color: #1a3a1a;
-    border-color: rgba(168, 197, 168, 1);
-    box-shadow: 0 0 10px rgba(168, 197, 168, 0.5);
+    background: color-mix(in srgb, var(--accent-sage) 90%, transparent);
+    color: var(--theme-bg-forest);
+    border-color: var(--accent-sage);
+    box-shadow: 0 0 10px var(--rgba-sage-50);
   }
 
   :global(.btn-submit:hover) {
-    background: rgba(168, 197, 168, 1);
-    box-shadow: 0 0 15px rgba(168, 197, 168, 0.7);
+    background: var(--accent-sage);
+    box-shadow: 0 0 15px var(--rgba-sage-70);
   }
 
   :global([data-theme="light"]) :global(.btn-submit) {
     background: var(--earth-forest);
     color: white;
     border-color: var(--neutral-black);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    box-shadow: 4px 4px 0 var(--rgba-black-20);
     font-weight: 700;
   }
 
@@ -1127,7 +1127,7 @@ const schema = {
     background: var(--theme-text-sage);
     color: var(--neutral-black);
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+    box-shadow: 6px 6px 0 var(--rgba-black-20);
   }
 
   @media (max-width: 480px) {

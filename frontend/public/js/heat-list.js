@@ -14,29 +14,29 @@ if (!spotId) {
   console.error('No spot ID found');
 }
 
-// Tier configuration
+// Tier configuration - using CSS color variables
 const TIER_CONFIG = {
   common: {
     label: 'Common',
-    color: '#dc2626',  // Red
+    color: '#c41e1a',  // --boat-red (red)
     indicator: '●',
     threshold: 5000
   },
   uncommon: {
     label: 'Uncommon',
-    color: '#ea580c',  // Orange
+    color: '#e85d2a',  // --boat-orange (orange)
     indicator: '●',
     threshold: 1000
   },
   rare: {
     label: 'Rare',
-    color: '#3b82f6',  // Blue
+    color: '#5c9dff',  // --badge-lake (blue)
     indicator: '●',
     threshold: 1
   },
   unreported: {
     label: 'Unreported',
-    color: '#9ca3af',  // Gray
+    color: '#6b6b6b',  // --neutral-gray (gray)
     indicator: '[+]',
     threshold: 0
   }
@@ -325,7 +325,7 @@ function showNotification(message, type = 'success') {
     top: 20px;
     right: 20px;
     padding: 1rem 1.5rem;
-    background: ${type === 'error' ? '#dc2626' : '#16a34a'};
+    background: ${type === 'error' ? '#c41e1a' : '#4a6741'};
     color: white;
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
