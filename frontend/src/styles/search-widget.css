@@ -124,7 +124,7 @@
 [data-theme="light"] .location-title {
   font-size: 1.8rem;
   color: var(--neutral-black, #1a1a1a);
-  font-weight: 700;
+  font-weight: 400;
   text-shadow: none;
   letter-spacing: 0.05em;
 }
@@ -230,7 +230,7 @@
   color: white;
   box-shadow: 6px 6px 0 var(--rgba-black-30);
   text-shadow: 2px 2px 0 var(--rgba-black-30);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 1.35rem;
 }
 
@@ -322,7 +322,7 @@
   color: #990000;
   text-shadow: none;
   box-shadow: 4px 4px 0 var(--rgba-black-20);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .error-icon {
@@ -377,7 +377,7 @@
 
 [data-theme="light"] .divider-text {
   color: var(--gray-light, #666);
-  font-weight: 700;
+  font-weight: 400;
   text-shadow: none;
 }
 
@@ -435,7 +435,7 @@
   color: var(--accent-dark-orange, #e85d2a);
   text-shadow: none;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .search-label {
@@ -447,7 +447,7 @@
 
 [data-theme="light"] .search-label {
   color: var(--neutral-black, #1a1a1a);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 1.35rem;
 }
 
@@ -513,7 +513,7 @@
   border: none;
   border-bottom: 3px solid var(--neutral-black, #1a1a1a);
   color: var(--neutral-black, #1a1a1a);
-  font-weight: 600;
+  font-weight: 400;
   box-shadow: none;
 }
 
@@ -579,7 +579,7 @@
   color: white;
   box-shadow: 3px 3px 0 var(--rgba-black-30);
   text-shadow: 1px 1px 0 var(--rgba-black-30);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 [data-theme="light"] .btn-search:hover:not(:disabled) {
@@ -693,7 +693,7 @@
   color: var(--neutral-black, #1a1a1a);
   border-bottom-color: var(--gray-lighter, #ddd);
   text-shadow: none;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 [data-theme="light"] .suggestion-item:hover {
@@ -704,7 +704,7 @@
 [data-theme="light"] .suggestion-prompt {
   color: var(--accent-dark-orange, #e85d2a);
   text-shadow: none;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* =====================================
@@ -946,7 +946,7 @@
 
 .transition-loading-light .loading-text {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   animation: bounceText 0.6s ease-in-out infinite;
@@ -978,7 +978,7 @@
 
 .transition-loading-light .loading-message {
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--gray-dark);
 }
 
@@ -1080,7 +1080,7 @@
 
 [data-theme="light"] .query-prompt {
   color: var(--accent-dark-orange, #e85d2a);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .query-text {
@@ -1093,7 +1093,7 @@
 
 [data-theme="light"] .query-text {
   color: var(--neutral-black);
-  font-weight: 600;
+  font-weight: 400;
   text-shadow: none;
 }
 
@@ -1118,7 +1118,7 @@
   border: 2px solid var(--neutral-black);
   color: var(--neutral-black);
   text-shadow: none;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .btn-new-search:hover {
@@ -1202,7 +1202,7 @@
   background: var(--accent-sage);
   border: 2px solid var(--neutral-black);
   color: var(--neutral-black);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .btn-filter-toggle:hover {
@@ -1244,7 +1244,7 @@
 
 [data-theme="light"] .sort-control label {
   color: var(--neutral-black);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .sort-control select {
@@ -1273,7 +1273,7 @@
   background-color: var(--neutral-white);
   border: 2px solid var(--neutral-black);
   color: var(--neutral-black);
-  font-weight: 600;
+  font-weight: 400;
   /* Custom dropdown arrow for light mode */
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
@@ -1306,7 +1306,7 @@
   color: var(--neutral-black);
   background: var(--rgba-black-03);
   border: 2px solid var(--rgba-black-10);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* Collapsible Filter Panel */
@@ -1336,7 +1336,7 @@
 
 [data-theme="light"] .filter-section-title {
   color: var(--neutral-black);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .filter-checkboxes {
@@ -1390,7 +1390,7 @@
 
 [data-theme="light"] .checkbox-label {
   color: var(--neutral-black);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* State Parks "No License Required" highlight */
@@ -1430,7 +1430,7 @@
   background: var(--accent-sage);
   border: 1px solid var(--badge-park-light);
   color: var(--neutral-black);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .btn-clear-filters {
@@ -1449,7 +1449,7 @@
   background: var(--error-light-bg);
   border: 2px solid var(--error-border);
   color: var(--error-text);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .btn-clear-filters:hover {
@@ -1745,7 +1745,7 @@
 
 [data-theme="light"] .spot-card h3 {
   color: var(--neutral-black);
-  font-weight: 900;
+  font-weight: 400;
   text-shadow: none;
 }
 
@@ -1763,7 +1763,7 @@
 [data-theme="light"] .distance-indicator {
   color: var(--earth-rust);
   text-shadow: none;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* Card Body - All metadata in one row */
@@ -1795,7 +1795,7 @@
 
 [data-theme="light"] .card-meta-item {
   color: var(--neutral-black);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 [data-theme="light"] .card-meta-item::before {
@@ -1813,7 +1813,7 @@
 
 [data-theme="light"] .amenity-placeholder {
   color: var(--rgba-black-40);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* Spot type color coding - Dark Mode (using CSS variables) */
@@ -2026,7 +2026,7 @@
   background: var(--accent-sage);
   border: 2px solid var(--neutral-black);
   color: var(--neutral-black);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* Load More Indicator (infinite scroll) */
@@ -2043,7 +2043,7 @@
 
 [data-theme="light"] .load-more-indicator {
   color: var(--neutral-black);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* =====================================

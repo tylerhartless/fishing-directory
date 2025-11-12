@@ -47,7 +47,9 @@ const isStaging = siteUrl.includes('staging');
     <script is:inline>
       (function() {
         const stored = localStorage.getItem('theme');
-        const theme = stored || 'dark';
+        // Default to system preference if no stored theme
+        const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (systemPrefersDark ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
         // Disable transitions on page load to prevent initial transition artifacts
         document.documentElement.classList.add('preload');
@@ -143,9 +145,9 @@ const isStaging = siteUrl.includes('staging');
         document.addEventListener('astro:page-load', () => {
           // Re-apply theme from localStorage (already set in head, but ensure it persists)
           const stored = localStorage.getItem('theme');
-          if (stored) {
-            document.documentElement.setAttribute('data-theme', stored);
-          }
+          const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored || (systemPrefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
           // Re-setup toggle button
           setupThemeToggle();
           // Re-setup logo reset handler
@@ -472,7 +474,7 @@ const isStaging = siteUrl.includes('staging');
   }
 
   :global([data-theme="light"]) footer p {
-    font-weight: 500;
+    font-weight: 400;
   }
 
   /* Disable all transitions on page load to prevent initial render artifacts */
