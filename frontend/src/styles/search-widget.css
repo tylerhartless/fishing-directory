@@ -239,12 +239,13 @@
 }
 
 [data-theme="light"] .btn-location-hero:hover {
-  background: linear-gradient(180deg, #ff8c66 0%, #f06a36 100%);
+  background: linear-gradient(180deg, #e85d2a 0%, #d15820 100%); /* Darker coral/orange on hover */
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0 var(--rgba-black-30);
 }
 
 [data-theme="light"] .btn-location-hero:active {
+  background: linear-gradient(180deg, #d15820 0%, #b84d1a 100%); /* Even darker on click */
   transform: translate(0, 0);
   box-shadow: 4px 4px 0 var(--rgba-black-30);
 }
@@ -582,12 +583,13 @@
 }
 
 [data-theme="light"] .btn-search:hover:not(:disabled) {
-  background: #f06a36;
+  background: #d15820; /* Darker orange on hover */
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 var(--rgba-black-30);
 }
 
 [data-theme="light"] .btn-search:active:not(:disabled) {
+  background: #b84d1a; /* Even darker orange on click */
   transform: translate(0, 0);
   box-shadow: 2px 2px 0 var(--rgba-black-30);
 }
@@ -1132,6 +1134,12 @@
   box-shadow: 3px 3px 0 var(--rgba-black-30);
 }
 
+[data-theme="light"] .btn-new-search:active {
+  background: #6a7440; /* Even darker moss on click */
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 var(--rgba-black-30);
+}
+
 /* =====================================
    RESULTS CONTROLS (FILTER & SORT)
    ===================================== */
@@ -1206,6 +1214,12 @@
   background: var(--box-moss);
   transform: translate(-1px, -1px);
   box-shadow: 2px 2px 0 var(--rgba-black-20);
+}
+
+[data-theme="light"] .btn-filter-toggle:active {
+  background: #6a7440; /* Even darker moss on click */
+  transform: translate(0, 0);
+  box-shadow: 1px 1px 0 var(--rgba-black-20);
 }
 
 .btn-filter-toggle svg {
@@ -1441,6 +1455,20 @@
 .btn-clear-filters:hover {
   background: var(--rgba-red-20);
   border-color: var(--rgba-red-50);
+}
+
+[data-theme="light"] .btn-clear-filters:hover {
+  background: #ffcccc; /* Darker pink/red on hover */
+  border-color: #aa0000;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 var(--rgba-black-20);
+}
+
+[data-theme="light"] .btn-clear-filters:active {
+  background: #ffb3b3; /* Even darker pink/red on click */
+  border-color: #880000;
+  transform: translate(0, 0);
+  box-shadow: 1px 1px 0 var(--rgba-black-20);
 }
 
 /* =====================================
