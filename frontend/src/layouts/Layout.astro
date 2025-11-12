@@ -141,17 +141,25 @@ const isStaging = siteUrl.includes('staging');
           }, 100);
         });
 
-        // Re-apply theme after View Transitions navigation
-        document.addEventListener('astro:page-load', () => {
-          // Re-apply theme from localStorage (already set in head, but ensure it persists)
+        // Set theme BEFORE page swap to prevent flash
+        document.addEventListener('astro:before-swap', (ev) => {
           const stored = localStorage.getItem('theme');
           const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           const theme = stored || (systemPrefersDark ? 'dark' : 'light');
+          // Set theme on both old and new document
           document.documentElement.setAttribute('data-theme', theme);
-          // Re-setup toggle button
+          ev.newDocument.documentElement.setAttribute('data-theme', theme);
+          ev.newDocument.documentElement.classList.add('preload');
+        });
+
+        // Re-setup event listeners after View Transitions navigation
+        document.addEventListener('astro:page-load', () => {
           setupThemeToggle();
-          // Re-setup logo reset handler
           setupLogoReset();
+          // Re-enable transitions after a brief delay
+          setTimeout(() => {
+            document.documentElement.classList.remove('preload');
+          }, 50);
         });
       })();
     </script>
