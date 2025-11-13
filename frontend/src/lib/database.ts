@@ -5,6 +5,9 @@
  * For static generation, you can also pre-export data to JSON.
  */
 
+// Development-only logging
+const isDev = import.meta.env.DEV;
+
 export interface FishingSpot {
   id: number;
   name: string;
@@ -46,14 +49,16 @@ export async function getSpots(): Promise<FishingSpot[]> {
   const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api';
   const fullUrl = `${apiUrl}/spots.php?limit=5000`;
 
-  console.log(`[getSpots] Fetching from: ${fullUrl}`);
+  if (isDev) console.log(`[getSpots] Fetching from: ${fullUrl}`);
 
   try {
     const response = await fetch(fullUrl);
 
     if (!response.ok) {
-      console.error(`[getSpots] API request failed: ${response.status} ${response.statusText}`);
-      console.error(`[getSpots] URL was: ${fullUrl}`);
+      if (isDev) {
+        console.error(`[getSpots] API request failed: ${response.status} ${response.statusText}`);
+        console.error(`[getSpots] URL was: ${fullUrl}`);
+      }
       return [];
     }
 
@@ -61,23 +66,25 @@ export async function getSpots(): Promise<FishingSpot[]> {
 
     // ⭐ THE DEFINITIVE FIX: Check for the array wrapped in the 'spots' key
     if (data && Array.isArray(data.spots)) {
-        console.log(`[getSpots] Successfully loaded ${data.spots.length} spots from API`);
+        if (isDev) console.log(`[getSpots] Successfully loaded ${data.spots.length} spots from API`);
         return data.spots;
     }
 
     // Check 2: Fallback to assume the top level is the array (less likely, but safe)
     if (Array.isArray(data)) {
-        console.log(`[getSpots] Successfully loaded ${data.length} spots from API (array format)`);
+        if (isDev) console.log(`[getSpots] Successfully loaded ${data.length} spots from API (array format)`);
         return data;
     }
 
     // Final Fail: If the format is wrong, return an empty array
-    console.error('[getSpots] API response format is incorrect. Could not find array in response.');
-    console.error('[getSpots] Response data:', data);
+    if (isDev) {
+      console.error('[getSpots] API response format is incorrect. Could not find array in response.');
+      console.error('[getSpots] Response data:', data);
+    }
     return [];
 
   } catch (error) {
-    console.error('[getSpots] An error occurred during API fetch or JSON parsing:', error);
+    if (isDev) console.error('[getSpots] An error occurred during API fetch or JSON parsing:', error);
     return [];
   }
 }
