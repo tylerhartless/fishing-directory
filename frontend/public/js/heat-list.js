@@ -7,12 +7,8 @@ const API_BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:8000'  // Local development
   : 'https://wherecanifish.com/api';  // Production
 
-// Get spot ID from data attribute
-const spotId = document.querySelector('[data-spot-id]')?.dataset.spotId;
-
-if (!spotId) {
-  console.error('No spot ID found');
-}
+// Track current spot ID (updated on each init)
+let spotId = null;
 
 // Tier configuration - using CSS color variables
 // Note: Tier thresholds are configured in backend/api/get-heat-list.php
@@ -63,39 +59,49 @@ async function loadHeatList() {
       return;
     }
 
-    // Separate reported and unreported species
+    // Separate reported species
     const reportedSpecies = data.species.filter(s => s.has_reports);
-    const unreportedSpecies = data.species.filter(s => !s.has_reports);
 
-    // Dynamic list: Show all reported + backfill with top unreported until we have 7 items
-    const displayLimit = 7;
-    let displaySpecies = [...reportedSpecies];
-
-    if (displaySpecies.length < displayLimit) {
-      const backfillCount = displayLimit - displaySpecies.length;
-      displaySpecies = displaySpecies.concat(unreportedSpecies.slice(0, backfillCount));
+    if (reportedSpecies.length === 0) {
+      container.innerHTML = `
+        <div class="heat-list">
+          <p class="no-reports-message">No catches reported yet. Log a catch to help other anglers.</p>
+        </div>
+      `;
+      return;
     }
 
-    const remainingCount = data.species.length - displaySpecies.length;
+    const SHOWCASE_LIMIT = 3;
+    const showcaseSpecies = reportedSpecies.slice(0, SHOWCASE_LIMIT);
+    const moreSpecies = reportedSpecies.length > SHOWCASE_LIMIT
+      ? reportedSpecies.slice(SHOWCASE_LIMIT)
+      : [];
 
     // Render the heat list
     container.innerHTML = `
       <div class="heat-list">
-        ${displaySpecies.map(species => renderSpeciesItem(species)).join('')}
+        <ul class="species-list species-list-showcase">
+          ${showcaseSpecies.map(species => renderSpeciesListItem(species)).join('')}
+        </ul>
       </div>
-      ${remainingCount > 0 ? `
-        <button class="show-all-btn" id="show-all-species">
-          Show all ${remainingCount} remaining species...
-        </button>
-        <div class="all-species-modal-backdrop" id="all-species-backdrop" style="display: none;"></div>
-        <div class="all-species-list" id="all-species-list" style="display: none;">
-          ${data.species.slice(displayLimit).map(species => renderSpeciesItem(species)).join('')}
+      ${moreSpecies.length > 0 ? `
+        <div class="show-more-container">
+          <ul class="species-list species-list-more" id="more-species-list" hidden>
+            ${moreSpecies.map(species => renderSpeciesListItem(species)).join('')}
+          </ul>
+          <button
+            class="show-more-btn"
+            id="show-more-species"
+            data-count="${moreSpecies.length}"
+            aria-expanded="false"
+          >
+            Show more +
+          </button>
         </div>
       ` : ''}
     `;
 
-    // Add show all toggle
-    document.getElementById('show-all-species')?.addEventListener('click', toggleShowAll);
+    document.getElementById('show-more-species')?.addEventListener('click', toggleMoreSpecies);
 
     // Species items are NOT clickable - only the main "Log a Catch" button opens the modal
 
@@ -145,77 +151,45 @@ function getSpeciesIcon(species) {
 }
 
 /**
- * Render a single species item
+ * Render a species list item
  */
-function renderSpeciesItem(species) {
-  const tier = TIER_CONFIG[species.tier];
-  const isUnreported = species.tier === 'unreported';
-  const icon = getSpeciesIcon(species);
+function renderSpeciesListItem(species, options = {}) {
+  const { includeIcon = true } = options;
+  const tier = TIER_CONFIG[species.tier] || TIER_CONFIG.unreported;
+  const rarityLabel = tier.label || 'Unreported';
+  const icon = includeIcon ? getSpeciesIcon(species) : null;
 
   return `
-    <div class="species-item ${species.tier}"
-         data-species-id="${species.id}"
-         data-species-name="${escapeHtml(species.common_name)}">
-      <span class="species-indicator" style="color: ${tier.color};">${tier.indicator}</span>
-      <span class="species-icon">${icon}</span>
-      <span class="species-name">${escapeHtml(species.common_name)}</span>
-      ${isUnreported ?
-        '<span class="species-subtitle">Be the first!</span>' :
-        `<span class="species-tier" style="color: ${tier.color};">${tier.label}</span>`
-      }
-    </div>
+    <li class="species-list-item ${species.tier}" data-species-id="${species.id}">
+      <span class="species-list-name">
+        ${icon ? `<span class="species-list-icon">${icon}</span>` : ''}
+        <span>${escapeHtml(species.common_name)}</span>
+      </span>
+      <span class="species-list-tier" style="color: ${tier.color};">${rarityLabel}</span>
+    </li>
   `;
 }
 
 /**
- * Toggle show all species (opens in modal/dropdown)
+ * Toggle the additional species list visibility
  */
-function toggleShowAll() {
-  const btn = document.getElementById('show-all-species');
-  const list = document.getElementById('all-species-list');
-  const backdrop = document.getElementById('all-species-backdrop');
+function toggleMoreSpecies() {
+  const btn = document.getElementById('show-more-species');
+  const list = document.getElementById('more-species-list');
 
-  if (list.style.display === 'none' || list.style.display === '') {
-    // Show as modal overlay
-    if (backdrop) backdrop.style.display = 'block';
-    list.style.display = 'block';
-    list.classList.add('all-species-modal');
-    btn.textContent = 'Show less...';
-    
-    // Add close button if not exists
-    if (!list.querySelector('.close-all-species')) {
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-all-species';
-      closeBtn.textContent = '×';
-      closeBtn.addEventListener('click', closeAllSpecies);
-      list.insertBefore(closeBtn, list.firstChild);
-    }
-    
-    // Close on backdrop click
-    if (backdrop) {
-      backdrop.addEventListener('click', closeAllSpecies);
-    }
+  if (!btn || !list) {
+    return;
+  }
+
+  const isHidden = list.hasAttribute('hidden');
+  if (isHidden) {
+    list.removeAttribute('hidden');
+    btn.textContent = 'Show less −';
+    btn.setAttribute('aria-expanded', 'true');
   } else {
-    closeAllSpecies();
-  }
-}
-
-/**
- * Close the all species modal
- */
-function closeAllSpecies() {
-  const btn = document.getElementById('show-all-species');
-  const list = document.getElementById('all-species-list');
-  const backdrop = document.getElementById('all-species-backdrop');
-  
-  if (backdrop) backdrop.style.display = 'none';
-  if (list) {
-    list.style.display = 'none';
-    list.classList.remove('all-species-modal');
-  }
-  if (btn) {
-    const remainingCount = list ? list.querySelectorAll('.species-item').length : 0;
-    btn.textContent = `Show all ${remainingCount} remaining species...`;
+    list.setAttribute('hidden', '');
+    btn.textContent = 'Show more +';
+    btn.setAttribute('aria-expanded', 'false');
   }
 }
 
@@ -254,7 +228,7 @@ async function loadSpeciesForModal(preselectedSpeciesId = null, preselectedSpeci
                 <option value="">-- Select Species --</option>
                 ${data.species.map(species => `
                   <option value="${species.id}" ${species.id === preselectedSpeciesId ? 'selected' : ''}>
-                    ${species.icon} ${escapeHtml(species.common_name)}
+                    ${escapeHtml(species.common_name)}
                   </option>
                 `).join('')}
               </select>
@@ -431,12 +405,41 @@ if (!document.getElementById('heat-list-animations')) {
   document.head.appendChild(style);
 }
 
-// Initialize on page load
-if (spotId) {
+const logCatchHandler = () => openLogCatchModal();
+
+function initHeatList() {
+  const spotElement = document.querySelector('[data-spot-id]');
+  const newSpotId = spotElement?.dataset.spotId;
+
+  if (!newSpotId) {
+    console.error('Spot ID missing; unable to load heat list.');
+    return;
+  }
+
+  spotId = newSpotId;
+
+  const container = document.getElementById('heat-list-container');
+  if (container) {
+    container.innerHTML = '<p class="loading">Loading species data...</p>';
+  }
+
+  const logCatchBtn = document.getElementById('log-catch-btn');
+  if (logCatchBtn) {
+    logCatchBtn.removeEventListener('click', logCatchHandler);
+    logCatchBtn.addEventListener('click', logCatchHandler);
+  }
+
   loadHeatList();
 }
 
-// Add global button handler for main "Log a Catch" button
-document.getElementById('log-catch-btn')?.addEventListener('click', () => {
-  openLogCatchModal();
-});
+// Initialize when DOM is ready (covers both hard loads and Astro swaps)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHeatList, { once: true });
+} else {
+  initHeatList();
+}
+
+// Support Astro client-side navigation events if present
+document.addEventListener('astro:page-load', initHeatList);
+document.addEventListener('astro:after-swap', initHeatList);
+

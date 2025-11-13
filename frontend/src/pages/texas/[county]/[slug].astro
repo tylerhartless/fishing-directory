@@ -814,206 +814,154 @@ const schema = {
     margin-bottom: 1.5rem;
   }
 
-  .species-item {
-    display: grid;
-    grid-template-columns: auto auto 1fr auto;
-    align-items: center;
+  :global(.species-list) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
     gap: 0.75rem;
-    padding: 1rem;
-    font-family: var(--font-terminal);
-    background: var(--rgba-sage-15);
-    border: 2px solid var(--rgba-sage-30);
-    cursor: default;
-    transition: all 0.2s;
   }
 
-  :global([data-theme="light"]) .species-item {
+  :global(.species-list-showcase) {
+    margin-top: 0;
+  }
+
+  :global(.species-list:not(.species-list-showcase)) {
+    margin-top: 1rem;
+  }
+
+  :global(.species-list-item) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1.1rem;
+    font-family: var(--font-terminal);
+    background: color-mix(in srgb, var(--theme-bg) 85%, #000 15%);
+    border: 2px solid var(--rgba-sage-40);
+    gap: 1rem;
+  }
+
+  :global([data-theme="light"]) .species-list-item {
     background: var(--box-sage);
     border: 2px solid var(--neutral-black);
   }
 
-  /* Remove hover effects since items are not clickable */
-  .species-item:hover {
-    /* No hover effect - items are not interactive */
+  :global(.species-list-item.common) {
+    border-color: var(--rgba-red-40);
   }
 
-  .species-indicator {
-    font-size: 1.5rem;
-    font-weight: bold;
+  :global(.species-list-item.uncommon) {
+    border-color: var(--rgba-orange-20);
   }
 
-  .species-icon {
-    font-size: 1.5rem;
+  :global(.species-list-item.rare) {
+    border-color: color-mix(in srgb, var(--badge-lake) 45%, transparent);
   }
 
-  .species-name {
+  :global(.species-list-item.unreported) {
+    border-color: color-mix(in srgb, var(--neutral-gray) 35%, transparent);
+  }
+
+  :global(.species-list-name) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
     font-size: 1.3rem;
     color: var(--theme-text);
-    font-weight: 400;
+    font-weight: 500;
   }
 
-  :global([data-theme="light"]) .species-name {
+  :global([data-theme="light"]) .species-list-name {
     color: var(--neutral-black);
     font-weight: 700;
   }
 
-  .species-tier {
-    font-size: 1.1rem;
-    font-weight: bold;
+  :global(.species-list-icon) {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  :global(.species-list-tier) {
+    font-size: 1.05rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
-  .species-subtitle {
+  :global(.show-more-container) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  :global(.show-more-btn) {
+    align-self: center;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: transparent;
+    border: none;
+    color: var(--theme-text-sage);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-terminal);
+    text-decoration: none;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+
+  :global(.show-more-btn:hover),
+  :global(.show-more-btn:focus-visible) {
+    color: var(--theme-text-sage);
+    text-decoration: underline;
+  }
+
+  :global([data-theme="light"]) .show-more-btn {
+    color: var(--earth-forest);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  :global([data-theme="light"]) .show-more-btn:hover,
+  :global([data-theme="light"]) .show-more-btn:focus-visible {
+    color: var(--boat-orange);
+  }
+
+  :global(.show-more-btn:focus-visible) {
+    outline: 2px dashed var(--theme-text-sage);
+    outline-offset: 4px;
+  }
+
+  :global(.species-list-more) {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  :global(.species-list-more)[hidden] {
+    display: none;
+  }
+
+  :global(#heat-list-container + .retro-btn) {
+    margin-top: 2rem;
+  }
+
+  :global(.no-reports-message) {
+    margin-top: 1rem;
+    font-family: var(--font-terminal);
     font-size: 1.1rem;
     color: var(--theme-text-secondary);
     font-style: italic;
   }
 
-  :global([data-theme="light"]) .species-subtitle {
+  :global([data-theme="light"]) .no-reports-message {
     color: var(--neutral-gray);
     font-weight: 500;
-  }
-
-  /* Tier-specific colors - using existing color variables */
-  .species-item.common {
-    border-color: var(--rgba-red-40);
-    background: var(--rgba-red-10);
-  }
-
-  .species-item.uncommon {
-    border-color: var(--rgba-orange-20);
-    background: var(--rgba-orange-20);
-  }
-
-  .species-item.rare {
-    border-color: color-mix(in srgb, var(--badge-lake) 40%, transparent);
-    background: color-mix(in srgb, var(--badge-lake) 10%, transparent);
-  }
-
-  .species-item.unreported {
-    border-color: color-mix(in srgb, var(--neutral-gray) 30%, transparent);
-    background: color-mix(in srgb, var(--neutral-gray) 5%, transparent);
-  }
-
-  :global([data-theme="light"]) .species-item.common {
-    border-color: var(--neutral-black);
-    background: var(--rgba-red-15);
-  }
-
-  :global([data-theme="light"]) .species-item.uncommon {
-    border-color: var(--neutral-black);
-    background: var(--rgba-orange-20);
-  }
-
-  :global([data-theme="light"]) .species-item.rare {
-    border-color: var(--neutral-black);
-    background: color-mix(in srgb, var(--badge-lake) 15%, transparent);
-  }
-
-  :global([data-theme="light"]) .species-item.unreported {
-    border-color: var(--neutral-black);
-    background: color-mix(in srgb, var(--neutral-gray) 10%, transparent);
-  }
-
-  .show-all-btn {
-    margin-top: 1rem;
-    padding: 0.75rem 1.5rem;
-    font-family: var(--font-terminal);
-    font-size: 1.2rem;
-    background: var(--rgba-sage-20);
-    color: var(--theme-text-sage);
-    border: 2px solid var(--rgba-sage-40);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  :global([data-theme="light"]) .show-all-btn {
-    background: var(--neutral-black);
-    color: white;
-    border: none;
-    font-weight: 700;
-  }
-
-  .show-all-btn:hover {
-    background: var(--rgba-sage-30);
-    border-color: var(--rgba-sage-60);
-    box-shadow: 0 0 10px var(--rgba-sage-30);
-  }
-
-  :global([data-theme="light"]) .show-all-btn:hover {
-    background: var(--accent-copper);
-    color: var(--neutral-black);
-  }
-
-  .all-species-list {
-    margin-top: 1rem;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-  }
-
-  .all-species-list.all-species-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--theme-bg);
-    border: 3px solid var(--rgba-sage-50);
-    box-shadow: 0 0 30px var(--rgba-sage-30);
-    max-width: 600px;
-    width: 90%;
-    max-height: 70vh;
-    overflow-y: auto;
-    z-index: 10001;
-    padding: 2rem;
-    margin-top: 0;
-  }
-
-  :global([data-theme="light"]) .all-species-list.all-species-modal {
-    border: 4px solid var(--neutral-black);
-    box-shadow: 8px 8px 0 var(--rgba-black-20);
-  }
-
-  .all-species-list.all-species-modal .heat-list {
-    margin-bottom: 0;
-  }
-
-  .close-all-species {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 2rem;
-    color: var(--theme-text);
-    cursor: pointer;
-    font-family: var(--font-terminal);
-    line-height: 1;
-    padding: 0.5rem;
-    transition: all 0.2s;
-  }
-
-  .close-all-species:hover {
-    color: var(--theme-text-sage);
-    transform: scale(1.2);
-  }
-
-  :global([data-theme="light"]) .close-all-species {
-    color: var(--neutral-black);
-    font-weight: 700;
-  }
-
-  /* Backdrop for modal */
-  .all-species-modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--rgba-black-80);
-    z-index: 9999;
-    cursor: pointer;
   }
 
   /* ============================================
@@ -1124,8 +1072,8 @@ const schema = {
     padding: 0.75rem;
     font-family: var(--font-terminal);
     font-size: 1.2rem;
-    background: var(--rgba-sage-10);
-    border: 2px solid var(--rgba-sage-30);
+    background: color-mix(in srgb, var(--theme-bg) 70%, #000 30%);
+    border: 2px solid var(--rgba-sage-50);
     color: var(--theme-text);
   }
 
