@@ -878,8 +878,47 @@ const schema = {
   }
 
   :global(.species-list-icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
     font-size: 1.5rem;
     line-height: 1;
+    transition: filter 0.2s ease;
+  }
+
+  :global(.species-list-icon svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  
+  :global(.species-list-icon svg) {
+    color: var(--theme-text-sage);
+  }
+
+  :global(.species-list-emoji) {
+    font-size: 1.5rem;
+  }
+
+  /* Light mode - shadow effect for fish icons */
+  :global([data-theme="light"] .species-list-icon) {
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
+  }
+  
+  :global([data-theme="light"] .species-list-icon svg) {
+    color: var(--theme-text-sage);
+  }
+
+  /* Dark mode - glow effect for fish icons */
+  :global([data-theme="dark"] .species-list-icon) {
+    filter: drop-shadow(0 0 6px rgba(92, 157, 255, 0.5))
+            drop-shadow(0 0 3px rgba(92, 157, 255, 0.3));
+  }
+  
+  :global([data-theme="dark"] .species-list-icon svg) {
+    color: var(--theme-text-sage);
   }
 
   :global(.species-list-tier) {
@@ -892,45 +931,55 @@ const schema = {
   :global(.show-more-container) {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     gap: 0.75rem;
     width: 100%;
   }
 
+  /* Show more/less button - base styles */
   :global(.show-more-btn) {
-    align-self: center;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+    margin: 1rem auto 1.5rem;
     padding: 0;
     font-size: 1.05rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     background: transparent;
     border: none;
-    color: var(--theme-text-sage);
+    appearance: none;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
+    display: block;
+    text-align: center;
     font-family: var(--font-terminal);
     text-decoration: none;
-    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease, filter 0.2s ease;
+  }
+
+  /* Dark mode - default glow effect */
+  :global(.show-more-btn) {
+    color: var(--theme-text-sage);
+    filter: drop-shadow(0 0 6px rgba(139, 172, 129, 0.4))
+            drop-shadow(0 0 3px rgba(139, 172, 129, 0.2));
   }
 
   :global(.show-more-btn:hover),
   :global(.show-more-btn:focus-visible) {
     color: var(--theme-text-sage);
     text-decoration: underline;
+    filter: drop-shadow(0 0 8px rgba(139, 172, 129, 0.5))
+            drop-shadow(0 0 4px rgba(139, 172, 129, 0.3));
   }
 
+  /* Light mode - shadow effect */
   :global([data-theme="light"]) .show-more-btn {
     color: var(--earth-forest);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.3));
   }
 
   :global([data-theme="light"]) .show-more-btn:hover,
   :global([data-theme="light"]) .show-more-btn:focus-visible {
     color: var(--boat-orange);
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
   }
 
   :global(.show-more-btn:focus-visible) {
