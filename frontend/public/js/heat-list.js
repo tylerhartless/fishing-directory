@@ -7,6 +7,12 @@ const API_BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:8000'  // Local development
   : `${window.location.origin}/api`;  // Production & staging
 
+const DEFAULT_SPECIES_SVG = `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" role="img" aria-hidden="true">
+    <path d="M212.5 205.5C251.7 172.5 304.6 144 368 144C431.4 144 484.3 172.5 523.5 205.5C562.6 238.5 590.4 277.9 604.5 305.3C609.2 314.5 609.2 325.4 604.5 334.6C590.4 362 562.6 401.4 523.5 434.4C484.3 467.5 431.5 495.9 368 495.9C304.5 495.9 251.7 467.4 212.5 434.4C196.3 420.7 182 405.9 169.8 391.3L80.1 443.6C67.6 450.9 51.7 448.9 41.4 438.7C31.1 428.5 29 412.7 36.1 400.1L82 320 36.2 239.9C29 227.3 31.2 211.5 41.5 201.3C51.8 191.1 67.6 189.1 80.2 196.4L169.9 248.7C182.1 234.1 196.4 219.3 212.6 205.6zM480 320C480 302.3 465.7 288 448 288C430.3 288 416 302.3 416 320C416 337.7 430.3 352 448 352C465.7 352 480 337.7 480 320z"/>
+  </svg>
+`.trim();
+
 // Track current spot ID (updated on each init)
 let spotId = null;
 
@@ -86,7 +92,7 @@ async function loadHeatList() {
       </div>
       ${moreSpecies.length > 0 ? `
         <div class="show-more-container">
-          <ul class="species-list species-list-more" id="more-species-list" hidden>
+          <ul class="species-list species-list-more" id="more-species-list" hidden style="display:none;">
             ${moreSpecies.map(species => renderSpeciesListItem(species)).join('')}
           </ul>
           <button
@@ -114,43 +120,42 @@ async function loadHeatList() {
 /**
  * Get icon for species (with fallback if icon is missing or corrupted)
  */
+function decodePotentiallyMisencodedEmoji(raw) {
+  if (!raw) {
+    return raw;
+  }
+
+  try {
+    const bytes = Uint8Array.from(
+      Array.from(raw, ch => ch.charCodeAt(0))
+    );
+    const decoded = new TextDecoder('utf-8').decode(bytes);
+    return decoded;
+  } catch (_) {
+    return raw;
+  }
+}
+
 function getSpeciesIcon(species) {
   const rawIcon = (species.icon ?? '').trim();
+
   if (rawIcon && !rawIcon.includes('?')) {
-    const glyphs = Array.from(rawIcon);
-    if (glyphs.length === 1 && glyphs[0]) {
-      return glyphs[0];
+    const decodedIcon = decodePotentiallyMisencodedEmoji(rawIcon);
+    const candidates = [decodedIcon, rawIcon];
+
+    for (const candidate of candidates) {
+      if (!candidate || candidate.includes('?')) {
+        continue;
+      }
+
+      const glyphs = Array.from(candidate);
+      if (glyphs.length === 1 && glyphs[0]) {
+        return { type: 'emoji', value: glyphs[0] };
+      }
     }
   }
-  
-  // Fallback icons based on common species names
-  const iconMap = {
-    'Largemouth Bass': '🎣',
-    'Channel Catfish': '🐡',
-    'Bluegill': '🐟',
-    'Redear Sunfish': '🐠',
-    'White Bass': '🐟',
-    'Striped Bass': '🐟',
-    'Blue Catfish': '🐡',
-    'Flathead Catfish': '🐡',
-    'Crappie': '🐠',
-    'Sunfish': '🐠',
-    'Carp': '🐟',
-    'Gar': '🐊',
-    'Trout': '🐟',
-    'Redfish': '🐟',
-    'Flounder': '🐟'
-  };
-  
-  // Try to match by name
-  for (const [name, icon] of Object.entries(iconMap)) {
-    if (species.common_name.includes(name)) {
-      return icon;
-    }
-  }
-  
-  // Default fallback
-  return '🐟';
+
+  return { type: 'svg-inline', value: DEFAULT_SPECIES_SVG };
 }
 
 /**
@@ -160,12 +165,29 @@ function renderSpeciesListItem(species, options = {}) {
   const { includeIcon = true } = options;
   const tier = TIER_CONFIG[species.tier] || TIER_CONFIG.unreported;
   const rarityLabel = tier.label || 'Unreported';
-  const icon = includeIcon ? getSpeciesIcon(species) : null;
+  const iconMeta = includeIcon ? getSpeciesIcon(species) : null;
+
+  let iconMarkup = '';
+  if (iconMeta) {
+    if (iconMeta.type === 'svg-inline') {
+      iconMarkup = `
+        <span class="species-list-icon" aria-hidden="true">
+          ${iconMeta.value}
+        </span>
+      `;
+    } else if (iconMeta.type === 'emoji') {
+      iconMarkup = `
+        <span class="species-list-icon species-list-emoji" aria-hidden="true">
+          ${escapeHtml(iconMeta.value)}
+        </span>
+      `;
+    }
+  }
 
   return `
     <li class="species-list-item ${species.tier}" data-species-id="${species.id}">
       <span class="species-list-name">
-        ${icon ? `<span class="species-list-icon">${icon}</span>` : ''}
+        ${iconMarkup}
         <span>${escapeHtml(species.common_name)}</span>
       </span>
       <span class="species-list-tier" style="color: ${tier.color};">${rarityLabel}</span>
@@ -187,10 +209,12 @@ function toggleMoreSpecies() {
   const isHidden = list.hasAttribute('hidden');
   if (isHidden) {
     list.removeAttribute('hidden');
+    list.style.display = 'flex';
     btn.textContent = 'Show less −';
     btn.setAttribute('aria-expanded', 'true');
   } else {
     list.setAttribute('hidden', '');
+    list.style.display = 'none';
     btn.textContent = 'Show more +';
     btn.setAttribute('aria-expanded', 'false');
   }
