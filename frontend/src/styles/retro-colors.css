@@ -179,10 +179,33 @@
   --rgba-red-50: rgba(255, 68, 68, 0.5);
 
   /* ===== TYPOGRAPHY VARIABLES ===== */
-  /* Font families - easily update site-wide fonts */
-  --font-terminal: 'VT323', monospace;           /* Terminal/retro monospace font */
-  --font-display: 'Press Start 2P', monospace;   /* Pixel font for special displays */
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Fallback body font */
+  /* Font families - semantic naming independent of design theme */
+  --font-primary: 'VT323', monospace;           /* Primary font used site-wide */
+  --font-accent: 'Press Start 2P', monospace;   /* Accent font for special elements (logo, etc) */
+  --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* System font fallback */
+  
+  /* Legacy aliases for backward compatibility - will be removed in future */
+  --font-terminal: var(--font-primary);
+  --font-display: var(--font-accent);
+  --font-body: var(--font-system);
+  
+  /* Font sizes - consistent sizing across components */
+  --font-size-xs: 1rem;
+  --font-size-sm: 1.1rem;
+  --font-size-base: 1.2rem;
+  --font-size-md: 1.3rem;
+  --font-size-lg: 1.5rem;
+  --font-size-xl: 1.8rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.8rem;
+  --font-size-4xl: 3rem;
+  
+  /* Font weights - semantic naming */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
 }
 
 /* Dark Mode - Explicit declaration for equal specificity with light mode */
@@ -210,6 +233,13 @@
   --theme-toggle-hover-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
   --theme-toggle-active-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
   --theme-toggle-backdrop-filter: blur(8px);
+  
+  /* Dark mode typography */
+  --font-heading: var(--font-primary);
+  --font-body-text: var(--font-primary);
+  --weight-heading: var(--font-weight-normal);
+  --weight-body: var(--font-weight-normal);
+  --weight-emphasis: var(--font-weight-normal);
 }
 
 /* Light Mode - Tournament V-17 Boat-Inspired Palette */
@@ -242,6 +272,13 @@
   --theme-btn-primary-bg: var(--boat-orange);
   --theme-btn-primary-hover: var(--boat-red);
   --theme-btn-border: var(--boat-black);
+  
+  /* Light mode typography */
+  --font-heading: var(--font-primary);
+  --font-body-text: var(--font-primary);
+  --weight-heading: var(--font-weight-normal);
+  --weight-body: var(--font-weight-normal);
+  --weight-emphasis: var(--font-weight-bold);
 }
 
 /* System Preference Defaults - Applied when no data-theme attribute is set */
@@ -271,6 +308,11 @@
     --theme-toggle-hover-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
     --theme-toggle-active-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
     --theme-toggle-backdrop-filter: blur(8px);
+    --font-heading: var(--font-primary);
+    --font-body-text: var(--font-primary);
+    --weight-heading: var(--font-weight-normal);
+    --weight-body: var(--font-weight-normal);
+    --weight-emphasis: var(--font-weight-normal);
   }
 }
 
@@ -300,5 +342,10 @@
     --theme-toggle-hover-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
     --theme-toggle-active-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
     --theme-toggle-backdrop-filter: none;
+    --font-heading: var(--font-primary);
+    --font-body-text: var(--font-primary);
+    --weight-heading: var(--font-weight-normal);
+    --weight-body: var(--font-weight-normal);
+    --weight-emphasis: var(--font-weight-bold);
   }
 }

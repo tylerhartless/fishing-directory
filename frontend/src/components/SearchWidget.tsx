@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import type { JSX } from 'preact';
 
+// Development-only logging
+const isDev = import.meta.env.DEV;
+
 interface SearchWidgetProps {
   nominatimEmail?: string;
 }
@@ -111,7 +114,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setDisplayCount(state.displayCount);
           setShowResults(true);
         } catch (error) {
-          console.error('Failed to restore search state:', error);
+          if (isDev) console.error('Failed to restore search state:', error);
           sessionStorage.removeItem('searchWidgetState');
         }
       }
@@ -174,7 +177,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         setErrorMessage('Failed to load fishing spots');
       }
     } catch (error) {
-      console.error('Error loading spots:', error);
+      if (isDev) console.error('Error loading spots:', error);
       setErrorMessage('Failed to load fishing spots. Please try again later.');
     } finally {
       setIsLoadingSpots(false);
@@ -311,11 +314,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           if (result.state === 'denied') {
             permissionDenied = true;
             // Even if denied, we'll still try - user might have just reset permissions
-            console.log('Geolocation permission previously denied, attempting anyway...');
+            if (isDev) console.log('Geolocation permission previously denied, attempting anyway...');
           }
         } catch (e) {
           // Permissions API might not support geolocation query in all browsers
-          console.log('Unable to query geolocation permission:', e);
+          if (isDev) console.log('Unable to query geolocation permission:', e);
         }
       }
 
@@ -414,7 +417,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       }, 250);
 
     } catch (error) {
-      console.error('Geocoding error:', error);
+      if (isDev) console.error('Geocoding error:', error);
       setIsSearching(false);
       setLoadingMessage('');
       setErrorMessage('Connection error. Please try again.');
