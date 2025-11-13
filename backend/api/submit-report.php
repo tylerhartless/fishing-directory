@@ -55,29 +55,31 @@ if (strlen($notes) > 500) {
     send_json(['error' => 'Notes too long (max 500 characters)'], 400);
 }
 
-// Get IP hash for rate limiting
-$ip_hash = get_ip_hash();
-
 $conn = get_db_connection();
 
-// Check rate limiting (max 3 submissions per hour)
-$stmt = $conn->prepare("
-    SELECT COUNT(*) as count
-    FROM fishing_reports
-    WHERE user_ip_hash = ?
-    AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
-");
-
-$stmt->bind_param("s", $ip_hash);
-$stmt->execute();
-$result = $stmt->get_result()->fetch_assoc();
-$stmt->close();
-
-if ($result['count'] >= RATE_LIMIT_SUBMISSIONS) {
-    send_json([
-        'error' => 'Too many submissions. Please wait before submitting again.',
-        'retry_after' => 3600
-    ], 429);
+// Check rate limiting (max 3 submissions per hour) - disabled in local dev
+if (!is_local_dev()) {
+    $ip_hash = get_ip_hash();
+    
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) as count
+        FROM fishing_reports
+        WHERE user_ip_hash = ?
+        AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    ");
+    
+    $stmt->bind_param("s", $ip_hash);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    
+    if ($result['count'] >= RATE_LIMIT_SUBMISSIONS) {
+        $conn->close();
+        send_json([
+            'error' => 'Too many submissions. Please wait before submitting again.',
+            'retry_after' => 3600
+        ], 429);
+    }
 }
 
 // Insert fishing report (pending approval)
