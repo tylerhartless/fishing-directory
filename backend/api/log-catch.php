@@ -74,14 +74,20 @@ $ip_hash = hash('sha256', $_SERVER['REMOTE_ADDR'] ?? 'unknown');
 
 // Check rate limit only in production
 if (!is_local_dev()) {
-    $stmt = $conn->prepare("
-        SELECT COUNT(*) as count
-        FROM catch_reports
-        WHERE user_ip_hash = ?
-          AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
-    ");
-    
-    $stmt->bind_param("s", $ip_hash);
+$stmt = $conn->prepare("
+    SELECT COUNT(*) as count
+    FROM catch_reports
+    WHERE user_ip_hash = ?
+      AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+");
+
+if (!$stmt) {
+    error_log('log-catch: Failed to prepare rate limit query: ' . $conn->error);
+    $conn->close();
+    send_json(['error' => 'Server error while checking rate limits'], 500);
+}
+
+$stmt->bind_param("s", $ip_hash);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -95,6 +101,11 @@ if (!is_local_dev()) {
 
 // Verify spot exists
 $stmt = $conn->prepare("SELECT id FROM fishing_spots WHERE id = ?");
+if (!$stmt) {
+    error_log('log-catch: Failed to prepare fishing spot lookup: ' . $conn->error);
+    $conn->close();
+    send_json(['error' => 'Server error while verifying spot'], 500);
+}
 $stmt->bind_param("i", $spot_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -114,6 +125,12 @@ $stmt = $conn->prepare("
     WHERE ps.fishing_spot_id = ?
       AND ps.master_species_id = ?
 ");
+
+if (!$stmt) {
+    error_log('log-catch: Failed to prepare potential species lookup: ' . $conn->error);
+    $conn->close();
+    send_json(['error' => 'Server error while verifying species'], 500);
+}
 
 $stmt->bind_param("ii", $spot_id, $species_id);
 $stmt->execute();
@@ -135,6 +152,12 @@ $stmt = $conn->prepare("
     (fishing_spot_id, master_species_id, user_ip_hash, catch_date, base_score, current_score, last_decay_date)
     VALUES (?, ?, ?, ?, ?, ?, ?)
 ");
+
+if (!$stmt) {
+    error_log('log-catch: Failed to prepare catch insert: ' . $conn->error);
+    $conn->close();
+    send_json(['error' => 'Server error while logging catch'], 500);
+}
 
 $stmt->bind_param(
     "iissdds",
