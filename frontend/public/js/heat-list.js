@@ -115,9 +115,12 @@ async function loadHeatList() {
  * Get icon for species (with fallback if icon is missing or corrupted)
  */
 function getSpeciesIcon(species) {
-  // If icon exists and is not corrupted (not ????), use it
-  if (species.icon && !species.icon.includes('?') && species.icon.trim() !== '') {
-    return species.icon;
+  const rawIcon = (species.icon ?? '').trim();
+  if (rawIcon && !rawIcon.includes('?')) {
+    const glyphs = Array.from(rawIcon);
+    if (glyphs.length === 1 && glyphs[0]) {
+      return glyphs[0];
+    }
   }
   
   // Fallback icons based on common species names
