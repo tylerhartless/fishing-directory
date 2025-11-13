@@ -5,7 +5,7 @@
 
 const API_BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:8000'  // Local development
-  : 'https://wherecanifish.com/api';  // Production
+  : `${window.location.origin}/api`;  // Production & staging
 
 // Track current spot ID (updated on each init)
 let spotId = null;
