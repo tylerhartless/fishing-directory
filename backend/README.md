@@ -14,8 +14,8 @@ public_html/
     ├── config.php
     ├── reports.php
     ├── submit-report.php
-    ├── vote.php
-    └── get-votes.php
+    ├── get-heat-list.php
+    └── log-catch.php
 ```
 
 ### 2. Configure Database Connection
@@ -36,7 +36,8 @@ Also update `$allowed_origins` with your frontend domain.
 Visit these URLs to test:
 
 - `https://yourdomain.com/api/reports.php?spot_id=1`
-- `https://yourdomain.com/api/get-votes.php?spot_id=1`
+- `https://yourdomain.com/api/get-heat-list.php?spot_id=1`
+- `https://yourdomain.com/api/log-catch.php` (POST JSON payload)
 
 You should see JSON responses.
 
@@ -93,9 +94,9 @@ Submit a new fishing report.
 **Rate Limits:**
 - 3 submissions per hour per IP
 
-### GET /api/get-votes.php
+### GET /api/get-heat-list.php
 
-Get fish species votes for a spot.
+Get the species prevalence (heat list) for a fishing spot.
 
 **Parameters:**
 - `spot_id` (int, required)
@@ -104,45 +105,49 @@ Get fish species votes for a spot.
 ```json
 {
   "success": true,
-  "votes": [
+  "species": [
     {
-      "species": "Largemouth Bass",
-      "vote_type": "largemouth_bass",
-      "count": 45
+      "id": 1,
+      "common_name": "Largemouth Bass",
+      "icon": "🎣",
+      "tier": "common",
+      "has_reports": true,
+      "report_count": 4,
+      "total_score": 120.5
     }
   ]
 }
 ```
 
-### POST /api/vote.php
+### POST /api/log-catch.php
 
-Vote on what fish species are at a spot.
+Log a catch for the Species Prevalence System.
 
 **Body (JSON):**
 ```json
 {
   "spot_id": 123,
-  "vote_type": "largemouth_bass"
+  "species_id": 5,
+  "catch_date": "2025-11-12"
 }
 ```
 
-**Valid vote_types:**
-- largemouth_bass
-- striped_bass
-- white_bass
-- catfish
-- crappie
-- sunfish
-- carp
-- gar
-- trout
-- redfish
-- flounder
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Catch logged successfully",
+  "report_id": 789
+}
+```
+
+**Rate Limits:**
+- 5 catches per hour per IP (staging relaxed to 10)
 
 ## Security Features
 
 1. **CORS Protection** - Only allowed domains can access API
-2. **Rate Limiting** - Prevents spam (3 reports/hour, 10 votes/hour)
+2. **Rate Limiting** - Prevents spam (3 reports/hour, 5 catches/hour; staging uses relaxed limits)
 3. **Input Validation** - All inputs sanitized
 4. **Prepared Statements** - SQL injection prevention
 5. **Privacy** - IP addresses are hashed, not stored

@@ -21,6 +21,12 @@
 
 require_once 'config.php';
 
+if (!function_exists('is_local_dev')) {
+    function is_local_dev(): bool {
+        return false;
+    }
+}
+
 set_cors_headers();
 header('Content-Type: application/json');
 

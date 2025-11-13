@@ -11,9 +11,9 @@ deploy/
 │   ├── api/                 (PHP backend)
 │   │   ├── spots.php
 │   │   ├── reports.php
-│   │   ├── vote.php
 │   │   ├── submit-report.php
-│   │   ├── get-votes.php
+│   │   ├── get-heat-list.php
+│   │   ├── log-catch.php
 │   │   ├── config.php       (EDIT: Add your database credentials!)
 │   │   └── .htaccess
 │   ├── data/
@@ -48,7 +48,7 @@ deploy/
 ✅ County-by-county browsing
 ✅ Interactive maps
 ✅ Fishing reports system
-✅ Community voting
+✅ Species prevalence heat list (time-decay scoring)
 ✅ Fast static pages (Astro)
 ✅ PHP API backend
 ✅ SEO optimized (sitemap, meta tags)
