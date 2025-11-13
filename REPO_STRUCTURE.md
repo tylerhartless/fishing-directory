@@ -69,8 +69,8 @@ backend/
     ├── spots.php              # GET /api/spots - Fetch fishing spots
     ├── submit-report.php      # POST /api/submit-report - Submit fishing report
     ├── reports.php            # GET /api/reports - Get reports for a spot
-    ├── vote.php               # POST /api/vote - Vote on fish species
-    └── get-votes.php          # GET /api/get-votes - Get votes for a spot
+    ├── get-heat-list.php      # GET /api/get-heat-list - Species prevalence data
+    └── log-catch.php          # POST /api/log-catch - Log catches for heat list
 ```
 
 **Tech Stack:**

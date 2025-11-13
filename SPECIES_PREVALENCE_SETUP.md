@@ -305,9 +305,9 @@ SELECT 1, ms.id FROM master_species ms WHERE ms.region = 'TX';
 - `frontend/src/pages/texas/[county]/[slug].astro`
 
 ### Deprecated Files
-- `backend/api/submit-report.php` (old report system, still works)
-- `backend/api/vote.php` (old voting system, still works)
-- `frontend/public/js/load-spot-content.js` (replaced by heat-list.js)
+- `backend/api/vote.php` (legacy voting API, removed)
+- `backend/api/get-votes.php` (legacy votes endpoint, removed)
+- `frontend/public/js/load-spot-content.js` (legacy widget script, removed)
 
 ---
 

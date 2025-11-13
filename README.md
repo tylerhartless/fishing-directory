@@ -184,20 +184,6 @@ The ETL pipeline is designed to scale to all 50 states. See the [fishing-data-pi
 - Returns: JSON with success status and report ID
 - Security: Rate limiting (3/hour), IP hashing, content moderation
 
-**GET `/api/get-votes.php`**
-- Get fish species vote counts for a spot
-- Parameters:
-  - `spot_id` (int, required)
-- Returns: JSON with vote counts by species type
-
-**POST `/api/vote.php`**
-- Vote on fish species at a spot (legacy endpoint, replaced by Species Prevalence System)
-- Body (JSON):
-  - `spot_id` (int, required)
-  - `vote_type` (string, required): One of: largemouth_bass, striped_bass, white_bass, catfish, crappie, sunfish, carp, gar, trout, redfish, flounder
-- Returns: JSON with success status
-- Security: Rate limiting (10/hour), IP hashing
-
 **GET `/api/get-heat-list.php`**
 - Get species prevalence heat list for a spot (Species Prevalence System)
 - Parameters:
