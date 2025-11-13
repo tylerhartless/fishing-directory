@@ -66,26 +66,31 @@ if ($catch_timestamp < $thirty_days_ago) {
     send_json(['error' => 'Catch date must be within the last 30 days'], 400);
 }
 
-// Rate limiting: 5 catch reports per hour per IP
-$ip_hash = hash('sha256', $_SERVER['REMOTE_ADDR']);
+// Rate limiting: 5 catch reports per hour per IP (disabled in local dev)
 $conn = get_db_connection();
 
-$stmt = $conn->prepare("
-    SELECT COUNT(*) as count
-    FROM catch_reports
-    WHERE user_ip_hash = ?
-      AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
-");
+// Always hash IP for database storage (privacy-preserving)
+$ip_hash = hash('sha256', $_SERVER['REMOTE_ADDR'] ?? 'unknown');
 
-$stmt->bind_param("s", $ip_hash);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$stmt->close();
-
-if ($row['count'] >= 5) {
-    $conn->close();
-    send_json(['error' => 'Rate limit exceeded. Max 5 catches per hour.'], 429);
+// Check rate limit only in production
+if (!is_local_dev()) {
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) as count
+        FROM catch_reports
+        WHERE user_ip_hash = ?
+          AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    ");
+    
+    $stmt->bind_param("s", $ip_hash);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    
+    if ($row['count'] >= 5) {
+        $conn->close();
+        send_json(['error' => 'Rate limit exceeded. Max 5 catches per hour.'], 429);
+    }
 }
 
 // Verify spot exists

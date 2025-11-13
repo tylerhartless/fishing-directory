@@ -195,7 +195,7 @@ const schema = {
           <!-- Heat List: Species Prevalence System -->
           <section class="retro-section heat-list-section">
             <h2 class="retro-heading retro-heading-md retro-heading-underline">What's Biting Here?</h2>
-            <p class="heat-list-description">Species ranked by recent catch activity. Click any species to log a catch!</p>
+            <p class="heat-list-description">Species ranked by recent catch activity. Use the button below to log a catch!</p>
 
             <div id="heat-list-container">
               <p class="loading">Loading species data...</p>
@@ -714,17 +714,34 @@ const schema = {
     text-shadow: 0 0 8px rgba(212, 165, 116, 0.6);
   }
 
-  :global([data-theme="light"]) .retro-btn-primary,
-  :global([data-theme="light"]) .retro-btn-secondary {
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-    text-shadow: none;
+  :global([data-theme="light"]) .retro-btn-primary {
+    background: var(--boat-orange);
+    color: white;
+    border: 3px solid var(--neutral-black);
+    box-shadow: 4px 4px 0 var(--rgba-black-30);
+    text-shadow: 1px 1px 0 var(--rgba-black-30);
+    font-weight: 700;
+  }
+
+  :global([data-theme="light"]) .retro-btn-primary:hover {
+    background: var(--boat-orange-hover);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--rgba-black-30);
+    border-color: var(--neutral-black);
+  }
+
+  :global([data-theme="light"]) .retro-btn-primary:active {
+    background: var(--boat-orange-active);
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 var(--rgba-black-30);
   }
 
   :global([data-theme="light"]) .retro-btn-secondary {
     color: var(--neutral-black);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    text-shadow: none;
   }
 
-  :global([data-theme="light"]) .retro-btn-primary:hover,
   :global([data-theme="light"]) .retro-btn-secondary:hover {
     transform: translate(-2px, -2px);
     box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
@@ -806,7 +823,7 @@ const schema = {
     font-family: var(--font-terminal);
     background: var(--rgba-sage-15);
     border: 2px solid var(--rgba-sage-30);
-    cursor: pointer;
+    cursor: default;
     transition: all 0.2s;
   }
 
@@ -815,16 +832,9 @@ const schema = {
     border: 2px solid var(--neutral-black);
   }
 
+  /* Remove hover effects since items are not clickable */
   .species-item:hover {
-    background: var(--rgba-sage-25);
-    border-color: var(--rgba-sage-50);
-    box-shadow: 0 0 10px var(--rgba-sage-30);
-  }
-
-  :global([data-theme="light"]) .species-item:hover {
-    background: var(--theme-text-sage);
-    transform: translateY(-2px);
-    box-shadow: 4px 4px 0 var(--rgba-black-20);
+    /* No hover effect - items are not interactive */
   }
 
   .species-indicator {
@@ -938,6 +948,72 @@ const schema = {
 
   .all-species-list {
     margin-top: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .all-species-list.all-species-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--theme-bg);
+    border: 3px solid var(--rgba-sage-50);
+    box-shadow: 0 0 30px var(--rgba-sage-30);
+    max-width: 600px;
+    width: 90%;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 10001;
+    padding: 2rem;
+    margin-top: 0;
+  }
+
+  :global([data-theme="light"]) .all-species-list.all-species-modal {
+    border: 4px solid var(--neutral-black);
+    box-shadow: 8px 8px 0 var(--rgba-black-20);
+  }
+
+  .all-species-list.all-species-modal .heat-list {
+    margin-bottom: 0;
+  }
+
+  .close-all-species {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: var(--theme-text);
+    cursor: pointer;
+    font-family: var(--font-terminal);
+    line-height: 1;
+    padding: 0.5rem;
+    transition: all 0.2s;
+  }
+
+  .close-all-species:hover {
+    color: var(--theme-text-sage);
+    transform: scale(1.2);
+  }
+
+  :global([data-theme="light"]) .close-all-species {
+    color: var(--neutral-black);
+    font-weight: 700;
+  }
+
+  /* Backdrop for modal */
+  .all-species-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--rgba-black-80);
+    z-index: 9999;
+    cursor: pointer;
   }
 
   /* ============================================
@@ -968,7 +1044,7 @@ const schema = {
   }
 
   :global([data-theme="light"]) :global(.modal-content) {
-    background: var(--earth-ivory);
+    background: #ffffff;
     border: 4px solid var(--neutral-black);
     box-shadow: 8px 8px 0 var(--rgba-black-30);
   }

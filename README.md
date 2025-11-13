@@ -69,7 +69,17 @@ docker compose up -d  # Starts MySQL + phpMyAdmin
 
 To populate the database with fishing spot data, see the [fishing-data-pipeline](https://github.com/tylerhartless/fishing-data-pipeline) repository.
 
-### 3. Done!
+### 4. Apply Database Migrations
+
+If using the Species Prevalence System (Heat List), apply the migration:
+
+```bash
+mysql -u root -p fishing_directory < migrations/003_species_prevalence_system.sql
+```
+
+This creates the species prevalence tables and populates regional species data. See [SPECIES_PREVALENCE_SETUP.md](SPECIES_PREVALENCE_SETUP.md) for complete setup instructions.
+
+### 5. Done!
 
 Visit `http://localhost:4321` - everything is running!
 
@@ -83,17 +93,206 @@ The ETL pipeline is designed to scale to all 50 states. See the [fishing-data-pi
 
 ## Key Features
 
-### Frontend
-- **Search-First Design:** Prominent search bar as main interface
-- **Client-Side Filtering:** Filter 1,000+ Texas fishing spots instantly
-- **Responsive Design:** Mobile-friendly spot cards
-- **Interactive Results:** Scrollable list view with expandable details
-- **Future:** Map integration for visual location browsing
+### Frontend Features
 
-### API
-- **RESTful Endpoints:** JSON responses for spot data
-- **CORS Enabled:** Works with any frontend
-- **Optimized Queries:** Indexed for performance
+#### Search & Discovery
+- **Geolocation Search:** Use current location to find nearby fishing spots with distance calculations
+- **Text Search:** Search by city, zip code, or location name with geocoding via OpenStreetMap Nominatim
+- **Client-Side Filtering:** Filter 1,000+ fishing spots instantly by:
+  - Spot type (lakes, river access, public waters, state parks, fishing piers)
+  - Search radius (10, 25, 50, 100, 200 miles)
+- **Infinite Scroll:** Progressive loading of results as you scroll
+- **Search State Persistence:** Search results saved in session storage for page navigation
+- **Autocomplete Suggestions:** Quick suggestions for common Texas cities
+
+#### Navigation & Browsing
+- **State-Level Browsing:** Browse all states with spot counts and county statistics
+- **County-Level Browsing:** Browse fishing spots by county with filtering
+- **Spot Detail Pages:** Individual pages for each fishing spot with:
+  - Static map images (Mapbox) with theme-aware switching (light/dark)
+  - GPS coordinates with copy-to-clipboard functionality
+  - Amenities display (boat ramps, piers, restrooms, parking, etc.)
+  - Water body information
+  - Multi-county support for spots spanning multiple counties
+  - Breadcrumb navigation
+  - Schema.org structured data for SEO
+
+#### Interactive Features
+- **Species Prevalence System (Heat List):**
+  - Time-decay based species ranking system that shows which fish are most commonly caught
+  - Four-tier classification: Common (≥5000 score), Uncommon (≥1000), Rare (>0), Unreported (0)
+  - Dynamic backfilling: Shows top unreported species to guide new users
+  - Click any species to log a catch
+  - Scores automatically decay 5% weekly to keep rankings fresh
+  - Prevents gaming through automatic time-based decay
+- **Catch Logging System:**
+  - Log catches directly from the heat list interface
+  - Validates species availability for each spot
+  - Validates catch dates (within last 30 days, not in future)
+  - Rate limiting (5 catches per hour per IP)
+- **Fishing Reports System:**
+  - View recent fishing reports for each spot
+  - Submit new fishing reports (requires moderation)
+  - Rate limiting (3 submissions per hour per IP)
+- **Dynamic Content Loading:** Heat list, reports, and catch data loaded via API on spot detail pages
+
+#### Special Pages
+- **Fishing Without License Guide:** Comprehensive guide to Texas state parks where fishing licenses aren't required
+- **State Parks Directory:** Filtered view of all Texas state parks with fishing access
+
+#### UI/UX Features
+- **Retro Terminal Theme:** CRT-inspired design with light/dark mode support
+- **Responsive Design:** Mobile-first, works on all screen sizes
+- **Theme Switching:** Automatic theme detection with manual override
+- **Smooth Animations:** Transition effects and loading states
+- **Accessibility:** Semantic HTML, ARIA labels, keyboard navigation
+
+### Backend API Features
+
+#### RESTful Endpoints
+
+**GET `/api/spots.php`**
+- Retrieve fishing spots with pagination
+- Parameters:
+  - `limit` (int): Number of spots to return (default: 10)
+  - `county` (string): Filter by county name
+  - `include_boat_ramps` (boolean): Include boat ramps (default: false)
+- Returns: JSON with spot data including coordinates, amenities, spot type, counties
+- Supports both legacy single-county and new multi-county data models
+
+**GET `/api/county-stats.php`**
+- Get county statistics for a state
+- Parameters:
+  - `state` (string): Two-letter state code (default: TX)
+  - `limit` (int): Number of counties to return (default: 10)
+- Returns: JSON with county names, slugs, spot counts
+
+**GET `/api/reports.php`**
+- Get fishing reports for a specific spot
+- Parameters:
+  - `spot_id` (int, required): Fishing spot ID
+- Returns: JSON with approved fishing reports including species, catch count, dates, notes
+
+**POST `/api/submit-report.php`**
+- Submit a new fishing report
+- Body (JSON):
+  - `spot_id` (int, required)
+  - `fish_species` (string, required)
+  - `catch_count` (int, required)
+  - `report_date` (string, required): ISO date format
+  - `notes` (string, optional)
+- Returns: JSON with success status and report ID
+- Security: Rate limiting (3/hour), IP hashing, content moderation
+
+**GET `/api/get-votes.php`**
+- Get fish species vote counts for a spot
+- Parameters:
+  - `spot_id` (int, required)
+- Returns: JSON with vote counts by species type
+
+**POST `/api/vote.php`**
+- Vote on fish species at a spot (legacy endpoint, replaced by Species Prevalence System)
+- Body (JSON):
+  - `spot_id` (int, required)
+  - `vote_type` (string, required): One of: largemouth_bass, striped_bass, white_bass, catfish, crappie, sunfish, carp, gar, trout, redfish, flounder
+- Returns: JSON with success status
+- Security: Rate limiting (10/hour), IP hashing
+
+**GET `/api/get-heat-list.php`**
+- Get species prevalence heat list for a spot (Species Prevalence System)
+- Parameters:
+  - `spot_id` (int, required): Fishing spot ID
+- Returns: JSON with all potential species for the spot, including:
+  - Species details (id, common_name, icon, priority_order)
+  - Score data (total_score, report_count)
+  - Tier classification (common, uncommon, rare, unreported)
+  - Sorting: Reported species by score (DESC), then unreported by priority
+- Tier thresholds:
+  - Common: score ≥ 5000
+  - Uncommon: score ≥ 1000 and < 5000
+  - Rare: score > 0 and < 1000
+  - Unreported: score = 0
+
+**POST `/api/log-catch.php`**
+- Log a catch for the Species Prevalence System
+- Body (JSON):
+  - `spot_id` (int, required)
+  - `species_id` (int, required): Master species ID
+  - `catch_date` (string, required): Date in YYYY-MM-DD format (must be within last 30 days, not in future)
+- Returns: JSON with success status and report_id
+- Security: Rate limiting (5/hour), IP hashing, species validation, date validation
+- Scoring: Each catch starts with base_score of 10.00, decays 5% weekly
+
+#### Security Features
+- **CORS Protection:** Only allowed domains can access API
+- **Rate Limiting:** Prevents spam (3 reports/hour, 5 catches/hour, 10 votes/hour)
+- **Input Validation:** All inputs sanitized and validated
+- **Prepared Statements:** SQL injection prevention
+- **Privacy:** IP addresses hashed, not stored in plain text
+- **Content Moderation:** Reports require approval before display
+- **Species Validation:** Catches only accepted for species in spot's potential_species list
+- **Date Validation:** Catch dates validated (within 30 days, not in future)
+
+### Pages & Routes
+
+#### Static Pages (Astro SSG)
+- **`/`** - Homepage with search widget and value propositions
+- **`/states`** - Browse all states with spot counts
+- **`/texas`** - Texas state page with county listings
+- **`/texas/fishing-without-license`** - Guide to license-free fishing in state parks
+- **`/texas/[county]`** - County-level spot listings (dynamic routes)
+- **`/texas/[county]/[slug]`** - Individual spot detail pages (dynamic routes)
+
+#### Dynamic Features
+- All spot detail pages include client-side JavaScript for:
+  - Loading and displaying Species Prevalence Heat List
+  - Logging catches via interactive species list
+  - Loading fishing reports
+  - Copying coordinates to clipboard
+  - Theme-aware map image switching
+
+### Components
+
+#### React/Preact Components (Client-Side)
+- **`SearchWidget`** - Main search interface with geolocation and text search
+- **`DynamicSubtitle`** - Dynamic subtitle based on user location
+- **`ValuePropositionBadges`** - Feature highlights on homepage
+- **`SpecialLandingPageCallout`** - State-specific callouts (e.g., no-license fishing)
+- **`WhatEachListingIncludes`** - Information about listing details
+- **`CountyListing`** - Dynamic county listings based on detected state
+
+#### JavaScript Modules (Client-Side)
+- **`heat-list.js`** - Species Prevalence System UI handler
+  - Loads and displays heat list with tier-based styling
+  - Handles catch logging interface
+  - Manages show-all species expansion
+  - Interactive species item clicks
+
+#### Astro Components (Server-Side)
+- **`ResultsWidget`** - Reusable results display with filtering and infinite scroll
+- **`Layout`** - Base HTML layout with meta tags, theme support, and navigation
+
+### Data Structure
+
+#### Fishing Spot Data
+Each spot includes:
+- Basic info: name, slug, description
+- Location: latitude, longitude, county (single or multi-county), state
+- Classification: spot_type (lake, river_access, state_park, fishing_pier, etc.)
+- Water body: water_body_name
+- Amenities: JSON object with boolean flags (boat_ramp, parking, restrooms, lighting, fish_cleaning, boat_trailer_parking, camping, fishing_pier, picnic_area)
+- Metadata: is_verified, is_parent, parent_spot_id
+- SEO: meta_title, meta_description
+
+#### Database Schema
+- Supports both legacy single-county and new many-to-many county relationships
+- Migration-ready: API automatically detects schema version
+- Optimized queries with proper indexing
+- **Species Prevalence System Tables:**
+  - `master_species` - Regional species list with priority order and icons
+  - `potential_species` - Junction table linking spots to available species
+  - `catch_reports` - User catch data with time-decay scoring (base_score, current_score, last_decay_date)
+- **Time-Decay System:** Scores decay 5% weekly via cron job (`backend/scripts/decay-scores.php`)
 
 ## Documentation
 
@@ -110,6 +309,30 @@ The ETL pipeline is designed to scale to all 50 states. See the [fishing-data-pi
 ### Maintenance
 - **[docs/MAINTENANCE.md](docs/MAINTENANCE.md)** - Ongoing maintenance tasks
 - **[docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)** - Planned features and improvements
+
+## Configuration
+
+### Environment Variables
+
+#### Frontend (`.env` or `astro.config.mjs`)
+- `PUBLIC_API_URL` - API base URL (defaults to `http://localhost:8000/api` for local dev)
+- `PUBLIC_MAPBOX_TOKEN` - Mapbox access token for static map images
+- `PUBLIC_NOMINATIM_EMAIL` - Email for OpenStreetMap Nominatim geocoding API (required for geocoding)
+
+#### Backend (`backend/api/config.php`)
+- `DB_HOST` - MySQL database host
+- `DB_USER` - Database username
+- `DB_PASS` - Database password
+- `DB_NAME` - Database name
+- `$allowed_origins` - Array of allowed CORS origins
+
+### API Configuration
+
+The backend API automatically detects database schema version:
+- **Legacy Mode:** Single county field per spot
+- **Migration Mode:** Many-to-many county relationships via junction tables
+
+Both modes are supported simultaneously for smooth migrations.
 
 ## Current Data
 

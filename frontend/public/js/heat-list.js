@@ -15,18 +15,20 @@ if (!spotId) {
 }
 
 // Tier configuration - using CSS color variables
+// Note: Tier thresholds are configured in backend/api/get-heat-list.php
+// These values are for display only - actual tier determination happens server-side
 const TIER_CONFIG = {
   common: {
     label: 'Common',
     color: '#c41e1a',  // --boat-red (red)
     indicator: '●',
-    threshold: 5000
+    threshold: 50  // Display reference only - actual threshold in PHP (launch: 50, mature: 5000)
   },
   uncommon: {
     label: 'Uncommon',
     color: '#e85d2a',  // --boat-orange (orange)
     indicator: '●',
-    threshold: 1000
+    threshold: 20  // Display reference only - actual threshold in PHP (launch: 20, mature: 1000)
   },
   rare: {
     label: 'Rare',
@@ -85,6 +87,7 @@ async function loadHeatList() {
         <button class="show-all-btn" id="show-all-species">
           Show all ${remainingCount} remaining species...
         </button>
+        <div class="all-species-modal-backdrop" id="all-species-backdrop" style="display: none;"></div>
         <div class="all-species-list" id="all-species-list" style="display: none;">
           ${data.species.slice(displayLimit).map(species => renderSpeciesItem(species)).join('')}
         </div>
@@ -94,14 +97,7 @@ async function loadHeatList() {
     // Add show all toggle
     document.getElementById('show-all-species')?.addEventListener('click', toggleShowAll);
 
-    // Add click handlers for "Log a Catch" on each species
-    document.querySelectorAll('.species-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const speciesId = parseInt(item.dataset.speciesId);
-        const speciesName = item.dataset.speciesName;
-        openLogCatchModal(speciesId, speciesName);
-      });
-    });
+    // Species items are NOT clickable - only the main "Log a Catch" button opens the modal
 
   } catch (error) {
     console.error('Error loading heat list:', error);
@@ -110,18 +106,58 @@ async function loadHeatList() {
 }
 
 /**
+ * Get icon for species (with fallback if icon is missing or corrupted)
+ */
+function getSpeciesIcon(species) {
+  // If icon exists and is not corrupted (not ????), use it
+  if (species.icon && !species.icon.includes('?') && species.icon.trim() !== '') {
+    return species.icon;
+  }
+  
+  // Fallback icons based on common species names
+  const iconMap = {
+    'Largemouth Bass': '🎣',
+    'Channel Catfish': '🐡',
+    'Bluegill': '🐟',
+    'Redear Sunfish': '🐠',
+    'White Bass': '🐟',
+    'Striped Bass': '🐟',
+    'Blue Catfish': '🐡',
+    'Flathead Catfish': '🐡',
+    'Crappie': '🐠',
+    'Sunfish': '🐠',
+    'Carp': '🐟',
+    'Gar': '🐊',
+    'Trout': '🐟',
+    'Redfish': '🐟',
+    'Flounder': '🐟'
+  };
+  
+  // Try to match by name
+  for (const [name, icon] of Object.entries(iconMap)) {
+    if (species.common_name.includes(name)) {
+      return icon;
+    }
+  }
+  
+  // Default fallback
+  return '🐟';
+}
+
+/**
  * Render a single species item
  */
 function renderSpeciesItem(species) {
   const tier = TIER_CONFIG[species.tier];
   const isUnreported = species.tier === 'unreported';
+  const icon = getSpeciesIcon(species);
 
   return `
     <div class="species-item ${species.tier}"
          data-species-id="${species.id}"
          data-species-name="${escapeHtml(species.common_name)}">
       <span class="species-indicator" style="color: ${tier.color};">${tier.indicator}</span>
-      <span class="species-icon">${species.icon}</span>
+      <span class="species-icon">${icon}</span>
       <span class="species-name">${escapeHtml(species.common_name)}</span>
       ${isUnreported ?
         '<span class="species-subtitle">Be the first!</span>' :
@@ -132,18 +168,53 @@ function renderSpeciesItem(species) {
 }
 
 /**
- * Toggle show all species
+ * Toggle show all species (opens in modal/dropdown)
  */
 function toggleShowAll() {
   const btn = document.getElementById('show-all-species');
   const list = document.getElementById('all-species-list');
+  const backdrop = document.getElementById('all-species-backdrop');
 
-  if (list.style.display === 'none') {
+  if (list.style.display === 'none' || list.style.display === '') {
+    // Show as modal overlay
+    if (backdrop) backdrop.style.display = 'block';
     list.style.display = 'block';
+    list.classList.add('all-species-modal');
     btn.textContent = 'Show less...';
+    
+    // Add close button if not exists
+    if (!list.querySelector('.close-all-species')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-all-species';
+      closeBtn.textContent = '×';
+      closeBtn.addEventListener('click', closeAllSpecies);
+      list.insertBefore(closeBtn, list.firstChild);
+    }
+    
+    // Close on backdrop click
+    if (backdrop) {
+      backdrop.addEventListener('click', closeAllSpecies);
+    }
   } else {
+    closeAllSpecies();
+  }
+}
+
+/**
+ * Close the all species modal
+ */
+function closeAllSpecies() {
+  const btn = document.getElementById('show-all-species');
+  const list = document.getElementById('all-species-list');
+  const backdrop = document.getElementById('all-species-backdrop');
+  
+  if (backdrop) backdrop.style.display = 'none';
+  if (list) {
     list.style.display = 'none';
-    const remainingCount = document.querySelectorAll('#all-species-list .species-item').length;
+    list.classList.remove('all-species-modal');
+  }
+  if (btn) {
+    const remainingCount = list ? list.querySelectorAll('.species-item').length : 0;
     btn.textContent = `Show all ${remainingCount} remaining species...`;
   }
 }

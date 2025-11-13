@@ -32,12 +32,24 @@
  *   ]
  * }
  *
- * Tier Thresholds:
- * - common: score >= 5000
- * - uncommon: score >= 1000 and < 5000
- * - rare: score > 0 and < 1000
+ * Tier Thresholds (configurable - adjust for launch vs. mature system):
+ * - common: score >= TIER_THRESHOLD_COMMON (default: 50 for launch, was 5000)
+ * - uncommon: score >= TIER_THRESHOLD_UNCOMMON and < TIER_THRESHOLD_COMMON (default: 20 for launch, was 1000)
+ * - rare: score > 0 and < TIER_THRESHOLD_UNCOMMON (default: < 20 for launch, was < 1000)
  * - unreported: score = 0
  */
+
+// ========================================
+// TIER THRESHOLD CONFIGURATION
+// ========================================
+// Adjust these values to tune the rarity system
+// Each catch = 10 points, so thresholds are in multiples of 10
+// For launch: Lower thresholds to show activity sooner
+// For mature system: Increase thresholds as data accumulates
+define('TIER_THRESHOLD_COMMON', 50);      // 5+ catches = Common (was 5000 = 500+ catches)
+define('TIER_THRESHOLD_UNCOMMON', 20);   // 2+ catches = Uncommon (was 1000 = 100+ catches)
+// Rare: 1 catch (10 points) = > 0 and < 20
+// Unreported: 0 catches = 0 points
 
 require_once 'config.php';
 
@@ -104,10 +116,10 @@ while ($row = $result->fetch_assoc()) {
     $total_score = floatval($row['total_score']);
     $report_count = intval($row['report_count']);
 
-    // Determine tier based on score
-    if ($total_score >= 5000) {
+    // Determine tier based on score (using configurable thresholds)
+    if ($total_score >= TIER_THRESHOLD_COMMON) {
         $tier = 'common';
-    } elseif ($total_score >= 1000) {
+    } elseif ($total_score >= TIER_THRESHOLD_UNCOMMON) {
         $tier = 'uncommon';
     } elseif ($total_score > 0) {
         $tier = 'rare';
