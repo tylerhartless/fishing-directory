@@ -99,13 +99,7 @@ const schema = {
 >
   <section class="retro-page-header">
     <div class="container">
-      <nav class="retro-breadcrumb">
-        <a href="/">← Home</a> / <a href="/states">States</a> / <a href="/texas">Texas</a> / {isMultiCounty ? (
-          <span>{countyDisplay}</span>
-        ) : (
-          <a href={`/texas/${countySlug}`}>{primaryCounty} County</a>
-        )} / {spot.name}
-      </nav>
+      <a href={`/texas/${countySlug}`} class="page-back-link">← {primaryCounty} County</a>
       <h1 transition:name={`spot-title-${spot.id}`}>{spot.name}</h1>
     </div>
   </section>
