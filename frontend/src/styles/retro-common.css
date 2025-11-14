@@ -5,7 +5,7 @@
   background: transparent; /* Let the gradient show through in dark mode */
   color: white;
   padding: 0;
-  text-align: left;
+  text-align: center;
   position: relative;
   overflow: visible;
   transition: background 0.3s ease;
@@ -30,22 +30,25 @@
 }
 
 .retro-page-header h1 {
-  font-family: 'VT323', monospace;
-  font-size: 2rem; /* Mobile-first: readable on small screens */
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
   margin: 0 0 0.5rem 0;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.05em;
   color: var(--theme-heading-color);
   text-shadow: 2px 2px 0 var(--rgba-black-30);
   filter: drop-shadow(0 0 4px var(--rgba-white-40))
           drop-shadow(0 0 8px var(--rgba-white-20));
   line-height: 1.1;
+  text-align: center;
+  /* Variable font settings (disabled for Workbench - not a variable font) */
+  /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
 }
 
 /* Larger on desktop */
 @media (min-width: 768px) {
   .retro-page-header h1 {
-    font-size: 3rem;
+    font-size: 3rem; /* Increased from 2.5rem */
   }
 }
 
@@ -59,7 +62,7 @@
 }
 
 .retro-page-header .subtitle {
-  font-family: 'VT323', monospace;
+  font-family: var(--font-body-text);
   font-size: 1.35rem; /* Mobile-optimized */
   color: var(--theme-text-sage);
   text-shadow:
@@ -67,6 +70,7 @@
     0 0 15px var(--rgba-sage-40);
   margin: 0;
   font-weight: 400;
+  text-align: center;
 }
 
 @media (min-width: 768px) {
@@ -124,7 +128,8 @@
   display: flex;
   flex-direction: column;
   box-shadow:
-    0 0 15px var(--rgba-sage-30),
+    0 0 12px var(--rgba-sage-30),
+    0 0 25px var(--rgba-sage-15),
     inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
@@ -156,7 +161,7 @@
 [data-theme="light"] .retro-card {
   background: #ffffff !important; /* White cards on cream background */
   border: 4px solid var(--boat-black); /* Thick black borders */
-  box-shadow: 6px 6px 0 var(--rgba-black-20); /* Strong shadow for depth */
+  box-shadow: 8px 8px 0 var(--rgba-black-25), 4px 4px 0 var(--rgba-black-15); /* Strong shadow for depth */
   color: var(--boat-black) !important;
   border-radius: 0; /* Boxy, square corners */
   position: relative;
@@ -193,7 +198,7 @@
 
 [data-theme="light"] .retro-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0 var(--rgba-black-30);
+  box-shadow: 11px 11px 0 var(--rgba-black-30), 5px 5px 0 var(--rgba-black-20);
 }
 
 /* Card color variants */
@@ -219,10 +224,12 @@
 
 /* ===== BUTTONS ===== */
 .retro-btn {
-  padding: 1rem 2rem;
+  padding: 0.6rem 1.2rem; /* Reduced from 1rem 2rem */
   border: 3px solid var(--neutral-black);
   border-radius: 0;
   cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 1.1rem; /* Added explicit font size */
   font-weight: 700;
   box-shadow: 4px 4px 0 var(--rgba-black-30);
   transition: all 0.1s;
@@ -263,12 +270,13 @@
 }
 
 .retro-btn-search {
-  font-family: 'VT323', monospace;
+  font-family: var(--font-heading);
   background: var(--rgba-sage-15);
   color: var(--theme-text-sage);
   border: 2px solid var(--rgba-sage-50);
-  font-size: 1.4rem;
+  font-size: 1.1rem; /* Reduced from 1.4rem */
   font-weight: 400;
+  padding: 0.6rem 1.2rem; /* Added explicit padding */
   box-shadow:
     0 0 10px var(--rgba-sage-30),
     inset 0 0 20px var(--rgba-gray-20);
@@ -309,13 +317,13 @@
 
 /* Browse Other States / Counties Button */
 .county-browse-btn {
-  font-family: var(--font-terminal);
+  font-family: var(--font-heading);
   background: rgba(122, 132, 80, 0.2);
   color: var(--box-moss);
   border: 2px solid var(--box-moss);
-  font-size: 1.5rem;
+  font-size: 1.1rem; /* Reduced from 1.5rem */
   font-weight: 400;
-  padding: 1rem 2rem;
+  padding: 0.6rem 1.2rem; /* Reduced from 1rem 2rem */
   box-shadow:
     0 0 10px rgba(122, 132, 80, 0.3),
     inset 0 0 20px rgba(100, 100, 100, 0.2);
@@ -359,7 +367,7 @@
 .retro-input {
   padding: 1rem;
   font-size: 1.2rem;
-  font-family: 'VT323', monospace;
+  font-family: var(--font-body-text);
   border: 2px solid var(--rgba-sage-50);
   border-radius: 0;
   transition: all 0.2s;
@@ -404,7 +412,7 @@
 .retro-select {
   padding: 1rem;
   font-size: 1.2rem;
-  font-family: 'VT323', monospace;
+  font-family: var(--font-body-text);
   border: 2px solid var(--rgba-sage-50);
   border-radius: 0;
   background: var(--rgba-black-60);
@@ -477,7 +485,71 @@
 /* ===== TYPOGRAPHY ===== */
 /* Global heading styles for theme consistency */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
   color: var(--theme-heading-color);
+  /* Variable font settings (disabled for Workbench - not a variable font) */
+  /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
+}
+
+/* Explicit sizes for h1 and h2 - using CSS variables for responsive scaling */
+h1 {
+  font-size: var(--font-size-xl);
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+h2 {
+  font-size: var(--font-size-xl);
+}
+
+@media (min-width: 768px) {
+  h2 {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+h3 {
+  font-size: var(--font-size-lg);
+}
+
+@media (min-width: 768px) {
+  h3 {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+h4 {
+  font-size: var(--font-size-md);
+}
+
+@media (min-width: 768px) {
+  h4 {
+    font-size: var(--font-size-xl);
+  }
+}
+
+h5 {
+  font-size: var(--font-size-base);
+}
+
+@media (min-width: 768px) {
+  h5 {
+    font-size: var(--font-size-lg);
+  }
+}
+
+h6 {
+  font-size: var(--font-size-sm);
+}
+
+@media (min-width: 768px) {
+  h6 {
+    font-size: var(--font-size-md);
+  }
 }
 
 [data-theme="dark"] h1,
@@ -502,20 +574,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .retro-heading {
-  font-family: var(--font-terminal);
-  font-weight: 900;
+  font-family: var(--font-heading);
+  font-weight: 500;
   color: var(--theme-heading-color);
   letter-spacing: 0.05em;
+  /* Variable font settings (disabled for Workbench - not a variable font) */
+  /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
 }
 
 .retro-heading-lg {
-  font-family: var(--font-terminal);
-  font-size: 2.8rem;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
   margin: 0 0 1rem 0;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--theme-heading-color);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  /* Variable font settings (disabled for Workbench - not a variable font) */
+  /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
 }
 
 [data-theme="light"] .retro-heading-lg {
@@ -525,13 +601,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .retro-heading-md {
-  font-family: var(--font-terminal);
-  font-size: 2rem;
+  font-family: var(--font-heading);
+  font-size: 1.6rem; /* Increased from 1.25rem */
   margin: 0 0 1rem 0;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--theme-heading-color);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  /* Variable font settings (disabled for Workbench - not a variable font) */
+  /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
 }
 
 [data-theme="light"] .retro-heading-md {
@@ -541,13 +619,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .retro-heading-sm {
-  font-family: var(--font-terminal);
-  font-size: 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.1rem; /* Even smaller */
   margin: 0;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--theme-heading-color);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  /* Variable font settings (disabled for Workbench - not a variable font) */
+  /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
 }
 
 [data-theme="light"] .retro-heading-sm {
@@ -583,7 +663,8 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0;
   padding: 2rem;
   box-shadow:
-    0 0 15px var(--rgba-sage-30),
+    0 0 12px var(--rgba-sage-30),
+    0 0 25px var(--rgba-sage-15),
     inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
@@ -613,10 +694,21 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
+/* Container headers - consistent glow/shadow */
+.retro-section h2,
+.retro-section h3 {
+  text-shadow: 0 0 8px var(--rgba-sage-40);
+}
+
+[data-theme="light"] .retro-section h2,
+[data-theme="light"] .retro-section h3 {
+  text-shadow: 2px 2px 0px var(--rgba-black-15);
+}
+
 [data-theme="light"] .retro-section {
   background: #ffffff !important; /* White sections on cream background */
   border: 4px solid var(--boat-black) !important; /* Thick borders */
-  box-shadow: 6px 6px 0 var(--rgba-black-20) !important;
+  box-shadow: 8px 8px 0 var(--rgba-black-25), 4px 4px 0 var(--rgba-black-15) !important;
   color: var(--boat-black) !important;
   padding: 2rem !important; /* Match dark mode padding */
   position: relative;
@@ -665,7 +757,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 500; /* Standardized weight for consistency */
-  font-family: 'VT323', monospace;
+  font-family: var(--font-body-text);
 }
 
 /* Dark Mode Breadcrumbs - Green with glow */
@@ -710,6 +802,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
   opacity: 0.8;
+  text-align: left;
 }
 
 .retro-page-header .retro-breadcrumb a {
@@ -744,7 +837,8 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow:
-    0 0 15px var(--rgba-sage-30),
+    0 0 12px var(--rgba-sage-30),
+    0 0 25px var(--rgba-sage-15),
     inset 0 0 30px var(--rgba-gray-30);
   position: relative;
   overflow: hidden;
@@ -777,7 +871,7 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .retro-info-box {
   background: #ffffff !important; /* White box on cream background */
   border: 4px solid var(--boat-black) !important; /* Thick black border */
-  box-shadow: 6px 6px 0 var(--rgba-black-20) !important;
+  box-shadow: 8px 8px 0 var(--rgba-black-25), 4px 4px 0 var(--rgba-black-15) !important;
   color: var(--boat-black) !important;
   padding: 1.5rem !important; /* Match dark mode padding */
 }
@@ -795,9 +889,9 @@ h1, h2, h3, h4, h5, h6 {
 .retro-info-box h3 {
   margin: 0 0 1rem 0;
   font-size: 1.4rem;
-  font-weight: 400;
+  font-weight: 500;
   color: #ffffff;
-  font-family: 'VT323', monospace;
+  font-family: var(--font-heading);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-shadow: 0 0 8px var(--rgba-sage-40);
@@ -806,7 +900,7 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .retro-info-box h3 {
   color: var(--boat-charcoal) !important;
   font-weight: 400 !important;
-  text-shadow: none !important;
+  text-shadow: 2px 2px 0px var(--rgba-black-15) !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -863,7 +957,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0;
-  font-family: var(--font-terminal);
+  font-family: var(--font-body-text);
   color: var(--theme-text-sage);
 }
 
@@ -879,7 +973,7 @@ h1, h2, h3, h4, h5, h6 {
   gap: 1rem;
   padding: 1.5rem 0;
   margin: 0 0 -1rem 0;
-  font-family: var(--font-terminal);
+  font-family: var(--font-body-text);
   font-size: 1.6rem;
   font-weight: 400;
   letter-spacing: 0.05em;
@@ -943,10 +1037,10 @@ h1, h2, h3, h4, h5, h6 {
 .county-item {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem; /* Reduced from 0.75rem 1rem */
   text-decoration: none;
-  font-family: var(--font-terminal);
-  font-size: 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.1rem; /* Reduced from 1.5rem */
   background: rgba(168, 197, 168, 0.08);
   border: 2px solid rgba(168, 197, 168, 0.3);
   border-radius: 0;
@@ -996,7 +1090,7 @@ h1, h2, h3, h4, h5, h6 {
     }
 
   .retro-page-header h1 {
-    font-size: 2.2rem;
+    font-size: var(--font-size-2xl);
   }
 
   .retro-container {

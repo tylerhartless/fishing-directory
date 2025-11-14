@@ -680,36 +680,34 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           </div>
 
           {/* Filter & Sort Controls */}
-          <div class="results-controls">
-            <div class="controls-row">
-              <button
-                class="btn-filter-toggle"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                </svg>
-                Filters {typeFilters.size > 0 && `(${typeFilters.size})`}
-              </button>
+          <div class="controls-bar">
+            <button
+              class="control-button"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <span class="control-label">Filters</span>
+              <span id="filter-count">{typeFilters.size > 0 ? `(${typeFilters.size})` : ''}</span>
+            </button>
 
-              {userLocation && (
-                <div class="sort-control">
-                  <label>Radius:</label>
-                  <select value={searchRadius} onChange={(e) => setSearchRadius(parseInt((e.target as HTMLSelectElement).value))} class="custom-select">
-                    <option value="10">10 miles</option>
-                    <option value="25">25 miles</option>
-                    <option value="50">50 miles</option>
-                    <option value="100">100 miles</option>
-                    <option value="200">200 miles</option>
-                  </select>
-                </div>
-              )}
-            </div>
+            {userLocation && (
+              <div class="sort-control">
+                <label>Radius:</label>
+                <select value={searchRadius} onChange={(e) => setSearchRadius(parseInt((e.target as HTMLSelectElement).value))} class="custom-select">
+                  <option value="10">10 miles</option>
+                  <option value="25">25 miles</option>
+                  <option value="50">50 miles</option>
+                  <option value="100">100 miles</option>
+                  <option value="200">200 miles</option>
+                </select>
+              </div>
+            )}
+          </div>
 
-            {/* Collapsible Filter Panel */}
-            {showFilters && (
-              <div class="filter-panel">
-                <div class="filter-section-title">Spot Type</div>
+          {/* Collapsible Filter Panel */}
+          {showFilters && (
+            <div class="filter-panel">
+              <div class="filter-section">
+                <h4>Spot Type</h4>
                 <div class="filter-checkboxes">
                   <label class="filter-checkbox">
                     <input
@@ -717,7 +715,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       checked={typeFilters.has('lake')}
                       onChange={() => handleTypeFilterToggle('lake')}
                     />
-                    <span class="checkbox-label">Lakes</span>
+                    <span>Lakes</span>
                   </label>
 
                   <label class="filter-checkbox">
@@ -726,7 +724,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       checked={typeFilters.has('river_access')}
                       onChange={() => handleTypeFilterToggle('river_access')}
                     />
-                    <span class="checkbox-label">River Access</span>
+                    <span>River Access</span>
                   </label>
 
                   <label class="filter-checkbox">
@@ -735,7 +733,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       checked={typeFilters.has('public_water')}
                       onChange={() => handleTypeFilterToggle('public_water')}
                     />
-                    <span class="checkbox-label">Public Waters</span>
+                    <span>Public Waters</span>
                   </label>
 
                   <label class="filter-checkbox highlight-no-license">
@@ -744,7 +742,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       checked={typeFilters.has('state_park')}
                       onChange={() => handleTypeFilterToggle('state_park')}
                     />
-                    <span class="checkbox-label">
+                    <span>
                       State Parks
                       <span class="no-license-badge">No License Required</span>
                     </span>
@@ -756,17 +754,17 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       checked={typeFilters.has('fishing_pier')}
                       onChange={() => handleTypeFilterToggle('fishing_pier')}
                     />
-                    <span class="checkbox-label">Fishing Piers</span>
+                    <span>Fishing Piers</span>
                   </label>
                 </div>
-                {typeFilters.size > 0 && (
-                  <button class="btn-clear-filters" onClick={() => setTypeFilters(new Set())}>
-                    Clear All Filters
-                  </button>
-                )}
               </div>
-            )}
-          </div>
+              {typeFilters.size > 0 && (
+                <button class="btn-clear-filters" onClick={() => setTypeFilters(new Set())}>
+                  Clear All Filters
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Results Grid */}
           <div class="results-container" ref={resultsRef}>

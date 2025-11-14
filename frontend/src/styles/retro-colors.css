@@ -180,25 +180,32 @@
 
   /* ===== TYPOGRAPHY VARIABLES ===== */
   /* Font families - semantic naming independent of design theme */
-  --font-primary: 'VT323', monospace;           /* Primary font used site-wide */
+  --font-primary: 'Averia Serif Libre', serif;   /* Primary font used for body text site-wide */
+  --font-heading: 'Newsreader', serif;      /* Secondary font used for headings */
   --font-accent: 'Press Start 2P', monospace;   /* Accent font for special elements (logo, etc) */
   --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* System font fallback */
   
+  /* Variable Font Settings (if using a variable font) */
+  /* Note: Workbench may not support variable font axes - these are kept for future use */
+  --font-variation-scan: 30;
+  --font-variation-bleed: 20;
+
   /* Legacy aliases for backward compatibility - will be removed in future */
   --font-terminal: var(--font-primary);
   --font-display: var(--font-accent);
   --font-body: var(--font-system);
   
   /* Font sizes - consistent sizing across components */
-  --font-size-xs: 1rem;
-  --font-size-sm: 1.1rem;
-  --font-size-base: 1.2rem;
-  --font-size-md: 1.3rem;
-  --font-size-lg: 1.5rem;
-  --font-size-xl: 1.8rem;
-  --font-size-2xl: 2rem;
-  --font-size-3xl: 2.8rem;
-  --font-size-4xl: 3rem;
+  /* Base sizes (mobile-first, slightly increased for Handjet) */
+  --font-size-xs: 1.2rem;
+  --font-size-sm: 1.35rem;
+  --font-size-base: 1.45rem;
+  --font-size-md: 1.55rem;
+  --font-size-lg: 1.85rem;
+  --font-size-xl: 2.15rem;
+  --font-size-2xl: 2.5rem;
+  --font-size-3xl: 3.4rem;
+  --font-size-4xl: 3.7rem;
   
   /* Font weights - semantic naming */
   --font-weight-normal: 400;
@@ -235,11 +242,11 @@
   --theme-toggle-backdrop-filter: blur(8px);
   
   /* Dark mode typography */
-  --font-heading: var(--font-primary);
+  /* --font-heading inherits from :root, no need to redefine */
   --font-body-text: var(--font-primary);
-  --weight-heading: var(--font-weight-normal);
-  --weight-body: var(--font-weight-normal);
-  --weight-emphasis: var(--font-weight-normal);
+  --weight-heading: var(--font-weight-semibold);
+  --weight-body: var(--font-weight-semibold);
+  --weight-emphasis: var(--font-weight-bold);
 }
 
 /* Light Mode - Tournament V-17 Boat-Inspired Palette */
@@ -274,10 +281,10 @@
   --theme-btn-border: var(--boat-black);
   
   /* Light mode typography */
-  --font-heading: var(--font-primary);
+  /* --font-heading inherits from :root, no need to redefine */
   --font-body-text: var(--font-primary);
-  --weight-heading: var(--font-weight-normal);
-  --weight-body: var(--font-weight-normal);
+  --weight-heading: var(--font-weight-semibold);
+  --weight-body: var(--font-weight-semibold);
   --weight-emphasis: var(--font-weight-bold);
 }
 
@@ -308,11 +315,11 @@
     --theme-toggle-hover-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
     --theme-toggle-active-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.15);
     --theme-toggle-backdrop-filter: blur(8px);
-    --font-heading: var(--font-primary);
+    /* --font-heading inherits from :root, no need to redefine */
     --font-body-text: var(--font-primary);
-    --weight-heading: var(--font-weight-normal);
-    --weight-body: var(--font-weight-normal);
-    --weight-emphasis: var(--font-weight-normal);
+    --weight-heading: var(--font-weight-semibold);
+    --weight-body: var(--font-weight-semibold);
+    --weight-emphasis: var(--font-weight-bold);
   }
 }
 
@@ -342,10 +349,41 @@
     --theme-toggle-hover-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
     --theme-toggle-active-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
     --theme-toggle-backdrop-filter: none;
-    --font-heading: var(--font-primary);
+    /* --font-heading inherits from :root, no need to redefine */
     --font-body-text: var(--font-primary);
-    --weight-heading: var(--font-weight-normal);
-    --weight-body: var(--font-weight-normal);
+    --weight-heading: var(--font-weight-semibold);
+    --weight-body: var(--font-weight-semibold);
     --weight-emphasis: var(--font-weight-bold);
+  }
+}
+
+/* Responsive font size scaling for tablet and desktop */
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+  :root {
+    --font-size-xs: 1.3rem;
+    --font-size-sm: 1.45rem;
+    --font-size-base: 1.6rem;
+    --font-size-md: 1.75rem;
+    --font-size-lg: 2.05rem;
+    --font-size-xl: 2.45rem;
+    --font-size-2xl: 2.9rem;
+    --font-size-3xl: 3.9rem;
+    --font-size-4xl: 4.3rem;
+  }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+  :root {
+    --font-size-xs: 1.35rem;
+    --font-size-sm: 1.55rem;
+    --font-size-base: 1.7rem;
+    --font-size-md: 1.9rem;
+    --font-size-lg: 2.25rem;
+    --font-size-xl: 2.65rem;
+    --font-size-2xl: 3.2rem;
+    --font-size-3xl: 4.3rem;
+    --font-size-4xl: 4.7rem;
   }
 }

@@ -145,10 +145,10 @@ export default function CountyListing() {
 
       <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
         <a href={`/${location.stateSlug}`} class="retro-btn retro-btn-search" style="text-decoration: none; text-align: center;">
-          → See All {location.stateName} Counties
+          See All {location.stateName} Counties
         </a>
         <a href="/states" class="retro-btn county-browse-btn" style="text-decoration: none; text-align: center;">
-          → Browse Other States
+          Browse Other States
         </a>
       </div>
     </div>

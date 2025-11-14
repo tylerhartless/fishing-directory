@@ -161,9 +161,9 @@ const widgetId = `results-widget-${itemType}`;
     background: var(--rgba-sage-15);
     border: 2px solid var(--rgba-sage-50);
     color: var(--theme-text-sage);
-    padding: 0.75rem 1.25rem;
-    font-family: 'VT323', monospace;
-    font-size: 1.1rem;
+    padding: 0.5rem 1rem; /* Reduced from 0.75rem 1.25rem */
+    font-family: var(--font-heading);
+    font-size: 1rem; /* Reduced from 1.1rem */
     font-weight: 400;
     cursor: pointer;
     transition: all 0.2s;
@@ -245,7 +245,7 @@ const widgetId = `results-widget-${itemType}`;
   }
 
   .filter-section h4 {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-heading);
     font-size: 1.2rem;
     color: var(--theme-text-sage);
     font-weight: 400;
@@ -269,7 +269,7 @@ const widgetId = `results-widget-${itemType}`;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-heading);
     font-size: 1.1rem;
     color: var(--theme-text-secondary);
     cursor: pointer;
