@@ -402,7 +402,7 @@ function showNotification(message, type = 'success') {
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     z-index: 10000;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-heading);
     font-size: 1.2rem;
     animation: slideIn 0.3s ease-out;
   `;

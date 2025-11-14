@@ -321,7 +321,7 @@ const schema = {
   /* Terminal CRT Spot Detail Page */
 
   .retro-container {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
   }
 
   /* Ensure all elements use border-box for proper sizing */
@@ -344,7 +344,7 @@ const schema = {
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.5);
     color: var(--theme-text-sage);
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
     padding: 0.75rem 1.5rem;
     display: inline-block;
     margin-bottom: 1.5rem;
@@ -360,7 +360,7 @@ const schema = {
     border: 3px solid var(--neutral-black);
     box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
     text-shadow: none;
-    font-weight: 700;
+    font-weight: 400;
   }
 
   .spot-grid {
@@ -433,6 +433,15 @@ const schema = {
     margin-bottom: 2rem;
   }
 
+  /* Ensure containers have shadows in light mode */
+  :global([data-theme="light"]) .retro-section {
+    box-shadow: 8px 8px 0 var(--rgba-black-25), 4px 4px 0 var(--rgba-black-15) !important;
+  }
+
+  :global([data-theme="light"]) .retro-info-box {
+    box-shadow: 8px 8px 0 var(--rgba-black-25), 4px 4px 0 var(--rgba-black-15) !important;
+  }
+
   /* Reduce padding on very small screens to prevent horizontal overflow */
   @media (max-width: 480px) {
     .retro-section {
@@ -441,22 +450,28 @@ const schema = {
   }
 
   .retro-section h2 {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-heading);
     color: var(--theme-heading-color);
-    font-size: 2rem;
+    font-size: var(--font-size-xl);
     font-weight: 400;
     margin: 0 0 1rem 0;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
   }
 
+  @media (min-width: 768px) {
+    .retro-section h2 {
+      font-size: var(--font-size-3xl);
+    }
+  }
+
   :global([data-theme="light"]) .retro-section h2 {
     color: var(--theme-heading-color);
-    font-weight: 700;
-    text-shadow: none;
+    font-weight: 400;
+    text-shadow: 2px 2px 0px var(--rgba-black-15);
   }
 
   .description p {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
     line-height: 1.8;
     font-size: 1.3rem;
     font-weight: 400;
@@ -465,7 +480,7 @@ const schema = {
 
   :global([data-theme="light"]) .description p {
     color: var(--neutral-black);
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .amenities-subsection {
@@ -479,17 +494,23 @@ const schema = {
   }
 
   .amenities-subheading {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-heading);
     color: var(--theme-text-sage);
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
     font-weight: 400;
     margin: 0 0 1rem 0;
     text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
   }
 
+  @media (min-width: 768px) {
+    .amenities-subheading {
+      font-size: var(--font-size-2xl);
+    }
+  }
+
   :global([data-theme="light"]) .amenities-subheading {
     color: var(--earth-rust);
-    font-weight: 700;
+    font-weight: 400;
     text-shadow: none;
   }
 
@@ -504,7 +525,7 @@ const schema = {
 
   .amenity-list li {
     padding: 0.75rem 1rem;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
     background: rgba(168, 197, 168, 0.2);
     border: 2px solid rgba(168, 197, 168, 0.4);
     border-radius: 0;
@@ -521,11 +542,11 @@ const schema = {
     color: var(--neutral-black);
     box-shadow: none;
     text-shadow: none;
-    font-weight: 700;
+    font-weight: 400;
   }
 
   .amenities-empty-message {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
     color: var(--theme-text-secondary);
     font-size: 1.2rem;
     font-weight: 400;
@@ -548,12 +569,18 @@ const schema = {
   /* retro-info-box base styles now in retro-common.css */
   /* Override font-size for this page only */
   .retro-info-box h3 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
+  }
+
+  @media (min-width: 768px) {
+    .retro-info-box h3 {
+      font-size: var(--font-size-2xl);
+    }
   }
 
   dl {
     margin: 0;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
   }
 
   dt {
@@ -612,7 +639,7 @@ const schema = {
     margin-left: 0.5rem;
     padding: 0.4rem 0.7rem;
     font-size: 1rem;
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
     background: rgba(168, 197, 168, 0.2);
     color: var(--theme-text-sage);
     border: 2px solid rgba(168, 197, 168, 0.5);
@@ -652,7 +679,7 @@ const schema = {
   }
 
   .loading {
-    font-family: 'VT323', monospace;
+    font-family: var(--font-body-text);
     color: var(--gray-light);
     font-style: italic;
     font-weight: 400;
@@ -665,10 +692,10 @@ const schema = {
   }
 
   .retro-btn {
-    font-family: 'VT323', monospace;
-    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    font-size: 1.1rem; /* Reduced from 1.3rem */
     font-weight: 400;
-    padding: 0.75rem 1.5rem;
+    padding: 0.6rem 1.2rem; /* Reduced from 0.75rem 1.5rem */
     border-radius: 0;
     text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
   }
@@ -761,18 +788,14 @@ const schema = {
 
   @media (max-width: 768px) {
     .retro-heading-lg {
-      font-size: 2.2rem;
-    }
-
-    .retro-section h2 {
-      font-size: 1.6rem;
+      font-size: var(--font-size-2xl);
     }
   }
 
   /* Extra small screens - prevent overflow */
   @media (max-width: 480px) {
     .retro-section h2 {
-      font-size: 1.4rem;
+      font-size: var(--font-size-lg);
     }
 
     .retro-btn {
@@ -796,7 +819,7 @@ const schema = {
      ============================================ */
 
   .heat-list-description {
-    font-family: var(--font-terminal);
+    font-family: var(--font-body-text);
     color: var(--theme-text-secondary);
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
@@ -836,7 +859,7 @@ const schema = {
     justify-content: space-between;
     align-items: center;
     padding: 0.9rem 1.1rem;
-    font-family: var(--font-terminal);
+    font-family: var(--font-body-text);
     background: color-mix(in srgb, var(--theme-bg) 85%, #000 15%);
     border: 2px solid var(--rgba-sage-40);
     gap: 1rem;
@@ -949,7 +972,7 @@ const schema = {
     cursor: pointer;
     display: block;
     text-align: center;
-    font-family: var(--font-terminal);
+    font-family: var(--font-body-text);
     text-decoration: none;
     transition: color 0.2s ease, text-decoration-color 0.2s ease, filter 0.2s ease;
   }
@@ -1002,7 +1025,7 @@ const schema = {
 
   :global(.no-reports-message) {
     margin-top: 1rem;
-    font-family: var(--font-terminal);
+    font-family: var(--font-body-text);
     font-size: 1.1rem;
     color: var(--theme-text-secondary);
     font-style: italic;
@@ -1037,7 +1060,7 @@ const schema = {
     box-shadow: 0 0 30px var(--rgba-sage-30);
     max-width: 500px;
     width: 100%;
-    font-family: var(--font-terminal);
+    font-family: var(--font-body-text);
   }
 
   :global([data-theme="light"]) :global(.modal-content) {
@@ -1060,9 +1083,16 @@ const schema = {
 
   :global(.modal-header h3) {
     margin: 0;
-    font-size: 1.8rem;
+    font-size: var(--font-size-xl);
+    font-family: var(--font-heading);
     color: var(--theme-heading-color);
     text-shadow: 0 0 8px var(--rgba-sage-60);
+  }
+
+  @media (min-width: 768px) {
+    :global(.modal-header h3) {
+      font-size: var(--font-size-2xl);
+    }
   }
 
   :global([data-theme="light"]) :global(.modal-header h3) {
@@ -1119,7 +1149,7 @@ const schema = {
   :global(.form-group input) {
     width: 100%;
     padding: 0.75rem;
-    font-family: var(--font-terminal);
+    font-family: var(--font-body-text);
     font-size: 1.2rem;
     background: color-mix(in srgb, var(--theme-bg) 70%, #000 30%);
     border: 2px solid var(--rgba-sage-50);
@@ -1169,7 +1199,7 @@ const schema = {
   :global(.btn-cancel),
   :global(.btn-submit) {
     padding: 0.75rem 1.5rem;
-    font-family: var(--font-terminal);
+    font-family: var(--font-heading);
     font-size: 1.3rem;
     border: 2px solid;
     cursor: pointer;
