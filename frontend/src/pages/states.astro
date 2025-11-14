@@ -100,9 +100,7 @@ const totalSpots = allSpots.length;
 >
   <section class="retro-page-header">
     <div class="container">
-      <nav class="retro-breadcrumb">
-        <a href="/">← Home</a> / States
-      </nav>
+      <a href="/" class="page-back-link">← Home</a>
       <h1>Browse by State</h1>
       <p class="subtitle">
         {totalSpots.toLocaleString()} fishing spots across {states.length} {states.length === 1 ? 'state' : 'states'}
@@ -115,7 +113,6 @@ const totalSpots = allSpots.length;
       <ResultsWidget
         items={states}
         itemType="state"
-        backButton={{ url: '/', text: 'Home' }}
       >
         {states.map((state) => (
           <a href={`/${state.slug}`} class="spot-card state-card" data-state-name={state.name} data-lat={state.lat} data-lon={state.lon}>

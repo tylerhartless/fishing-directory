@@ -61,9 +61,7 @@ const counties = Object.entries(countyData)
 >
   <section class="retro-page-header">
     <div class="container">
-      <nav class="retro-breadcrumb">
-        <a href="/">← Home</a> / <a href="/states">States</a> / Texas
-      </nav>
+      <a href="/states" class="page-back-link">← States</a>
       <h1>Texas Fishing Spots</h1>
       <p class="subtitle">
         {texasSpots.length} fishing spots across {counties.length} counties
@@ -77,7 +75,6 @@ const counties = Object.entries(countyData)
       <ResultsWidget
         items={counties}
         itemType="county"
-        backButton={{ url: '/states', text: 'States' }}
       >
         {counties.map((county) => (
           <a href={`/texas/${county.slug}`} class="spot-card county-card" data-county-name={county.name} data-lat={county.lat} data-lon={county.lon}>

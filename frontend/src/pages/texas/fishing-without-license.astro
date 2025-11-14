@@ -17,9 +17,7 @@ const stateParks = allSpots.filter(spot =>
 <Layout title={pageTitle} description={pageDescription}>
   <section class="retro-page-header">
     <div class="container">
-      <nav class="retro-breadcrumb">
-        <a href="/">← Home</a> / <a href="/states">States</a> / <a href="/texas">Texas</a> / Fishing Without a License
-      </nav>
+      <a href="/texas" class="page-back-link">← Texas</a>
       <h1>Fishing Without a License in Texas</h1>
       <p class="subtitle">Texas State Parks Don't Require Fishing Licenses</p>
     </div>
@@ -43,7 +41,6 @@ const stateParks = allSpots.filter(spot =>
         <ResultsWidget
           items={stateParks}
           itemType="spot"
-          backButton={{ url: '/texas', text: 'Texas' }}
           scrollContainerId="parks-scroll-container"
           resultsContainerId="parks-container"
         >

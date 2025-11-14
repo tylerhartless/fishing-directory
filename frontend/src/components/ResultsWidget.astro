@@ -5,7 +5,7 @@
  *
  * @param items - Array of items to display (states/counties/spots)
  * @param itemType - Type of items: 'state' | 'county' | 'spot'
- * @param backButton - { url: string, text: string } for back button
+ * @param backButton - Optional { url: string, text: string } for back button (not needed if page header has back link)
  * @param showFilters - Whether to show filter controls (default: false)
  * @param spotTypes - Array of spot types for filtering (required if showFilters=true)
  * @param scrollContainerId - Custom ID for scroll container (default: 'results-scroll-container')
@@ -15,7 +15,7 @@
 interface Props {
   items: any[];
   itemType: 'state' | 'county' | 'spot';
-  backButton: {
+  backButton?: {
     url: string;
     text: string;
   };
@@ -46,10 +46,12 @@ const widgetId = `results-widget-${itemType}`;
 <div class="search-widget-style" id={widgetId}>
   <!-- Controls -->
   <div class="controls-bar">
-    <a href={backButton.url} class="control-button back-button">
-      <span class="back-arrow">←</span>
-      <span class="back-text">{backButton.text}</span>
-    </a>
+    {backButton && (
+      <a href={backButton.url} class="control-button back-button">
+        <span class="back-arrow">←</span>
+        <span class="back-text">{backButton.text}</span>
+      </a>
+    )}
     <button id="sort-btn" class="control-button">
       <span class="control-label">Sort:</span>
       <span id="sort-display">Alphabetical</span>

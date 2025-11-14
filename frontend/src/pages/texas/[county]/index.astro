@@ -69,9 +69,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
 >
   <section class="retro-page-header">
     <div class="container">
-      <nav class="retro-breadcrumb">
-        <a href="/">← Home</a> / <a href="/states">States</a> / <a href="/texas">Texas</a> / {countyName} County
-      </nav>
+      <a href="/texas" class="page-back-link">← Texas</a>
       <h1>{countyName} County Fishing Spots</h1>
       <p class="subtitle"><span id="visible-count">{totalSpots}</span> fishing locations</p>
     </div>
@@ -82,7 +80,6 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
       <ResultsWidget
         items={spots}
         itemType="spot"
-        backButton={{ url: '/texas', text: 'Texas' }}
         showFilters={true}
         spotTypes={spotTypes}
         scrollContainerId="spots-scroll-container"

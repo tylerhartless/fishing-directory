@@ -20,13 +20,44 @@
 .retro-page-header .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem 2rem 0.25rem 2rem;
+  padding: 0.25rem 2rem 0.25rem 2rem;
   position: relative;
   z-index: 2;
 }
 
 [data-theme="light"] .retro-page-header .container {
-  padding: 1.5rem 2rem 0.25rem 2rem; /* Match dark mode padding */
+  padding: 0.25rem 2rem 0.25rem 2rem; /* Match dark mode padding */
+}
+
+/* Page back link - simple navigation replacement for breadcrumbs */
+.page-back-link {
+  display: block;
+  color: var(--theme-text-sage);
+  text-decoration: none;
+  font-family: var(--font-body-text);
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  transition: all 0.2s;
+  text-shadow: 0 0 6px var(--rgba-sage-60);
+}
+
+.page-back-link:hover {
+  color: var(--theme-text-sage);
+  text-shadow: 0 0 10px var(--rgba-sage-80), 0 0 20px var(--rgba-sage-50);
+  transform: translateX(-2px);
+}
+
+[data-theme="light"] .page-back-link {
+  color: var(--neutral-gray);
+  text-shadow: none;
+  font-weight: 500;
+}
+
+[data-theme="light"] .page-back-link:hover {
+  color: var(--neutral-black);
+  text-shadow: none;
 }
 
 .retro-page-header h1 {
@@ -752,15 +783,16 @@ h6 {
 }
 
 /* ===== BREADCRUMBS ===== */
+/* Breadcrumb styles removed - replaced with simple back button navigation */
+/* Styles kept commented for potential future use
 .retro-breadcrumb {
   color: var(--theme-text-secondary);
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
-  font-weight: 500; /* Standardized weight for consistency */
+  font-weight: 500;
   font-family: var(--font-body-text);
 }
 
-/* Dark Mode Breadcrumbs - Green with glow */
 .retro-breadcrumb a {
   color: var(--theme-breadcrumb-color);
   text-decoration: none;
@@ -776,14 +808,13 @@ h6 {
   font-weight: 400;
 }
 
-/* Light Mode Breadcrumbs - Orange links, black current page */
 [data-theme="light"] .retro-breadcrumb {
   font-weight: 400;
-  color: var(--boat-black); /* Black for current page text */
+  color: var(--boat-black);
 }
 
 [data-theme="light"] .retro-breadcrumb a {
-  color: var(--theme-breadcrumb-color); /* Orange */
+  color: var(--theme-breadcrumb-color);
   text-shadow: none;
   font-weight: 400;
   text-decoration: underline;
@@ -791,13 +822,12 @@ h6 {
 
 [data-theme="light"] .retro-breadcrumb a:hover,
 [data-theme="light"] .retro-breadcrumb .active {
-  color: var(--theme-breadcrumb-hover); /* Red on hover */
+  color: var(--theme-breadcrumb-hover);
   text-shadow: none;
   text-decoration: none;
   font-weight: 400;
 }
 
-/* Mobile-first breadcrumb - simple back button style */
 .retro-page-header .retro-breadcrumb {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
@@ -827,6 +857,7 @@ h6 {
 [data-theme="light"] .retro-page-header .retro-breadcrumb a:hover {
   color: var(--neutral-black);
 }
+*/
 
 /* ===== INFO BOXES ===== */
 /* Terminal-style info boxes for dark mode (default) */
