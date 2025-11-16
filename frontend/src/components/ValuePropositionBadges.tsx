@@ -20,7 +20,7 @@ export default function ValuePropositionBadges() {
           <div class="font-size-lg flex-shrink-0 mr-lg">✓</div>
           <div>
             <h3 class="text-left">NO PRIVATE PROPERTY</h3>
-            <p class="font-body-text font-size-base text-left mt-0">Every spot is legal</p>
+            <p class="font-body-text font-size-base text-left mt-0">No trespassing required</p>
           </div>
         </div>
 

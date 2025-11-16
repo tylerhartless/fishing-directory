@@ -109,10 +109,10 @@ export default function SpecialLandingPageCallout({ forceState, geolocateOnly = 
     <>
       {landingPages.map((page, index) => (
         <div key={index} class="retro-info-box no-license-callout text-center">
-          <h3 class="mb-md">
+          <h3 class="mb-0">
             {page.title}
           </h3>
-          <p class="font-body-text font-size-md mb-lg line-height-normal mb-0">
+          <p class="font-body-text font-size-md line-height-normal mb-md" style="margin-top: 0.15rem;">
             {page.description}
           </p>
           <a href={`/${stateSlug}/${page.slug}`} class="retro-btn retro-btn-search no-underline display-inline-block">
