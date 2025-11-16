@@ -128,22 +128,90 @@ const schema = {
             <!-- Set correct map URL immediately based on theme to prevent flash -->
             <script is:inline>
               (function() {
-                const mapImg = document.getElementById('spot-map');
-                if (!mapImg) return;
+                function initializeMap() {
+                  const mapImg = document.getElementById('spot-map');
+                  if (!mapImg) {
+                    // Retry if DOM not ready yet
+                    if (document.readyState === 'loading') {
+                      setTimeout(initializeMap, 50);
+                    }
+                    return;
+                  }
 
-                const lightUrl = mapImg.getAttribute('data-light-url');
-                const darkUrl = mapImg.getAttribute('data-dark-url');
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                const correctUrl = isDark ? darkUrl : lightUrl;
+                  const lightUrl = mapImg.getAttribute('data-light-url');
+                  const darkUrl = mapImg.getAttribute('data-dark-url');
+                  if (!lightUrl || !darkUrl) return;
 
-                // Set the correct URL immediately
-                if (mapImg.src !== correctUrl) {
-                  mapImg.src = correctUrl;
+                  function getCurrentTheme() {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    return currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  }
+
+                  let loadRetryCount = 0;
+                  const maxRetries = 2;
+
+                  function showMap() {
+                    mapImg.style.opacity = '1';
+                    mapImg.classList.remove('hidden-map');
+                  }
+
+                  function handleMapError(retryUrl) {
+                    if (loadRetryCount < maxRetries) {
+                      loadRetryCount++;
+                      setTimeout(function() {
+                        mapImg.src = retryUrl + '&_retry=' + loadRetryCount;
+                      }, loadRetryCount * 1000);
+                    } else {
+                      // After max retries, show anyway with reduced opacity as fallback
+                      mapImg.style.opacity = '0.5';
+                      mapImg.classList.remove('hidden-map');
+                      console.warn('Map image failed to load after retries');
+                    }
+                  }
+
+                  // Determine initial theme and set URL
+                  const isDark = getCurrentTheme();
+                  const correctUrl = isDark ? darkUrl : lightUrl;
+                  
+                  // Only change URL if different
+                  const currentSrc = mapImg.getAttribute('src') || mapImg.src;
+                  const needsUrlChange = !currentSrc.includes(isDark ? 'dark-v11' : 'streets-v11');
+                  
+                  if (needsUrlChange) {
+                    mapImg.src = correctUrl;
+                  }
+
+                  // Set up load/error handlers (remove existing first to avoid duplicates)
+                  const loadHandler = function() {
+                    showMap();
+                    loadRetryCount = 0; // Reset retry count on success
+                  };
+                  
+                  const errorHandler = function() {
+                    handleMapError(correctUrl);
+                  };
+
+                  // Remove any existing handlers before adding new ones
+                  mapImg.removeEventListener('load', loadHandler);
+                  mapImg.removeEventListener('error', errorHandler);
+                  mapImg.addEventListener('load', loadHandler);
+                  mapImg.addEventListener('error', errorHandler);
+
+                  // If image is already loaded, show immediately
+                  if (mapImg.complete && mapImg.naturalHeight !== 0) {
+                    showMap();
+                  } else if (mapImg.complete && mapImg.naturalHeight === 0) {
+                    // Image loaded but failed (naturalHeight === 0 indicates error)
+                    handleMapError(correctUrl);
+                  }
                 }
 
-                // Show the image
-                mapImg.style.opacity = '1';
+                // Initialize when DOM is ready
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', initializeMap);
+                } else {
+                  initializeMap();
+                }
               })();
             </script>
             <div class="map-overlay">
@@ -260,53 +328,100 @@ const schema = {
   <!-- Load heat list (species prevalence system) -->
   <script src="/js/heat-list.js" is:inline></script>
 
-  <!-- Theme-aware map switching with debouncing -->
+  <!-- Theme-aware map switching with debouncing and error handling -->
   <script is:inline>
     (function() {
-      const mapImg = document.getElementById('spot-map');
-      if (!mapImg) return;
-
-      const lightUrl = mapImg.dataset.lightUrl;
-      const darkUrl = mapImg.dataset.darkUrl;
-      let debounceTimer;
-
-      // Preload both map images to avoid API calls on every theme switch
-      const lightImage = new Image();
-      const darkImage = new Image();
-      lightImage.src = lightUrl;
-      darkImage.src = darkUrl;
-
-      function updateMapTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-        // Check the style in the URL instead of full URL comparison
-        // This avoids issues with URL normalization
-        const currentSrc = mapImg.getAttribute('src') || mapImg.src;
-        const isCurrentlyDark = currentSrc.includes('dark-v11');
-        const isCurrentlyLight = currentSrc.includes('streets-v11');
-
-        // Update map if theme doesn't match current map style
-        if (isDark && !isCurrentlyDark) {
-          mapImg.src = darkUrl;
-        } else if (!isDark && !isCurrentlyLight) {
-          mapImg.src = lightUrl;
+      function setupThemeSwitching() {
+        const mapImg = document.getElementById('spot-map');
+        if (!mapImg) {
+          // Retry if DOM not ready
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupThemeSwitching);
+          } else {
+            setTimeout(setupThemeSwitching, 100);
+          }
+          return;
         }
+
+        const lightUrl = mapImg.dataset.lightUrl || mapImg.getAttribute('data-light-url');
+        const darkUrl = mapImg.dataset.darkUrl || mapImg.getAttribute('data-dark-url');
+        
+        if (!lightUrl || !darkUrl) return;
+
+        let debounceTimer;
+        let retryCount = 0;
+        const maxRetries = 2;
+
+        function updateMapTheme(retry = 0) {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+          // Check the style in the URL instead of full URL comparison
+          // This avoids issues with URL normalization
+          const currentSrc = mapImg.getAttribute('src') || mapImg.src;
+          const isCurrentlyDark = currentSrc.includes('dark-v11');
+          const isCurrentlyLight = currentSrc.includes('streets-v11');
+
+          // Update map if theme doesn't match current map style
+          const shouldSwitch = (isDark && !isCurrentlyDark) || (!isDark && !isCurrentlyLight);
+          
+          if (shouldSwitch) {
+            const newUrl = isDark ? darkUrl : lightUrl;
+            
+            // Set up error handler before changing src
+            const errorHandler = function() {
+              if (retry < maxRetries) {
+                setTimeout(function() {
+                  updateMapTheme(retry + 1);
+                }, (retry + 1) * 1000);
+              } else {
+                console.warn('Map theme switch failed after retries');
+              }
+              mapImg.removeEventListener('error', errorHandler);
+            };
+            
+            mapImg.addEventListener('error', errorHandler);
+            mapImg.src = newUrl;
+            
+            // Reset retry count on success
+            const successHandler = function() {
+              retryCount = 0;
+              mapImg.removeEventListener('load', successHandler);
+            };
+            mapImg.addEventListener('load', successHandler);
+          }
+        }
+
+        // Preload both map images to avoid API calls on every theme switch
+        const lightImage = new Image();
+        const darkImage = new Image();
+        lightImage.src = lightUrl;
+        darkImage.src = darkUrl;
+
+        // Initial map theme check (after a small delay to ensure initial setup is done)
+        setTimeout(updateMapTheme, 100);
+
+        // Watch for theme changes with debouncing
+        const observer = new MutationObserver(() => {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(function() {
+            retryCount = 0;
+            updateMapTheme(0);
+          }, 100);
+        });
+
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme']
+        });
       }
 
-      // Initial map theme
-      updateMapTheme();
-
-      // Watch for theme changes with debouncing
-      const observer = new MutationObserver(() => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(updateMapTheme, 100);
-      });
-
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['data-theme']
-      });
+      // Setup when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupThemeSwitching);
+      } else {
+        setupThemeSwitching();
+      }
     })();
   </script>
 </Layout>
