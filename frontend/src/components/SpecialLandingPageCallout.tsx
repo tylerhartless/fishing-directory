@@ -69,13 +69,20 @@ export default function SpecialLandingPageCallout({ forceState, geolocateOnly = 
         const response = await fetch('https://ipapi.co/json/');
         if (response.ok) {
           const data = await response.json();
-          const state = data.region_code || 'TX';
-          setDetectedState(state);
+          const state = data.region_code;
+          // Only show if detected state is Texas (or in future, any state with landing pages)
+          if (state === 'TX') {
+            setDetectedState(state);
+          } else {
+            setDetectedState(null);
+          }
+        } else {
+          setDetectedState(null);
         }
       } catch (error) {
         console.log('Could not detect state for landing page callout');
-        // Default to Texas if detection fails
-        setDetectedState('TX');
+        // Don't show callout if detection fails
+        setDetectedState(null);
       } finally {
         setIsLoading(false);
       }
@@ -101,14 +108,14 @@ export default function SpecialLandingPageCallout({ forceState, geolocateOnly = 
   return (
     <>
       {landingPages.map((page, index) => (
-        <div key={index} class="retro-info-box no-license-callout" style="text-align: center;">
-          <h3 class="retro-heading-sm" style="margin-bottom: 0.75rem;">
+        <div key={index} class="retro-info-box no-license-callout text-center">
+          <h3 class="mb-md">
             {page.title}
           </h3>
-          <p style="margin: 0 0 1rem 0; font-family: var(--font-body-text); font-size: 1.25rem; line-height: 1.5;">
+          <p class="font-body-text font-size-md mb-lg line-height-normal mb-0">
             {page.description}
           </p>
-          <a href={`/${stateSlug}/${page.slug}`} class="retro-btn retro-btn-search" style="display: inline-block; text-decoration: none;">
+          <a href={`/${stateSlug}/${page.slug}`} class="retro-btn retro-btn-search no-underline display-inline-block">
             {page.buttonText}
           </a>
         </div>

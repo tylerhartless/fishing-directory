@@ -66,7 +66,7 @@ const widgetId = `results-widget-${itemType}`;
 
   <!-- Filter Panel (Collapsible) -->
   {showFilters && (
-    <div id="filter-panel" class="filter-panel" style="display: none;">
+    <div id="filter-panel" class="filter-panel filter-panel-hidden">
       <div class="filter-section">
         <h4>Spot Type</h4>
         <div class="filter-checkboxes" id="type-filters">
@@ -98,245 +98,6 @@ const widgetId = `results-widget-${itemType}`;
   </div>
 </div>
 
-<style>
-  .search-widget-style {
-    background: var(--rgba-dark-bg-80);
-    border: 2px solid var(--rgba-sage-50);
-    border-radius: 0;
-    padding: 1.5rem;
-    box-shadow:
-      0 0 20px var(--rgba-sage-30),
-      inset 0 0 30px var(--rgba-black-50);
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Scanlines */
-  .search-widget-style::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      var(--rgba-black-15) 0px,
-      transparent 1px,
-      transparent 2px,
-      var(--rgba-black-15) 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .search-widget-style > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  :global([data-theme="light"]) .search-widget-style {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    box-shadow: 6px 6px 0 var(--rgba-black-20);
-  }
-
-  :global([data-theme="light"]) .search-widget-style::before {
-    background: repeating-linear-gradient(
-      0deg,
-      var(--rgba-black-01) 0px,
-      transparent 1px,
-      transparent 2px,
-      var(--rgba-black-01) 3px
-    );
-  }
-
-  /* Controls bar */
-  .controls-bar {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .control-button {
-    background: var(--rgba-sage-15);
-    border: 2px solid var(--rgba-sage-50);
-    color: var(--theme-text-sage);
-    padding: 0.5rem 1rem; /* Reduced from 0.75rem 1.25rem */
-    font-family: var(--font-heading);
-    font-size: 1rem; /* Reduced from 1.1rem */
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 0 10px var(--rgba-sage-30);
-    text-decoration: none;
-  }
-
-  .back-button {
-    white-space: nowrap;
-  }
-
-  .back-arrow {
-    font-size: 1.2rem;
-    opacity: 0.7;
-  }
-
-  .back-text {
-    font-weight: 700;
-    color: var(--theme-text-sage);
-    text-shadow: 0 0 8px var(--rgba-sage-60);
-  }
-
-  :global([data-theme="light"]) .back-text {
-    color: var(--boat-orange);
-    text-shadow: none;
-  }
-
-  :global([data-theme="light"]) .control-button {
-    background: white;
-    border: 3px solid var(--neutral-black);
-    color: var(--neutral-black);
-    font-weight: 700;
-    box-shadow: 3px 3px 0 var(--rgba-black-20);
-  }
-
-  .control-button:hover {
-    background: var(--rgba-sage-25);
-    border-color: var(--rgba-sage-80);
-    box-shadow: 0 0 15px var(--rgba-sage-50);
-  }
-
-  :global([data-theme="light"]) .control-button:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--rgba-black-30);
-    border-color: var(--boat-orange);
-  }
-
-  .control-label {
-    opacity: 0.7;
-  }
-
-  #sort-display, #filter-count {
-    font-weight: 700;
-    color: var(--theme-text-sage);
-    text-shadow: 0 0 8px var(--rgba-sage-60);
-  }
-
-  :global([data-theme="light"]) #sort-display,
-  :global([data-theme="light"]) #filter-count {
-    color: var(--boat-orange);
-    text-shadow: none;
-  }
-
-  /* Filter panel */
-  .filter-panel {
-    background: var(--rgba-black-30);
-    border: 1px solid var(--rgba-sage-40);
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 0;
-  }
-
-  :global([data-theme="light"]) .filter-panel {
-    background: rgba(0, 0, 0, 0.03);
-    border: 2px solid var(--neutral-black);
-  }
-
-  .filter-section h4 {
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    color: var(--theme-text-sage);
-    font-weight: 400;
-    margin: 0 0 0.75rem 0;
-    text-shadow: 0 0 6px var(--rgba-sage-40);
-  }
-
-  :global([data-theme="light"]) .filter-section h4 {
-    color: var(--neutral-black);
-    font-weight: 700;
-    text-shadow: none;
-  }
-
-  .filter-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .filter-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    color: var(--theme-text-secondary);
-    cursor: pointer;
-    padding: 0.5rem 0.75rem;
-    background: var(--rgba-sage-10);
-    border: 1px solid var(--rgba-sage-30);
-    transition: all 0.2s;
-  }
-
-  :global([data-theme="light"]) .filter-checkbox {
-    background: white;
-    border: 2px solid var(--neutral-black);
-    color: var(--neutral-black);
-    font-weight: 600;
-  }
-
-  .filter-checkbox:hover {
-    background: var(--rgba-sage-20);
-    border-color: var(--rgba-sage-50);
-  }
-
-  :global([data-theme="light"]) .filter-checkbox:hover {
-    background: rgba(255, 140, 66, 0.1);
-    border-color: var(--boat-orange);
-  }
-
-  .filter-checkbox input[type="checkbox"] {
-    width: 1.2rem;
-    height: 1.2rem;
-    cursor: pointer;
-  }
-
-  @media (max-width: 768px) {
-    .search-widget-style {
-      padding: 1.5rem; /* Match desktop padding for consistency */
-    }
-
-    .controls-bar {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-    }
-
-    .control-button {
-      flex-shrink: 0;
-    }
-
-    .filter-checkboxes {
-      flex-direction: column;
-    }
-
-    .filter-checkbox {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 500px) {
-    .back-text {
-      display: none;
-    }
-
-    .back-button {
-      padding: 0.75rem;
-    }
-  }
-</style>
 
 <script define:vars={{ itemsJson, spotTypesJson, itemType, showFilters, scrollContainerId, resultsContainerId, widgetId }}>
   // Wrap initialization in a function to support view transitions
@@ -431,9 +192,6 @@ const widgetId = `results-widget-${itemType}`;
       };
   
       sessionStorage.setItem(`scroll-${widgetId}`, JSON.stringify(scrollData));
-  
-      // Set flag for destination page to scroll its widget into view
-      sessionStorage.setItem('shouldScrollWidgetIntoView', 'true');
     }
   
     // Restore scroll position on back navigation (only on mobile)
@@ -472,26 +230,20 @@ const widgetId = `results-widget-${itemType}`;
       }
     }
   
-    // Handle scroll on page load
+    // Handle scroll on page load (only restore on back navigation)
     setTimeout(() => {
       const isMobile = window.innerWidth < 768;
       if (!isMobile) return;
-  
+
       // Check if we're restoring from browser back navigation
       const isBackNavigation = window.performance &&
         window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD;
-  
+
       if (isBackNavigation) {
         // Restore exact scroll position when using browser back button
         restoreScrollPosition();
-      } else {
-        // Check if we should scroll into view (set by clicking back button control or result cards)
-        const shouldScroll = sessionStorage.getItem('shouldScrollWidgetIntoView');
-        if (shouldScroll === 'true') {
-          sessionStorage.removeItem('shouldScrollWidgetIntoView');
-          scrollWidgetIntoView();
-        }
       }
+      // No automatic scrolling on initial page load
     }, 100);
   
     // Handle back/forward navigation (bfcache)
@@ -693,12 +445,12 @@ const widgetId = `results-widget-${itemType}`;
   
     // Toggle filters panel
     if (filtersBtn && filterPanel) {
-      filtersBtn.addEventListener('click', () => {
-        const isVisible = filterPanel.style.display !== 'none';
-        filterPanel.style.display = isVisible ? 'none' : 'block';
-  
-        // Scroll widget into view when toggling filters
-        setTimeout(() => scrollWidgetIntoView(), 100);
+      filtersBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Toggle using class for more reliable state management
+        filterPanel.classList.toggle('filter-panel-hidden');
       });
     }
   
@@ -713,9 +465,6 @@ const widgetId = `results-widget-${itemType}`;
             activeFilters.delete(value);
           }
           filterAndSortItems();
-  
-          // Scroll widget into view after filtering
-          setTimeout(() => scrollWidgetIntoView(), 100);
         }
       });
     }
@@ -739,9 +488,6 @@ const widgetId = `results-widget-${itemType}`;
                 if (sortDisplay) sortDisplay.textContent = 'Distance';
                 sortBtn.disabled = false;
                 filterAndSortItems();
-  
-                // Scroll widget into view after sorting
-                setTimeout(() => scrollWidgetIntoView(), 100);
               },
               (error) => {
                 if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
@@ -757,9 +503,6 @@ const widgetId = `results-widget-${itemType}`;
           currentSort = 'alphabetical';
           if (sortDisplay) sortDisplay.textContent = 'Alphabetical';
           filterAndSortItems();
-  
-          // Scroll widget into view after sorting
-          setTimeout(() => scrollWidgetIntoView(), 100);
         }
       });
     }

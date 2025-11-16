@@ -70,22 +70,31 @@ export default function CountyListing() {
     const loadCounties = async () => {
       try {
         // Step 1: Detect user's state via IP geolocation
-        let detectedState = 'TX'; // Default to Texas
+        let detectedState: string | null = null; // No default - must detect
+        let geolocationSucceeded = false;
+        
         try {
           const geoResponse = await fetch('https://ipapi.co/json/');
           if (geoResponse.ok) {
             const geoData = await geoResponse.json();
             if (geoData.region_code) {
               detectedState = geoData.region_code;
+              geolocationSucceeded = true;
             }
           }
         } catch (error) {
-          console.log('Could not detect location via IP, defaulting to Texas');
+          console.log('Could not detect location via IP');
+        }
+
+        // Only proceed if geolocation succeeded
+        if (!geolocationSucceeded || !detectedState) {
+          setIsLoading(false);
+          return; // Don't show section if we can't detect state
         }
 
         // Step 2: Get state name and slug
-        const stateName = stateNameLookup[detectedState] || 'Texas';
-        const stateSlug = stateSlugLookup[detectedState] || 'texas';
+        const stateName = stateNameLookup[detectedState] || detectedState;
+        const stateSlug = stateSlugLookup[detectedState] || detectedState.toLowerCase();
 
         setLocation({
           state: detectedState,
@@ -125,29 +134,27 @@ export default function CountyListing() {
 
   return (
     <div class="retro-section">
-      <h2 class="retro-heading-md" style="text-align: center; margin-bottom: 1.5rem;">
-        TOP {location.stateName.toUpperCase()} COUNTIES
-      </h2>
+      <h2>TOP {location.stateName.toUpperCase()} COUNTIES</h2>
 
-      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+      <div class="flex flex-column gap-md mb-xl">
         {counties.map((county) => (
           <a
             key={county.slug}
             href={`/${location.stateSlug}/${county.slug}`}
             class="county-item"
           >
-            <span style="flex-shrink: 0;">{county.name} County</span>
+            <span>{county.name} County</span>
             <span class="county-dots"></span>
-            <span style="flex-shrink: 0; font-weight: 700;">{county.spot_count}</span>
+            <span class="retro-badge">{county.spot_count}</span>
           </a>
         ))}
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-        <a href={`/${location.stateSlug}`} class="retro-btn retro-btn-search" style="text-decoration: none; text-align: center;">
+      <div class="flex flex-column gap-lg mt-lg">
+        <a href={`/${location.stateSlug}`} class="retro-btn retro-btn-search text-center no-underline">
           See All {location.stateName} Counties
         </a>
-        <a href="/states" class="retro-btn county-browse-btn" style="text-decoration: none; text-align: center;">
+        <a href="/states" class="retro-btn county-browse-btn text-center no-underline">
           Browse Other States
         </a>
       </div>

@@ -1,0 +1,793 @@
+/* ============================================
+   LAYOUT STYLES - HEADER, FOOTER, NAVIGATION
+   ============================================ */
+
+/* Global resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: var(--theme-text);
+  background: var(--theme-bg);
+  position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 3px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+[data-theme="light"] body::before {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.01) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.01) 3px
+  ) !important;
+}
+
+/* Header */
+header {
+  background: linear-gradient(180deg,
+    var(--theme-bg) 0%,
+    var(--theme-bg) 85%,           /* Solid header top 85% */
+    rgba(26, 26, 26, 0.875) 85.4%, /* Quick 3% fade zone with 9 stops */
+    rgba(26, 26, 26, 0.75) 85.8%,
+    rgba(26, 26, 26, 0.625) 86.2%,
+    rgba(26, 26, 26, 0.5) 86.6%,
+    rgba(26, 26, 26, 0.375) 87%,
+    rgba(26, 26, 26, 0.25) 87.4%,
+    rgba(26, 26, 26, 0.125) 87.8%,
+    transparent 88%,               /* Bottom 12% completely transparent */
+    transparent 100%
+  ); /* Top 85% solid, 3% quick fade, bottom 12% transparent */
+  color: white;
+  padding: 0;
+  box-shadow: none;
+  position: sticky; /* Works in all modern browsers including Safari/iOS */
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: visible;
+  z-index: 9998; /* Below scanlines (9999) so they show through, but above content */
+  /* Persist across page transitions - never moves */
+  view-transition-name: site-header;
+  /* Ensure sticky works - these are base styles, mobile will override view-transition-name */
+}
+
+/* Gradient overlay for header area */
+header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg,
+    rgba(13, 31, 13, 0.6) 0%,
+    rgba(13, 31, 13, 0.55) 50%,
+    rgba(13, 31, 13, 0.5) 85%,        /* Green gradient top 85% */
+    rgba(13, 31, 13, 0.4375) 85.4%,   /* Quick 3% fade zone with 9 stops */
+    rgba(13, 31, 13, 0.375) 85.8%,
+    rgba(13, 31, 13, 0.3125) 86.2%,
+    rgba(13, 31, 13, 0.25) 86.6%,
+    rgba(13, 31, 13, 0.1875) 87%,
+    rgba(13, 31, 13, 0.125) 87.4%,
+    rgba(13, 31, 13, 0.0625) 87.8%,
+    transparent 88%,                  /* Bottom 12% transparent */
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0; /* Above header background, below nav */
+}
+
+/* Dark mode gradient - behind all content, touching sticky header */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; /* Touch the top (sticky header is also at top: 0) */
+  left: 0;
+  right: 0;
+  height: 1800px; /* Extended gradient covering more of the page */
+  background: linear-gradient(180deg,
+    rgba(13, 31, 13, 0.6) 0%,
+    rgba(13, 30, 13, 0.58) 5%,
+    rgba(13, 30, 13, 0.56) 10%,
+    rgba(13, 29, 13, 0.54) 15%,
+    rgba(14, 28, 14, 0.52) 20%,
+    rgba(14, 28, 14, 0.50) 25%,
+    rgba(14, 27, 14, 0.48) 30%,
+    rgba(15, 26, 15, 0.46) 35%,
+    rgba(15, 26, 15, 0.44) 40%,
+    rgba(16, 25, 16, 0.42) 45%,
+    rgba(16, 24, 16, 0.40) 50%,
+    rgba(17, 24, 17, 0.38) 55%,
+    rgba(18, 23, 18, 0.36) 60%,
+    rgba(19, 23, 19, 0.34) 65%,
+    rgba(20, 22, 20, 0.32) 70%,
+    rgba(21, 22, 21, 0.30) 75%,
+    rgba(22, 22, 22, 0.28) 80%,
+    rgba(23, 22, 23, 0.26) 85%,
+    rgba(24, 23, 24, 0.24) 90%,
+    rgba(25, 24, 25, 0.22) 95%,
+    rgba(26, 25, 26, 0.20) 100%,
+    rgba(26, 25, 26, 0.18) 105%,
+    rgba(26, 26, 26, 0.16) 110%,
+    rgba(26, 26, 26, 0.14) 115%,
+    rgba(26, 26, 26, 0.12) 120%,
+    rgba(26, 26, 26, 0.10) 125%,
+    rgba(26, 26, 26, 0.08) 130%,
+    rgba(26, 26, 26, 0.06) 135%,
+    rgba(26, 26, 26, 0.04) 140%,
+    rgba(26, 26, 26, 0.02) 145%,
+    transparent 150%
+  );
+  pointer-events: none;
+  z-index: 0; /* Behind all content (main: 1, nav: 102, header: 100) */
+}
+
+[data-theme="light"] body::after {
+  display: none;
+}
+
+[data-theme="light"] header {
+  background: var(--theme-bg-forest);
+  border-bottom: 4px solid var(--accent-dark-orange);
+}
+
+[data-theme="light"] header::after {
+  display: none; /* No gradient overlay in light mode */
+}
+
+/* Navigation */
+nav {
+  position: relative;
+  z-index: 1; /* Above header::after gradient */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  overflow: visible;
+  /* Fixed height to prevent layout shift */
+  min-height: 70px;
+}
+
+/* Logo */
+.logo {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: visible;
+}
+
+.logo-prompt {
+  font-family: var(--font-accent);
+  font-size: var(--font-size-2xl);
+  font-weight: 400;
+  color: var(--accent-sage);
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  filter: drop-shadow(0 0 4px rgba(144, 238, 144, 0.8))
+          drop-shadow(0 0 8px rgba(144, 238, 144, 0.6));
+  flex-shrink: 0;
+  letter-spacing: -0.15em;
+  line-height: 2.2;
+  padding: 0 20px;
+  margin: 0 -20px;
+}
+
+.logo-text {
+  font-family: var(--font-accent);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--neutral-white);
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4))
+          drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  white-space: nowrap;
+  position: relative;
+  line-height: 2.2;
+  padding: 0 25px;
+  margin: 0 -25px;
+}
+
+[data-theme="light"] .logo-prompt {
+  filter: none;
+}
+
+[data-theme="light"] .logo-text {
+  filter: none;
+}
+
+.cursor {
+  display: none;
+}
+
+[data-theme="light"] .cursor {
+  display: none;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: var(--accent-cream);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+nav.container {
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Main content */
+main {
+  min-height: calc(100vh - 200px);
+  position: relative;
+  z-index: 1; /* Below header (z-index: 100) so header blocks when scrolling */
+}
+
+@media (max-width: 768px) {
+  /* Ensure main doesn't interfere with sticky on mobile */
+  main {
+    position: relative; /* Keep relative but ensure it doesn't break sticky */
+  }
+}
+
+/* Footer */
+footer {
+  background: var(--theme-bg-forest);
+  padding: 0 0 2rem 0;
+  margin-top: 0;
+  text-align: center;
+  font-family: var(--font-body-text);
+  font-size: var(--font-size-base);
+  color: var(--theme-text-secondary);
+  position: relative;
+  /* Persist across page transitions */
+  view-transition-name: site-footer;
+}
+
+/* Quick feathered edge extending above footer for dark mode - 20px fade */
+footer::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(180deg, rgba(26, 26, 26, 1) 0%, rgba(13, 31, 13, 1) 100%);
+  pointer-events: none;
+}
+
+[data-theme="light"] footer::before {
+  display: none;
+}
+
+[data-theme="light"] footer {
+  background: var(--theme-bg-forest);
+  color: white;
+  border-top: 4px solid var(--accent-dark-orange);
+}
+
+footer p {
+  margin: 0.5rem 0;
+  font-weight: 400;
+}
+
+[data-theme="light"] footer p {
+  font-weight: 400;
+}
+
+/* Disable all transitions on page load to prevent initial render artifacts */
+.preload *,
+.preload *::before,
+.preload *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--theme-toggle-bg);
+  border: 3px solid var(--theme-toggle-border);
+  padding: 0.8rem 1.2rem;
+  cursor: pointer;
+  font-size: var(--font-size-xl);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  box-shadow: var(--theme-toggle-shadow);
+  font-family: var(--font-body-text);
+  z-index: 10000;
+  color: var(--theme-toggle-text);
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  backdrop-filter: var(--theme-toggle-backdrop-filter);
+  min-width: 70px;
+  line-height: 1;
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.3) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.3) 3px
+  );
+  pointer-events: none;
+  z-index: 10;
+  mix-blend-mode: multiply;
+}
+
+[data-theme="light"] .theme-toggle::after {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.01) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.01) 3px
+  );
+}
+
+.theme-icon {
+  position: relative;
+  z-index: 5;
+}
+
+.theme-toggle:hover {
+  background: var(--theme-toggle-hover-bg);
+  border-color: var(--theme-toggle-hover-border);
+  box-shadow: var(--theme-toggle-hover-shadow);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: var(--theme-toggle-active-shadow);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+  transform: translate(-2px, -2px);
+}
+
+[data-theme="light"] .theme-toggle:active {
+  transform: translate(0, 0);
+}
+
+.theme-icon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-icon-light {
+  display: inline;
+}
+
+[data-theme="light"] .theme-icon-dark {
+  display: inline;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  /* MOBILE ONLY - Fix sticky header without affecting desktop */
+  
+  /* Critical: Ensure html is the scrolling container for sticky */
+  html {
+    /* Don't constrain height - let content determine it */
+    height: auto;
+    /* Ensure html can scroll */
+    overflow-x: hidden;
+  }
+
+  /* Critical: body position: relative breaks sticky, override on mobile only */
+  body {
+    position: static !important; /* Override relative - this is critical for sticky */
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* DO NOT set overflow-y - it breaks sticky! Let it default */
+    /* Body should NOT be the scrolling container - html/viewport should be */
+  }
+
+  /* Ensure body::before (scanlines) doesn't interfere with sticky positioning */
+  body::before {
+    position: fixed !important;
+    z-index: 9999 !important;
+    /* Ensure it doesn't create a containing block */
+    pointer-events: none !important;
+  }
+
+  /* CRITICAL: Disable view-transition-name FIRST - it creates stacking context that breaks sticky */
+  header {
+    view-transition-name: none !important;
+  }
+
+  /* Ensure header sticky works on mobile - must be direct child of body */
+  header {
+    position: sticky !important; /* Modern browsers - no webkit prefix needed */
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9998 !important; /* Below scanlines (9999) so they show through */
+    /* Reset any properties that could interfere */
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    /* Ensure header is in normal flow */
+    display: block !important;
+    /* Ensure no containing block issues */
+    contain: none !important;
+    isolation: auto !important; /* Reset any isolation that could create stacking context */
+    /* Ensure header can stick - these are critical */
+    align-self: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Ensure gradient overlay stays visible on mobile */
+  header::after {
+    display: block !important;
+    z-index: -1; /* Behind nav content */
+  }
+
+  /* Ensure nav content is above scanlines */
+  nav {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  /* Container and nav padding adjustments for mobile */
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  nav {
+    padding: 1rem 0.75rem;
+  }
+
+  nav.container {
+    padding: 0 0.75rem;
+  }
+
+  .theme-toggle {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    padding: 0.7rem 1rem;
+    font-size: var(--font-size-lg);
+    min-width: 60px;
+  }
+}
+
+@media (max-width: 640px) {
+  .logo-prompt {
+    font-size: var(--font-size-lg);
+    line-height: 2.2;
+    padding: 0 15px;
+    margin: 0 -15px;
+  }
+
+  .logo-text {
+    font-size: var(--font-size-sm);
+    line-height: 2.2;
+    letter-spacing: 0.01em;
+    padding: 0 20px;
+    margin: 0 -20px;
+  }
+
+  .logo {
+    gap: 0.3rem;
+  }
+
+  nav {
+    padding: 1rem 0;
+  }
+
+  nav.container {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .logo-prompt {
+    font-size: 0.93rem; /* 20% smaller than base (1.16rem * 0.8) */
+    line-height: 2.2;
+    padding: 0 12px;
+    margin: 0 -12px;
+  }
+
+  .logo-text {
+    font-size: 0.96rem; /* 20% smaller than xs (1.2rem * 0.8) */
+    line-height: 2.2;
+    letter-spacing: 0;
+    padding: 0 15px;
+    margin: 0 -15px;
+  }
+
+  .logo {
+    gap: 0.25rem;
+  }
+
+  nav {
+    padding: 0.875rem 0;
+    min-height: 60px;
+  }
+
+  nav.container {
+    padding: 0 1rem; /* Increased padding to accommodate glow effects */
+  }
+
+  /* Ensure glow effects are not truncated */
+  header {
+    overflow: visible !important;
+  }
+
+  nav {
+    overflow: visible !important;
+  }
+
+  .logo {
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo-prompt {
+    font-size: var(--font-size-base);
+    line-height: 2.2;
+    padding: 0 12px;
+    margin: 0 -12px;
+  }
+
+  .logo-text {
+    font-size: var(--font-size-xs);
+    line-height: 2.2;
+    letter-spacing: 0;
+    padding: 0 15px;
+    margin: 0 -15px;
+  }
+
+  .logo {
+    gap: 0.2rem;
+  }
+
+  nav {
+    padding: 0.75rem 0;
+  }
+
+  nav.container {
+    padding: 0 0.5rem;
+  }
+}
+
+/* =====================================
+   VIEW TRANSITIONS - THEME SPECIFIC
+   ===================================== */
+
+/* Header and footer never move - they're persistent anchors */
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-footer),
+::view-transition-new(site-footer) {
+  animation: none !important;
+}
+
+/* Disable root animations to prevent double-transition */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none !important;
+}
+
+@keyframes terminalFlickerOut {
+  0% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.9;
+    filter: brightness(1.1);
+  }
+  100% {
+    opacity: 0;
+    filter: brightness(0.8);
+  }
+}
+
+@keyframes terminalFlickerIn {
+  0% {
+    opacity: 0;
+    filter: brightness(1.2);
+  }
+  50% {
+    opacity: 0.8;
+    filter: brightness(1.1);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+/* Light Mode: Magazine page slide */
+[data-theme="light"] ::view-transition-old(root) {
+  animation: magazineSlideOut 0.3s ease-out;
+}
+
+[data-theme="light"] ::view-transition-new(root) {
+  animation: magazineSlideIn 0.3s ease-in;
+}
+
+@keyframes magazineSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+@keyframes magazineSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(search-container),
+  ::view-transition-new(search-container) {
+    animation: none !important;
+  }
+}
+
+/* =====================================
+   SEARCH WIDGET MORPH TRANSITION
+   ===================================== */
+
+/* Search container morphing to results header */
+::view-transition-old(search-container),
+::view-transition-new(search-container) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode: Widget expands downward like terminal output */
+::view-transition-old(search-container) {
+  animation-name: expandOut;
+}
+
+::view-transition-new(search-container) {
+  animation-name: expandIn;
+}
+
+@keyframes expandOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0.8;
+    transform: scale(1.05) translateY(-20px);
+  }
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0.8;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Light Mode: Magazine page flip effect */
+[data-theme="light"] ::view-transition-old(search-container) {
+  animation-name: pageFlipOut;
+}
+
+[data-theme="light"] ::view-transition-new(search-container) {
+  animation-name: pageFlipIn;
+}
+
+@keyframes pageFlipOut {
+  from {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(-15deg) translateY(-30px);
+  }
+}
+
+@keyframes pageFlipIn {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(15deg) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0);
+  }
+}
+

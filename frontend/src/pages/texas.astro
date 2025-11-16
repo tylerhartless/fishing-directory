@@ -96,39 +96,3 @@ const counties = Object.entries(countyData)
   </section>
 </Layout>
 
-<style>
-  /* Special pages section - same width as counties list */
-  .special-pages-section {
-    max-width: 900px;
-    margin: 2rem auto 0;
-  }
-
-  /* Counties list section - reuse search widget styles */
-  .counties-list-section {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  /* County cards inherit from spot-card in search-widget.css */
-  /* Override spot type coloring for counties - use neutral sage border */
-  :global(.county-card) {
-    border-color: var(--rgba-sage-30);
-    box-shadow: 0 0 12px var(--rgba-sage-20);
-  }
-
-  :global([data-theme="light"] .county-card) {
-    border-color: var(--neutral-black);
-    box-shadow: 4px 4px 0 var(--rgba-black-20);
-  }
-
-  @media (max-width: 768px) {
-    .county-header {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .spot-count {
-      align-self: flex-start;
-    }
-  }
-</style>

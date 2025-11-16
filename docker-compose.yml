@@ -3,7 +3,49 @@
 # Use the restart.bat (Windows) or restart.sh (Mac/Linux) scripts
 
 services:
-  # PHP API Server (connects to external MySQL database)
+  # MySQL 8.0 Database
+  mysql:
+    image: mysql:8.0
+    container_name: fishing_directory_db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=fishing_directory
+      - MYSQL_USER=fishing_user
+      - MYSQL_PASSWORD=fishing_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d  # Optional: auto-run SQL scripts on first start
+    networks:
+      - fishing_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "fishing_user", "-pfishing_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # phpMyAdmin for Database Management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: fishing_directory_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"  # Change to "8081:80" if 8080 is already in use
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=fishing_user
+      - PMA_PASSWORD=fishing_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    networks:
+      - fishing_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # PHP API Server (connects to MySQL database)
   php:
     image: php:8.2-apache
     container_name: fishing_directory_api
@@ -13,12 +55,12 @@ services:
     volumes:
       - ./backend/api:/var/www/html
     environment:
-      # Connect to external MySQL database (running in data-pipeline repo or remote)
-      - DB_HOST=${DB_HOST:-localhost}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_NAME=${DB_NAME:-fishing_directory}
-      - DB_USER=${DB_USER:-fishing_user}
-      - DB_PASSWORD=${DB_PASSWORD:-fishing_password}
+      # Connect to MySQL container (use 'mysql' as hostname, not 'localhost')
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=fishing_directory
+      - DB_USER=fishing_user
+      - DB_PASSWORD=fishing_password
     networks:
       - fishing_network
     command: >
@@ -30,6 +72,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   # Astro Frontend Dev Server
   astro:
@@ -51,6 +96,10 @@ services:
     depends_on:
       php:
         condition: service_healthy
+
+volumes:
+  mysql_data:
+    driver: local
 
 networks:
   fishing_network:

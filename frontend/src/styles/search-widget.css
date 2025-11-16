@@ -25,6 +25,59 @@
   overflow: hidden;
 }
 
+/* ResultsWidget container style */
+.search-widget-style {
+  background: var(--rgba-dark-bg-80);
+  border: 2px solid var(--rgba-sage-50);
+  border-radius: 0;
+  padding: 1.5rem;
+  box-shadow:
+    0 0 20px var(--rgba-sage-30),
+    inset 0 0 30px var(--rgba-black-50);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Scanlines for search-widget-style */
+.search-widget-style::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--rgba-black-15) 0px,
+    transparent 1px,
+    transparent 2px,
+    var(--rgba-black-15) 3px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-widget-style > * {
+  position: relative;
+  z-index: 2;
+}
+
+[data-theme="light"] .search-widget-style {
+  background: white;
+  border: 3px solid var(--neutral-black);
+  box-shadow: 6px 6px 0 var(--rgba-black-20);
+}
+
+[data-theme="light"] .search-widget-style::before {
+  background: repeating-linear-gradient(
+    0deg,
+    var(--rgba-black-01) 0px,
+    transparent 1px,
+    transparent 2px,
+    var(--rgba-black-01) 3px
+  );
+}
+
 /* Wipe-away animation when returning to search */
 .search-widget[data-transitioning="true"][data-show-results="true"] .search-results {
   animation: wipeAwayResults 0.5s ease-out forwards;
@@ -117,7 +170,7 @@
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 6px var(--rgba-sage-40);
+  text-shadow: none;
   text-transform: uppercase;
 }
 
@@ -179,7 +232,7 @@
   box-shadow:
     0 0 15px var(--rgba-sage-20),
     inset 0 0 30px var(--rgba-sage-05);
-  text-shadow: 0 0 8px var(--rgba-sage-50);
+  text-shadow: none;
 }
 
 .btn-location-hero::before {
@@ -313,7 +366,7 @@
   font-family: var(--font-body-text);
   font-size: 1.2rem;
   color: #ff6666;
-  text-shadow: 0 0 6px var(--rgba-red-40);
+  text-shadow: none;
 }
 
 [data-theme="light"] .error-content {
@@ -554,7 +607,7 @@
   border: 1px solid var(--rgba-sage-30);
   color: var(--theme-text-sage);
   box-shadow: 0 0 10px var(--rgba-sage-15);
-  text-shadow: 0 0 6px var(--rgba-sage-40);
+  text-shadow: none;
 }
 
 .btn-search:hover:not(:disabled) {
@@ -671,7 +724,7 @@
 .suggestion-item:hover {
   background: var(--rgba-sage-10);
   color: var(--theme-text-sage);
-  text-shadow: 0 0 6px var(--rgba-sage-40);
+  text-shadow: none;
 }
 
 .suggestion-prompt {
@@ -1088,7 +1141,7 @@
   font-size: 1.1rem;
   color: var(--theme-text-sage);
   font-weight: 400;
-  text-shadow: 0 0 4px var(--rgba-sage-30);
+  text-shadow: none;
 }
 
 [data-theme="light"] .query-text {
@@ -1109,7 +1162,7 @@
   transition: all 0.2s;
   cursor: pointer;
   white-space: nowrap;
-  text-shadow: 0 0 6px var(--rgba-sage-40);
+  text-shadow: none;
   min-height: 36px; /* Reduced from 44px */
 }
 
@@ -1231,12 +1284,34 @@
   opacity: 0.7;
 }
 
-#filter-count {
-  font-weight: 700;
-  color: var(--theme-text-sage);
-  text-shadow: 0 0 8px var(--rgba-sage-60);
+/* Back button specific styles */
+.back-button {
+  white-space: nowrap;
 }
 
+.back-arrow {
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.back-text {
+  font-weight: 700;
+  color: var(--theme-text-sage);
+  text-shadow: none;
+}
+
+[data-theme="light"] .back-text {
+  color: var(--boat-orange);
+  text-shadow: none;
+}
+
+#sort-display, #filter-count {
+  font-weight: 700;
+  color: var(--theme-text-sage);
+  text-shadow: none;
+}
+
+[data-theme="light"] #sort-display,
 [data-theme="light"] #filter-count {
   color: var(--boat-orange);
   text-shadow: none;
@@ -1378,6 +1453,10 @@
   border-radius: 0;
 }
 
+.filter-panel.filter-panel-hidden {
+  display: none;
+}
+
 [data-theme="light"] .filter-panel {
   background: rgba(0, 0, 0, 0.03);
   border: 2px solid var(--neutral-black);
@@ -1404,7 +1483,7 @@
   color: var(--theme-text-sage);
   font-weight: 400;
   margin: 0 0 0.75rem 0;
-  text-shadow: 0 0 6px var(--rgba-sage-40);
+  text-shadow: none;
 }
 
 [data-theme="light"] .filter-section h4 {
@@ -1431,6 +1510,8 @@
   background: var(--rgba-sage-10);
   border: 1px solid var(--rgba-sage-30);
   transition: all 0.2s;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 [data-theme="light"] .filter-checkbox {
@@ -1477,7 +1558,8 @@
 .filter-checkbox.highlight-no-license {
   background: var(--rgba-park-badge-08);
   border: 1px solid var(--rgba-park-badge-20);
-  padding: 0.75rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  flex-wrap: wrap;
 }
 
 [data-theme="light"] .filter-checkbox.highlight-no-license {
@@ -1495,16 +1577,17 @@
 }
 
 .no-license-badge {
-  font-size: 1.05rem;
-  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.4rem;
   background: var(--rgba-park-badge-20);
   border: 1px solid var(--rgba-park-badge-40);
   color: var(--badge-park);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   font-weight: 400;
   white-space: nowrap;
   margin-left: 0.5rem;
+  line-height: 1.2;
 }
 
 [data-theme="light"] .no-license-badge {
@@ -1821,7 +1904,7 @@
   /* Variable font settings (disabled for Workbench - not a variable font) */
   /* font-variation-settings: 'SCAN' var(--font-variation-scan), 'BLEED' var(--font-variation-bleed); */
   letter-spacing: 0.02em;
-  text-shadow: 0 0 10px var(--rgba-white-60), 0 0 20px var(--rgba-white-40);
+  text-shadow: none;
   text-align: left;
   flex: 1;
 }
@@ -1838,7 +1921,7 @@
   font-size: 1.1rem; /* Reduced from 1.3rem */
   font-family: var(--font-body-text);
   font-weight: 400;
-  text-shadow: 0 0 8px var(--rgba-sand-60), 0 0 12px var(--rgba-sand-40);
+  text-shadow: none;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -2241,11 +2324,28 @@
 
   .filter-checkbox {
     padding: 0.5rem; /* Match desktop padding */
+    flex-wrap: wrap; /* Allow wrapping on mobile */
+  }
+  
+  .filter-checkbox.highlight-no-license {
+    flex-wrap: wrap; /* Ensure wrapping for badge on mobile */
   }
 
   .no-license-badge {
-    font-size: 1.05rem; /* Match desktop size */
-    padding: 0.2rem 0.5rem; /* Match desktop padding */
+    font-size: 0.7rem; /* Smaller on mobile */
+    padding: 0.1rem 0.35rem; /* Smaller padding on mobile */
+  }
+
+  .search-widget-style {
+    padding: 1.5rem; /* Match desktop padding for consistency */
+  }
+
+  .back-text {
+    display: none;
+  }
+
+  .back-button {
+    padding: 0.75rem;
   }
 
   /* Spot cards - match desktop padding */
