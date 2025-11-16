@@ -1449,6 +1449,23 @@ h6 {
   background-image: repeating-linear-gradient(to right, var(--rgba-black-20) 0, var(--rgba-black-20) 4px, transparent 4px, transparent 8px);
 }
 
+/* Remove background box from badge numbers in county items */
+.county-item .retro-badge {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  color: inherit;
+}
+
+[data-theme="light"] .county-item .retro-badge {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  color: inherit;
+}
+
 /* ===== MOBILE RESPONSIVE ===== */
   @media (max-width: 768px) {
     .retro-page-header .container {

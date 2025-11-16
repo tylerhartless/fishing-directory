@@ -70,22 +70,31 @@ export default function CountyListing() {
     const loadCounties = async () => {
       try {
         // Step 1: Detect user's state via IP geolocation
-        let detectedState = 'TX'; // Default to Texas
+        let detectedState: string | null = null; // No default - must detect
+        let geolocationSucceeded = false;
+        
         try {
           const geoResponse = await fetch('https://ipapi.co/json/');
           if (geoResponse.ok) {
             const geoData = await geoResponse.json();
             if (geoData.region_code) {
               detectedState = geoData.region_code;
+              geolocationSucceeded = true;
             }
           }
         } catch (error) {
-          console.log('Could not detect location via IP, defaulting to Texas');
+          console.log('Could not detect location via IP');
+        }
+
+        // Only proceed if geolocation succeeded
+        if (!geolocationSucceeded || !detectedState) {
+          setIsLoading(false);
+          return; // Don't show section if we can't detect state
         }
 
         // Step 2: Get state name and slug
-        const stateName = stateNameLookup[detectedState] || 'Texas';
-        const stateSlug = stateSlugLookup[detectedState] || 'texas';
+        const stateName = stateNameLookup[detectedState] || detectedState;
+        const stateSlug = stateSlugLookup[detectedState] || detectedState.toLowerCase();
 
         setLocation({
           state: detectedState,
