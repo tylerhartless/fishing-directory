@@ -31,7 +31,8 @@
 }
 
 [data-theme="light"] .retro-page-header .container {
-  padding: 0.25rem 2rem 0.25rem 2rem; /* Match dark mode padding */
+  padding: 0.25rem 2rem 0.25rem 2rem; /* Match dark mode padding exactly */
+  max-width: 1200px; /* Same as dark mode - header has no border so no compensation needed */
 }
 
 /* Page back link - simple navigation replacement for breadcrumbs */
@@ -127,6 +128,7 @@
 
 [data-theme="light"] .retro-container {
   background: var(--boat-cream);
+  max-width: 1204px; /* Compensate for 4px thicker borders in child elements (4px vs 2px) to match content width */
 }
 
 [data-theme="light"] .retro-page-header + .retro-container {
@@ -192,6 +194,7 @@
   color: var(--boat-black);
   border-radius: 0;
   position: relative;
+  /* Note: Cards are in grids, max-width handled by grid container */
 }
 
 /* Optional: Left orange accent stripe for cards (vintage ad style) */
@@ -526,6 +529,8 @@ h1, h2, h3, h4, h5, h6 {
 /* Explicit sizes for h1-h6 - using CSS variables for responsive scaling */
 h1 {
   font-size: var(--font-size-xl);
+  font-weight: 700;
+  font-style: italic;
 }
 
 @media (min-width: 768px) {
@@ -598,6 +603,11 @@ h6 {
   letter-spacing: 0.05em;
   text-shadow: var(--heading-text-shadow);
   filter: var(--heading-glow);
+}
+
+/* H1 specific styling - bold and italic in all themes */
+[data-theme="light"] h1 {
+  font-style: italic;
 }
 
 /* Ensure light mode doesn't override section header font sizes */
@@ -1075,6 +1085,7 @@ h6 {
   color: var(--boat-black);
   padding: 2rem;
   position: relative;
+  /* Note: Sections don't have explicit max-width, they inherit from parent container */
 }
 
 /* Top orange border accent (Mariner band style) */
@@ -1472,6 +1483,10 @@ h6 {
       padding: 0.5rem var(--container-padding-mobile-inner);
     }
 
+    [data-theme="light"] .retro-page-header .container {
+      padding: 0.5rem var(--container-padding-mobile-inner); /* Match dark mode padding exactly */
+    }
+
   .retro-page-header h1 {
     font-size: var(--font-size-2xl);
     margin-bottom: 0.25rem;
@@ -1541,6 +1556,13 @@ h6 {
   }
 }
 
+/* Scale headers down on narrow screens to prevent line wrapping */
+@media (max-width: 518px) {
+  .retro-page-header h1 {
+    font-size: var(--font-size-xl);
+  }
+}
+
 /* Extra small screens - prevent horizontal overflow */
 @media (max-width: 480px) {
   .retro-container {
@@ -1572,6 +1594,10 @@ h6 {
 
   .retro-page-header .container {
     padding: 0.375rem var(--container-padding-mobile-inner);
+  }
+
+  [data-theme="light"] .retro-page-header .container {
+    padding: 0.375rem var(--container-padding-mobile-inner); /* Match dark mode padding exactly */
   }
 
   .retro-page-header h1 {
@@ -2399,6 +2425,7 @@ h6 {
   background: var(--neutral-white);
   border: 3px solid var(--neutral-black);
   box-shadow: 6px 6px 0 var(--rgba-black-20);
+  max-width: 902px; /* Compensate for 1px thicker border (3px vs 2px) to match content width */
 }
 
 .homepage-content {
@@ -2407,6 +2434,10 @@ h6 {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+[data-theme="light"] .homepage-content {
+  max-width: 904px; /* Compensate for 4px thicker borders in child sections (4px vs 2px) to match content width */
 }
 
 @media (max-width: 768px) {
@@ -2428,16 +2459,28 @@ h6 {
   margin: 2rem auto 0;
 }
 
+[data-theme="light"] .special-pages-section {
+  max-width: 904px; /* Compensate for 4px thicker borders in child elements (4px vs 2px) to match content width */
+}
+
 /* Counties list section - reuse search widget styles */
 .counties-list-section {
   max-width: 900px;
   margin: 0 auto;
 }
 
+[data-theme="light"] .counties-list-section {
+  max-width: 904px; /* Compensate for 4px thicker borders in child cards (4px vs 2px) to match content width */
+}
+
 /* States list section - reuse search widget styles */
 .states-list-section {
   max-width: 900px;
   margin: 0 auto;
+}
+
+[data-theme="light"] .states-list-section {
+  max-width: 904px; /* Compensate for 4px thicker borders in child cards (4px vs 2px) to match content width */
 }
 
 /* County cards inherit from spot-card in search-widget.css */
