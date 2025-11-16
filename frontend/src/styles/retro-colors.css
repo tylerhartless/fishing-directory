@@ -184,7 +184,7 @@
   /* ===== TYPOGRAPHY VARIABLES ===== */
   /* Font families - semantic naming independent of design theme */
   --font-primary: 'Averia Serif Libre', serif;   /* Primary font used for body text site-wide */
-  --font-heading: 'Caudex', serif;      /* Secondary font used for headings */
+  --font-heading: 'Averia Serif Libre', serif;      /* Secondary font used for headings */
   --font-accent: 'Press Start 2P', monospace;   /* Accent font for special elements (logo, etc) */
   --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* System font fallback */
   
