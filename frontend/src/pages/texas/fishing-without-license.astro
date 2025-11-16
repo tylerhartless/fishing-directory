@@ -175,20 +175,6 @@ const stateParks = allSpots.filter(spot =>
     margin-bottom: 3rem;
   }
 
-  .retro-section h2 {
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    font-weight: 400;
-    color: var(--theme-heading-color);
-    margin: 0 0 1.5rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  :global([data-theme="light"]) .retro-section h2 {
-    font-weight: 900;
-  }
-
   .lead {
     font-family: var(--font-body-text);
     font-size: 1.3rem;
@@ -215,10 +201,10 @@ const stateParks = allSpots.filter(spot =>
   }
 
   :global([data-theme="light"]) .highlight-box {
-    background: #FFF9E6;
-    border: 3px solid #FF8C42;
-    color: #333333;
-    box-shadow: 4px 4px 0 rgba(255, 140, 66, 0.2);
+    background: var(--accent-cream);
+    border: 3px solid var(--boat-orange);
+    color: var(--neutral-black);
+    box-shadow: 4px 4px 0 var(--rgba-orange-20);
     font-weight: 700;
   }
 
@@ -232,20 +218,6 @@ const stateParks = allSpots.filter(spot =>
     border-bottom: none;
   }
 
-  .faq-item h3 {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    font-weight: 400;
-    color: var(--theme-text-sage);
-    margin: 0 0 0.75rem 0;
-    text-shadow: 0 0 6px rgba(168, 197, 168, 0.4);
-  }
-
-  :global([data-theme="light"]) .faq-item h3 {
-    color: #333333;
-    font-weight: 900;
-    text-shadow: none;
-  }
 
   .faq-item p,
   .faq-item ul {
@@ -259,7 +231,7 @@ const stateParks = allSpots.filter(spot =>
 
   :global([data-theme="light"]) .faq-item p,
   :global([data-theme="light"]) .faq-item ul {
-    color: #555555;
+    color: var(--theme-text-secondary);
     font-weight: 600;
   }
 
@@ -277,16 +249,16 @@ const stateParks = allSpots.filter(spot =>
   }
 
   .faq-item a:hover {
-    text-shadow: 0 0 8px rgba(168, 197, 168, 0.6);
+    text-shadow: 0 0 8px var(--rgba-sage-60);
   }
 
   :global([data-theme="light"]) .faq-item a {
-    color: #FF6B6B;
+    color: var(--boat-red);
     font-weight: 700;
   }
 
   :global([data-theme="light"]) .faq-item a:hover {
-    color: #FF8C42;
+    color: var(--boat-orange);
     text-shadow: none;
   }
 
@@ -305,7 +277,7 @@ const stateParks = allSpots.filter(spot =>
   }
 
   :global([data-theme="light"]) .features-list li {
-    color: #555555;
+    color: var(--theme-text-secondary);
     font-weight: 600;
   }
 
@@ -337,31 +309,24 @@ const stateParks = allSpots.filter(spot =>
   }
 
   :global([data-theme="light"]) .resources-section a {
-    background: white;
-    border: 3px solid #333333;
-    color: #333333;
+    background: var(--neutral-white);
+    border: 3px solid var(--neutral-black);
+    color: var(--neutral-black);
     font-weight: 700;
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 0 var(--rgba-black-20);
   }
 
   :global([data-theme="light"]) .resources-section a:hover {
-    background: #FF8C42;
-    color: white;
+    background: var(--boat-orange);
+    color: var(--neutral-white);
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 5px 5px 0 var(--rgba-black-30);
   }
 
   @media (max-width: 768px) {
-    .retro-section h2 {
-      font-size: 1.6rem;
-    }
-
     .lead {
       font-size: 1.15rem;
     }
 
-    .faq-item h3 {
-      font-size: 1.2rem;
-    }
   }
 </style>

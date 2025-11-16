@@ -158,6 +158,9 @@
 
   /* Moss green (122, 132, 80) */
   --rgba-moss-05: rgba(122, 132, 80, 0.05);
+  --rgba-moss-20: rgba(122, 132, 80, 0.2);
+  --rgba-moss-30: rgba(122, 132, 80, 0.3);
+  --rgba-moss-40: rgba(122, 132, 80, 0.4);
 
   /* Lighter sage variant (154, 176, 135) */
   --rgba-light-sage-10: rgba(154, 176, 135, 0.1);
@@ -181,7 +184,7 @@
   /* ===== TYPOGRAPHY VARIABLES ===== */
   /* Font families - semantic naming independent of design theme */
   --font-primary: 'Averia Serif Libre', serif;   /* Primary font used for body text site-wide */
-  --font-heading: 'Newsreader', serif;      /* Secondary font used for headings */
+  --font-heading: 'Averia Serif Libre', serif;      /* Secondary font used for headings */
   --font-accent: 'Press Start 2P', monospace;   /* Accent font for special elements (logo, etc) */
   --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* System font fallback */
   
@@ -199,7 +202,7 @@
   /* Base sizes (mobile-first, slightly increased for Handjet) */
   --font-size-xs: 1.2rem;
   --font-size-sm: 1.35rem;
-  --font-size-base: 1.45rem;
+  --font-size-base: 1.16rem;
   --font-size-md: 1.55rem;
   --font-size-lg: 1.85rem;
   --font-size-xl: 2.15rem;
@@ -213,6 +216,40 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-black: 900;
+
+  /* ===== SHADOW & GLOW VARIABLES ===== */
+  /* Centralized shadow and glow effects for headings and body text */
+  /* These can be changed from a single location to affect site-wide */
+
+  /* Heading text shadows - dark mode */
+  --heading-text-shadow-dark: none;
+  --heading-glow-dark: none;
+
+  /* Heading text shadows - light mode */
+  --heading-text-shadow-light: 2px 2px 0px var(--rgba-black-15);
+  --heading-glow-light: none;
+
+  /* Body text shadows - dark mode */
+  --body-text-shadow-dark: none;
+  --body-text-shadow-hover-dark: none;
+
+  /* Body text shadows - light mode */
+  --body-text-shadow-light: none;
+  --body-text-shadow-hover-light: none;
+
+  /* Section heading shadows - dark mode */
+  --section-heading-shadow-dark: none;
+
+  /* Section heading shadows - light mode */
+  --section-heading-shadow-light: 2px 2px 0px var(--rgba-black-15);
+
+  /* Container padding - Mobile (consistent across themes) */
+  --container-padding-mobile: 0.75rem;
+  --container-padding-mobile-inner: 0.75rem;
+
+  /* Container padding - Desktop */
+  --container-padding-desktop: 2rem;
+  --container-padding-desktop-inner: 2rem;
 }
 
 /* Dark Mode - Explicit declaration for equal specificity with light mode */
@@ -247,6 +284,13 @@
   --weight-heading: var(--font-weight-semibold);
   --weight-body: var(--font-weight-semibold);
   --weight-emphasis: var(--font-weight-bold);
+
+  /* Dark mode shadow/glow (inherit from root, can be overridden) */
+  --heading-text-shadow: var(--heading-text-shadow-dark);
+  --heading-glow: var(--heading-glow-dark);
+  --body-text-shadow: var(--body-text-shadow-dark);
+  --body-text-shadow-hover: var(--body-text-shadow-hover-dark);
+  --section-heading-shadow: var(--section-heading-shadow-dark);
 }
 
 /* Light Mode - Tournament V-17 Boat-Inspired Palette */
@@ -286,6 +330,13 @@
   --weight-heading: var(--font-weight-semibold);
   --weight-body: var(--font-weight-semibold);
   --weight-emphasis: var(--font-weight-bold);
+
+  /* Light mode shadow/glow (inherit from root, can be overridden) */
+  --heading-text-shadow: var(--heading-text-shadow-light);
+  --heading-glow: var(--heading-glow-light);
+  --body-text-shadow: var(--body-text-shadow-light);
+  --body-text-shadow-hover: var(--body-text-shadow-hover-light);
+  --section-heading-shadow: var(--section-heading-shadow-light);
 }
 
 /* System Preference Defaults - Applied when no data-theme attribute is set */
@@ -320,6 +371,13 @@
     --weight-heading: var(--font-weight-semibold);
     --weight-body: var(--font-weight-semibold);
     --weight-emphasis: var(--font-weight-bold);
+    
+    /* Dark mode shadow/glow */
+    --heading-text-shadow: var(--heading-text-shadow-dark);
+    --heading-glow: var(--heading-glow-dark);
+    --body-text-shadow: var(--body-text-shadow-dark);
+    --body-text-shadow-hover: var(--body-text-shadow-hover-dark);
+    --section-heading-shadow: var(--section-heading-shadow-dark);
   }
 }
 
@@ -354,6 +412,13 @@
     --weight-heading: var(--font-weight-semibold);
     --weight-body: var(--font-weight-semibold);
     --weight-emphasis: var(--font-weight-bold);
+    
+    /* Light mode shadow/glow */
+    --heading-text-shadow: var(--heading-text-shadow-light);
+    --heading-glow: var(--heading-glow-light);
+    --body-text-shadow: var(--body-text-shadow-light);
+    --body-text-shadow-hover: var(--body-text-shadow-hover-light);
+    --section-heading-shadow: var(--section-heading-shadow-light);
   }
 }
 
@@ -363,7 +428,7 @@
   :root {
     --font-size-xs: 1.3rem;
     --font-size-sm: 1.45rem;
-    --font-size-base: 1.6rem;
+    --font-size-base: 1.28rem;
     --font-size-md: 1.75rem;
     --font-size-lg: 2.05rem;
     --font-size-xl: 2.45rem;
@@ -378,7 +443,7 @@
   :root {
     --font-size-xs: 1.35rem;
     --font-size-sm: 1.55rem;
-    --font-size-base: 1.7rem;
+    --font-size-base: 1.36rem;
     --font-size-md: 1.9rem;
     --font-size-lg: 2.25rem;
     --font-size-xl: 2.65rem;

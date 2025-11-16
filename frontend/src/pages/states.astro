@@ -130,21 +130,3 @@ const totalSpots = allSpots.length;
   </section>
 </Layout>
 
-<style>
-  /* States list section - reuse search widget styles */
-  .states-list-section {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  /* State cards inherit from spot-card in search-widget.css */
-  :global(.state-card) {
-    border-color: var(--rgba-sage-30);
-    box-shadow: 0 0 12px var(--rgba-sage-20);
-  }
-
-  :global([data-theme="light"] .state-card) {
-    border-color: var(--neutral-black);
-    box-shadow: 4px 4px 0 var(--rgba-black-20);
-  }
-</style>
