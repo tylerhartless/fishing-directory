@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
+import CountyNavLink from '../components/CountyNavLink.tsx';
 import '../styles/retro-colors.css';
 import '../styles/retro-common.css';
 import '../styles/search-widget.css';
@@ -67,6 +68,20 @@ const isStaging = siteUrl.includes('staging');
           <span class="logo-prompt">&gt;&lt;&gt;</span>
           <span class="logo-text">WhereCanIFish.com<span class="cursor">_</span></span>
         </a>
+        
+        <!-- Desktop Navigation -->
+        <ul class="nav-links" id="nav-links">
+          <li><a href="/states">Browse by State</a></li>
+          <CountyNavLink client:load />
+          <li><a href="/#search">Search</a></li>
+        </ul>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </nav>
     </header>
 
@@ -132,10 +147,51 @@ const isStaging = siteUrl.includes('staging');
           }
         };
 
+        // Mobile menu toggle functionality
+        const setupMobileMenu = () => {
+          const toggle = document.getElementById('mobile-menu-toggle');
+          const navLinks = document.getElementById('nav-links');
+          
+          if (toggle && navLinks) {
+            const handleToggle = (e) => {
+              e.stopPropagation(); // Prevent event from bubbling to document
+              const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+              toggle.setAttribute('aria-expanded', !isExpanded);
+              navLinks.classList.toggle('nav-links-open');
+              toggle.classList.toggle('mobile-menu-toggle-open');
+            };
+            
+            // Remove old listener if it exists
+            const oldHandler = toggle._mobileMenuHandler;
+            if (oldHandler) {
+              toggle.removeEventListener('click', oldHandler);
+            }
+            
+            // Store handler reference and add new listener
+            toggle._mobileMenuHandler = handleToggle;
+            toggle.addEventListener('click', handleToggle);
+            
+            // Close menu when clicking outside (only add once)
+            if (!document._mobileMenuOutsideClick) {
+              document.addEventListener('click', (e) => {
+                if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
+                  if (navLinks.classList.contains('nav-links-open')) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                    navLinks.classList.remove('nav-links-open');
+                    toggle.classList.remove('mobile-menu-toggle-open');
+                  }
+                }
+              });
+              document._mobileMenuOutsideClick = true;
+            }
+          }
+        };
+
         // Setup theme toggle on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
           setupThemeToggle();
           setupLogoReset();
+          setupMobileMenu();
           // Re-enable transitions after page has loaded and rendered
           setTimeout(() => {
             document.documentElement.classList.remove('preload');
@@ -157,6 +213,7 @@ const isStaging = siteUrl.includes('staging');
         document.addEventListener('astro:page-load', () => {
           setupThemeToggle();
           setupLogoReset();
+          setupMobileMenu();
           // Re-enable transitions after a brief delay
           setTimeout(() => {
             document.documentElement.classList.remove('preload');

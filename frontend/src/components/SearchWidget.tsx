@@ -261,8 +261,14 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   }, [showResults, displayedSpots.length, filteredSpots.length]);
 
   // Scroll results into view when they appear (home page only)
+  // Only on mobile and tablet, not on desktop (>= 1024px)
   useEffect(() => {
     if (showResults) {
+      // Check if window width is less than desktop breakpoint (1024px)
+      if (window.innerWidth >= 1024) {
+        return; // Don't scroll on desktop
+      }
+
       setTimeout(() => {
         // Get the search-container element (parent wrapper in index.astro)
         // Only scroll on home page - search-container only exists there
@@ -323,6 +329,15 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setUserLocation({ lat: latitude, lon: longitude });
           setSearchContext(`Near ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           setLoadingMessage('Loading fishing spots...');
+
+          // Store location in sessionStorage for use on other pages (1 hour cache)
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('user_gps_location', JSON.stringify({
+              lat: latitude,
+              lon: longitude,
+              timestamp: Date.now()
+            }));
+          }
 
           // Load spots if not already loaded
           if (allSpots.length === 0) {
