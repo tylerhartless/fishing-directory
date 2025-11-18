@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
+import { getIpGeolocationData } from '../lib/ipGeolocation';
 
 interface LandingPage {
   icon: string;
@@ -66,16 +67,12 @@ export default function SpecialLandingPageCallout({ forceState, geolocateOnly = 
 
     const detectState = async () => {
       try {
-        const response = await fetch('https://ipapi.co/json/');
-        if (response.ok) {
-          const data = await response.json();
-          const state = data.region_code;
-          // Only show if detected state is Texas (or in future, any state with landing pages)
-          if (state === 'TX') {
-            setDetectedState(state);
-          } else {
-            setDetectedState(null);
-          }
+        const geoData = await getIpGeolocationData();
+        const state = geoData?.region_code || null;
+        
+        // Only show if detected state is Texas (or in future, any state with landing pages)
+        if (state === 'TX') {
+          setDetectedState(state);
         } else {
           setDetectedState(null);
         }

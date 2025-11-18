@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
+import { getIpGeolocationData, stateNameLookup, stateSlugLookup } from '../lib/ipGeolocation';
 
 interface County {
   name: string;
@@ -18,32 +19,6 @@ interface LocationData {
   stateName: string;
   stateSlug: string;
 }
-
-const stateNameLookup: Record<string, string> = {
-  'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
-  'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
-  'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
-  'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
-  'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
-  'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
-  'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
-  'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
-  'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
-  'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
-};
-
-const stateSlugLookup: Record<string, string> = {
-  'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
-  'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
-  'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
-  'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
-  'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
-  'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
-  'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
-  'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
-  'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
-  'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
-};
 
 export default function CountyListing() {
   const [counties, setCounties] = useState<County[]>([]);
@@ -69,30 +44,15 @@ export default function CountyListing() {
 
     const loadCounties = async () => {
       try {
-        // Step 1: Detect user's state via IP geolocation
-        let detectedState: string | null = null; // No default - must detect
-        let geolocationSucceeded = false;
+        // Get geolocation data (uses shared utility with caching)
+        const geoData = await getIpGeolocationData();
         
-        try {
-          const geoResponse = await fetch('https://ipapi.co/json/');
-          if (geoResponse.ok) {
-            const geoData = await geoResponse.json();
-            if (geoData.region_code) {
-              detectedState = geoData.region_code;
-              geolocationSucceeded = true;
-            }
-          }
-        } catch (error) {
-          console.log('Could not detect location via IP');
-        }
-
-        // Only proceed if geolocation succeeded
-        if (!geolocationSucceeded || !detectedState) {
+        if (!geoData || !geoData.region_code) {
           setIsLoading(false);
           return; // Don't show section if we can't detect state
         }
 
-        // Step 2: Get state name and slug
+        const detectedState = geoData.region_code;
         const stateName = stateNameLookup[detectedState] || detectedState;
         const stateSlug = stateSlugLookup[detectedState] || detectedState.toLowerCase();
 
