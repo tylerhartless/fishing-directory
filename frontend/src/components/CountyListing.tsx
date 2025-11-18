@@ -45,6 +45,9 @@ const stateSlugLookup: Record<string, string> = {
   'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
 };
 
+const GEOLOCATION_CACHE_KEY = 'ip_geolocation_data';
+const GEOLOCATION_CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
+
 export default function CountyListing() {
   const [counties, setCounties] = useState<County[]>([]);
   const [location, setLocation] = useState<LocationData>({
@@ -73,17 +76,41 @@ export default function CountyListing() {
         let detectedState: string | null = null; // No default - must detect
         let geolocationSucceeded = false;
         
-        try {
-          const geoResponse = await fetch('https://ipapi.co/json/');
-          if (geoResponse.ok) {
-            const geoData = await geoResponse.json();
-            if (geoData.region_code) {
-              detectedState = geoData.region_code;
+        // Check cache first
+        const cached = localStorage.getItem(GEOLOCATION_CACHE_KEY);
+        if (cached) {
+          try {
+            const cachedData = JSON.parse(cached);
+            const now = Date.now();
+            if (now - cachedData.timestamp < GEOLOCATION_CACHE_EXPIRY && cachedData.region_code) {
+              detectedState = cachedData.region_code;
               geolocationSucceeded = true;
             }
+          } catch (e) {
+            // Invalid cache, continue to fetch
           }
-        } catch (error) {
-          console.log('Could not detect location via IP');
+        }
+
+        // If not cached or expired, fetch fresh
+        if (!geolocationSucceeded) {
+          try {
+            const geoResponse = await fetch('https://ipapi.co/json/');
+            if (geoResponse.ok) {
+              const geoData = await geoResponse.json();
+              if (geoData.region_code) {
+                detectedState = geoData.region_code;
+                geolocationSucceeded = true;
+                
+                // Cache the data
+                localStorage.setItem(GEOLOCATION_CACHE_KEY, JSON.stringify({
+                  ...geoData,
+                  timestamp: Date.now()
+                }));
+              }
+            }
+          } catch (error) {
+            console.log('Could not detect location via IP');
+          }
         }
 
         // Only proceed if geolocation succeeded
