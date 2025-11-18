@@ -191,7 +191,7 @@ nav {
 
 .logo-prompt {
   font-family: var(--font-accent);
-  font-size: var(--font-size-xl); /* Reduced from 2xl for better desktop sizing */
+  font-size: var(--font-size-lg); /* Reduced from xl for smaller logo */
   font-weight: 400;
   color: var(--accent-sage);
   text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
@@ -206,7 +206,7 @@ nav {
 
 .logo-text {
   font-family: var(--font-accent);
-  font-size: var(--font-size-md); /* Reduced from lg for better desktop sizing */
+  font-size: var(--font-size-sm); /* Reduced from md for smaller logo */
   font-weight: 400;
   letter-spacing: 0.02em;
   color: var(--neutral-white);
@@ -642,14 +642,14 @@ footer p {
 
 @media (max-width: 640px) {
   .logo-prompt {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     line-height: 2.2;
     padding: 0 15px;
     margin: 0 -15px;
   }
 
   .logo-text {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     line-height: 2.2;
     letter-spacing: 0.01em;
     padding: 0 20px;
@@ -671,14 +671,14 @@ footer p {
 
 @media (max-width: 500px) {
   .logo-prompt {
-    font-size: 0.93rem; /* 20% smaller than base (1.16rem * 0.8) */
+    font-size: 0.78rem; /* Reduced from 0.93rem for smaller logo */
     line-height: 2.2;
     padding: 0 12px;
     margin: 0 -12px;
   }
 
   .logo-text {
-    font-size: 0.96rem; /* 20% smaller than xs (1.2rem * 0.8) */
+    font-size: 0.81rem; /* Reduced from 0.96rem for smaller logo */
     line-height: 2.2;
     letter-spacing: 0;
     padding: 0 15px;
@@ -714,14 +714,14 @@ footer p {
 
 @media (max-width: 400px) {
   .logo-prompt {
-    font-size: 0.85rem; /* Smaller than 500px breakpoint (0.93rem) */
+    font-size: 0.71rem; /* Reduced from 0.85rem for smaller logo */
     line-height: 2.2;
     padding: 0 12px;
     margin: 0 -12px;
   }
 
   .logo-text {
-    font-size: 0.88rem; /* Smaller than 500px breakpoint (0.96rem) */
+    font-size: 0.74rem; /* Reduced from 0.88rem for smaller logo */
     line-height: 2.2;
     letter-spacing: 0;
     padding: 0 15px;

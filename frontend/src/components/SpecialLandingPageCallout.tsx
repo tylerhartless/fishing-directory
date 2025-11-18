@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
+import { getIpGeolocationData } from '../lib/ipGeolocation';
 
 interface LandingPage {
   icon: string;
@@ -30,9 +31,6 @@ const stateSlugLookup: Record<string, string> = {
   'TX': 'texas',
   // Add more states as needed
 };
-
-const GEOLOCATION_CACHE_KEY = 'ip_geolocation_data';
-const GEOLOCATION_CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
 
 // Special landing pages per state
 const stateLandingPages: Record<string, LandingPage[]> = {
@@ -69,37 +67,9 @@ export default function SpecialLandingPageCallout({ forceState, geolocateOnly = 
 
     const detectState = async () => {
       try {
-        let state: string | null = null;
+        const geoData = await getIpGeolocationData();
+        const state = geoData?.region_code || null;
         
-        // Check cache first
-        const cached = localStorage.getItem(GEOLOCATION_CACHE_KEY);
-        if (cached) {
-          try {
-            const cachedData = JSON.parse(cached);
-            const now = Date.now();
-            if (now - cachedData.timestamp < GEOLOCATION_CACHE_EXPIRY && cachedData.region_code) {
-              state = cachedData.region_code;
-            }
-          } catch (e) {
-            // Invalid cache, continue to fetch
-          }
-        }
-
-        // If not cached or expired, fetch fresh
-        if (!state) {
-          const response = await fetch('https://ipapi.co/json/');
-          if (response.ok) {
-            const data = await response.json();
-            state = data.region_code;
-            
-            // Cache the data
-            localStorage.setItem(GEOLOCATION_CACHE_KEY, JSON.stringify({
-              ...data,
-              timestamp: Date.now()
-            }));
-          }
-        }
-
         // Only show if detected state is Texas (or in future, any state with landing pages)
         if (state === 'TX') {
           setDetectedState(state);
