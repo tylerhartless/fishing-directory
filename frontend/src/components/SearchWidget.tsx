@@ -384,10 +384,9 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     setErrorMessage('');
     setLoadingMessage('Searching locations...');
 
-    // Try to geocode the query using our backend proxy to avoid CORS issues
+    // Try to geocode the query
     const specificQuery = query + ', texas';
-    const apiBaseUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api';
-    const apiUrl = `${apiBaseUrl}/geocode.php?q=${encodeURIComponent(specificQuery)}&limit=1&email=${nominatimEmail}`;
+    const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(specificQuery)}&format=json&limit=1&email=${nominatimEmail}`;
 
     try {
       const response = await fetch(apiUrl);
