@@ -171,7 +171,7 @@ nav {
   position: relative;
   z-index: 1; /* Above header::after gradient */
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0.75rem 2rem;
   overflow: visible;
@@ -191,7 +191,7 @@ nav {
 
 .logo-prompt {
   font-family: var(--font-accent);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl); /* Reduced from 2xl for better desktop sizing */
   font-weight: 400;
   color: var(--accent-sage);
   text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
@@ -206,7 +206,7 @@ nav {
 
 .logo-text {
   font-family: var(--font-accent);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md); /* Reduced from lg for better desktop sizing */
   font-weight: 400;
   letter-spacing: 0.02em;
   color: var(--neutral-white);
@@ -245,22 +245,82 @@ nav {
   }
 }
 
-nav ul {
+/* Navigation Links */
+.nav-links {
   display: flex;
   gap: 2rem;
   list-style: none;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
-nav a {
+.nav-links a {
   color: white;
   text-decoration: none;
   font-weight: 500;
+  font-family: var(--font-body-text);
+  font-size: var(--font-size-base);
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.2s ease;
 }
 
-nav a:hover {
+.nav-links a:hover {
   color: var(--accent-cream);
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-cream);
+  transition: width 0.2s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Logo link should not have underline effect */
+.logo:hover {
+  color: white;
+}
+
+/* Mobile Menu Toggle Button - Hidden on desktop */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 10001;
+  position: relative;
+}
+
+.hamburger-line {
+  width: 25px;
+  height: 3px;
+  background: white;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.mobile-menu-toggle-open .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.mobile-menu-toggle-open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle-open .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
 }
 
 /* Container */
@@ -272,7 +332,7 @@ nav a:hover {
 
 nav.container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   overflow: visible;
   max-width: 1200px;
   margin: 0 auto;
@@ -506,6 +566,58 @@ footer p {
     z-index: 1 !important;
   }
 
+  /* Mobile navigation */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  /* Hide nav links on mobile by default, show when menu is open */
+  .nav-links {
+    display: none !important; /* Hidden by default on mobile - use !important to override desktop styles */
+    position: fixed;
+    top: 70px; /* Header height */
+    left: 0;
+    right: 0;
+    background: var(--theme-bg-forest);
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    margin: 0; /* Reset margin on mobile */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .nav-links-open {
+    display: block !important; /* Show when menu is toggled */
+    max-height: 300px;
+    padding: 1rem 0;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .nav-links li {
+    width: 100%;
+  }
+  
+  .nav-links a {
+    display: block;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .nav-links a::after {
+    display: none; /* Remove underline on mobile */
+  }
+  
+  .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
   /* Container and nav padding adjustments for mobile */
   .container {
     padding: 0 0.75rem;
@@ -602,14 +714,14 @@ footer p {
 
 @media (max-width: 400px) {
   .logo-prompt {
-    font-size: var(--font-size-base);
+    font-size: 0.85rem; /* Smaller than 500px breakpoint (0.93rem) */
     line-height: 2.2;
     padding: 0 12px;
     margin: 0 -12px;
   }
 
   .logo-text {
-    font-size: var(--font-size-xs);
+    font-size: 0.88rem; /* Smaller than 500px breakpoint (0.96rem) */
     line-height: 2.2;
     letter-spacing: 0;
     padding: 0 15px;

@@ -52,6 +52,9 @@ const widgetId = `results-widget-${itemType}`;
         <span class="back-text">{backButton.text}</span>
       </a>
     )}
+    <button id="refresh-location-btn" class="control-button" style="display: none;">
+      <span id="refresh-location-text">Refresh Location</span>
+    </button>
     <button id="sort-btn" class="control-button">
       <span class="control-label">Sort:</span>
       <span id="sort-display">Alphabetical</span>
@@ -108,6 +111,32 @@ const widgetId = `results-widget-${itemType}`;
     let userLocation = null;
     let activeFilters = showFilters ? new Set(spotTypes.filter(t => t !== 'boat_ramp')) : null;
 
+    // Check sessionStorage for saved GPS location
+    const GPS_LOCATION_KEY = 'user_gps_location';
+    const GPS_CACHE_DURATION = 1 * 60 * 60 * 1000; // 1 hour
+    
+    try {
+      const savedLocation = sessionStorage.getItem(GPS_LOCATION_KEY);
+      if (savedLocation) {
+        const locationData = JSON.parse(savedLocation);
+        const now = Date.now();
+        // Check if cache is still valid (within 1 hour)
+        if (locationData.timestamp && (now - locationData.timestamp) < GPS_CACHE_DURATION) {
+          userLocation = {
+            lat: locationData.lat,
+            lon: locationData.lon
+          };
+          // If we have a saved location, default to distance sorting
+          currentSort = 'distance';
+        } else {
+          // Cache expired, remove it
+          sessionStorage.removeItem(GPS_LOCATION_KEY);
+        }
+      }
+    } catch (e) {
+      // Invalid cache, ignore
+    }
+
     const filtersBtn = document.getElementById('filters-btn');
     const sortBtn = document.getElementById('sort-btn');
     const sortDisplay = document.getElementById('sort-display');
@@ -117,9 +146,16 @@ const widgetId = `results-widget-${itemType}`;
     const scrollContainer = document.getElementById(scrollContainerId);
     const visibleCount = document.getElementById('visible-count');
     const widgetElement = document.getElementById(widgetId);
+    const refreshLocationBtn = document.getElementById('refresh-location-btn');
+    const refreshLocationText = document.getElementById('refresh-location-text');
 
     // Skip initialization if widget element doesn't exist (different page)
     if (!widgetElement) return;
+
+    // Show refresh button if we have a saved location
+    if (refreshLocationBtn && userLocation) {
+      refreshLocationBtn.style.display = 'block';
+    }
 
     // Handle scroll fade effects
     function handleScrollFade() {
@@ -468,22 +504,82 @@ const widgetId = `results-widget-${itemType}`;
         }
       });
     }
+
+    // Handle refresh location button
+    if (refreshLocationBtn && refreshLocationText) {
+      refreshLocationBtn.addEventListener('click', () => {
+        if (navigator.geolocation) {
+          refreshLocationBtn.disabled = true;
+          refreshLocationText.textContent = 'Getting location...';
+          
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              userLocation = {
+                lat: position.coords.latitude,
+                lon: position.coords.longitude
+              };
+              
+              // Update sessionStorage
+              sessionStorage.setItem(GPS_LOCATION_KEY, JSON.stringify({
+                lat: userLocation.lat,
+                lon: userLocation.lon,
+                timestamp: Date.now()
+              }));
+              
+              // Re-sort if already sorting by distance
+              if (currentSort === 'distance') {
+                filterAndSortItems();
+              }
+              
+              refreshLocationBtn.disabled = false;
+              refreshLocationText.textContent = 'Refresh Location';
+            },
+            (error) => {
+              refreshLocationBtn.disabled = false;
+              refreshLocationText.textContent = 'Refresh Location';
+              alert('Unable to refresh location. Please check your location permissions.');
+            }
+          );
+        } else {
+          alert('Geolocation is not supported by your browser.');
+        }
+      });
+    }
   
     // Handle sort changes
     if (sortBtn) {
       sortBtn.addEventListener('click', () => {
         if (currentSort === 'alphabetical') {
-          // Switch to distance sorting - prompt for location
-          if (navigator.geolocation) {
+          // Switch to distance sorting - check sessionStorage first
+          if (userLocation) {
+            // Use saved location
+            currentSort = 'distance';
+            if (sortDisplay) sortDisplay.textContent = 'Distance';
+            filterAndSortItems();
+          } else if (navigator.geolocation) {
+            // No saved location, prompt for it
             if (sortDisplay) sortDisplay.textContent = 'Getting location...';
             sortBtn.disabled = true;
-  
+
             navigator.geolocation.getCurrentPosition(
               (position) => {
                 userLocation = {
                   lat: position.coords.latitude,
                   lon: position.coords.longitude
                 };
+                
+                // Save to sessionStorage for future use
+                sessionStorage.setItem(GPS_LOCATION_KEY, JSON.stringify({
+                  lat: userLocation.lat,
+                  lon: userLocation.lon,
+                  timestamp: Date.now()
+                }));
+                
+                // Show refresh button
+                if (refreshLocationBtn) {
+                  refreshLocationBtn.style.display = 'block';
+                }
+                
                 currentSort = 'distance';
                 if (sortDisplay) sortDisplay.textContent = 'Distance';
                 sortBtn.disabled = false;
@@ -506,12 +602,22 @@ const widgetId = `results-widget-${itemType}`;
         }
       });
     }
-  
-      // Initial render
-      if (showFilters) {
+
+    // Update sort display on initialization if we have a saved location
+    if (sortDisplay && userLocation && currentSort === 'distance') {
+      sortDisplay.textContent = 'Distance';
+    }
+
+    // Initial render
+    if (showFilters) {
+      filterAndSortItems();
+      updateFilterCount();
+    } else {
+      // Even without filters, we should render if we have distance sorting
+      if (currentSort === 'distance' && userLocation) {
         filterAndSortItems();
-        updateFilterCount();
       }
+    }
   }
 
   // Initialize on first load

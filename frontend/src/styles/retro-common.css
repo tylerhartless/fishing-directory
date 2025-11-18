@@ -831,7 +831,7 @@ h6 {
 
 /* Value Proposition Badges - Responsive grid layout */
 .retro-section .retro-grid.grid-auto-fit {
-  /* Mobile: single column (stacked vertically) */
+  /* Mobile: single column (stacked vertically, 4x1) */
   grid-template-columns: 1fr;
   gap: 1rem;
 }
@@ -844,10 +844,10 @@ h6 {
   }
 }
 
-/* Desktop: single row with 4 columns */
+/* Desktop: 2 columns (2x2 grid) */
 @media (min-width: 1024px) {
   .retro-section .retro-grid.grid-auto-fit {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
 }
