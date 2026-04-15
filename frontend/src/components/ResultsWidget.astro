@@ -52,7 +52,7 @@ const widgetId = `results-widget-${itemType}`;
         <span class="back-text">{backButton.text}</span>
       </a>
     )}
-    <button id="refresh-location-btn" class="control-button" style="display: none;">
+    <button id="refresh-location-btn" class="control-button" hidden>
       <span id="refresh-location-text">Refresh Location</span>
     </button>
     <button id="sort-btn" class="control-button">
@@ -154,7 +154,7 @@ const widgetId = `results-widget-${itemType}`;
 
     // Show refresh button if we have a saved location
     if (refreshLocationBtn && userLocation) {
-      refreshLocationBtn.style.display = 'block';
+      refreshLocationBtn.removeAttribute('hidden');
     }
 
     // Handle scroll fade effects
@@ -577,7 +577,7 @@ const widgetId = `results-widget-${itemType}`;
                 
                 // Show refresh button
                 if (refreshLocationBtn) {
-                  refreshLocationBtn.style.display = 'block';
+                  refreshLocationBtn.removeAttribute('hidden');
                 }
                 
                 currentSort = 'distance';
