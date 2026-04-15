@@ -33,6 +33,9 @@ check_db_size.py
 export_production_db.py
 deploy_database.sql
 
+# MCP server (local dev tool with credentials)
+mcp-server/
+
 # IDE
 .vscode/
 .idea/
