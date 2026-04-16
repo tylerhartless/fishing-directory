@@ -61,10 +61,10 @@ export async function getStaticPaths() {
 
 const { spot } = Astro.props;
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
-// Use streets-v11 for light mode, dark-v11 for dark mode
+// Light: Frank (netlace/cmo22v29h00gn01s49nnh6e5x), Dark: netlace/cmo22y7nx002c01qfha7d96ct
 // Larger dimensions (900x600) for better mobile display
-const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
-const darkMapUrl = `https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
+const mapUrl = `https://api.mapbox.com/styles/v1/netlace/cmo22v29h00gn01s49nnh6e5x/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
+const darkMapUrl = `https://api.mapbox.com/styles/v1/netlace/cmo22y7nx002c01qfha7d96ct/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
 
 // Get all counties for this spot (supports both legacy and new multi-county format)
 const spotCounties = getSpotCounties(spot);
@@ -176,7 +176,7 @@ const schema = {
                   
                   // Only change URL if different
                   const currentSrc = mapImg.getAttribute('src') || mapImg.src;
-                  const needsUrlChange = !currentSrc.includes(isDark ? 'dark-v11' : 'streets-v11');
+                  const needsUrlChange = !currentSrc.includes(isDark ? 'cmo22y7nx002c01qfha7d96ct' : 'cmo22v29h00gn01s49nnh6e5x');
                   
                   if (needsUrlChange) {
                     mapImg.src = correctUrl;
@@ -366,8 +366,8 @@ const schema = {
           // Check the style in the URL instead of full URL comparison
           // This avoids issues with URL normalization
           const currentSrc = mapImg.getAttribute('src') || mapImg.src;
-          const isCurrentlyDark = currentSrc.includes('dark-v11');
-          const isCurrentlyLight = currentSrc.includes('streets-v11');
+          const isCurrentlyDark = currentSrc.includes('cmo22y7nx002c01qfha7d96ct');
+          const isCurrentlyLight = currentSrc.includes('cmo22v29h00gn01s49nnh6e5x');
 
           // Update map if theme doesn't match current map style
           const shouldSwitch = (isDark && !isCurrentlyDark) || (!isDark && !isCurrentlyLight);

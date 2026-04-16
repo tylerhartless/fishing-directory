@@ -99,6 +99,7 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
   const tileLayerRef = useRef<any>(null);
   const clusterGroupRef = useRef<any>(null);
   const leafletRef = useRef<any>(null);
+  const autoZoomedForLocationRef = useRef<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
   const [ipLocation, setIpLocation] = useState<{ lat: number; lon: number } | null>(null);
@@ -169,13 +170,15 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
 
         mapInstanceRef.current = map;
 
-        // Add tile layer — CARTO free tiles (no token needed)
+        // Add tile layer — Mapbox raster tiles (512px for retina sharpness)
         const tiles = L.tileLayer(
           isDarkMode
-            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-            : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            ? `https://api.mapbox.com/styles/v1/netlace/cmo22y7nx002c01qfha7d96ct/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`
+            : `https://api.mapbox.com/styles/v1/netlace/cmo22v29h00gn01s49nnh6e5x/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`,
           {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+            attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            tileSize: 512,
+            zoomOffset: -1,
             maxZoom: 19,
           }
         ).addTo(map);
@@ -246,13 +249,15 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
     // Remove old tile layer
     map.removeLayer(tileLayerRef.current);
 
-    // Add new tile layer with correct theme — CARTO
+    // Add new tile layer with correct theme — Mapbox raster tiles
     const tiles = L.tileLayer(
       isDarkMode
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        ? `https://api.mapbox.com/styles/v1/netlace/cmo22y7nx002c01qfha7d96ct/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`
+        : `https://api.mapbox.com/styles/v1/netlace/cmo22v29h00gn01s49nnh6e5x/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`,
       {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        tileSize: 512,
+        zoomOffset: -1,
         maxZoom: 19,
       }
     ).addTo(map);
@@ -271,11 +276,36 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
     addMarkers(L, clusterGroup, spots);
   }, [spots, isDarkMode, mapReady]);
 
-  // Re-center map when userLocation changes
+  // Re-center map when userLocation changes, zooming to frame the nearest spots
   useEffect(() => {
-    if (!mapInstanceRef.current || !userLocation) return;
-    mapInstanceRef.current.setView([userLocation.lat, userLocation.lon], 10, { animate: true });
-  }, [userLocation]);
+    if (!mapInstanceRef.current || !userLocation || !leafletRef.current) return;
+    if (spots.length === 0) return; // wait for spots to load before calculating bounds
+
+    // Only auto-zoom once per unique user location — don't re-zoom on filter changes
+    const locationKey = `${userLocation.lat},${userLocation.lon}`;
+    if (autoZoomedForLocationRef.current === locationKey) return;
+    autoZoomedForLocationRef.current = locationKey;
+
+    const L = leafletRef.current;
+    const map = mapInstanceRef.current;
+
+    // Get the 3 nearest spots (spots are pre-sorted by distance from SearchWidget)
+    const nearestSpots = spots
+      .filter(s => !isNaN(parseFloat(s.latitude)) && !isNaN(parseFloat(s.longitude)))
+      .slice(0, 3);
+
+    if (nearestSpots.length > 0) {
+      const latlngs: [number, number][] = [
+        [userLocation.lat, userLocation.lon],
+        ...nearestSpots.map(s => [parseFloat(s.latitude), parseFloat(s.longitude)] as [number, number])
+      ];
+      const bounds = L.latLngBounds(latlngs);
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14, animate: true });
+    } else {
+      // Fallback: no spots nearby, just center on user
+      map.setView([userLocation.lat, userLocation.lon], 10, { animate: true });
+    }
+  }, [userLocation, spots]);
 
   function addMarkers(L: any, clusterGroup: any, spotsToAdd: Spot[]) {
     const markers: any[] = [];
