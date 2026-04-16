@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ResultsWidget from '../../components/ResultsWidget.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import { getSpots } from '../../lib/database';
 
 const pageTitle = "Where Can I Fish Without a License in Texas? - State Parks Guide";
@@ -35,6 +36,9 @@ const stateParks = allSpots.filter(spot =>
           <strong>Important:</strong> While you don't need a fishing license, you still need to pay park entrance fees. Daily passes typically cost $3-8 per person (ages 13+).
         </div>
       </div>
+
+      <!-- Ad: between intro and results (mobile) -->
+      <AdSlot format="horizontal" class="ad-slot-inline" />
 
       <!-- State Parks Search -->
       <div class="spots-list-section">
@@ -86,6 +90,9 @@ const stateParks = allSpots.filter(spot =>
         </ResultsWidget>
       </div>
 
+
+      <!-- Ad: between results and FAQ (mobile) -->
+      <AdSlot format="horizontal" class="ad-slot-inline" />
 
       <!-- FAQ Section -->
       <div class="faq-section retro-section">

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ResultsWidget from '../components/ResultsWidget.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { getSpots } from '../lib/database';
 
 // State lookup mappings
@@ -109,6 +110,9 @@ const totalSpots = allSpots.length;
   </section>
 
   <section class="retro-container">
+    <!-- Ad: above results (mobile) -->
+    <AdSlot format="horizontal" class="ad-slot-inline" />
+
     <div class="states-list-section">
       <ResultsWidget
         items={states}

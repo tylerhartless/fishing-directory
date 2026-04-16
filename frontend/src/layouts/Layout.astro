@@ -1,10 +1,13 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import CountyNavLink from '../components/CountyNavLink.tsx';
+import AdSidebar from '../components/AdSidebar.astro';
+import { ADS_ENABLED, PUBLISHER_ID } from '../lib/ads-config';
 import '../styles/retro-colors.css';
 import '../styles/retro-common.css';
 import '../styles/search-widget.css';
 import '../styles/layout.css';
+import '../styles/ads.css';
 
 interface Props {
   title: string;
@@ -14,6 +17,7 @@ interface Props {
 const { title, description = 'Find public fishing spots nationwide. Free boat ramps, bank fishing, and pier access locations with GPS coordinates.' } = Astro.props;
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://yourdomain.com';
 const isStaging = siteUrl.includes('staging');
+const loadAdScript = ADS_ENABLED && PUBLISHER_ID.length > 0;
 ---
 
 <!doctype html>
@@ -58,6 +62,11 @@ const isStaging = siteUrl.includes('staging');
       })();
     </script>
 
+    <!-- Google AdSense (loaded only when fully configured) -->
+    {loadAdScript && (
+      <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${PUBLISHER_ID}`} crossorigin="anonymous"></script>
+    )}
+
     <!-- View Transitions -->
     <ViewTransitions />
   </head>
@@ -86,7 +95,17 @@ const isStaging = siteUrl.includes('staging');
     </header>
 
     <main class="main-content">
-      <slot />
+      {ADS_ENABLED ? (
+        <div class="ad-layout">
+          <AdSidebar position="left" />
+          <div class="ad-layout-content">
+            <slot />
+          </div>
+          <AdSidebar position="right" />
+        </div>
+      ) : (
+        <slot />
+      )}
     </main>
 
     <footer>

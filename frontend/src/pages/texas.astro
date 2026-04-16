@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import SpecialLandingPageCallout from '../components/SpecialLandingPageCallout.tsx';
 import ResultsWidget from '../components/ResultsWidget.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { getSpots } from '../lib/database';
 
 // Get all Texas spots
@@ -88,6 +89,9 @@ const counties = Object.entries(countyData)
         ))}
       </ResultsWidget>
     </div>
+
+    <!-- Ad: between results and special callout (mobile) -->
+    <AdSlot format="horizontal" class="ad-slot-inline" />
 
     <!-- Special Landing Pages Section -->
     <div class="special-pages-section">

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import AdSlot from '../../../components/AdSlot.astro';
 import { getSpots, generateMapUrl, getSpotCounties, getSpotCountyDisplay, type FishingSpot } from '../../../lib/database';
 
 
@@ -226,6 +227,9 @@ const schema = {
             </div>
           </div>
 
+          <!-- Ad: between map and description (mobile) -->
+          <AdSlot format="horizontal" class="ad-slot-inline" />
+
           <!-- Description -->
           <section class="retro-section description">
             <h2>About This Spot</h2>
@@ -317,6 +321,9 @@ const schema = {
               <p>No fishing license required at Texas State Parks</p>
             </div>
           )}
+
+          <!-- Ad: below sidebar info boxes -->
+          <AdSlot format="rectangle" class="ad-slot-sidebar-content" />
         </aside>
       </div>
     </div>

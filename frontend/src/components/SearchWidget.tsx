@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import type { JSX } from 'preact';
+import InFeedAd from './InFeedAd';
+import MapView from './MapView';
+import { ADS_ENABLED, PUBLISHER_ID, AD_FREQUENCY, AD_SLOTS } from '../lib/ads-config';
 
 // Development-only logging
 const isDev = import.meta.env.DEV;
 
 interface SearchWidgetProps {
   nominatimEmail?: string;
+  mapboxToken?: string;
 }
 
 interface Spot {
@@ -22,6 +26,8 @@ interface Spot {
   distance?: number;
 }
 
+const ALL_SPOT_TYPES = ['lake', 'river_access', 'public_water', 'state_park', 'fishing_pier'] as const;
+
 const stateSlugLookup: Record<string, string> = {
   'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
   'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
@@ -35,7 +41,7 @@ const stateSlugLookup: Record<string, string> = {
   'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
 };
 
-export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.com' }: SearchWidgetProps) {
+export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.com', mapboxToken = '' }: SearchWidgetProps) {
   // Search state
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -57,9 +63,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   const [searchContext, setSearchContext] = useState<string>('');
 
   // Filter state
-  const [showFilters, setShowFilters] = useState(false);
-  const [typeFilters, setTypeFilters] = useState<Set<string>>(new Set());
-  const [searchRadius, setSearchRadius] = useState<number>(100); // Default to 100 miles
+  const [typeFilters, setTypeFilters] = useState<Set<string>>(new Set(ALL_SPOT_TYPES));
+  const [searchRadius, setSearchRadius] = useState<number>(50); // Default to 50 miles
+
+  // View mode state (list vs map)
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
 
   // Infinite scroll state
   const [displayCount, setDisplayCount] = useState(20);
@@ -109,9 +117,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setUserLocation(state.userLocation);
           setSearchContext(state.searchContext);
           setAllSpots(state.allSpots);
-          setTypeFilters(new Set(state.typeFilters));
-          setSearchRadius(state.searchRadius || 100);
+          const restoredFilters = new Set(state.typeFilters);
+          setTypeFilters(restoredFilters.size === 0 ? new Set(ALL_SPOT_TYPES) : restoredFilters);
+          setSearchRadius(state.searchRadius || 50);
           setDisplayCount(state.displayCount);
+          if (state.viewMode) setViewMode(state.viewMode);
           setShowResults(true);
         } catch (error) {
           if (isDev) console.error('Failed to restore search state:', error);
@@ -131,10 +141,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         typeFilters: Array.from(typeFilters),
         searchRadius,
         displayCount,
+        viewMode,
       };
       sessionStorage.setItem('searchWidgetState', JSON.stringify(state));
     }
-  }, [showResults, userLocation, searchContext, allSpots, typeFilters, searchRadius, displayCount]);
+  }, [showResults, userLocation, searchContext, allSpots, typeFilters, searchRadius, displayCount, viewMode]);
 
   // API URL
   const API_URL = typeof window !== 'undefined'
@@ -190,8 +201,8 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
     let filtered = [...allSpots];
 
-    // Apply type filters (checkbox-based)
-    if (typeFilters.size > 0) {
+    // Apply type filters (chip-based, opt-out model)
+    if (typeFilters.size > 0 && typeFilters.size < ALL_SPOT_TYPES.length) {
       filtered = filtered.filter(spot => typeFilters.has(spot.spot_type));
     }
 
@@ -207,8 +218,24 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         )
       }));
 
-      // Filter by search radius
-      filtered = filtered.filter(spot => (spot.distance || 0) <= searchRadius);
+      // Auto-expanding radius: try current, then 100, then 500
+      const expansionSteps = [searchRadius, 100, 500];
+      let effectiveRadius = searchRadius;
+      let spotsInRadius: Spot[] = [];
+
+      for (const radius of expansionSteps) {
+        if (radius < effectiveRadius) continue;
+        effectiveRadius = radius;
+        spotsInRadius = filtered.filter(spot => (spot.distance || 0) <= effectiveRadius);
+        if (spotsInRadius.length > 0) break;
+      }
+
+      filtered = spotsInRadius;
+
+      // Update the radius dropdown if we auto-expanded
+      if (effectiveRadius !== searchRadius) {
+        setSearchRadius(effectiveRadius);
+      }
 
       // Always sort by distance when user location is available
       filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
@@ -326,6 +353,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+          if (isDev) console.log('[SearchWidget] GPS success:', { latitude, longitude });
           setUserLocation({ lat: latitude, lon: longitude });
           setSearchContext(`Near ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           setLoadingMessage('Loading fishing spots...');
@@ -341,8 +369,13 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
           // Load spots if not already loaded
           if (allSpots.length === 0) {
+            if (isDev) console.log('[SearchWidget] Loading spots from API...');
             await loadSpots();
+          } else {
+            if (isDev) console.log('[SearchWidget] Spots already loaded:', allSpots.length);
           }
+
+          if (isDev) console.log('[SearchWidget] allSpots count after load:', allSpots.length);
 
           setIsLoadingLocation(false);
           setLoadingMessage('');
@@ -355,6 +388,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           }, 250);
         },
         (error) => {
+          if (isDev) console.log('[SearchWidget] GPS error:', error.code, error.message);
           setIsLoadingLocation(false);
           setLoadingMessage('');
 
@@ -504,6 +538,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       setSearchContext('');
       setTypeFilters(new Set());
       setDisplayCount(20);
+      setViewMode('map');
     }, 500); // Wait for wipe-away animation
 
     setTimeout(() => {
@@ -515,6 +550,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     const newFilters = new Set(typeFilters);
     if (newFilters.has(type)) {
       newFilters.delete(type);
+      // Edge case: if all deactivated, re-enable all
+      if (newFilters.size === 0) {
+        setTypeFilters(new Set(ALL_SPOT_TYPES));
+        return;
+      }
     } else {
       newFilters.add(type);
     }
@@ -689,15 +729,42 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
             </div>
           </div>
 
-          {/* Filter & Sort Controls */}
+          {/* Filter Chips */}
+          <div class="filter-chips">
+            {ALL_SPOT_TYPES.map(type => {
+              const isActive = typeFilters.has(type);
+              const labels: Record<string, string> = {
+                lake: 'Lakes',
+                river_access: 'Rivers',
+                public_water: 'Public Waters',
+                state_park: 'State Parks',
+                fishing_pier: 'Piers',
+              };
+              return (
+                <button
+                  key={type}
+                  class={`filter-chip ${isActive ? 'filter-chip-active' : 'filter-chip-inactive'} ${type === 'state_park' ? 'filter-chip-park' : ''}`}
+                  onClick={() => handleTypeFilterToggle(type)}
+                  aria-pressed={isActive}
+                >
+                  <span class="filter-chip-label">{labels[type]}</span>
+                  {type === 'state_park' && <span class="no-license-sup" title="No License Required">No License</span>}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* View & Radius Controls */}
           <div class="controls-bar">
-            <button
-              class="control-button"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <span class="control-label">Filters</span>
-              <span id="filter-count">{typeFilters.size > 0 ? `(${typeFilters.size})` : ''}</span>
-            </button>
+            {mapboxToken && (
+              <button
+                class={`control-button ${viewMode === 'map' ? 'control-button-active' : ''}`}
+                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
+                aria-label={viewMode === 'list' ? 'Switch to map view' : 'Switch to list view'}
+              >
+                <span class="control-label">{viewMode === 'list' ? 'Map' : 'List'}</span>
+              </button>
+            )}
 
             {userLocation && (
               <div class="sort-control">
@@ -713,144 +780,101 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
             )}
           </div>
 
-          {/* Collapsible Filter Panel */}
-          {showFilters && (
-            <div class="filter-panel">
-              <div class="filter-section">
-                <h4>Spot Type</h4>
-                <div class="filter-checkboxes">
-                  <label class="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={typeFilters.has('lake')}
-                      onChange={() => handleTypeFilterToggle('lake')}
-                    />
-                    <span>Lakes</span>
-                  </label>
-
-                  <label class="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={typeFilters.has('river_access')}
-                      onChange={() => handleTypeFilterToggle('river_access')}
-                    />
-                    <span>River Access</span>
-                  </label>
-
-                  <label class="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={typeFilters.has('public_water')}
-                      onChange={() => handleTypeFilterToggle('public_water')}
-                    />
-                    <span>Public Waters</span>
-                  </label>
-
-                  <label class="filter-checkbox highlight-no-license">
-                    <input
-                      type="checkbox"
-                      checked={typeFilters.has('state_park')}
-                      onChange={() => handleTypeFilterToggle('state_park')}
-                    />
-                    <span>
-                      State Parks
-                      <span class="no-license-badge">No License Required</span>
-                    </span>
-                  </label>
-
-                  <label class="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={typeFilters.has('fishing_pier')}
-                      onChange={() => handleTypeFilterToggle('fishing_pier')}
-                    />
-                    <span>Fishing Piers</span>
-                  </label>
+          {/* Results: List View or Map View */}
+          {viewMode === 'map' && mapboxToken ? (
+            <MapView
+              spots={filteredSpots}
+              userLocation={userLocation}
+              isDarkMode={isDarkMode}
+              mapboxToken={mapboxToken}
+            />
+          ) : (
+            <div class="results-container" ref={resultsRef}>
+              {isLoadingSpots ? (
+                <div class="loading-state">
+                  <svg class="spinner" width="40" height="40" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="80" stroke-dashoffset="60"/>
+                  </svg>
+                  <p>Loading fishing spots...</p>
                 </div>
-              </div>
-              {typeFilters.size > 0 && (
-                <button class="btn-clear-filters" onClick={() => setTypeFilters(new Set())}>
-                  Clear All Filters
-                </button>
+              ) : displayedSpots.length === 0 ? (
+                <div class="empty-state">
+                  <p>No fishing spots found in your area yet.</p>
+                  <button onClick={handleNewSearch}>Try a different search</button>
+                </div>
+              ) : (
+                <div class="results-grid">
+                  {displayedSpots.map((spot, index) => {
+                    const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
+                    const countySlug = getCountySlug(spot.county);
+                    const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+
+                    const amenityIcons: Record<string, string> = {
+                      'boat_ramp': '🚤 Boat Ramp',
+                      'fishing_pier': '🎣 Pier',
+                      'fish_cleaning': '🔪 Cleaning',
+                      'restrooms': '🚻 Restrooms',
+                      'parking': '🅿️ Parking',
+                    };
+
+                    const prominentAmenities = Object.entries(amenityIcons)
+                      .filter(([key]) => amenities[key] === true)
+                      .map(([_, label]) => label)
+                      .slice(0, 3);
+
+                    const showAd = ADS_ENABLED && index > 0 && index % AD_FREQUENCY === 0;
+
+                    return (
+                      <>
+                        {showAd && (
+                          <InFeedAd
+                            publisherId={PUBLISHER_ID}
+                            slotId={AD_SLOTS.inFeed}
+                            index={index}
+                          />
+                        )}
+                        <a
+                          key={spot.id}
+                          href={`/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}`}
+                          class="spot-card"
+                          data-spot-type={spot.spot_type}
+                          style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}
+                        >
+                          <div class="card-header">
+                            <h3>{displayName}</h3>
+                            {spot.distance && (
+                              <div class="distance-indicator">{formatDistance(spot.distance)}</div>
+                            )}
+                          </div>
+                          <div class="card-body">
+                            {prominentAmenities.length > 0 ? (
+                              <>
+                                {prominentAmenities.map(amenity => (
+                                  <span key={amenity} class="card-meta-item">{amenity}</span>
+                                ))}
+                              </>
+                            ) : (
+                              <span class="amenity-placeholder">No amenities listed</span>
+                            )}
+                          </div>
+                        </a>
+                      </>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Load More Indicator */}
+              {displayedSpots.length < filteredSpots.length && (
+                <div class="load-more-indicator">
+                  <svg class="spinner-small" width="24" height="24" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80" stroke-dashoffset="60"/>
+                  </svg>
+                  <span>Loading more...</span>
+                </div>
               )}
             </div>
           )}
-
-          {/* Results Grid */}
-          <div class="results-container" ref={resultsRef}>
-            {isLoadingSpots ? (
-              <div class="loading-state">
-                <svg class="spinner" width="40" height="40" viewBox="0 0 50 50">
-                  <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="80" stroke-dashoffset="60"/>
-                </svg>
-                <p>Loading fishing spots...</p>
-              </div>
-            ) : displayedSpots.length === 0 ? (
-              <div class="empty-state">
-                <p>No fishing spots found.</p>
-                <button onClick={handleNewSearch}>Try a different search</button>
-              </div>
-            ) : (
-              <div class="results-grid">
-                {displayedSpots.map((spot, index) => {
-                  const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
-                  const countySlug = getCountySlug(spot.county);
-                  const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
-
-                  const amenityIcons: Record<string, string> = {
-                    'boat_ramp': '🚤 Boat Ramp',
-                    'fishing_pier': '🎣 Pier',
-                    'fish_cleaning': '🔪 Cleaning',
-                    'restrooms': '🚻 Restrooms',
-                    'parking': '🅿️ Parking',
-                  };
-
-                  const prominentAmenities = Object.entries(amenityIcons)
-                    .filter(([key]) => amenities[key] === true)
-                    .map(([_, label]) => label)
-                    .slice(0, 3);
-
-                  return (
-                    <a
-                      key={spot.id}
-                      href={`/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}`}
-                      class="spot-card"
-                      data-spot-type={spot.spot_type}
-                      style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}
-                    >
-                      <div class="card-header">
-                        <h3>{displayName}</h3>
-                        {spot.distance && (
-                          <div class="distance-indicator">{formatDistance(spot.distance)}</div>
-                        )}
-                      </div>
-                      <div class="card-body">
-                        {prominentAmenities.length > 0 ? (
-                          <>
-                            {prominentAmenities.map(amenity => (
-                              <span key={amenity} class="card-meta-item">{amenity}</span>
-                            ))}
-                          </>
-                        ) : (
-                          <span class="amenity-placeholder">No amenities listed</span>
-                        )}
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Load More Indicator */}
-            {displayedSpots.length < filteredSpots.length && (
-              <div class="load-more-indicator">
-                <svg class="spinner-small" width="24" height="24" viewBox="0 0 50 50">
-                  <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80" stroke-dashoffset="60"/>
-                </svg>
-                <span>Loading more...</span>
-              </div>
-            )}
-          </div>
         </div>
       )}
     </div>
