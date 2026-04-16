@@ -1358,19 +1358,137 @@
   background: var(--rgba-black-05);
 }
 
-/* State Parks chip - park-green accent */
-.filter-chip-park.filter-chip-active {
-  background: var(--rgba-park-badge-20);
-  border-color: var(--rgba-park-badge-40);
+/* =============================================
+   PER-TYPE FILTER CHIP COLORS
+   Active chips glow their map-marker color.
+   Inactive chips keep the neutral sage style.
+   ============================================= */
+
+/* --- Lakes (blue) --- */
+.filter-chip-lake.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-lake) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-lake) 55%, transparent);
+  color: var(--badge-lake);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-lake) 25%, transparent);
+}
+.filter-chip-lake.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-lake) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-lake) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-lake) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-lake.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-lake) 25%, white);
+  border: 2px solid var(--badge-lake);
+  color: var(--badge-lake-light);
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-lake) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-lake.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-lake) 40%, transparent);
 }
 
-.filter-chip-park.filter-chip-active:hover {
-  background: var(--rgba-park-badge-30);
+/* --- Rivers (purple) --- */
+.filter-chip-river_access.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-river) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-river) 55%, transparent);
+  color: var(--badge-river);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-river) 25%, transparent);
+}
+.filter-chip-river_access.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-river) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-river) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-river) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-river_access.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-river) 25%, white);
+  border: 2px solid var(--badge-river);
+  color: var(--badge-river-light);
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-river) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-river_access.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-river) 40%, transparent);
 }
 
-[data-theme="light"] .filter-chip-park.filter-chip-active {
-  background: var(--rgba-light-sage-15);
-  border-color: var(--badge-park-light);
+/* --- Public Waters (green) --- */
+.filter-chip-public_water.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-public) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-public) 55%, transparent);
+  color: var(--badge-public);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-public) 25%, transparent);
+}
+.filter-chip-public_water.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-public) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-public) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-public) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-public_water.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-public) 25%, white);
+  border: 2px solid var(--badge-public);
+  color: var(--badge-public-light);
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-public) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-public_water.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-public) 40%, transparent);
+}
+
+/* --- State Parks (yellow-green) --- */
+.filter-chip-state_park.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-park) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-park) 55%, transparent);
+  color: var(--badge-park);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-park) 25%, transparent);
+}
+.filter-chip-state_park.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-park) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-park) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-park) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-state_park.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-park) 25%, white);
+  border: 2px solid var(--badge-park);
+  color: var(--badge-park-light);
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-park) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-state_park.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-park) 40%, transparent);
+}
+/* No License badge inside an active state park chip — needs to stand out from the chip */
+[data-theme="light"] .filter-chip-state_park.filter-chip-active .no-license-sup {
+  background: white;
+  color: var(--badge-park-light);
+  border-color: var(--badge-park);
+  font-weight: 700;
+}
+
+/* --- Fishing Piers (gold/amber) --- */
+.filter-chip-fishing_pier.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-pier) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-pier) 55%, transparent);
+  color: var(--badge-pier);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-pier) 25%, transparent);
+}
+.filter-chip-fishing_pier.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-pier) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-pier) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-pier) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-fishing_pier.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-pier) 25%, white);
+  border: 2px solid var(--badge-pier);
+  color: var(--accent-copper); /* copper/terracotta — readable on near-white, matches the amber vibe */
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-pier) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-fishing_pier.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-pier) 40%, transparent);
 }
 
 /* No License Required badge */

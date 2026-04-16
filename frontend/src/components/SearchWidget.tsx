@@ -755,7 +755,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
               return (
                 <button
                   key={type}
-                  class={`filter-chip ${isActive ? 'filter-chip-active' : 'filter-chip-inactive'} ${type === 'state_park' ? 'filter-chip-park' : ''}`}
+                  class={`filter-chip ${isActive ? 'filter-chip-active' : 'filter-chip-inactive'} filter-chip-${type}`}
                   onClick={() => handleTypeFilterToggle(type)}
                   aria-pressed={isActive}
                 >
