@@ -547,18 +547,30 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   const handleTypeFilterToggle = (type: string) => {
-    const newFilters = new Set(typeFilters);
-    if (newFilters.has(type)) {
-      newFilters.delete(type);
-      // Edge case: if all deactivated, re-enable all
-      if (newFilters.size === 0) {
-        setTypeFilters(new Set(ALL_SPOT_TYPES));
-        return;
-      }
+    const isDefaultState = typeFilters.size === ALL_SPOT_TYPES.length;
+
+    if (isDefaultState) {
+      // First tap from "all active": isolate to just this one
+      setTypeFilters(new Set([type]));
     } else {
-      newFilters.add(type);
+      const newFilters = new Set(typeFilters);
+      if (newFilters.has(type)) {
+        // Deselect this chip; if it was the last one, reset to all
+        newFilters.delete(type);
+        if (newFilters.size === 0) {
+          setTypeFilters(new Set(ALL_SPOT_TYPES));
+          return;
+        }
+      } else {
+        // Stack: add this chip to the active set
+        newFilters.add(type);
+      }
+      setTypeFilters(newFilters);
     }
-    setTypeFilters(newFilters);
+  };
+
+  const handleClearTypeFilters = () => {
+    setTypeFilters(new Set(ALL_SPOT_TYPES));
   };
 
   // Close suggestions when clicking outside
@@ -752,6 +764,15 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                 </button>
               );
             })}
+            {typeFilters.size < ALL_SPOT_TYPES.length && (
+              <button
+                class="filter-chip filter-chip-clear"
+                onClick={handleClearTypeFilters}
+                aria-label="Clear all filters"
+              >
+                <span class="filter-chip-label">Clear</span>
+              </button>
+            )}
           </div>
 
           {/* View & Radius Controls */}
