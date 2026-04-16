@@ -1330,6 +1330,34 @@
   border-color: var(--rgba-black-30);
 }
 
+/* Clear filters chip */
+.filter-chip-clear {
+  background: transparent;
+  border: 1px dashed var(--rgba-sage-30);
+  color: var(--theme-text-sage);
+  opacity: 0.6;
+}
+
+.filter-chip-clear:hover {
+  opacity: 1;
+  border-color: var(--rgba-sage-50);
+  background: var(--rgba-sage-05);
+}
+
+[data-theme="light"] .filter-chip-clear {
+  background: transparent;
+  border: 1px dashed var(--rgba-black-30);
+  color: var(--neutral-gray);
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+[data-theme="light"] .filter-chip-clear:hover {
+  opacity: 1;
+  border-color: var(--rgba-black-50);
+  background: var(--rgba-black-05);
+}
+
 /* State Parks chip - park-green accent */
 .filter-chip-park.filter-chip-active {
   background: var(--rgba-park-badge-20);
