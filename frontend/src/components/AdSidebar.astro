@@ -1,0 +1,24 @@
+---
+/**
+ * Sticky sidebar column containing one AdSlot.
+ * Used inside the 3-column ad-layout in Layout.astro.
+ * Renders nothing when ads are disabled.
+ */
+
+import { ADS_ENABLED } from '../lib/ads-config';
+import AdSlot from './AdSlot.astro';
+
+interface Props {
+  position: 'left' | 'right';
+}
+
+const { position } = Astro.props;
+---
+
+{ADS_ENABLED && (
+  <aside class={`ad-sidebar ad-sidebar-${position}`} aria-hidden="true">
+    <div class="ad-sidebar-sticky">
+      <AdSlot format="vertical" />
+    </div>
+  </aside>
+)}

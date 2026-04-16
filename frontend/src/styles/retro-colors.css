@@ -3,16 +3,12 @@
 :root {
   /* Earthy Rainbow Colors - Muted & Natural */
   --earth-rust: #b85c3a;       /* Rusty red-orange */
-  --earth-terracotta: #c87854;  /* Warm terracotta */
   --earth-sand: #d4a574;        /* Sandy tan */
-  --earth-olive: #7a8450;       /* Olive green */
   --earth-forest: #4a6741;      /* Forest green */
   --earth-slate: #5a6b73;       /* Slate blue-gray */
-  --earth-clay: #9b6b5c;        /* Clay brown */
 
   /* Primary Brand Colors - Forest & Earth */
   --primary-bg: #3d5a3d;        /* Deep forest green */
-  --primary-light: #5a7a5a;     /* Lighter forest */
   --primary-text: #f5f1e8;      /* Off-white/cream */
   --secondary-text: #d4c9b0;    /* Warm beige */
 
@@ -22,7 +18,7 @@
   --accent-cream: #f0e6d2;      /* Cream */
   --accent-rust: #b85c3a;       /* Rust orange */
   --accent-dark-orange: #d16a3a; /* Dark orange for light mode */
-  --accent-dark-brown: #3a2820; /* Dark brown (almost black) for light mode headers */
+  --accent-dark-orange: #d16a3a; /* Dark orange for light mode */
 
   /* Tournament V-17 Boat Colors - Light Mode Palette */
   --boat-cream: #f2ebe0;        /* Warm cream background (boat racing stripe) */
@@ -35,7 +31,7 @@
   --boat-black: #1a1a1a;        /* Black stripe outlines (text, borders) */
 
   /* Neutral Colors */
-  --neutral-bg: #f5f1e8;        /* Warm off-white */
+
   --neutral-white: #ffffff;
   --neutral-black: #2d2d2d;     /* Soft black */
   --neutral-gray: #6b6b6b;
@@ -105,6 +101,7 @@
   --rgba-black-10: rgba(0, 0, 0, 0.1);    /* Subtle shadows */
   --rgba-black-15: rgba(0, 0, 0, 0.15);   /* Scanlines, subtle effects */
   --rgba-black-20: rgba(0, 0, 0, 0.2);    /* Light shadows */
+  --rgba-black-25: rgba(0, 0, 0, 0.25);   /* Light shadows */
   --rgba-black-30: rgba(0, 0, 0, 0.3);    /* Most common - shadows, overlays */
   --rgba-black-40: rgba(0, 0, 0, 0.4);    /* Medium shadows */
   --rgba-black-50: rgba(0, 0, 0, 0.5);    /* Medium overlays */
@@ -154,6 +151,7 @@
   /* Sand/tan color (212, 165, 116) */
   --rgba-sand-30: rgba(212, 165, 116, 0.3);
   --rgba-sand-40: rgba(212, 165, 116, 0.4);
+  --rgba-sand-50: rgba(212, 165, 116, 0.5);
   --rgba-sand-60: rgba(212, 165, 116, 0.6);
 
   /* Moss green (122, 132, 80) */
@@ -193,10 +191,7 @@
   --font-variation-scan: 30;
   --font-variation-bleed: 20;
 
-  /* Legacy aliases for backward compatibility - will be removed in future */
-  --font-terminal: var(--font-primary);
-  --font-display: var(--font-accent);
-  --font-body: var(--font-system);
+  /* Legacy aliases removed */
   
   /* Font sizes - consistent sizing across components */
   /* Base sizes (mobile-first, matching search widget scale) */
@@ -208,14 +203,10 @@
   --font-size-xl: 1.8rem;
   --font-size-2xl: 2rem;
   --font-size-3xl: 2.5rem;
-  --font-size-4xl: 2.8rem;
   
   /* Font weights - semantic naming */
   --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-black: 900;
 
   /* ===== SHADOW & GLOW VARIABLES ===== */
   /* Centralized shadow and glow effects for headings and body text */
@@ -260,11 +251,7 @@
   --theme-text: #e5e5e5;
   --theme-text-secondary: #b0b0b0;
   --theme-text-sage: #a8c5a8;
-  --theme-card-bg: #252525;
-  --theme-card-border: rgba(255, 255, 255, 0.1);
-  --theme-shadow: rgba(0, 0, 0, 0.5);
-  --theme-input-bg: #252525;
-  --theme-input-border: rgba(212, 165, 116, 0.3);
+  --theme-text-sage: #a8c5a8;
   --theme-heading-color: #ffffff;
   --theme-breadcrumb-color: #39ff14;
   --theme-breadcrumb-hover: #50ff30;
@@ -281,8 +268,7 @@
   /* Dark mode typography */
   /* --font-heading inherits from :root, no need to redefine */
   --font-body-text: var(--font-primary);
-  --weight-heading: var(--font-weight-semibold);
-  --weight-body: var(--font-weight-semibold);
+  --font-body-text: var(--font-primary);
   --weight-emphasis: var(--font-weight-bold);
 
   /* Dark mode shadow/glow (inherit from root, can be overridden) */
@@ -301,11 +287,7 @@
   --theme-text: var(--boat-black);      /* Black text */
   --theme-text-secondary: #555555;
   --theme-text-sage: #4a6741;           /* Darker green for light mode */
-  --theme-card-bg: #ffffff;
-  --theme-card-border: var(--boat-black); /* Black borders */
-  --theme-shadow: rgba(0, 0, 0, 0.2);   /* Stronger shadows for vintage ad look */
-  --theme-input-bg: #ffffff;
-  --theme-input-border: var(--boat-black); /* Black input borders */
+  --theme-text-sage: #4a6741;           /* Darker green for light mode */
   --theme-heading-color: var(--boat-charcoal); /* Charcoal headers */
   --theme-breadcrumb-color: var(--boat-orange); /* Orange breadcrumbs */
   --theme-breadcrumb-hover: var(--boat-red); /* Red on hover */
@@ -320,15 +302,12 @@
   --theme-toggle-backdrop-filter: none;
 
   /* Button colors for vintage ad style */
-  --theme-btn-primary-bg: var(--boat-orange);
-  --theme-btn-primary-hover: var(--boat-red);
-  --theme-btn-border: var(--boat-black);
+  /* Button colors for vintage ad style */
   
   /* Light mode typography */
   /* --font-heading inherits from :root, no need to redefine */
   --font-body-text: var(--font-primary);
-  --weight-heading: var(--font-weight-semibold);
-  --weight-body: var(--font-weight-semibold);
+  --font-body-text: var(--font-primary);
   --weight-emphasis: var(--font-weight-bold);
 
   /* Light mode shadow/glow (inherit from root, can be overridden) */
@@ -349,11 +328,8 @@
     --theme-text: #e5e5e5;
     --theme-text-secondary: #b0b0b0;
     --theme-text-sage: #a8c5a8;
-    --theme-card-bg: #252525;
-    --theme-card-border: rgba(255, 255, 255, 0.1);
-    --theme-shadow: rgba(0, 0, 0, 0.5);
-    --theme-input-bg: #252525;
-    --theme-input-border: rgba(212, 165, 116, 0.3);
+    --theme-text-secondary: #b0b0b0;
+    --theme-text-sage: #a8c5a8;
     --theme-heading-color: #ffffff;
     --theme-breadcrumb-color: #39ff14;
     --theme-breadcrumb-hover: #50ff30;
@@ -368,8 +344,7 @@
     --theme-toggle-backdrop-filter: blur(8px);
     /* --font-heading inherits from :root, no need to redefine */
     --font-body-text: var(--font-primary);
-    --weight-heading: var(--font-weight-semibold);
-    --weight-body: var(--font-weight-semibold);
+    --font-body-text: var(--font-primary);
     --weight-emphasis: var(--font-weight-bold);
     
     /* Dark mode shadow/glow */
@@ -390,11 +365,8 @@
     --theme-text: var(--boat-black);
     --theme-text-secondary: #555555;
     --theme-text-sage: #4a6741;
-    --theme-card-bg: #ffffff;
-    --theme-card-border: var(--boat-black);
-    --theme-shadow: rgba(0, 0, 0, 0.2);
-    --theme-input-bg: #ffffff;
-    --theme-input-border: var(--boat-black);
+    --theme-text-secondary: #555555;
+    --theme-text-sage: #4a6741;
     --theme-heading-color: var(--boat-charcoal);
     --theme-breadcrumb-color: var(--boat-orange);
     --theme-breadcrumb-hover: var(--boat-red);
@@ -409,8 +381,7 @@
     --theme-toggle-backdrop-filter: none;
     /* --font-heading inherits from :root, no need to redefine */
     --font-body-text: var(--font-primary);
-    --weight-heading: var(--font-weight-semibold);
-    --weight-body: var(--font-weight-semibold);
+    --font-body-text: var(--font-primary);
     --weight-emphasis: var(--font-weight-bold);
     
     /* Light mode shadow/glow */
@@ -434,7 +405,7 @@
     --font-size-xl: 1.9rem;
     --font-size-2xl: 2.2rem;
     --font-size-3xl: 2.8rem;
-    --font-size-4xl: 3.2rem;
+    --font-size-3xl: 2.8rem;
   }
 }
 
@@ -449,6 +420,6 @@
     --font-size-xl: 2rem;
     --font-size-2xl: 2.4rem;
     --font-size-3xl: 3rem;
-    --font-size-4xl: 3.5rem;
+    --font-size-3xl: 3rem;
   }
 }

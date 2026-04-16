@@ -24,7 +24,8 @@ interface CachedGeolocationData extends IpGeolocationData {
 
 const CACHE_KEY = 'ip_geolocation_data';
 const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
-const API_URL = 'https://ipapi.co/json/';
+const PRIMARY_API_URL = 'https://ipapi.co/json/';
+const FALLBACK_API_URL = 'http://ip-api.com/json/?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,query';
 
 /**
  * Get cached geolocation data if valid
@@ -76,22 +77,76 @@ function setCachedData(data: IpGeolocationData): void {
 }
 
 /**
- * Fetch fresh geolocation data from API
+ * Fetch from primary API (ipapi.co)
+ */
+async function fetchFromPrimary(): Promise<IpGeolocationData | null> {
+  const response = await fetch(PRIMARY_API_URL);
+  if (!response.ok) return null;
+
+  const text = await response.text();
+  // ipapi.co returns plain text error when rate-limited (even with 200 status)
+  try {
+    const data = JSON.parse(text);
+    if (!data.latitude || !data.longitude) return null;
+    return data as IpGeolocationData;
+  } catch {
+    return null; // Non-JSON response (rate limit message)
+  }
+}
+
+/**
+ * Fetch from fallback API (ip-api.com) and normalize to our interface
+ */
+async function fetchFromFallback(): Promise<IpGeolocationData | null> {
+  const response = await fetch(FALLBACK_API_URL);
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  if (data.status !== 'success') return null;
+
+  // Normalize ip-api.com fields to match our IpGeolocationData interface
+  return {
+    ip: data.query || '',
+    city: data.city || '',
+    region: data.regionName || '',
+    region_code: data.region || '',
+    country: data.countryCode || '',
+    country_name: data.country || '',
+    postal: data.zip || '',
+    latitude: data.lat,
+    longitude: data.lon,
+    timezone: data.timezone || '',
+  };
+}
+
+/**
+ * Fetch fresh geolocation data from API with fallback
  */
 async function fetchGeolocationData(): Promise<IpGeolocationData | null> {
+  // Try primary API first (ipapi.co)
   try {
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      return null;
+    const primary = await fetchFromPrimary();
+    if (primary) {
+      setCachedData(primary);
+      return primary;
     }
-
-    const data: IpGeolocationData = await response.json();
-    setCachedData(data);
-    return data;
   } catch (error) {
-    console.log('Could not detect location via IP:', error);
-    return null;
+    console.log('Primary IP geolocation failed:', error);
   }
+
+  // Fallback to ip-api.com
+  try {
+    console.log('Trying fallback IP geolocation (ip-api.com)...');
+    const fallback = await fetchFromFallback();
+    if (fallback) {
+      setCachedData(fallback);
+      return fallback;
+    }
+  } catch (error) {
+    console.log('Fallback IP geolocation also failed:', error);
+  }
+
+  return null;
 }
 
 /**

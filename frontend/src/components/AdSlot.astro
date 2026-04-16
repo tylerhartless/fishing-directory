@@ -1,0 +1,67 @@
+---
+/**
+ * Reusable ad-slot component for Astro-rendered pages.
+ *
+ * Usage:
+ *   <AdSlot format="horizontal" class="ad-slot-inline" />
+ *
+ * Renders nothing when ads are disabled.
+ * Shows a dashed dev-placeholder when enabled but no publisher ID is set.
+ * Renders a real AdSense <ins> tag when fully configured.
+ */
+
+import { ADS_ENABLED, PUBLISHER_ID, AD_SLOTS } from '../lib/ads-config';
+
+interface Props {
+  /** AdSense responsive format */
+  format?: 'vertical' | 'horizontal' | 'rectangle' | 'in-feed';
+  /** Extra CSS class(es) for positioning */
+  class?: string;
+}
+
+const { format = 'horizontal', class: className = '' } = Astro.props;
+
+// Determine the matching slot ID (best-effort by format)
+function resolveSlotId(fmt: string): string {
+  switch (fmt) {
+    case 'vertical':   return AD_SLOTS.sidebarLeft || AD_SLOTS.sidebarRight;
+    case 'in-feed':    return AD_SLOTS.inFeed;
+    case 'rectangle':  return AD_SLOTS.sidebarContent;
+    default:           return AD_SLOTS.inlineHorizontal;
+  }
+}
+
+const slotId = resolveSlotId(format);
+const hasSlotId = slotId.length > 0;
+const showPlaceholder = ADS_ENABLED && !hasSlotId;
+const showRealAd      = ADS_ENABLED && hasSlotId && PUBLISHER_ID.length > 0;
+---
+
+{/* Render nothing when ads are off */}
+{ADS_ENABLED && (
+  showRealAd ? (
+    <div class={`ad-slot ad-slot-${format} ${className}`.trim()}>
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={`ca-pub-${PUBLISHER_ID}`}
+        data-ad-slot={slotId}
+        data-ad-format={format === 'in-feed' ? 'fluid' : 'auto'}
+        data-full-width-responsive="true"
+      ></ins>
+      <script is:inline>
+        /* Push after View-Transition-safe guard */
+        (function () {
+          var ins = document.currentScript?.previousElementSibling;
+          if (ins && !ins.getAttribute('data-adsbygoogle-status')) {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+          }
+        })();
+      </script>
+    </div>
+  ) : showPlaceholder ? (
+    <div class={`ad-slot ad-slot-${format} ${className}`.trim()}>
+      <div class="ad-slot-placeholder">Ad</div>
+    </div>
+  ) : null
+)}

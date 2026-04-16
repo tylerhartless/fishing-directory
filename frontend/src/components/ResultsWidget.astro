@@ -41,9 +41,38 @@ const spotTypesJson = JSON.stringify(spotTypes);
 
 // Generate unique widget ID for scroll position storage
 const widgetId = `results-widget-${itemType}`;
+
+// Label map for filter chips
+const chipLabelMap: Record<string, string> = {
+  lake: 'Lakes',
+  river_access: 'Rivers',
+  public_water: 'Public Waters',
+  state_park: 'State Parks',
+  fishing_pier: 'Piers',
+};
 ---
 
 <div class="search-widget-style" id={widgetId}>
+  <!-- Filter Chips -->
+  {showFilters && spotTypes.length > 0 && (
+    <div class="filter-chips" id="filter-chips">
+      {spotTypes.filter(t => t !== 'boat_ramp').map(type => {
+        const label = chipLabelMap[type] || type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const isPark = type === 'state_park';
+        return (
+          <button
+            class={`filter-chip filter-chip-active ${isPark ? 'filter-chip-park' : ''}`}
+            data-filter-type={type}
+            aria-pressed="true"
+          >
+            <span class="filter-chip-label">{label}</span>
+            {isPark && <span class="no-license-sup" title="No License Required">No License</span>}
+          </button>
+        );
+      })}
+    </div>
+  )}
+
   <!-- Controls -->
   <div class="controls-bar">
     {backButton && (
@@ -52,46 +81,14 @@ const widgetId = `results-widget-${itemType}`;
         <span class="back-text">{backButton.text}</span>
       </a>
     )}
-    <button id="refresh-location-btn" class="control-button" style="display: none;">
+    <button id="refresh-location-btn" class="control-button" hidden>
       <span id="refresh-location-text">Refresh Location</span>
     </button>
     <button id="sort-btn" class="control-button">
       <span class="control-label">Sort:</span>
       <span id="sort-display">Alphabetical</span>
     </button>
-    {showFilters && (
-      <button id="filters-btn" class="control-button">
-        <span class="control-label">Filters</span>
-        <span id="filter-count"></span>
-      </button>
-    )}
   </div>
-
-  <!-- Filter Panel (Collapsible) -->
-  {showFilters && (
-    <div id="filter-panel" class="filter-panel filter-panel-hidden">
-      <div class="filter-section">
-        <h4>Spot Type</h4>
-        <div class="filter-checkboxes" id="type-filters">
-          {spotTypes.map(type => {
-            const isBoatRamp = type === 'boat_ramp';
-            const displayName = type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            return (
-              <label class="filter-checkbox">
-                <input
-                  type="checkbox"
-                  value={type}
-                  checked={!isBoatRamp}
-                  data-filter-type="spot_type"
-                />
-                <span>{displayName}</span>
-              </label>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  )}
 
   <!-- Results Grid -->
   <div class="results-container" id={scrollContainerId}>
@@ -137,11 +134,10 @@ const widgetId = `results-widget-${itemType}`;
       // Invalid cache, ignore
     }
 
-    const filtersBtn = document.getElementById('filters-btn');
+    const filterChipsContainer = document.getElementById('filter-chips');
+    const chipButtons = filterChipsContainer ? filterChipsContainer.querySelectorAll('.filter-chip') : [];
     const sortBtn = document.getElementById('sort-btn');
     const sortDisplay = document.getElementById('sort-display');
-    const filterCount = document.getElementById('filter-count');
-    const filterPanel = document.getElementById('filter-panel');
     const itemsContainer = document.getElementById(resultsContainerId);
     const scrollContainer = document.getElementById(scrollContainerId);
     const visibleCount = document.getElementById('visible-count');
@@ -154,7 +150,7 @@ const widgetId = `results-widget-${itemType}`;
 
     // Show refresh button if we have a saved location
     if (refreshLocationBtn && userLocation) {
-      refreshLocationBtn.style.display = 'block';
+      refreshLocationBtn.removeAttribute('hidden');
     }
 
     // Handle scroll fade effects
@@ -326,10 +322,13 @@ const widgetId = `results-widget-${itemType}`;
   
     function filterAndSortItems() {
       let filtered = allItems;
-  
-      // Apply filters if enabled
+
+      // Apply filters if enabled (opt-out model: only filter when not all active)
       if (showFilters && activeFilters) {
-        filtered = allItems.filter(item => activeFilters.has(item.spot_type));
+        const nonBoatTypes = spotTypes.filter(t => t !== 'boat_ramp');
+        if (activeFilters.size > 0 && activeFilters.size < nonBoatTypes.length) {
+          filtered = allItems.filter(item => activeFilters.has(item.spot_type));
+        }
       }
   
       // Calculate distance and sort if sorting by distance
@@ -360,9 +359,6 @@ const widgetId = `results-widget-${itemType}`;
       }
   
       renderItems(filtered);
-      if (showFilters) {
-        updateFilterCount();
-      }
     }
   
     function renderItems(itemsToRender) {
@@ -466,44 +462,39 @@ const widgetId = `results-widget-${itemType}`;
       `;
     }
   
-    function updateFilterCount() {
-      if (!showFilters || !activeFilters || !filterCount) return;
-  
-      const totalTypes = spotTypes.length;
-      const activeCount = activeFilters.size;
-  
-      if (activeCount === totalTypes) {
-        filterCount.textContent = '';
-      } else {
-        filterCount.textContent = `(${activeCount})`;
-      }
-    }
-  
-    // Toggle filters panel
-    if (filtersBtn && filterPanel) {
-      filtersBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Toggle using class for more reliable state management
-        filterPanel.classList.toggle('filter-panel-hidden');
-      });
-    }
-  
-    // Handle filter changes
-    if (filterPanel) {
-      filterPanel.addEventListener('change', (e) => {
-        if (e.target.type === 'checkbox' && activeFilters) {
-          const value = e.target.value;
-          if (e.target.checked) {
-            activeFilters.add(value);
+    // Handle filter chip clicks
+    chipButtons.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const type = chip.getAttribute('data-filter-type');
+        if (!type || !activeFilters) return;
+
+        if (activeFilters.has(type)) {
+          activeFilters.delete(type);
+          // Edge case: all deactivated -> re-enable all
+          if (activeFilters.size === 0) {
+            const nonBoatTypes = spotTypes.filter(t => t !== 'boat_ramp');
+            nonBoatTypes.forEach(t => activeFilters.add(t));
+            // Update all chip visuals
+            chipButtons.forEach(c => {
+              c.classList.remove('filter-chip-inactive');
+              c.classList.add('filter-chip-active');
+              c.setAttribute('aria-pressed', 'true');
+            });
           } else {
-            activeFilters.delete(value);
+            chip.classList.remove('filter-chip-active');
+            chip.classList.add('filter-chip-inactive');
+            chip.setAttribute('aria-pressed', 'false');
           }
-          filterAndSortItems();
+        } else {
+          activeFilters.add(type);
+          chip.classList.remove('filter-chip-inactive');
+          chip.classList.add('filter-chip-active');
+          chip.setAttribute('aria-pressed', 'true');
         }
+
+        filterAndSortItems();
       });
-    }
+    });
 
     // Handle refresh location button
     if (refreshLocationBtn && refreshLocationText) {
@@ -577,7 +568,7 @@ const widgetId = `results-widget-${itemType}`;
                 
                 // Show refresh button
                 if (refreshLocationBtn) {
-                  refreshLocationBtn.style.display = 'block';
+                  refreshLocationBtn.removeAttribute('hidden');
                 }
                 
                 currentSort = 'distance';

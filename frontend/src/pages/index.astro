@@ -6,8 +6,10 @@ import ValuePropositionBadges from '../components/ValuePropositionBadges.tsx';
 import SpecialLandingPageCallout from '../components/SpecialLandingPageCallout.tsx';
 import WhatEachListingIncludes from '../components/WhatEachListingIncludes.tsx';
 import CountyListing from '../components/CountyListing.tsx';
+import AdSlot from '../components/AdSlot.astro';
 
 const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
+const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN || '';
 ---
 
 <Layout
@@ -24,7 +26,7 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
   <section class="retro-container">
     <div class="search-section">
       <div class="search-container">
-        <SearchWidget nominatimEmail={nominatimEmail} client:idle />
+        <SearchWidget nominatimEmail={nominatimEmail} mapboxToken={mapboxToken} client:idle />
       </div>
 
       <!-- New Homepage Sections: Mobile-First Design -->
@@ -39,11 +41,17 @@ const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherec
         <!-- Value Proposition Badges -->
         <ValuePropositionBadges client:load />
 
+        <!-- Ad: between value props and landing page callout (mobile) -->
+        <AdSlot format="horizontal" class="ad-slot-inline" />
+
         <!-- State Parks No-License Callout (conditional, dynamic by state) -->
         <SpecialLandingPageCallout geolocateOnly={true} client:load />
 
         <!-- What Each Listing Includes -->
         <WhatEachListingIncludes client:load />
+
+        <!-- Ad: between listing features and county listing (mobile) -->
+        <AdSlot format="horizontal" class="ad-slot-inline" />
 
         <!-- County Listing (dynamic by IP-detected state) -->
         <CountyListing client:load />

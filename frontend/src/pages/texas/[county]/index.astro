@@ -1,6 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import ResultsWidget from '../../../components/ResultsWidget.astro';
+import AdSlot from '../../../components/AdSlot.astro';
 import { getSpots } from '../../../lib/database';
 
 export async function getStaticPaths() {
@@ -76,6 +77,9 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
   </section>
 
   <section class="retro-container">
+    <!-- Ad: above results (mobile) -->
+    <AdSlot format="horizontal" class="ad-slot-inline" />
+
     <div class="spots-list-section">
       <ResultsWidget
         items={spots}

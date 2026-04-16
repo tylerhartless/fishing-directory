@@ -1,0 +1,127 @@
+/* ============================================================
+   Ad Layout & Slot Styles
+   ============================================================
+   All ad-related CSS lives here.  Imported once in Layout.astro.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   3-column ad layout wrapper (sidebar | content | sidebar)
+   ---------------------------------------------------------- */
+.ad-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1400px) {
+  .ad-layout {
+    grid-template-columns: 160px 1fr 160px;
+    gap: 1.25rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Centre column — keeps the same max-width the site already uses */
+.ad-layout-content {
+  min-width: 0; /* prevent grid blow-out */
+}
+
+/* ----------------------------------------------------------
+   Sidebar ad columns
+   ---------------------------------------------------------- */
+.ad-sidebar {
+  display: none;
+}
+
+@media (min-width: 1400px) {
+  .ad-sidebar {
+    display: block;
+    position: relative;
+  }
+}
+
+.ad-sidebar-sticky {
+  position: sticky;
+  top: 90px; /* clears the ~70px sticky header + breathing room */
+}
+
+/* ----------------------------------------------------------
+   Base ad slot
+   ---------------------------------------------------------- */
+.ad-slot {
+  overflow: hidden;
+  text-align: center;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   Dev placeholder (shown when ADS_ENABLED but no publisher ID)
+   ---------------------------------------------------------- */
+.ad-slot-placeholder {
+  border: 2px dashed var(--rgba-sage-40, rgba(120,140,100,0.4));
+  background: var(--rgba-sage-05, rgba(120,140,100,0.05));
+  padding: 1rem;
+  font-family: var(--font-body-text, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--theme-text-secondary, #888);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="light"] .ad-slot-placeholder {
+  border-color: var(--rgba-black-20, rgba(0,0,0,0.2));
+  background: var(--rgba-black-03, rgba(0,0,0,0.03));
+  color: var(--neutral-gray, #666);
+}
+
+/* ----------------------------------------------------------
+   Format-specific sizing (CLS prevention via min-heights)
+   ---------------------------------------------------------- */
+.ad-slot-vertical .ad-slot-placeholder {
+  min-height: 600px;
+  writing-mode: vertical-lr;
+}
+
+.ad-slot-horizontal .ad-slot-placeholder {
+  min-height: 90px;
+}
+
+.ad-slot-rectangle .ad-slot-placeholder {
+  min-height: 250px;
+}
+
+.ad-slot-in-feed .ad-slot-placeholder {
+  min-height: 90px;
+}
+
+/* ----------------------------------------------------------
+   In-feed ads (inside results grids)
+   ---------------------------------------------------------- */
+.ad-slot-in-feed {
+  grid-column: 1 / -1;
+  padding: 0.5rem 0;
+}
+
+/* ----------------------------------------------------------
+   Inline ads (between page sections — mobile only)
+   ---------------------------------------------------------- */
+.ad-slot-inline {
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 1400px) {
+  .ad-slot-inline {
+    display: none; /* hidden when sidebar ads are visible */
+  }
+}
+
+/* ----------------------------------------------------------
+   Sidebar-content ads (inside an existing page sidebar)
+   ---------------------------------------------------------- */
+.ad-slot-sidebar-content {
+  margin-top: 1.5rem;
+}
