@@ -36,17 +36,18 @@ const stateSlugLookup: Record<string, string> = {
 };
 
 // Color mapping for spot types — matches badge colors from retro-colors.css
+// Light mode now uses the same vibrant colors as the filter chip borders for consistency
 const SPOT_TYPE_COLORS: Record<string, { dark: string; light: string }> = {
-  lake:          { dark: '#5c9dff', light: '#5a6b73' },
-  river_access:  { dark: '#b88dff', light: '#6b4a9e' },
-  public_water:  { dark: '#7ec97e', light: '#4a6741' },
-  state_park:    { dark: '#a8d96e', light: '#7a8450' },
-  fishing_pier:  { dark: '#ffb84d', light: '#d4a574' },
-  boat_ramp:     { dark: '#c87854', light: '#b85c3a' },
-  bank_fishing:  { dark: '#7ec97e', light: '#4a6741' },
-  pier:          { dark: '#ffb84d', light: '#d4a574' },
-  wade_fishing:  { dark: '#5c9dff', light: '#5a6b73' },
-  kayak_launch:  { dark: '#b88dff', light: '#6b4a9e' },
+  lake:          { dark: '#5c9dff', light: '#5c9dff' },
+  river_access:  { dark: '#b88dff', light: '#b88dff' },
+  public_water:  { dark: '#7ec97e', light: '#7ec97e' },
+  state_park:    { dark: '#a8d96e', light: '#a8d96e' },
+  fishing_pier:  { dark: '#ffb84d', light: '#ffb84d' },
+  boat_ramp:     { dark: '#c87854', light: '#c87854' },
+  bank_fishing:  { dark: '#7ec97e', light: '#7ec97e' },
+  pier:          { dark: '#ffb84d', light: '#ffb84d' },
+  wade_fishing:  { dark: '#5c9dff', light: '#5c9dff' },
+  kayak_launch:  { dark: '#b88dff', light: '#b88dff' },
 };
 
 const DEFAULT_COLOR = { dark: '#9ab087', light: '#6b6b6b' };
@@ -320,11 +321,11 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
       const color = isDarkMode ? colors.dark : colors.light;
 
       const marker = L.circleMarker([lat, lng], {
-        radius: 7,
+        radius: 9,
         fillColor: color,
-        color: isDarkMode ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)',
-        weight: 1.5,
-        fillOpacity: 0.85,
+        color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)',
+        weight: 2,
+        fillOpacity: 1.0,
       });
 
       // Build popup content
