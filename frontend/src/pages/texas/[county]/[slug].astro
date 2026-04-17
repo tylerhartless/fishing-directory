@@ -129,15 +129,13 @@ const schema = {
             <!-- Set correct map URL immediately based on theme to prevent flash -->
             <script is:inline>
               (function() {
+                // Prevent duplicate listener registration across View Transitions
+                if (window.__spotMapInitSetup) return;
+                window.__spotMapInitSetup = true;
+
                 function initializeMap() {
                   const mapImg = document.getElementById('spot-map');
-                  if (!mapImg) {
-                    // Retry if DOM not ready yet
-                    if (document.readyState === 'loading') {
-                      setTimeout(initializeMap, 50);
-                    }
-                    return;
-                  }
+                  if (!mapImg) return; // Not on a spot detail page
 
                   const lightUrl = mapImg.getAttribute('data-light-url');
                   const darkUrl = mapImg.getAttribute('data-dark-url');
@@ -173,30 +171,35 @@ const schema = {
                   // Determine initial theme and set URL
                   const isDark = getCurrentTheme();
                   const correctUrl = isDark ? darkUrl : lightUrl;
-                  
+
                   // Only change URL if different
                   const currentSrc = mapImg.getAttribute('src') || mapImg.src;
                   const needsUrlChange = !currentSrc.includes(isDark ? 'cmo22y7nx002c01qfha7d96ct' : 'cmo22v29h00gn01s49nnh6e5x');
-                  
+
                   if (needsUrlChange) {
                     mapImg.src = correctUrl;
                   }
 
-                  // Set up load/error handlers (remove existing first to avoid duplicates)
-                  const loadHandler = function() {
+                  // Clean up previous handlers stored from prior navigation
+                  if (window.__spotMapLoadHandler) {
+                    mapImg.removeEventListener('load', window.__spotMapLoadHandler);
+                  }
+                  if (window.__spotMapErrorHandler) {
+                    mapImg.removeEventListener('error', window.__spotMapErrorHandler);
+                  }
+
+                  // Store handler references so removeEventListener works correctly
+                  window.__spotMapLoadHandler = function() {
                     showMap();
-                    loadRetryCount = 0; // Reset retry count on success
+                    loadRetryCount = 0;
                   };
-                  
-                  const errorHandler = function() {
+
+                  window.__spotMapErrorHandler = function() {
                     handleMapError(correctUrl);
                   };
 
-                  // Remove any existing handlers before adding new ones
-                  mapImg.removeEventListener('load', loadHandler);
-                  mapImg.removeEventListener('error', errorHandler);
-                  mapImg.addEventListener('load', loadHandler);
-                  mapImg.addEventListener('error', errorHandler);
+                  mapImg.addEventListener('load', window.__spotMapLoadHandler);
+                  mapImg.addEventListener('error', window.__spotMapErrorHandler);
 
                   // If image is already loaded, show immediately
                   if (mapImg.complete && mapImg.naturalHeight !== 0) {
@@ -207,7 +210,10 @@ const schema = {
                   }
                 }
 
-                // Initialize when DOM is ready
+                // Run on every page load (including View Transitions)
+                document.addEventListener('astro:page-load', initializeMap);
+
+                // Also run immediately for initial page load
                 if (document.readyState === 'loading') {
                   document.addEventListener('DOMContentLoaded', initializeMap);
                 } else {
@@ -338,45 +344,54 @@ const schema = {
   <!-- Theme-aware map switching with debouncing and error handling -->
   <script is:inline>
     (function() {
+      // Prevent duplicate listener registration across View Transitions
+      if (window.__spotMapThemeSetup) return;
+      window.__spotMapThemeSetup = true;
+
+      var currentObserver = null;
+      var debounceTimer = null;
+
       function setupThemeSwitching() {
-        const mapImg = document.getElementById('spot-map');
-        if (!mapImg) {
-          // Retry if DOM not ready
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setupThemeSwitching);
-          } else {
-            setTimeout(setupThemeSwitching, 100);
-          }
-          return;
+        // Disconnect previous observer to prevent leaks across View Transitions
+        if (currentObserver) {
+          currentObserver.disconnect();
+          currentObserver = null;
+        }
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+          debounceTimer = null;
         }
 
-        const lightUrl = mapImg.dataset.lightUrl || mapImg.getAttribute('data-light-url');
-        const darkUrl = mapImg.dataset.darkUrl || mapImg.getAttribute('data-dark-url');
-        
+        var mapImg = document.getElementById('spot-map');
+        if (!mapImg) return; // Not on a spot detail page
+
+        var lightUrl = mapImg.dataset.lightUrl || mapImg.getAttribute('data-light-url');
+        var darkUrl = mapImg.dataset.darkUrl || mapImg.getAttribute('data-dark-url');
+
         if (!lightUrl || !darkUrl) return;
 
-        let debounceTimer;
-        let retryCount = 0;
-        const maxRetries = 2;
+        var retryCount = 0;
+        var maxRetries = 2;
 
-        function updateMapTheme(retry = 0) {
-          const currentTheme = document.documentElement.getAttribute('data-theme');
-          const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        function updateMapTheme(retry) {
+          retry = retry || 0;
+          var currentTheme = document.documentElement.getAttribute('data-theme');
+          var isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
           // Check the style in the URL instead of full URL comparison
           // This avoids issues with URL normalization
-          const currentSrc = mapImg.getAttribute('src') || mapImg.src;
-          const isCurrentlyDark = currentSrc.includes('cmo22y7nx002c01qfha7d96ct');
-          const isCurrentlyLight = currentSrc.includes('cmo22v29h00gn01s49nnh6e5x');
+          var currentSrc = mapImg.getAttribute('src') || mapImg.src;
+          var isCurrentlyDark = currentSrc.includes('cmo22y7nx002c01qfha7d96ct');
+          var isCurrentlyLight = currentSrc.includes('cmo22v29h00gn01s49nnh6e5x');
 
           // Update map if theme doesn't match current map style
-          const shouldSwitch = (isDark && !isCurrentlyDark) || (!isDark && !isCurrentlyLight);
-          
+          var shouldSwitch = (isDark && !isCurrentlyDark) || (!isDark && !isCurrentlyLight);
+
           if (shouldSwitch) {
-            const newUrl = isDark ? darkUrl : lightUrl;
-            
+            var newUrl = isDark ? darkUrl : lightUrl;
+
             // Set up error handler before changing src
-            const errorHandler = function() {
+            var errorHandler = function() {
               if (retry < maxRetries) {
                 setTimeout(function() {
                   updateMapTheme(retry + 1);
@@ -386,12 +401,12 @@ const schema = {
               }
               mapImg.removeEventListener('error', errorHandler);
             };
-            
+
             mapImg.addEventListener('error', errorHandler);
             mapImg.src = newUrl;
-            
+
             // Reset retry count on success
-            const successHandler = function() {
+            var successHandler = function() {
               retryCount = 0;
               mapImg.removeEventListener('load', successHandler);
             };
@@ -400,8 +415,8 @@ const schema = {
         }
 
         // Preload both map images to avoid API calls on every theme switch
-        const lightImage = new Image();
-        const darkImage = new Image();
+        var lightImage = new Image();
+        var darkImage = new Image();
         lightImage.src = lightUrl;
         darkImage.src = darkUrl;
 
@@ -409,7 +424,7 @@ const schema = {
         setTimeout(updateMapTheme, 100);
 
         // Watch for theme changes with debouncing
-        const observer = new MutationObserver(() => {
+        currentObserver = new MutationObserver(function() {
           clearTimeout(debounceTimer);
           debounceTimer = setTimeout(function() {
             retryCount = 0;
@@ -417,13 +432,16 @@ const schema = {
           }, 100);
         });
 
-        observer.observe(document.documentElement, {
+        currentObserver.observe(document.documentElement, {
           attributes: true,
           attributeFilter: ['data-theme']
         });
       }
 
-      // Setup when DOM is ready
+      // Run on every page load (including View Transitions)
+      document.addEventListener('astro:page-load', setupThemeSwitching);
+
+      // Also run immediately for initial page load
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupThemeSwitching);
       } else {

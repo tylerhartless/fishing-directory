@@ -10,6 +10,18 @@ const isDev = import.meta.env.DEV;
 interface SearchWidgetProps {
   nominatimEmail?: string;
   mapboxToken?: string;
+  // Pre-loaded data mode props
+  initialSpots?: Spot[];
+  initialTypeFilter?: string;
+  hideSearch?: boolean;
+  hideFilters?: boolean;
+  defaultCenter?: [number, number];  // [lat, lon]
+  defaultZoom?: number;
+  showSortToggle?: boolean;
+  backButtonUrl?: string;
+  backButtonText?: string;
+  availableSpotTypes?: string[];      // Limit filter chips to these types
+  itemMode?: 'spot' | 'county';      // Controls card rendering and map markers
 }
 
 interface Spot {
@@ -18,12 +30,14 @@ interface Spot {
   name: string;
   state: string;
   county: string;
-  latitude: string;
-  longitude: string;
+  county_slug?: string;
+  latitude: string | number;
+  longitude: string | number;
   spot_type: string;
   water_body_name?: string;
   amenities?: any;
   distance?: number;
+  count?: number;                     // County mode: number of spots in county
 }
 
 const ALL_SPOT_TYPES = ['lake', 'river_access', 'public_water', 'state_park', 'fishing_pier'] as const;
@@ -41,7 +55,24 @@ const stateSlugLookup: Record<string, string> = {
   'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
 };
 
-export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.com', mapboxToken = '' }: SearchWidgetProps) {
+export default function SearchWidget({
+  nominatimEmail = 'contact@wherecanifish.com',
+  mapboxToken = '',
+  initialSpots,
+  initialTypeFilter,
+  hideSearch = false,
+  hideFilters = false,
+  defaultCenter,
+  defaultZoom,
+  showSortToggle = false,
+  backButtonUrl,
+  backButtonText = 'Back',
+  availableSpotTypes,
+  itemMode = 'spot',
+}: SearchWidgetProps) {
+  const isPreloadedMode = !!initialSpots && initialSpots.length > 0;
+  const chipTypes = availableSpotTypes || [...ALL_SPOT_TYPES];
+
   // Search state
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,10 +83,10 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   const [loadingMessage, setLoadingMessage] = useState('');
 
   // Results state
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState(isPreloadedMode);
   const [showTransition, setShowTransition] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [allSpots, setAllSpots] = useState<Spot[]>([]);
+  const [allSpots, setAllSpots] = useState<Spot[]>(isPreloadedMode ? initialSpots! : []);
   const [filteredSpots, setFilteredSpots] = useState<Spot[]>([]);
   const [displayedSpots, setDisplayedSpots] = useState<Spot[]>([]);
   const [isLoadingSpots, setIsLoadingSpots] = useState(false);
@@ -63,17 +94,30 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   const [searchContext, setSearchContext] = useState<string>('');
 
   // Filter state
-  const [typeFilters, setTypeFilters] = useState<Set<string>>(new Set(ALL_SPOT_TYPES));
+  const [typeFilters, setTypeFilters] = useState<Set<string>>(
+    initialTypeFilter ? new Set([initialTypeFilter]) : new Set(chipTypes)
+  );
   const [searchRadius, setSearchRadius] = useState<number>(50); // Default to 50 miles
+  const [sortMode, setSortMode] = useState<'distance' | 'alphabetical'>('alphabetical');
 
   // View mode state (list vs map)
   const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
+
+  // Radius expansion steps for progressive loading
+  const RADIUS_STEPS = [50, 100, 200, 500];
 
   // Infinite scroll state
   const [displayCount, setDisplayCount] = useState(20);
   const resultsRef = useRef<HTMLDivElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<HTMLDivElement>(null);
+  const searchRadiusRef = useRef(searchRadius);
+  searchRadiusRef.current = searchRadius;
+
+  // Cancellation refs for cleanup
+  const geoCancelRef = useRef<(() => void) | null>(null);
+  const fetchAbortRef = useRef<AbortController | null>(null);
+  const isLoadingLocationRef = useRef(false);
 
   // Theme detection
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -98,8 +142,23 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     }
   }, []);
 
-  // Restore search state from sessionStorage on mount
+  // Cleanup geolocation and fetch on unmount
   useEffect(() => {
+    return () => {
+      if (geoCancelRef.current) {
+        geoCancelRef.current();
+        geoCancelRef.current = null;
+      }
+      if (fetchAbortRef.current) {
+        fetchAbortRef.current.abort();
+        fetchAbortRef.current = null;
+      }
+    };
+  }, []);
+
+  // Restore search state from sessionStorage on mount (search mode only)
+  useEffect(() => {
+    if (isPreloadedMode) return;
     if (typeof window !== 'undefined') {
       const savedState = sessionStorage.getItem('searchWidgetState');
       if (savedState) {
@@ -117,7 +176,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           setUserLocation(state.userLocation);
           setSearchContext(state.searchContext);
           setAllSpots(state.allSpots);
-          const restoredFilters = new Set(state.typeFilters);
+          const restoredFilters = new Set<string>(state.typeFilters);
           setTypeFilters(restoredFilters.size === 0 ? new Set(ALL_SPOT_TYPES) : restoredFilters);
           setSearchRadius(state.searchRadius || 50);
           setDisplayCount(state.displayCount);
@@ -131,8 +190,27 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     }
   }, []);
 
-  // Save search state to sessionStorage when results are shown
+  // In pre-loaded mode, check sessionStorage for saved GPS location
   useEffect(() => {
+    if (!isPreloadedMode) return;
+    try {
+      const savedLocation = sessionStorage.getItem('user_gps_location');
+      if (savedLocation) {
+        const locationData = JSON.parse(savedLocation);
+        const now = Date.now();
+        if (locationData.timestamp && (now - locationData.timestamp) < 60 * 60 * 1000) {
+          setUserLocation({ lat: locationData.lat, lon: locationData.lon });
+          setSortMode('distance');
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Save search state to sessionStorage when results are shown (search mode only)
+  useEffect(() => {
+    if (isPreloadedMode) return;
     if (typeof window !== 'undefined' && showResults && allSpots.length > 0) {
       const state = {
         userLocation,
@@ -177,9 +255,18 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
   // Load all spots from API
   const loadSpots = async () => {
+    // Abort any previous in-flight request
+    if (fetchAbortRef.current) {
+      fetchAbortRef.current.abort();
+    }
+    const controller = new AbortController();
+    fetchAbortRef.current = controller;
+
     setIsLoadingSpots(true);
     try {
-      const response = await fetch(`${API_URL}/spots.php?limit=5000`);
+      const response = await fetch(`${API_URL}/spots.php?limit=5000`, {
+        signal: controller.signal,
+      });
       const data = await response.json();
 
       if (data.success) {
@@ -188,10 +275,17 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         setErrorMessage('Failed to load fishing spots');
       }
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        // Request was cancelled — not an error
+        return;
+      }
       if (isDev) console.error('Error loading spots:', error);
       setErrorMessage('Failed to load fishing spots. Please try again later.');
     } finally {
       setIsLoadingSpots(false);
+      if (fetchAbortRef.current === controller) {
+        fetchAbortRef.current = null;
+      }
     }
   };
 
@@ -201,8 +295,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
     let filtered = [...allSpots];
 
-    // Apply type filters (chip-based, opt-out model)
-    if (typeFilters.size > 0 && typeFilters.size < ALL_SPOT_TYPES.length) {
+    // Apply type filters
+    if (initialTypeFilter && hideFilters) {
+      // Locked filter mode — always filter to the specified type
+      filtered = filtered.filter(spot => spot.spot_type === initialTypeFilter);
+    } else if (typeFilters.size > 0 && typeFilters.size < ALL_SPOT_TYPES.length) {
       filtered = filtered.filter(spot => typeFilters.has(spot.spot_type));
     }
 
@@ -213,40 +310,52 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         distance: calculateDistance(
           userLocation.lat,
           userLocation.lon,
-          parseFloat(spot.latitude),
-          parseFloat(spot.longitude)
+          parseFloat(String(spot.latitude)),
+          parseFloat(String(spot.longitude))
         )
       }));
 
-      // Auto-expanding radius: try current, then 100, then 500
-      const expansionSteps = [searchRadius, 100, 500];
-      let effectiveRadius = searchRadius;
-      let spotsInRadius: Spot[] = [];
+      // In pre-loaded mode, skip radius filtering (all spots are already scoped)
+      if (!isPreloadedMode) {
+        // In map view, show all spots (clustering handles density); in list view, use progressive radius
+        const effectiveRadius = viewMode === 'map' ? 500 : searchRadius;
+        let spotsInRadius = filtered.filter(spot => (spot.distance || 0) <= effectiveRadius);
 
-      for (const radius of expansionSteps) {
-        if (radius < effectiveRadius) continue;
-        effectiveRadius = radius;
-        spotsInRadius = filtered.filter(spot => (spot.distance || 0) <= effectiveRadius);
-        if (spotsInRadius.length > 0) break;
+        // Auto-expand only if zero results found (for remote areas)
+        if (spotsInRadius.length === 0) {
+          for (const radius of RADIUS_STEPS) {
+            if (radius <= effectiveRadius) continue;
+            spotsInRadius = filtered.filter(spot => (spot.distance || 0) <= radius);
+            if (spotsInRadius.length > 0) {
+              setSearchRadius(radius);
+              break;
+            }
+          }
+        }
+
+        filtered = spotsInRadius;
       }
+    }
 
-      filtered = spotsInRadius;
-
-      // Update the radius dropdown if we auto-expanded
-      if (effectiveRadius !== searchRadius) {
-        setSearchRadius(effectiveRadius);
+    // Sort based on sortMode (pre-loaded) or default behavior (search)
+    if (isPreloadedMode) {
+      if (sortMode === 'distance' && userLocation) {
+        filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      } else {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
       }
-
-      // Always sort by distance when user location is available
-      filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
     } else {
-      // If no user location, sort alphabetically
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
+      // Search mode: always sort by distance when user location is available
+      if (userLocation) {
+        filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      } else {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
     }
 
     setFilteredSpots(filtered);
     setDisplayedSpots(filtered.slice(0, displayCount));
-  }, [allSpots, typeFilters, searchRadius, userLocation, showResults, displayCount]);
+  }, [allSpots, typeFilters, searchRadius, userLocation, showResults, displayCount, viewMode, sortMode]);
 
   // Infinite scroll handler
   const handleScroll = () => {
@@ -274,6 +383,13 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     if (scrollHeight - scrollTop <= clientHeight * 1.5) {
       if (displayedSpots.length < filteredSpots.length) {
         setDisplayCount(prev => prev + 20);
+      } else if (userLocation) {
+        // All spots in current radius shown — expand to next radius step
+        const currentRadius = searchRadiusRef.current;
+        const nextRadius = RADIUS_STEPS.find(r => r > currentRadius);
+        if (nextRadius) {
+          setSearchRadius(nextRadius);
+        }
       }
     }
   };
@@ -290,6 +406,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   // Scroll results into view when they appear (home page only)
   // Only on mobile and tablet, not on desktop (>= 1024px)
   useEffect(() => {
+    if (isPreloadedMode) return; // Don't auto-scroll on directory pages
     if (showResults) {
       // Check if window width is less than desktop breakpoint (1024px)
       if (window.innerWidth >= 1024) {
@@ -321,15 +438,36 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     }
   }, [showResults]);
 
+  // Geolocation options: use WiFi/cell for speed, 10s timeout, accept cached positions up to 1 min old
+  const geoOptions: PositionOptions = {
+    enableHighAccuracy: false,
+    timeout: 10000,
+    maximumAge: 60000,
+  };
+
   // Search by geolocation
   const handleUseLocation = async () => {
     if ('geolocation' in navigator) {
+      // Cancel any previous in-flight geolocation callback
+      if (geoCancelRef.current) {
+        geoCancelRef.current();
+      }
+
+      let isCancelled = false;
+      geoCancelRef.current = () => {
+        isCancelled = true;
+        isLoadingLocationRef.current = false;
+        setIsLoadingLocation(false);
+        setLoadingMessage('');
+      };
+
       setIsLoadingLocation(true);
+      isLoadingLocationRef.current = true;
       setErrorMessage('');
       setLoadingMessage('Accessing GPS...');
 
       setTimeout(() => {
-        if (isLoadingLocation) {
+        if (isLoadingLocationRef.current) {
           setLoadingMessage('Locating position...');
         }
       }, 1000);
@@ -352,6 +490,9 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
+          if (isCancelled) return;
+          geoCancelRef.current = null;
+
           const { latitude, longitude } = position.coords;
           if (isDev) console.log('[SearchWidget] GPS success:', { latitude, longitude });
           setUserLocation({ lat: latitude, lon: longitude });
@@ -377,6 +518,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
 
           if (isDev) console.log('[SearchWidget] allSpots count after load:', allSpots.length);
 
+          isLoadingLocationRef.current = false;
           setIsLoadingLocation(false);
           setLoadingMessage('');
 
@@ -388,7 +530,11 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           }, 250);
         },
         (error) => {
+          if (isCancelled) return;
+          geoCancelRef.current = null;
+
           if (isDev) console.log('[SearchWidget] GPS error:', error.code, error.message);
+          isLoadingLocationRef.current = false;
           setIsLoadingLocation(false);
           setLoadingMessage('');
 
@@ -399,7 +545,8 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
           } else {
             setErrorMessage('Unable to determine your location. Please try searching manually below.');
           }
-        }
+        },
+        geoOptions
       );
     } else {
       setErrorMessage('Your browser does not support geolocation. Please search manually below.');
@@ -516,7 +663,38 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
     setErrorMessage('');
   };
 
+  const handleSortToggle = () => {
+    if (sortMode === 'alphabetical') {
+      if (userLocation) {
+        setSortMode('distance');
+      } else if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const loc = { lat: position.coords.latitude, lon: position.coords.longitude };
+            setUserLocation(loc);
+            setSortMode('distance');
+            sessionStorage.setItem('user_gps_location', JSON.stringify({
+              ...loc, timestamp: Date.now()
+            }));
+          },
+          () => {
+            // GPS failed — stay on alphabetical
+          },
+          geoOptions
+        );
+      }
+    } else {
+      setSortMode('alphabetical');
+    }
+  };
+
   const handleNewSearch = () => {
+    // In pre-loaded mode, navigate back
+    if (isPreloadedMode && backButtonUrl) {
+      window.location.href = backButtonUrl;
+      return;
+    }
+
     // Trigger wipe-away animation, then return to search (no loading overlay)
     setIsTransitioning(true);
 
@@ -537,6 +715,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
       setUserLocation(null);
       setSearchContext('');
       setTypeFilters(new Set());
+      setSearchRadius(50);
       setDisplayCount(20);
       setViewMode('map');
     }, 500); // Wait for wipe-away animation
@@ -547,7 +726,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   const handleTypeFilterToggle = (type: string) => {
-    const isDefaultState = typeFilters.size === ALL_SPOT_TYPES.length;
+    const isDefaultState = typeFilters.size === chipTypes.length;
 
     if (isDefaultState) {
       // First tap from "all active": isolate to just this one
@@ -558,7 +737,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         // Deselect this chip; if it was the last one, reset to all
         newFilters.delete(type);
         if (newFilters.size === 0) {
-          setTypeFilters(new Set(ALL_SPOT_TYPES));
+          setTypeFilters(new Set(chipTypes));
           return;
         }
       } else {
@@ -570,7 +749,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   const handleClearTypeFilters = () => {
-    setTypeFilters(new Set(ALL_SPOT_TYPES));
+    setTypeFilters(new Set(chipTypes));
   };
 
   // Close suggestions when clicking outside
@@ -601,7 +780,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
   };
 
   return (
-    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning} ref={widgetRef}>
+    <div class="search-widget" data-show-results={showResults} data-transitioning={isTransitioning} data-preloaded={isPreloadedMode} ref={widgetRef}>
       {/* Transition Loading Overlay */}
       {showTransition && (
         <div class="search-widget-transition">
@@ -625,7 +804,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         </div>
       )}
 
-      {!showResults ? (
+      {!showResults && !hideSearch ? (
         // SEARCH MODE
         <>
           <div class="search-actions">
@@ -727,23 +906,40 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
         <div class="search-results" ref={searchResultsRef}>
           {/* Results Header */}
           <div class="results-header">
-            <button class="btn-new-search" onClick={handleNewSearch}>
-              ← New Search
-            </button>
-            <div class="results-info">
-              <span class="query-prompt">›</span>
-              <span class="query-text">
-                {userLocation
-                  ? `${filteredSpots.length} spot${filteredSpots.length !== 1 ? 's' : ''} within ${searchRadius} mile${searchRadius !== 1 ? 's' : ''}`
-                  : searchContext
-                }
-              </span>
-            </div>
+            {isPreloadedMode && backButtonUrl ? (
+              <a href={backButtonUrl} class="btn-new-search">
+                ← {backButtonText}
+              </a>
+            ) : !isPreloadedMode ? (
+              <button class="btn-new-search" onClick={handleNewSearch}>
+                ← New Search
+              </button>
+            ) : null}
+
+            {showSortToggle && viewMode === 'list' && (
+              <button
+                class="control-button"
+                onClick={handleSortToggle}
+              >
+                <span class="control-label">Sort:</span>
+                <span class="control-label">{sortMode === 'distance' ? 'Distance' : 'A-Z'}</span>
+              </button>
+            )}
+
+            {mapboxToken && (
+              <button
+                class={`control-button ${viewMode === 'map' ? 'control-button-active' : ''}`}
+                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
+                aria-label={viewMode === 'list' ? 'Switch to map view' : 'Switch to list view'}
+              >
+                <span class="control-label">{viewMode === 'list' ? 'Map' : 'List'}</span>
+              </button>
+            )}
           </div>
 
           {/* Filter Chips */}
-          <div class="filter-chips">
-            {ALL_SPOT_TYPES.map(type => {
+          {!hideFilters && <div class="filter-chips">
+            {chipTypes.map(type => {
               const isActive = typeFilters.has(type);
               const labels: Record<string, string> = {
                 lake: 'Lakes',
@@ -764,7 +960,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                 </button>
               );
             })}
-            {typeFilters.size < ALL_SPOT_TYPES.length && (
+            {typeFilters.size < chipTypes.length && (
               <button
                 class="filter-chip filter-chip-clear"
                 onClick={handleClearTypeFilters}
@@ -773,33 +969,7 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                 <span class="filter-chip-label">Clear</span>
               </button>
             )}
-          </div>
-
-          {/* View & Radius Controls */}
-          <div class="controls-bar">
-            {mapboxToken && (
-              <button
-                class={`control-button ${viewMode === 'map' ? 'control-button-active' : ''}`}
-                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-                aria-label={viewMode === 'list' ? 'Switch to map view' : 'Switch to list view'}
-              >
-                <span class="control-label">{viewMode === 'list' ? 'Map' : 'List'}</span>
-              </button>
-            )}
-
-            {userLocation && (
-              <div class="sort-control">
-                <label>Radius:</label>
-                <select value={searchRadius} onChange={(e) => setSearchRadius(parseInt((e.target as HTMLSelectElement).value))} class="custom-select">
-                  <option value="10">10 miles</option>
-                  <option value="25">25 miles</option>
-                  <option value="50">50 miles</option>
-                  <option value="100">100 miles</option>
-                  <option value="200">200 miles</option>
-                </select>
-              </div>
-            )}
-          </div>
+          </div>}
 
           {/* Results: List View or Map View */}
           {viewMode === 'map' && mapboxToken ? (
@@ -808,6 +978,9 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
               userLocation={userLocation}
               isDarkMode={isDarkMode}
               mapboxToken={mapboxToken}
+              defaultCenter={defaultCenter}
+              defaultZoom={defaultZoom}
+              itemMode={itemMode}
             />
           ) : (
             <div class="results-container" ref={resultsRef}>
@@ -820,12 +993,47 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                 </div>
               ) : displayedSpots.length === 0 ? (
                 <div class="empty-state">
-                  <p>No fishing spots found in your area yet.</p>
-                  <button onClick={handleNewSearch}>Try a different search</button>
+                  <p>{isPreloadedMode ? 'No fishing spots found.' : 'No fishing spots found in your area yet.'}</p>
+                  {!isPreloadedMode && <button onClick={handleNewSearch}>Try a different search</button>}
+                  {isPreloadedMode && backButtonUrl && <a href={backButtonUrl} class="btn-new-search">← {backButtonText}</a>}
                 </div>
               ) : (
                 <div class="results-grid">
                   {displayedSpots.map((spot, index) => {
+                    const showAd = ADS_ENABLED && index > 0 && index % AD_FREQUENCY === 0;
+
+                    if (itemMode === 'county') {
+                      // County card rendering
+                      return (
+                        <>
+                          {showAd && (
+                            <InFeedAd
+                              publisherId={PUBLISHER_ID}
+                              slotId={AD_SLOTS.inFeed}
+                              index={index}
+                            />
+                          )}
+                          <a
+                            key={spot.id}
+                            href={`/${stateSlugLookup[spot.state] || 'texas'}/${spot.slug}`}
+                            class="spot-card county-card"
+                            style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}
+                          >
+                            <div class="card-header">
+                              <h3>{spot.name} County</h3>
+                              {spot.distance && (
+                                <div class="distance-indicator">{formatDistance(spot.distance)}</div>
+                              )}
+                            </div>
+                            <div class="card-body">
+                              <span class="card-meta-item">{spot.count} {spot.count === 1 ? 'spot' : 'spots'}</span>
+                            </div>
+                          </a>
+                        </>
+                      );
+                    }
+
+                    // Spot card rendering
                     const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
                     const countySlug = getCountySlug(spot.county);
                     const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
@@ -842,8 +1050,6 @@ export default function SearchWidget({ nominatimEmail = 'contact@wherecanifish.c
                       .filter(([key]) => amenities[key] === true)
                       .map(([_, label]) => label)
                       .slice(0, 3);
-
-                    const showAd = ADS_ENABLED && index > 0 && index % AD_FREQUENCY === 0;
 
                     return (
                       <>
