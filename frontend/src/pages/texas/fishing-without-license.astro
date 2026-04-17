@@ -1,11 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ResultsWidget from '../../components/ResultsWidget.astro';
+import SearchWidget from '../../components/SearchWidget.tsx';
 import AdSlot from '../../components/AdSlot.astro';
 import { getSpots } from '../../lib/database';
 
 const pageTitle = "Where Can I Fish Without a License in Texas? - State Parks Guide";
 const pageDescription = "Fish without a fishing license in Texas state parks! Complete guide to all Texas state parks where you can fish license-free, including locations, amenities, and what you need to know.";
+
+const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN || '';
 
 // Get all Texas state park spots
 const allSpots = await getSpots();
@@ -13,6 +15,21 @@ const stateParks = allSpots.filter(spot =>
   (spot.state === 'TX' || spot.state === 'Texas') &&
   spot.spot_type === 'state_park'
 );
+
+// Serialize for client component
+const serializedParks = stateParks.map(spot => ({
+  id: spot.id,
+  slug: spot.slug,
+  name: spot.name,
+  state: spot.state || 'TX',
+  county: spot.county,
+  county_slug: spot.county_slug,
+  latitude: String(spot.latitude),
+  longitude: String(spot.longitude),
+  spot_type: spot.spot_type,
+  water_body_name: spot.water_body_name,
+  amenities: spot.amenities,
+}));
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -42,52 +59,19 @@ const stateParks = allSpots.filter(spot =>
 
       <!-- State Parks Search -->
       <div class="spots-list-section">
-        <ResultsWidget
-          items={stateParks}
-          itemType="spot"
-          scrollContainerId="parks-scroll-container"
-          resultsContainerId="parks-container"
-        >
-          {stateParks.sort((a, b) => a.name.localeCompare(b.name)).map(spot => {
-            const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
-            const prominentAmenities = [];
-            const amenityIcons = {
-              'boat_ramp': '🚤 Boat Ramp',
-              'fishing_pier': '🎣 Pier',
-              'fish_cleaning': '🔪 Cleaning',
-              'restrooms': '🚻 Restrooms',
-              'parking': '🅿️ Parking',
-            };
-
-            for (const [key, label] of Object.entries(amenityIcons)) {
-              if (amenities[key] === true) {
-                prominentAmenities.push(label);
-              }
-            }
-
-            const countySlug = spot.county_slug || spot.county?.toLowerCase().replace(/\s+/g, '-') || 'unknown';
-            const spotSlug = spot.slug || spot.name.toLowerCase().replace(/\s+/g, '-');
-
-            return (
-              <a href={`/texas/${countySlug}/${spotSlug}`} class="spot-card" data-spot-type={spot.spot_type}>
-                <div class="card-header">
-                  <h3>{spot.name}</h3>
-                </div>
-                <div class="card-body">
-                  {prominentAmenities.length > 0 ? (
-                    <>
-                      {prominentAmenities.map(label => (
-                        <span class="card-meta-item">{label}</span>
-                      ))}
-                    </>
-                  ) : (
-                    <span class="amenity-placeholder">No amenities listed</span>
-                  )}
-                </div>
-              </a>
-            );
-          })}
-        </ResultsWidget>
+        <SearchWidget
+          mapboxToken={mapboxToken}
+          initialSpots={serializedParks}
+          initialTypeFilter="state_park"
+          hideSearch={true}
+          hideFilters={true}
+          showSortToggle={true}
+          defaultCenter={[31.9686, -99.9018]}
+          defaultZoom={6}
+          backButtonUrl="/texas"
+          backButtonText="Texas"
+          client:idle
+        />
       </div>
 
 

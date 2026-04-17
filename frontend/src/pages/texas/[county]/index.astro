@@ -1,6 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import ResultsWidget from '../../../components/ResultsWidget.astro';
+import SearchWidget from '../../../components/SearchWidget.tsx';
 import AdSlot from '../../../components/AdSlot.astro';
 import { getSpots } from '../../../lib/database';
 
@@ -59,9 +59,29 @@ export async function getStaticPaths() {
 }
 
 const { countyName, spots, totalSpots } = Astro.props;
+const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN || '';
 
-// Get unique spot types for filter
-const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
+// Compute geographic center for the county
+const avgLat = spots.reduce((sum, s) => sum + Number(s.latitude), 0) / spots.length;
+const avgLon = spots.reduce((sum, s) => sum + Number(s.longitude), 0) / spots.length;
+
+// Serialize for client component
+const serializedSpots = spots.map(spot => ({
+  id: spot.id,
+  slug: spot.slug,
+  name: spot.name,
+  state: spot.state || 'TX',
+  county: spot.county,
+  county_slug: spot.county_slug,
+  latitude: String(spot.latitude),
+  longitude: String(spot.longitude),
+  spot_type: spot.spot_type,
+  water_body_name: spot.water_body_name,
+  amenities: spot.amenities,
+}));
+
+// Get unique spot types present in this county for filter chips
+const spotTypes = [...new Set(serializedSpots.map(s => s.spot_type))].sort();
 ---
 
 <Layout
@@ -72,7 +92,7 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     <div class="container">
       <a href="/texas" class="page-back-link">← Texas</a>
       <h1>{countyName} County Fishing Spots</h1>
-      <p class="subtitle"><span id="visible-count">{totalSpots}</span> fishing locations</p>
+      <p class="subtitle">{totalSpots} fishing locations</p>
     </div>
   </section>
 
@@ -81,51 +101,18 @@ const spotTypes = [...new Set(spots.map(spot => spot.spot_type))].sort();
     <AdSlot format="horizontal" class="ad-slot-inline" />
 
     <div class="spots-list-section">
-      <ResultsWidget
-        items={spots}
-        itemType="spot"
-        showFilters={true}
-        spotTypes={spotTypes}
-        scrollContainerId="spots-scroll-container"
-        resultsContainerId="spots-container"
-      >
-        {spots.sort((a, b) => a.name.localeCompare(b.name)).map(spot => {
-          const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
-          const prominentAmenities = [];
-          const amenityIcons = {
-            'boat_ramp': '🚤 Boat Ramp',
-            'fishing_pier': '🎣 Pier',
-            'fish_cleaning': '🔪 Cleaning',
-            'restrooms': '🚻 Restrooms',
-            'parking': '🅿️ Parking',
-          };
-
-          for (const [key, label] of Object.entries(amenityIcons)) {
-            if (amenities[key] === true) {
-              prominentAmenities.push(label);
-            }
-          }
-
-          return (
-            <a href={`/texas/${Astro.params.county}/${spot.slug}`} class="spot-card" data-spot-type={spot.spot_type} data-spot-id={spot.id}>
-              <div class="card-header">
-                <h3 transition:name={`spot-title-${spot.id}`}>{spot.name}</h3>
-              </div>
-              <div class="card-body">
-                {prominentAmenities.length > 0 ? (
-                  <>
-                    {prominentAmenities.map(label => (
-                      <span class="card-meta-item">{label}</span>
-                    ))}
-                  </>
-                ) : (
-                  <span class="amenity-placeholder">No amenities listed</span>
-                )}
-              </div>
-            </a>
-          );
-        })}
-      </ResultsWidget>
+      <SearchWidget
+        mapboxToken={mapboxToken}
+        initialSpots={serializedSpots}
+        hideSearch={true}
+        showSortToggle={true}
+        availableSpotTypes={spotTypes}
+        defaultCenter={[avgLat, avgLon]}
+        defaultZoom={10}
+        backButtonUrl="/texas"
+        backButtonText="Texas"
+        client:idle
+      />
     </div>
   </section>
 </Layout>

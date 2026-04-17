@@ -7,12 +7,14 @@ interface Spot {
   name: string;
   state: string;
   county: string;
-  latitude: string;
-  longitude: string;
+  county_slug?: string;
+  latitude: string | number;
+  longitude: string | number;
   spot_type: string;
   water_body_name?: string;
   amenities?: any;
   distance?: number;
+  count?: number;
 }
 
 interface MapViewProps {
@@ -20,6 +22,9 @@ interface MapViewProps {
   userLocation: { lat: number; lon: number } | null;
   isDarkMode: boolean;
   mapboxToken: string;
+  defaultCenter?: [number, number];  // [lat, lon] for pre-loaded mode
+  defaultZoom?: number;
+  itemMode?: 'spot' | 'county';
 }
 
 const stateSlugLookup: Record<string, string> = {
@@ -94,7 +99,7 @@ function getSpotTypeLabel(spotType: string): string {
   return labels[spotType] || spotType.replace(/_/g, ' ');
 }
 
-export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }: MapViewProps) {
+export default function MapView({ spots, userLocation, isDarkMode, mapboxToken, defaultCenter, defaultZoom, itemMode = 'spot' }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const tileLayerRef = useRef<any>(null);
@@ -105,9 +110,9 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
   const [mapReady, setMapReady] = useState(false);
   const [ipLocation, setIpLocation] = useState<{ lat: number; lon: number } | null>(null);
 
-  // Fetch IP geolocation for initial map center
+  // Fetch IP geolocation for initial map center (skip if defaultCenter provided)
   useEffect(() => {
-    if (!userLocation) {
+    if (!userLocation && !defaultCenter) {
       getIpGeolocationData().then((data) => {
         if (data && data.latitude && data.longitude) {
           setIpLocation({ lat: data.latitude, lon: data.longitude });
@@ -146,6 +151,9 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
         if (userLocation) {
           center = [userLocation.lat, userLocation.lon];
           zoom = 10;
+        } else if (defaultCenter && defaultZoom) {
+          center = defaultCenter;
+          zoom = defaultZoom;
         } else if (ipLocation) {
           center = [ipLocation.lat, ipLocation.lon];
           zoom = 7;
@@ -292,13 +300,13 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
 
     // Get the 3 nearest spots (spots are pre-sorted by distance from SearchWidget)
     const nearestSpots = spots
-      .filter(s => !isNaN(parseFloat(s.latitude)) && !isNaN(parseFloat(s.longitude)))
+      .filter(s => !isNaN(parseFloat(String(s.latitude))) && !isNaN(parseFloat(String(s.longitude))))
       .slice(0, 3);
 
     if (nearestSpots.length > 0) {
       const latlngs: [number, number][] = [
         [userLocation.lat, userLocation.lon],
-        ...nearestSpots.map(s => [parseFloat(s.latitude), parseFloat(s.longitude)] as [number, number])
+        ...nearestSpots.map(s => [parseFloat(String(s.latitude)), parseFloat(String(s.longitude))] as [number, number])
       ];
       const bounds = L.latLngBounds(latlngs);
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14, animate: true });
@@ -308,67 +316,121 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
     }
   }, [userLocation, spots]);
 
+  // Fit bounds to all pre-loaded spots when no user location (directory pages)
+  useEffect(() => {
+    if (!mapInstanceRef.current || !leafletRef.current || !mapReady) return;
+    if (userLocation) return; // User location takes priority (handled by above effect)
+    if (!defaultCenter) return; // Not in pre-loaded mode
+    if (spots.length === 0) return;
+
+    const L = leafletRef.current;
+    const map = mapInstanceRef.current;
+
+    const validSpots = spots.filter(s => !isNaN(parseFloat(String(s.latitude))) && !isNaN(parseFloat(String(s.longitude))));
+    if (validSpots.length > 0) {
+      const latlngs = validSpots.map(s => [parseFloat(String(s.latitude)), parseFloat(String(s.longitude))] as [number, number]);
+      const bounds = L.latLngBounds(latlngs);
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: defaultZoom || 10, animate: false });
+    }
+  }, [spots, mapReady, defaultCenter]);
+
   function addMarkers(L: any, clusterGroup: any, spotsToAdd: Spot[]) {
     const markers: any[] = [];
 
     for (const spot of spotsToAdd) {
-      const lat = parseFloat(spot.latitude);
-      const lng = parseFloat(spot.longitude);
+      const lat = parseFloat(String(spot.latitude));
+      const lng = parseFloat(String(spot.longitude));
 
       if (isNaN(lat) || isNaN(lng)) continue;
 
-      const colors = SPOT_TYPE_COLORS[spot.spot_type] || DEFAULT_COLOR;
-      const color = isDarkMode ? colors.dark : colors.light;
+      if (itemMode === 'county') {
+        // County marker — neutral sage green color
+        const color = isDarkMode ? '#7ec97e' : '#5a9a5a';
 
-      const marker = L.circleMarker([lat, lng], {
-        radius: 9,
-        fillColor: color,
-        color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)',
-        weight: 2,
-        fillOpacity: 1.0,
-      });
+        const marker = L.circleMarker([lat, lng], {
+          radius: 10,
+          fillColor: color,
+          color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)',
+          weight: 2,
+          fillOpacity: 1.0,
+        });
 
-      // Build popup content
-      const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
-      const countySlug = getCountySlug(spot.county);
-      const stateSlug = stateSlugLookup[spot.state] || 'texas';
-      const spotUrl = `/${stateSlug}/${countySlug}/${spot.slug}`;
+        const stateSlug = stateSlugLookup[spot.state] || 'texas';
+        const countyUrl = `/${stateSlug}/${spot.slug}`;
+        const distanceHtml = spot.distance
+          ? `<div class="map-popup-distance">${formatDistance(spot.distance)} away</div>`
+          : '';
 
-      const amenities = spot.amenities
-        ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities)
-        : {};
-      const prominentAmenities = Object.entries(amenityLabels)
-        .filter(([key]) => amenities[key] === true)
-        .map(([_, label]) => label)
-        .slice(0, 3);
+        const popupHtml = `
+          <div class="map-popup">
+            <a href="${countyUrl}" class="map-popup-name">${spot.name} County</a>
+            <span class="map-popup-type" style="background:${color}">${spot.count} ${spot.count === 1 ? 'spot' : 'spots'}</span>
+            ${distanceHtml}
+          </div>
+        `;
 
-      const distanceHtml = spot.distance
-        ? `<div class="map-popup-distance">${formatDistance(spot.distance)} away</div>`
-        : '';
+        marker.bindPopup(popupHtml, {
+          maxWidth: 250,
+          minWidth: 150,
+          className: 'spot-map-popup',
+        });
 
-      const amenitiesHtml = prominentAmenities.length > 0
-        ? `<div class="map-popup-amenities">${prominentAmenities.join(' &middot; ')}</div>`
-        : '';
+        markers.push(marker);
+      } else {
+        // Spot marker — color-coded by type
+        const colors = SPOT_TYPE_COLORS[spot.spot_type] || DEFAULT_COLOR;
+        const color = isDarkMode ? colors.dark : colors.light;
 
-      const typeLabel = getSpotTypeLabel(spot.spot_type);
-      const typeBadgeHtml = `<span class="map-popup-type" style="background:${color}">${typeLabel}</span>`;
+        const marker = L.circleMarker([lat, lng], {
+          radius: 9,
+          fillColor: color,
+          color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)',
+          weight: 2,
+          fillOpacity: 1.0,
+        });
 
-      const popupHtml = `
-        <div class="map-popup">
-          <a href="${spotUrl}" class="map-popup-name">${displayName}</a>
-          ${typeBadgeHtml}
-          ${distanceHtml}
-          ${amenitiesHtml}
-        </div>
-      `;
+        // Build popup content
+        const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
+        const countySlug = getCountySlug(spot.county);
+        const stateSlug = stateSlugLookup[spot.state] || 'texas';
+        const spotUrl = `/${stateSlug}/${countySlug}/${spot.slug}`;
 
-      marker.bindPopup(popupHtml, {
-        maxWidth: 250,
-        minWidth: 150,
-        className: 'spot-map-popup',
-      });
+        const amenities = spot.amenities
+          ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities)
+          : {};
+        const prominentAmenities = Object.entries(amenityLabels)
+          .filter(([key]) => amenities[key] === true)
+          .map(([_, label]) => label)
+          .slice(0, 3);
 
-      markers.push(marker);
+        const distanceHtml = spot.distance
+          ? `<div class="map-popup-distance">${formatDistance(spot.distance)} away</div>`
+          : '';
+
+        const amenitiesHtml = prominentAmenities.length > 0
+          ? `<div class="map-popup-amenities">${prominentAmenities.join(' &middot; ')}</div>`
+          : '';
+
+        const typeLabel = getSpotTypeLabel(spot.spot_type);
+        const typeBadgeHtml = `<span class="map-popup-type" style="background:${color}">${typeLabel}</span>`;
+
+        const popupHtml = `
+          <div class="map-popup">
+            <a href="${spotUrl}" class="map-popup-name">${displayName}</a>
+            ${typeBadgeHtml}
+            ${distanceHtml}
+            ${amenitiesHtml}
+          </div>
+        `;
+
+        marker.bindPopup(popupHtml, {
+          maxWidth: 250,
+          minWidth: 150,
+          className: 'spot-map-popup',
+        });
+
+        markers.push(marker);
+      }
     }
 
     clusterGroup.addLayers(markers);
@@ -385,9 +447,6 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken }
         </div>
       )}
       <div ref={mapContainerRef} class="map-leaflet-container" />
-      {!isLoading && (
-        <div class="map-scroll-hint">Click or tap the map to enable zoom</div>
-      )}
     </div>
   );
 }
