@@ -16,8 +16,8 @@ services:
       - MYSQL_USER=fishing_user
       - MYSQL_PASSWORD=fishing_password
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./database/init:/docker-entrypoint-initdb.d  # Optional: auto-run SQL scripts on first start
+      - db_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d  # Auto-runs SQL scripts on first start (fresh volume)
     networks:
       - fishing_network
     healthcheck:
@@ -98,7 +98,7 @@ services:
         condition: service_healthy
 
 volumes:
-  mysql_data:
+  db_data:
     driver: local
 
 networks:
