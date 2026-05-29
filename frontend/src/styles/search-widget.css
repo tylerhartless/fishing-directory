@@ -78,52 +78,141 @@
   );
 }
 
-/* Wipe-away animation when returning to search */
+/* ============================================
+   SCANLINE SWEEP — return-to-search transition.
+   A glowing colored line passes top-to-bottom while content is
+   clipped behind it, reading as a CRT vertical refresh (dark) /
+   printer pass (light).
+   ============================================ */
+
 .search-widget[data-transitioning="true"][data-show-results="true"] .search-results {
-  animation: wipeAwayResults 0.5s ease-out forwards;
+  position: relative;
+  animation: scanlineClip 0.6s cubic-bezier(0.55, 0.05, 0.45, 0.95) forwards;
 }
 
-@keyframes wipeAwayResults {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.9);
-    filter: blur(5px);
+@keyframes scanlineClip {
+  0%   { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+
+/* The glowing leading-edge line that sweeps down */
+.search-widget[data-transitioning="true"][data-show-results="true"] .search-results::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: var(--accent-sage);
+  box-shadow:
+    0 0 14px var(--accent-sage),
+    0 0 32px rgba(168, 197, 168, 0.55),
+    0 0 64px rgba(168, 197, 168, 0.25);
+  pointer-events: none;
+  z-index: 50;
+  animation: scanlineEdge 0.6s cubic-bezier(0.55, 0.05, 0.45, 0.95) forwards;
+}
+
+@keyframes scanlineEdge {
+  0%   { top: calc(100% - 3px); opacity: 0; }
+  6%   { opacity: 1; }
+  88%  { top: 0; opacity: 1; }
+  100% { top: 0; opacity: 0; }
+}
+
+/* Light mode — orange ink line, no glow */
+[data-theme="light"] .search-widget[data-transitioning="true"][data-show-results="true"] .search-results::before {
+  background: var(--accent-dark-orange, #e85d2a);
+  box-shadow:
+    0 2px 0 var(--rgba-black-25),
+    0 0 6px rgba(232, 93, 42, 0.4);
+  height: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-widget[data-transitioning="true"][data-show-results="true"] .search-results,
+  .search-widget[data-transitioning="true"][data-show-results="true"] .search-results::before {
+    animation: none;
   }
 }
 
-[data-theme="light"] .search-widget[data-transitioning="true"][data-show-results="true"] .search-results {
-  animation: wipeAwayResultsLight 0.5s ease-out forwards;
-}
-
-@keyframes wipeAwayResultsLight {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
-/* Slide-in animation when search mode appears */
-.search-widget[data-show-results="false"]:not([data-transitioning="true"]) > :not(.search-widget-transition) {
-  animation: slideInSearch 0.25s ease-out;
+/* Slide-in animation when search mode appears. Fires whenever the search
+   children mount (initial page load, or returning from results). Pure fade
+   — no scale — so it cross-fades cleanly with the preceding scanline. */
+.search-widget[data-show-results="false"] > :not(.search-widget-transition) {
+  animation: slideInSearch 0.4s ease-out;
 }
 
 @keyframes slideInSearch {
-  0% {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ============================================
+   SCANLINE REVEAL — search → results transition.
+   Mirror of the return scanline: glowing line sweeps top-to-bottom
+   while results clip in behind it. Skipped in preloaded mode
+   (results were already there on page load). */
+
+.search-widget:not([data-preloaded="true"])[data-show-results="true"]:not([data-transitioning="true"]) .search-results {
+  position: relative;
+  animation: scanlineReveal 0.5s cubic-bezier(0.33, 0.0, 0.67, 1) forwards;
+  /* Browser hints: promote to its own composite layer (will-change) and
+     isolate paint cost from the rest of the page (contain). Helps with the
+     map repaint asymmetry between reveal and hide. */
+  will-change: clip-path;
+  contain: paint;
+}
+
+@keyframes scanlineReveal {
+  /* Hold fully-clipped briefly so Leaflet has 60ms to paint the map / tiles
+     before we start revealing — kills the worst of the jank. */
+  0%   { clip-path: inset(0 0 100% 0); }
+  12%  { clip-path: inset(0 0 100% 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.search-widget:not([data-preloaded="true"])[data-show-results="true"]:not([data-transitioning="true"]) .search-results::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: var(--accent-sage);
+  box-shadow:
+    0 0 14px var(--accent-sage),
+    0 0 32px rgba(168, 197, 168, 0.55),
+    0 0 64px rgba(168, 197, 168, 0.25);
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  animation: scanlineRevealEdge 0.5s cubic-bezier(0.33, 0.0, 0.67, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes scanlineRevealEdge {
+  /* Sync with the clip-path 12% hold so line appears at the same moment
+     content starts to reveal */
+  0%   { top: 0; opacity: 0; }
+  12%  { top: 0; opacity: 1; }
+  88%  { top: calc(100% - 3px); opacity: 1; }
+  100% { top: calc(100% - 3px); opacity: 0; }
+}
+
+/* Light mode reveal — orange ink line */
+[data-theme="light"] .search-widget:not([data-preloaded="true"])[data-show-results="true"]:not([data-transitioning="true"]) .search-results::before {
+  background: var(--accent-dark-orange, #e85d2a);
+  box-shadow:
+    0 2px 0 var(--rgba-black-25),
+    0 0 6px rgba(232, 93, 42, 0.4);
+  height: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-widget:not([data-preloaded="true"])[data-show-results="true"]:not([data-transitioning="true"]) .search-results,
+  .search-widget:not([data-preloaded="true"])[data-show-results="true"]:not([data-transitioning="true"]) .search-results::before {
+    animation: none;
   }
 }
 
@@ -1437,28 +1526,52 @@
   font-weight: 700;
 }
 
-/* --- Fishing Piers (gold/amber) --- */
-.filter-chip-fishing_pier.filter-chip-active {
+/* --- Piers (gold/amber) --- */
+.filter-chip-pier.filter-chip-active {
   background: color-mix(in srgb, var(--badge-pier) 18%, transparent);
   border-color: color-mix(in srgb, var(--badge-pier) 55%, transparent);
   color: var(--badge-pier);
   box-shadow: 0 0 8px color-mix(in srgb, var(--badge-pier) 25%, transparent);
 }
-.filter-chip-fishing_pier.filter-chip-active:hover {
+.filter-chip-pier.filter-chip-active:hover {
   background: color-mix(in srgb, var(--badge-pier) 28%, transparent);
   border-color: color-mix(in srgb, var(--badge-pier) 75%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-pier) 40%, transparent);
 }
-[data-theme="light"] .filter-chip-fishing_pier.filter-chip-active {
+[data-theme="light"] .filter-chip-pier.filter-chip-active {
   background: color-mix(in srgb, var(--badge-pier) 25%, white);
   border: 2px solid var(--badge-pier);
   color: var(--accent-copper); /* copper/terracotta — readable on near-white, matches the amber vibe */
   font-weight: 600;
   box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-pier) 40%, transparent);
 }
-[data-theme="light"] .filter-chip-fishing_pier.filter-chip-active:hover {
+[data-theme="light"] .filter-chip-pier.filter-chip-active:hover {
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-pier) 40%, transparent);
+}
+
+/* --- Community Parks (mint/teal) --- */
+.filter-chip-community_park.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-community) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-community) 55%, transparent);
+  color: var(--badge-community);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-community) 25%, transparent);
+}
+.filter-chip-community_park.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-community) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-community) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-community) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-community_park.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-community) 25%, white);
+  border: 2px solid var(--badge-community);
+  color: var(--badge-community-light);
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-community) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-community_park.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-community) 40%, transparent);
 }
 
 /* No License Required badge */
@@ -1947,9 +2060,14 @@
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-park) 25%, transparent);
 }
 
-.spot-card[data-spot-type="fishing_pier"] {
+.spot-card[data-spot-type="pier"] {
   border-color: color-mix(in srgb, var(--badge-pier) 40%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-pier) 25%, transparent);
+}
+
+.spot-card[data-spot-type="community_park"] {
+  border-color: color-mix(in srgb, var(--badge-community) 40%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-community) 25%, transparent);
 }
 
 /* Light Mode spot type colors (using CSS variables) */
@@ -1973,9 +2091,14 @@
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-park-light) 20%, transparent);
 }
 
-[data-theme="light"] .spot-card[data-spot-type="fishing_pier"] {
+[data-theme="light"] .spot-card[data-spot-type="pier"] {
   border-color: var(--badge-pier-light);
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-pier-light) 20%, transparent);
+}
+
+[data-theme="light"] .spot-card[data-spot-type="community_park"] {
+  border-color: var(--badge-community-light);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-community-light) 20%, transparent);
 }
 
 /* Note: Amenities are now displayed inline using .card-meta-item in .card-body */

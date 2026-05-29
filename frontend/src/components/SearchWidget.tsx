@@ -25,35 +25,23 @@ interface SearchWidgetProps {
 }
 
 interface Spot {
-  id: number;
-  slug: string;
+  canonical_id: string;
   name: string;
   state: string;
+  state_route: string;
   county: string;
-  county_slug?: string;
-  latitude: string | number;
-  longitude: string | number;
+  county_slug: string;
+  latitude: number;
+  longitude: number;
   spot_type: string;
-  water_body_name?: string;
-  amenities?: any;
+  water_body_names?: string[];
+  amenities?: Record<string, boolean>;
   distance?: number;
   count?: number;                     // County mode: number of spots in county
 }
 
-const ALL_SPOT_TYPES = ['lake', 'river_access', 'public_water', 'state_park', 'fishing_pier'] as const;
-
-const stateSlugLookup: Record<string, string> = {
-  'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
-  'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
-  'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
-  'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
-  'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
-  'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
-  'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
-  'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
-  'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
-  'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
-};
+// boat_ramp excluded site-wide (see getSpots() in database.ts); not in this list so no chip is rendered.
+const ALL_SPOT_TYPES = ['lake', 'river_access', 'public_water', 'state_park', 'community_park', 'pier'] as const;
 
 export default function SearchWidget({
   nominatimEmail = 'contact@wherecanifish.com',
@@ -225,14 +213,8 @@ export default function SearchWidget({
     }
   }, [showResults, userLocation, searchContext, allSpots, typeFilters, searchRadius, displayCount, viewMode]);
 
-  // API URL
-  const API_URL = typeof window !== 'undefined'
-    ? (window.location.hostname === 'localhost' || window.location.hostname.startsWith('100.') || window.location.hostname.startsWith('127.') || window.location.port === '4321'
-        ? `http://${window.location.hostname}:8000`
-        : `${window.location.protocol}//${window.location.host}/api`)
-    : '';
-
-  // Common Texas locations for autocomplete
+  // Common locations for autocomplete suggestions. Currently seeded with
+  // a few Texas cities — expand per-state as additional state data lands.
   const commonLocations = [
     { name: 'Houston', county: 'Harris' },
     { name: 'Austin', county: 'Travis' },
@@ -253,9 +235,8 @@ export default function SearchWidget({
     return R * c;
   };
 
-  // Load all spots from API
+  // Load all spots from the build-time JSON endpoint (sourced from data/publish/*/spots.json)
   const loadSpots = async () => {
-    // Abort any previous in-flight request
     if (fetchAbortRef.current) {
       fetchAbortRef.current.abort();
     }
@@ -264,19 +245,16 @@ export default function SearchWidget({
 
     setIsLoadingSpots(true);
     try {
-      const response = await fetch(`${API_URL}/spots.php?limit=5000`, {
-        signal: controller.signal,
-      });
+      const response = await fetch('/spots.json', { signal: controller.signal });
       const data = await response.json();
 
-      if (data.success) {
-        setAllSpots(data.spots);
+      if (Array.isArray(data)) {
+        setAllSpots(data as Spot[]);
       } else {
         setErrorMessage('Failed to load fishing spots');
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
-        // Request was cancelled — not an error
         return;
       }
       if (isDev) console.error('Error loading spots:', error);
@@ -404,15 +382,9 @@ export default function SearchWidget({
   }, [showResults, displayedSpots.length, filteredSpots.length]);
 
   // Scroll results into view when they appear (home page only)
-  // Only on mobile and tablet, not on desktop (>= 1024px)
   useEffect(() => {
     if (isPreloadedMode) return; // Don't auto-scroll on directory pages
     if (showResults) {
-      // Check if window width is less than desktop breakpoint (1024px)
-      if (window.innerWidth >= 1024) {
-        return; // Don't scroll on desktop
-      }
-
       setTimeout(() => {
         // Get the search-container element (parent wrapper in index.astro)
         // Only scroll on home page - search-container only exists there
@@ -553,11 +525,11 @@ export default function SearchWidget({
     }
   };
 
-  // Search by text query
-  const handleSearchSubmit = async (e: JSX.TargetedEvent<HTMLFormElement, Event>) => {
-    e.preventDefault();
-
-    const query = searchQuery.trim();
+  // Core search: geocode the query, then load spots near the result.
+  // Extracted from the form submit handler so suggestion clicks can call it
+  // directly without round-tripping through React state + form re-submit.
+  const performSearch = async (rawQuery: string) => {
+    const query = rawQuery.trim();
     if (!query) return;
 
     setIsSearching(true);
@@ -565,9 +537,9 @@ export default function SearchWidget({
     setErrorMessage('');
     setLoadingMessage('Searching locations...');
 
-    // Try to geocode the query
-    const specificQuery = query + ', texas';
-    const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(specificQuery)}&format=json&limit=1&email=${nominatimEmail}`;
+    // Unbiased geocoding — Nominatim returns the best match for the query
+    // wherever it lives. Avoids hard-coding a state preference.
+    const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us&email=${nominatimEmail}`;
 
     try {
       const response = await fetch(apiUrl);
@@ -615,6 +587,12 @@ export default function SearchWidget({
     }
   };
 
+  // Form submit handler — thin wrapper around performSearch.
+  const handleSearchSubmit = (e: JSX.TargetedEvent<HTMLFormElement, Event>) => {
+    e.preventDefault();
+    performSearch(searchQuery);
+  };
+
   const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {
     const value = (e.target as HTMLInputElement).value;
     setSearchQuery(value);
@@ -647,9 +625,10 @@ export default function SearchWidget({
   };
 
   const handleSuggestionClick = (county: string) => {
-    // Navigate to county page instead of inline results
-    const countySlug = county.toLowerCase().replace(/\s+/g, '-');
-    window.location.href = `/texas/${countySlug}`;
+    // Trigger the same search path as typing + submit — keeps the user on
+    // the same page and shows inline results.
+    setSearchQuery(county);
+    performSearch(county);
   };
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -695,6 +674,12 @@ export default function SearchWidget({
       return;
     }
 
+    // Scroll to top so the user lands on the search input, not somewhere in
+    // the middle of the previous results.
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     // Trigger wipe-away animation, then return to search (no loading overlay)
     setIsTransitioning(true);
 
@@ -714,15 +699,16 @@ export default function SearchWidget({
       setShowResults(false);
       setUserLocation(null);
       setSearchContext('');
-      setTypeFilters(new Set());
+      setTypeFilters(new Set(chipTypes));
       setSearchRadius(50);
       setDisplayCount(20);
       setViewMode('map');
-    }, 500); // Wait for wipe-away animation
+    }, 600); // Wait for full up-scanline sweep (matches scanlineClip 0.6s)
 
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 900); // Reset transitioning state
+    }, 650); // Drop transitioning flag soon after, so the search-bar fade-in
+             // (slideInSearch) can fire as the bar mounts.
   };
 
   const handleTypeFilterToggle = (type: string) => {
@@ -760,16 +746,6 @@ export default function SearchWidget({
     }
   }, []);
 
-  // Helper function to get county slug
-  const getCountySlug = (countyName: string): string => {
-    if (!countyName) return '';
-    if (countyName.includes(',')) {
-      countyName = countyName.split(',')[0].trim();
-    }
-    countyName = countyName.replace(/\s+County$/i, '').trim();
-    return countyName.toLowerCase().replace(/\s+/g, '-');
-  };
-
   // Format distance display
   const formatDistance = (distance?: number): string => {
     if (!distance) return '';
@@ -805,85 +781,50 @@ export default function SearchWidget({
       )}
 
       {!showResults && !hideSearch ? (
-        // SEARCH MODE
-        <>
-          <div class="search-actions">
-            {/* Primary action: Use Current Location */}
+        // SEARCH MODE — unified single-row form
+        <div class="search-actions">
+          {errorMessage && (
+            <div class="error-message">
+              <div class="error-content">
+                <span class="error-icon">⚠</span>
+                <span class="error-text">{errorMessage}</span>
+                <button class="error-dismiss" onClick={dismissError} aria-label="Dismiss error">×</button>
+              </div>
+            </div>
+          )}
+
+          <form class="search-form-unified" onSubmit={handleSearchSubmit}>
             <button
               type="button"
-              class="btn-location-hero"
+              class="btn-location-inline"
               onClick={handleUseLocation}
               disabled={isLoadingLocation}
+              aria-label={isLoadingLocation ? 'Locating' : 'Use my current location'}
+              title="Use my current location"
             >
               {isLoadingLocation ? (
-                <div class="location-loading">
-                  <svg class="spinner" width="28" height="28" viewBox="0 0 50 50">
-                    <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="80" stroke-dashoffset="60"/>
-                  </svg>
-                  <span class="loading-text">{loadingMessage || 'Locating...'}</span>
-                </div>
+                <svg class="spinner-small" width="20" height="20" viewBox="0 0 50 50" aria-hidden="true">
+                  <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80" stroke-dashoffset="60"/>
+                </svg>
               ) : (
-                <>
-                  <svg class="location-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                    <circle cx="12" cy="12" r="6" stroke-width="2"/>
-                    <circle cx="12" cy="12" r="2" stroke-width="2"/>
-                    <line x1="12" y1="0" x2="12" y2="5" stroke-width="2" stroke-linecap="round"/>
-                    <line x1="12" y1="19" x2="12" y2="24" stroke-width="2" stroke-linecap="round"/>
-                    <line x1="0" y1="12" x2="5" y2="12" stroke-width="2" stroke-linecap="round"/>
-                    <line x1="19" y1="12" x2="24" y2="12" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                  <span class="btn-location-text">Use Current Location</span>
-                </>
+                <svg class="location-pin" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                </svg>
               )}
             </button>
 
-            {/* Error message display */}
-            {errorMessage && (
-              <div class="error-message">
-                <div class="error-content">
-                  <span class="error-icon">⚠</span>
-                  <span class="error-text">{errorMessage}</span>
-                  <button class="error-dismiss" onClick={dismissError} aria-label="Dismiss error">×</button>
-                </div>
-              </div>
-            )}
-
-            <div class="search-divider">
-              <span class="divider-text">or search manually</span>
-            </div>
-
-            {/* Secondary action: Manual Search */}
-            <div class="search-form-section">
-              <form class="search-form" onSubmit={handleSearchSubmit}>
-                <div class="input-wrapper">
-                  <span class="search-prompt">›</span>
-                  <input
-                    type="text"
-                    class="search-input"
-                    placeholder="City or zip code"
-                    autocomplete="off"
-                    value={searchQuery}
-                    onInput={handleInputChange}
-                    onFocus={handleInputFocus}
-                    disabled={isSearching}
-                  />
-                  <span class="input-cursor"></span>
-                </div>
-                <button type="submit" class="btn-search" disabled={isSearching || !searchQuery.trim()}>
-                  {isSearching ? (
-                    <span class="searching-state">
-                      <svg class="spinner-small" width="16" height="16" viewBox="0 0 50 50">
-                        <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80" stroke-dashoffset="60"/>
-                      </svg>
-                      {loadingMessage || 'Searching...'}
-                    </span>
-                  ) : (
-                    'Search'
-                  )}
-                </button>
-              </form>
-
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="City, zip, or address"
+                autocomplete="off"
+                value={searchQuery}
+                onInput={handleInputChange}
+                onFocus={handleInputFocus}
+                disabled={isSearching}
+                aria-label="Search by city, zip, or address"
+              />
               {showSuggestions && suggestions.length > 0 && (
                 <div class="suggestions active">
                   {suggestions.map((loc) => (
@@ -892,15 +833,27 @@ export default function SearchWidget({
                       class="suggestion-item"
                       onClick={() => handleSuggestionClick(loc.county)}
                     >
-                      <span class="suggestion-prompt">›</span>
-                      <span class="suggestion-text">{loc.name} <span class="suggestion-county">({loc.county} County)</span></span>
+                      <span class="suggestion-text">{loc.name} <span class="suggestion-county">{loc.county} County</span></span>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-          </div>
-        </>
+
+            <button type="submit" class="btn-search" disabled={isSearching || !searchQuery.trim()} aria-label="Search">
+              {isSearching ? (
+                <svg class="spinner-small" width="20" height="20" viewBox="0 0 50 50" aria-hidden="true">
+                  <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80" stroke-dashoffset="60"/>
+                </svg>
+              ) : (
+                <svg class="search-glyph" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              )}
+            </button>
+          </form>
+        </div>
       ) : (
         // RESULTS MODE
         <div class="search-results" ref={searchResultsRef}>
@@ -927,13 +880,39 @@ export default function SearchWidget({
             )}
 
             {mapboxToken && (
-              <button
-                class={`control-button ${viewMode === 'map' ? 'control-button-active' : ''}`}
-                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-                aria-label={viewMode === 'list' ? 'Switch to map view' : 'Switch to list view'}
-              >
-                <span class="control-label">{viewMode === 'list' ? 'Map' : 'List'}</span>
-              </button>
+              <div class="view-toggle" role="group" aria-label="Result view mode">
+                <button
+                  type="button"
+                  class="view-toggle-btn"
+                  data-active={viewMode === 'map'}
+                  aria-pressed={viewMode === 'map'}
+                  onClick={() => setViewMode('map')}
+                >
+                  <svg class="view-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                    <line x1="8" y1="2" x2="8" y2="18"/>
+                    <line x1="16" y1="6" x2="16" y2="22"/>
+                  </svg>
+                  <span class="view-toggle-label">Map</span>
+                </button>
+                <button
+                  type="button"
+                  class="view-toggle-btn"
+                  data-active={viewMode === 'list'}
+                  aria-pressed={viewMode === 'list'}
+                  onClick={() => setViewMode('list')}
+                >
+                  <svg class="view-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                  </svg>
+                  <span class="view-toggle-label">List</span>
+                </button>
+              </div>
             )}
           </div>
 
@@ -946,7 +925,9 @@ export default function SearchWidget({
                 river_access: 'Rivers',
                 public_water: 'Public Waters',
                 state_park: 'State Parks',
-                fishing_pier: 'Piers',
+                community_park: 'Community Parks',
+                pier: 'Piers',
+                boat_ramp: 'Boat Ramps',
               };
               return (
                 <button
@@ -1014,8 +995,8 @@ export default function SearchWidget({
                             />
                           )}
                           <a
-                            key={spot.id}
-                            href={`/${stateSlugLookup[spot.state] || 'texas'}/${spot.slug}`}
+                            key={spot.canonical_id}
+                            href={`/${spot.state_route}/${spot.county_slug}`}
                             class="spot-card county-card"
                             style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}
                           >
@@ -1034,9 +1015,8 @@ export default function SearchWidget({
                     }
 
                     // Spot card rendering
-                    const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
-                    const countySlug = getCountySlug(spot.county);
-                    const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+                    const displayName = spot.name;
+                    const amenities = spot.amenities ?? {};
 
                     const amenityIcons: Record<string, string> = {
                       'boat_ramp': '🚤 Boat Ramp',
@@ -1061,8 +1041,8 @@ export default function SearchWidget({
                           />
                         )}
                         <a
-                          key={spot.id}
-                          href={`/${stateSlugLookup[spot.state]}/${countySlug}/${spot.slug}`}
+                          key={spot.canonical_id}
+                          href={`/${spot.state_route}/${spot.county_slug}/${spot.canonical_id}`}
                           class="spot-card"
                           data-spot-type={spot.spot_type}
                           style={`animation-delay: ${Math.min(index * 0.05, 0.5)}s`}

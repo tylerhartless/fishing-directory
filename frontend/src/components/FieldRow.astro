@@ -1,0 +1,22 @@
+---
+/**
+ * FieldRow — label/value pair styled as a catalog form field. Used in the
+ * Specifications card on spot pages and anywhere field-record metadata appears.
+ *
+ * Pass `mono` to render the value in IBM Plex Mono (for codes, coords, IDs).
+ */
+
+interface Props {
+  label: string;
+  mono?: boolean;
+}
+
+const { label, mono = false } = Astro.props;
+---
+
+<div class="field-row">
+  <span class="field-label">{label}</span>
+  <span class:list={['field-value', mono && 'field-value-mono']}>
+    <slot />
+  </span>
+</div>

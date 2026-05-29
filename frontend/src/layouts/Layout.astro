@@ -1,12 +1,14 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
-import CountyNavLink from '../components/CountyNavLink.tsx';
+import AgencyStrip from '../components/AgencyStrip.astro';
+import StatusBar from '../components/StatusBar.astro';
 import AdSidebar from '../components/AdSidebar.astro';
 import { ADS_ENABLED, PUBLISHER_ID } from '../lib/ads-config';
 import '../styles/retro-colors.css';
 import '../styles/retro-common.css';
 import '../styles/search-widget.css';
 import '../styles/layout.css';
+import '../styles/field-record.css';
 import '../styles/ads.css';
 
 interface Props {
@@ -35,7 +37,7 @@ const loadAdScript = ADS_ENABLED && PUBLISHER_ID.length > 0;
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@300;400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@300;400;700&family=IBM+Plex+Mono:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
     <!-- SEO -->
     <title>{title}</title>
@@ -71,28 +73,7 @@ const loadAdScript = ADS_ENABLED && PUBLISHER_ID.length > 0;
     <ViewTransitions />
   </head>
   <body>
-    <header>
-      <nav class="container">
-        <a href="/" class="logo">
-          <span class="logo-prompt">&gt;&lt;&gt;</span>
-          <span class="logo-text">WhereCanIFish.com<span class="cursor">_</span></span>
-        </a>
-        
-        <!-- Desktop Navigation -->
-        <ul class="nav-links" id="nav-links">
-          <li><a href="/states">Browse by State</a></li>
-          <CountyNavLink client:load />
-          <li><a href="/#search">Search</a></li>
-        </ul>
-        
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-      </nav>
-    </header>
+    <AgencyStrip />
 
     <main class="main-content">
       {ADS_ENABLED ? (
@@ -108,46 +89,32 @@ const loadAdScript = ADS_ENABLED && PUBLISHER_ID.length > 0;
       )}
     </main>
 
-    <footer>
-      <div class="container">
-        <p>&copy; {new Date().getFullYear()} Public Fishing Directory. All rights reserved.</p>
-        <p>Data sources: State wildlife departments, user submissions</p>
-      </div>
-    </footer>
-
-    <!-- Floating theme toggle -->
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-      <span class="theme-icon theme-icon-dark">☾</span>
-      <span class="theme-icon theme-icon-light">☀</span>
-    </button>
+    <StatusBar />
 
     <script is:inline>
-      // Theme toggle functionality
+      // Theme toggle — segmented buttons in the agency strip.
       (function() {
         const setTheme = (theme) => {
           document.documentElement.setAttribute('data-theme', theme);
           localStorage.setItem('theme', theme);
         };
 
-        // Single global handler function to avoid multiple listeners
-        const handleThemeToggle = (e) => {
-          const current = document.documentElement.getAttribute('data-theme');
-          const next = current === 'dark' ? 'light' : 'dark';
-          setTheme(next);
-          // Blur the button to remove hover state and prevent glow from persisting
-          if (e && e.currentTarget) {
-            e.currentTarget.blur();
-          }
+        const handleThemeBtnClick = (e) => {
+          const btn = e.currentTarget;
+          const target = btn.dataset.themeTarget;
+          if (!target) return;
+          setTheme(target);
+          // Drop focus so :focus styling doesn't linger on touch devices
+          if (btn.blur) btn.blur();
         };
 
         const setupThemeToggle = () => {
-          const toggle = document.getElementById('theme-toggle');
-          if (toggle) {
-            // Remove old listener if it exists
-            toggle.removeEventListener('click', handleThemeToggle);
-            // Add fresh listener
-            toggle.addEventListener('click', handleThemeToggle);
-          }
+          const buttons = document.querySelectorAll('.theme-switcher-btn');
+          buttons.forEach((btn) => {
+            // Idempotent rebind across View Transitions
+            btn.removeEventListener('click', handleThemeBtnClick);
+            btn.addEventListener('click', handleThemeBtnClick);
+          });
         };
 
         // Logo click handler to reset search state
@@ -166,51 +133,10 @@ const loadAdScript = ADS_ENABLED && PUBLISHER_ID.length > 0;
           }
         };
 
-        // Mobile menu toggle functionality
-        const setupMobileMenu = () => {
-          const toggle = document.getElementById('mobile-menu-toggle');
-          const navLinks = document.getElementById('nav-links');
-          
-          if (toggle && navLinks) {
-            const handleToggle = (e) => {
-              e.stopPropagation(); // Prevent event from bubbling to document
-              const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-              toggle.setAttribute('aria-expanded', !isExpanded);
-              navLinks.classList.toggle('nav-links-open');
-              toggle.classList.toggle('mobile-menu-toggle-open');
-            };
-            
-            // Remove old listener if it exists
-            const oldHandler = toggle._mobileMenuHandler;
-            if (oldHandler) {
-              toggle.removeEventListener('click', oldHandler);
-            }
-            
-            // Store handler reference and add new listener
-            toggle._mobileMenuHandler = handleToggle;
-            toggle.addEventListener('click', handleToggle);
-            
-            // Close menu when clicking outside (only add once)
-            if (!document._mobileMenuOutsideClick) {
-              document.addEventListener('click', (e) => {
-                if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
-                  if (navLinks.classList.contains('nav-links-open')) {
-                    toggle.setAttribute('aria-expanded', 'false');
-                    navLinks.classList.remove('nav-links-open');
-                    toggle.classList.remove('mobile-menu-toggle-open');
-                  }
-                }
-              });
-              document._mobileMenuOutsideClick = true;
-            }
-          }
-        };
-
         // Setup theme toggle on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
           setupThemeToggle();
           setupLogoReset();
-          setupMobileMenu();
           // Re-enable transitions after page has loaded and rendered
           setTimeout(() => {
             document.documentElement.classList.remove('preload');
@@ -232,7 +158,6 @@ const loadAdScript = ADS_ENABLED && PUBLISHER_ID.length > 0;
         document.addEventListener('astro:page-load', () => {
           setupThemeToggle();
           setupLogoReset();
-          setupMobileMenu();
           // Re-enable transitions after a brief delay
           setTimeout(() => {
             document.documentElement.classList.remove('preload');

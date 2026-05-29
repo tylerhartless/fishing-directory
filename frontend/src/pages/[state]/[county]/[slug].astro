@@ -1,0 +1,452 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import AdSlot from '../../../components/AdSlot.astro';
+import Plate from '../../../components/Plate.astro';
+import FieldRow from '../../../components/FieldRow.astro';
+import { getSpots, formatWaterBodies, type FishingSpot } from '../../../lib/database';
+import { getStateResources } from '../../../lib/state-resources';
+import { computeNearby, type NearbyEntry } from '../../../lib/nearby-spots';
+import { stateNameLookup } from '../../../lib/ipGeolocation';
+
+export async function getStaticPaths() {
+  const spots = await getSpots();
+
+  // Group spots by state so nearby-computation stays scoped to same-state pool
+  // (avoids computing distance to thousands of cross-country spots).
+  const spotsByState = new Map<string, FishingSpot[]>();
+  for (const spot of spots) {
+    const bucket = spotsByState.get(spot.state) ?? [];
+    bucket.push(spot);
+    spotsByState.set(spot.state, bucket);
+  }
+
+  return spots.map(spot => ({
+    params: {
+      state: spot.state_route,
+      county: spot.county_slug,
+      slug: spot.canonical_id,
+    },
+    props: {
+      spot,
+      nearby: computeNearby(spot, spotsByState.get(spot.state) ?? [], 6, 50),
+    },
+  }));
+}
+
+interface Props {
+  spot: FishingSpot;
+  nearby: NearbyEntry[];
+}
+const { spot, nearby } = Astro.props as Props;
+
+const stateResources = getStateResources(spot.state);
+const isLicenseFreeStatePark = spot.spot_type === 'state_park' && stateResources.stateParksLicenseFree;
+
+const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
+const mapUrl = `https://api.mapbox.com/styles/v1/netlace/cmo22v29h00gn01s49nnh6e5x/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
+const darkMapUrl = `https://api.mapbox.com/styles/v1/netlace/cmo22y7nx002c01qfha7d96ct/static/${spot.longitude},${spot.latitude},14.5,0/900x600?access_token=${MAPBOX_TOKEN}`;
+
+const waterBodyDisplay = formatWaterBodies(spot.water_body_names);
+const showWaterBody = waterBodyDisplay && !spot._synthetic_water_body;
+const spotTypeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+const addressDisplay = spot.address
+  ? [
+      spot.address,
+      spot.city,
+      [spot.state, spot.zip_code].filter(Boolean).join(' '),
+    ].filter(Boolean).join(', ')
+  : null;
+
+const countyTag = spot.county_slug.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3) || spot.state;
+const idTail = spot.canonical_id.replace(/-/g, '').slice(-4).toUpperCase();
+const accession = `REC. ${spot.state}-${countyTag}-${idTail}`;
+const stateName = stateNameLookup[spot.state] || spot.state;
+const agencyTag = stateResources.agencyName || 'Agency';
+
+const classificationParts = [spotTypeLabel.toUpperCase(), `${spot.county} County`.toUpperCase()];
+if (spot.acres) {
+  classificationParts.push(`${Math.round(spot.acres).toLocaleString()} acres`.toUpperCase());
+}
+const classification = classificationParts.join(' · ');
+
+const stampVariant: 'verified' | 'approximate' | 'new' = spot.needs_review
+  ? 'approximate'
+  : spot.is_verified
+    ? 'verified'
+    : 'new';
+const stampLabel = spot.needs_review
+  ? 'Location approximate'
+  : spot.is_verified
+    ? `✓ ${agencyTag} Verified`
+    : null;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Place',
+  name: spot.name,
+  description: spot.description,
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: Number(spot.latitude),
+    longitude: Number(spot.longitude),
+  },
+  address: {
+    '@type': 'PostalAddress',
+    addressRegion: spot.state,
+    addressLocality: `${spot.county} County`,
+  },
+};
+
+const hasAmenities = spot.amenities && Object.values(spot.amenities).some(v => v === true);
+const hasPois = spot.points_of_interest && spot.points_of_interest.length > 0;
+---
+
+<Layout
+  title={spot.meta_title || `${spot.name} — Public Fishing · ${spot.county} County, ${spot.state}`}
+  description={spot.meta_description || `Public fishing access at ${spot.name}. Location, amenities, and recent activity from state-agency records.`}
+>
+  <article class="field-record" data-canonical-id={spot.canonical_id}>
+    <a href="/" class="field-record-back">Back to index</a>
+
+    <Plate
+      accession={accession}
+      classification={classification}
+      stampLabel={stampLabel ?? undefined}
+      stampVariant={stampVariant}
+      transitionName={`spot-title-${spot.canonical_id}`}
+    >
+      {spot.name}
+    </Plate>
+
+    <div class="entry-layout">
+      <div class="entry-main">
+        <!-- Map -->
+        <div class="location-plate entry-map">
+          <img
+            id="spot-map"
+            src={mapUrl}
+            data-light-url={mapUrl}
+            data-dark-url={darkMapUrl}
+            alt={`Map of ${spot.name}`}
+            width="900"
+            height="600"
+            loading="eager"
+            class="hidden-map"
+          />
+          <div class="location-caption">
+            <span class="location-caption-fig">Plate №. {idTail}</span>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${spot.latitude},${spot.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="location-caption-mapbtn"
+            >
+              Open in Maps →
+            </a>
+          </div>
+        </div>
+
+        <AdSlot format="horizontal" class="ad-slot-inline" />
+
+        <!-- About -->
+        <section class="field-section">
+          <h2 class="field-section-heading">About</h2>
+          {spot.description ? (
+            <p>{spot.description}</p>
+          ) : (
+            <p>Public fishing access in {spot.county} County, {stateName}.</p>
+          )}
+        </section>
+
+        <!-- Specifications -->
+        <section class="field-section">
+          <h2 class="field-section-heading">Specifications</h2>
+          <FieldRow label="Type">{spotTypeLabel}</FieldRow>
+          <FieldRow label="County">{spot.county}</FieldRow>
+          {showWaterBody && <FieldRow label="Water">{waterBodyDisplay}</FieldRow>}
+          {spot.acres != null && (
+            <FieldRow label="Area">{Math.round(spot.acres).toLocaleString()} ac</FieldRow>
+          )}
+          {addressDisplay ? (
+            <FieldRow label="Address">{addressDisplay}</FieldRow>
+          ) : (
+            <FieldRow label="Coords" mono>
+              <span class="loc-value">{Number(spot.latitude).toFixed(5)}, {Number(spot.longitude).toFixed(5)}</span>
+              <button class="copy-coords" data-coords={`${spot.latitude},${spot.longitude}`} type="button">Copy</button>
+            </FieldRow>
+          )}
+          {hasAmenities && (
+            <FieldRow label="Amenities">
+              <ul class="amenities-grid">
+                {spot.amenities.boat_ramp && <li class="amenity-tag">Boat Ramp</li>}
+                {spot.amenities.parking && <li class="amenity-tag">Parking</li>}
+                {spot.amenities.restrooms && <li class="amenity-tag">Restrooms</li>}
+                {spot.amenities.lighting && <li class="amenity-tag">Lighting</li>}
+                {spot.amenities.fish_cleaning && <li class="amenity-tag">Fish Cleaning</li>}
+                {spot.amenities.boat_trailer_parking && <li class="amenity-tag">Trailer Parking</li>}
+                {spot.amenities.camping && <li class="amenity-tag">Camping</li>}
+                {spot.amenities.fishing_pier && <li class="amenity-tag">Fishing Pier</li>}
+                {spot.amenities.picnic_area && <li class="amenity-tag">Picnic Area</li>}
+                {spot.amenities.kayak_launch && <li class="amenity-tag">Kayak Launch</li>}
+              </ul>
+            </FieldRow>
+          )}
+        </section>
+
+        <!-- Things Here / POIs -->
+        {hasPois && (
+          <section class="field-section">
+            <h2 class="field-section-heading">Things Here</h2>
+            <ul class="poi-list">
+              {spot.points_of_interest.map(poi => (
+                <li class="poi-item">
+                  <strong>{poi.name}</strong>
+                  <span class="poi-type">{poi.spot_type.replace(/_/g, ' ')}</span>
+                  {poi.water_body_name && <span class="poi-water"> · {poi.water_body_name}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <AdSlot format="horizontal" class="ad-slot-inline" />
+
+        <!-- Recent Activity / catch reports -->
+        <section class="field-section heat-list-section">
+          <h2 class="field-section-heading">Recent Activity</h2>
+          <p class="heat-list-description">Species ranked by recent catch activity at this spot.</p>
+          <div id="heat-list-container">
+            <p class="loading">Loading…</p>
+          </div>
+          <button class="retro-btn retro-btn-search text-center no-underline" id="log-catch-btn">
+            🎣 Log a Catch
+          </button>
+        </section>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="entry-aside">
+        <div class="field-card">
+          <h2 class="field-card-heading">Before You Go</h2>
+          {isLicenseFreeStatePark ? (
+            <div class="byg-row byg-highlight">
+              <span class="byg-label">License</span>
+              <span class="byg-value">Not required at {spot.state} state parks</span>
+            </div>
+          ) : stateResources.licenseUrl ? (
+            <a href={stateResources.licenseUrl} target="_blank" rel="noopener" class="byg-row byg-link">
+              <span class="byg-label">License</span>
+              <span class="byg-value">Buy {stateResources.agencyName} fishing license →</span>
+            </a>
+          ) : (
+            <div class="byg-row">
+              <span class="byg-label">License</span>
+              <span class="byg-value">Required — check {stateResources.agencyFullName}</span>
+            </div>
+          )}
+
+          {stateResources.regulationsUrl && (
+            <a href={stateResources.regulationsUrl} target="_blank" rel="noopener" class="byg-row byg-link">
+              <span class="byg-label">Rules</span>
+              <span class="byg-value">{stateResources.agencyName} fishing regulations →</span>
+            </a>
+          )}
+
+          {isLicenseFreeStatePark && (
+            <p class="byg-note">Park entrance fee still applies.</p>
+          )}
+        </div>
+
+        {nearby.length > 0 && (
+          <div class="field-card">
+            <h2 class="field-card-heading">Nearby Waters</h2>
+            <ul class="nearby-list">
+              {nearby.map(n => (
+                <li>
+                  <a href={`/${n.state_route}/${n.county_slug}/${n.canonical_id}`} class="nearby-link">
+                    <span class="nearby-name">{n.name}</span>
+                    <span class="nearby-distance">{Math.round(n.distance)} mi</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <AdSlot format="rectangle" class="ad-slot-sidebar-content" />
+      </aside>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script src="/js/heat-list.js" is:inline></script>
+
+  <!-- Theme-aware map image switching (with theme observer + error retry) -->
+  <script is:inline>
+    (function() {
+      if (window.__spotMapInitSetup) return;
+      window.__spotMapInitSetup = true;
+
+      function initializeMap() {
+        const mapImg = document.getElementById('spot-map');
+        if (!mapImg) return;
+
+        const lightUrl = mapImg.getAttribute('data-light-url');
+        const darkUrl = mapImg.getAttribute('data-dark-url');
+        if (!lightUrl || !darkUrl) return;
+
+        function getCurrentTheme() {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          return currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+
+        let loadRetryCount = 0;
+        const maxRetries = 2;
+
+        function showMap() {
+          mapImg.style.opacity = '1';
+          mapImg.classList.remove('hidden-map');
+        }
+
+        function handleMapError(retryUrl) {
+          if (loadRetryCount < maxRetries) {
+            loadRetryCount++;
+            setTimeout(function() {
+              mapImg.src = retryUrl + '&_retry=' + loadRetryCount;
+            }, loadRetryCount * 1000);
+          } else {
+            mapImg.style.opacity = '0.5';
+            mapImg.classList.remove('hidden-map');
+            console.warn('Map image failed to load after retries');
+          }
+        }
+
+        const isDark = getCurrentTheme();
+        const correctUrl = isDark ? darkUrl : lightUrl;
+        const currentSrc = mapImg.getAttribute('src') || mapImg.src;
+        const needsUrlChange = !currentSrc.includes(isDark ? 'cmo22y7nx002c01qfha7d96ct' : 'cmo22v29h00gn01s49nnh6e5x');
+
+        if (needsUrlChange) mapImg.src = correctUrl;
+
+        if (window.__spotMapLoadHandler) mapImg.removeEventListener('load', window.__spotMapLoadHandler);
+        if (window.__spotMapErrorHandler) mapImg.removeEventListener('error', window.__spotMapErrorHandler);
+
+        window.__spotMapLoadHandler = function() { showMap(); loadRetryCount = 0; };
+        window.__spotMapErrorHandler = function() { handleMapError(correctUrl); };
+
+        mapImg.addEventListener('load', window.__spotMapLoadHandler);
+        mapImg.addEventListener('error', window.__spotMapErrorHandler);
+
+        if (mapImg.complete && mapImg.naturalHeight !== 0) showMap();
+        else if (mapImg.complete && mapImg.naturalHeight === 0) handleMapError(correctUrl);
+      }
+
+      document.addEventListener('astro:page-load', initializeMap);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeMap);
+      } else {
+        initializeMap();
+      }
+    })();
+  </script>
+
+  <script is:inline>
+    (function() {
+      if (window.__spotMapThemeSetup) return;
+      window.__spotMapThemeSetup = true;
+
+      let currentObserver = null;
+      let debounceTimer = null;
+
+      function setupThemeSwitching() {
+        if (currentObserver) { currentObserver.disconnect(); currentObserver = null; }
+        if (debounceTimer) { clearTimeout(debounceTimer); debounceTimer = null; }
+
+        const mapImg = document.getElementById('spot-map');
+        if (!mapImg) return;
+
+        const lightUrl = mapImg.dataset.lightUrl;
+        const darkUrl = mapImg.dataset.darkUrl;
+        if (!lightUrl || !darkUrl) return;
+
+        function updateMapTheme(retry) {
+          retry = retry || 0;
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+            (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          const currentSrc = mapImg.getAttribute('src') || mapImg.src;
+          const isCurrentlyDark = currentSrc.includes('cmo22y7nx002c01qfha7d96ct');
+          const isCurrentlyLight = currentSrc.includes('cmo22v29h00gn01s49nnh6e5x');
+          const shouldSwitch = (isDark && !isCurrentlyDark) || (!isDark && !isCurrentlyLight);
+
+          if (shouldSwitch) {
+            const newUrl = isDark ? darkUrl : lightUrl;
+            const errorHandler = function() {
+              if (retry < 2) setTimeout(function() { updateMapTheme(retry + 1); }, (retry + 1) * 1000);
+              else console.warn('Map theme switch failed');
+              mapImg.removeEventListener('error', errorHandler);
+            };
+            mapImg.addEventListener('error', errorHandler);
+            mapImg.src = newUrl;
+          }
+        }
+
+        const lightImage = new Image(); lightImage.src = lightUrl;
+        const darkImage = new Image(); darkImage.src = darkUrl;
+        setTimeout(updateMapTheme, 100);
+
+        currentObserver = new MutationObserver(function() {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(function() { updateMapTheme(0); }, 100);
+        });
+
+        currentObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        });
+      }
+
+      document.addEventListener('astro:page-load', setupThemeSwitching);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupThemeSwitching);
+      } else {
+        setupThemeSwitching();
+      }
+    })();
+  </script>
+
+  <!-- Copy-coords inline button wiring -->
+  <script is:inline>
+    (function () {
+      if (window.__copyCoordsSetup) return;
+      window.__copyCoordsSetup = true;
+
+      const setup = () => {
+        document.querySelectorAll('.copy-coords').forEach((btn) => {
+          if (btn.dataset.bound === '1') return;
+          btn.dataset.bound = '1';
+          btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const coords = btn.getAttribute('data-coords') || '';
+            if (!coords) return;
+            const original = btn.textContent;
+            try {
+              await navigator.clipboard.writeText(coords);
+              btn.textContent = 'Copied';
+            } catch {
+              btn.textContent = 'Copy failed';
+            }
+            setTimeout(() => { btn.textContent = original; }, 1400);
+          });
+        });
+      };
+
+      document.addEventListener('astro:page-load', setup);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setup);
+      } else {
+        setup();
+      }
+    })();
+  </script>
+</Layout>

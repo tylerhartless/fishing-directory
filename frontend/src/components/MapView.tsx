@@ -2,17 +2,17 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { getIpGeolocationData } from '../lib/ipGeolocation';
 
 interface Spot {
-  id: number;
-  slug: string;
+  canonical_id: string;
   name: string;
   state: string;
+  state_route: string;
   county: string;
-  county_slug?: string;
-  latitude: string | number;
-  longitude: string | number;
+  county_slug: string;
+  latitude: number;
+  longitude: number;
   spot_type: string;
-  water_body_name?: string;
-  amenities?: any;
+  water_body_names?: string[];
+  amenities?: Record<string, boolean>;
   distance?: number;
   count?: number;
 }
@@ -27,32 +27,16 @@ interface MapViewProps {
   itemMode?: 'spot' | 'county';
 }
 
-const stateSlugLookup: Record<string, string> = {
-  'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
-  'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
-  'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
-  'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
-  'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
-  'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
-  'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
-  'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
-  'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
-  'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming'
-};
-
 // Color mapping for spot types — matches badge colors from retro-colors.css
 // Light mode now uses the same vibrant colors as the filter chip borders for consistency
 const SPOT_TYPE_COLORS: Record<string, { dark: string; light: string }> = {
-  lake:          { dark: '#5c9dff', light: '#5c9dff' },
-  river_access:  { dark: '#b88dff', light: '#b88dff' },
-  public_water:  { dark: '#7ec97e', light: '#7ec97e' },
-  state_park:    { dark: '#a8d96e', light: '#a8d96e' },
-  fishing_pier:  { dark: '#ffb84d', light: '#ffb84d' },
-  boat_ramp:     { dark: '#c87854', light: '#c87854' },
-  bank_fishing:  { dark: '#7ec97e', light: '#7ec97e' },
-  pier:          { dark: '#ffb84d', light: '#ffb84d' },
-  wade_fishing:  { dark: '#5c9dff', light: '#5c9dff' },
-  kayak_launch:  { dark: '#b88dff', light: '#b88dff' },
+  lake:            { dark: '#5c9dff', light: '#5c9dff' },
+  river_access:    { dark: '#b88dff', light: '#b88dff' },
+  public_water:    { dark: '#4fb8c2', light: '#4fb8c2' },
+  state_park:      { dark: '#a8d96e', light: '#a8d96e' },
+  community_park:  { dark: '#f08c6e', light: '#f08c6e' },
+  pier:            { dark: '#ffb84d', light: '#ffb84d' },
+  boat_ramp:       { dark: '#c87854', light: '#c87854' },
 };
 
 const DEFAULT_COLOR = { dark: '#9ab087', light: '#6b6b6b' };
@@ -65,15 +49,6 @@ const amenityLabels: Record<string, string> = {
   'restrooms': 'Restrooms',
   'parking': 'Parking',
 };
-
-function getCountySlug(countyName: string): string {
-  if (!countyName) return '';
-  if (countyName.includes(',')) {
-    countyName = countyName.split(',')[0].trim();
-  }
-  countyName = countyName.replace(/\s+County$/i, '').trim();
-  return countyName.toLowerCase().replace(/\s+/g, '-');
-}
 
 function formatDistance(distance?: number): string {
   if (!distance) return '';
@@ -89,12 +64,9 @@ function getSpotTypeLabel(spotType: string): string {
     river_access: 'River Access',
     public_water: 'Public Water',
     state_park: 'State Park',
-    fishing_pier: 'Fishing Pier',
-    boat_ramp: 'Boat Ramp',
-    bank_fishing: 'Bank Fishing',
+    community_park: 'Community Park',
     pier: 'Pier',
-    wade_fishing: 'Wade Fishing',
-    kayak_launch: 'Kayak Launch',
+    boat_ramp: 'Boat Ramp',
   };
   return labels[spotType] || spotType.replace(/_/g, ' ');
 }
@@ -338,8 +310,8 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken, 
     const markers: any[] = [];
 
     for (const spot of spotsToAdd) {
-      const lat = parseFloat(String(spot.latitude));
-      const lng = parseFloat(String(spot.longitude));
+      const lat = Number(spot.latitude);
+      const lng = Number(spot.longitude);
 
       if (isNaN(lat) || isNaN(lng)) continue;
 
@@ -355,8 +327,7 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken, 
           fillOpacity: 1.0,
         });
 
-        const stateSlug = stateSlugLookup[spot.state] || 'texas';
-        const countyUrl = `/${stateSlug}/${spot.slug}`;
+        const countyUrl = `/${spot.state_route}/${spot.county_slug}`;
         const distanceHtml = spot.distance
           ? `<div class="map-popup-distance">${formatDistance(spot.distance)} away</div>`
           : '';
@@ -390,14 +361,10 @@ export default function MapView({ spots, userLocation, isDarkMode, mapboxToken, 
         });
 
         // Build popup content
-        const displayName = spot.name.replace(/\s*\([a-z]+\d+\)\s*$/i, '');
-        const countySlug = getCountySlug(spot.county);
-        const stateSlug = stateSlugLookup[spot.state] || 'texas';
-        const spotUrl = `/${stateSlug}/${countySlug}/${spot.slug}`;
+        const displayName = spot.name;
+        const spotUrl = `/${spot.state_route}/${spot.county_slug}/${spot.canonical_id}`;
 
-        const amenities = spot.amenities
-          ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities)
-          : {};
+        const amenities = spot.amenities ?? {};
         const prominentAmenities = Object.entries(amenityLabels)
           .filter(([key]) => amenities[key] === true)
           .map(([_, label]) => label)

@@ -9,7 +9,7 @@ services:
     container_name: fishing_directory_db
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "3307:3306"  # Host 3307 to avoid conflict with fishing-data-pipeline's MySQL on 3306; internal port unchanged
     environment:
       - MYSQL_ROOT_PASSWORD=root_password
       - MYSQL_DATABASE=fishing_directory

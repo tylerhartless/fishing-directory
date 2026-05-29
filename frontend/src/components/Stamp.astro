@@ -1,0 +1,16 @@
+---
+/**
+ * Stamp — chunky inline badge that reads as a pressed catalog stamp (light)
+ * or a status flag (dark). Used inside Plate and inline in body content.
+ */
+
+interface Props {
+  variant?: 'verified' | 'approximate' | 'new' | 'neutral';
+}
+
+const { variant = 'verified' } = Astro.props;
+---
+
+<span class:list={['stamp', `stamp-${variant}`]}>
+  <slot />
+</span>

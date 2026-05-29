@@ -1,0 +1,57 @@
+---
+/**
+ * Plate — the signature element of every page.
+ *
+ * Renders as a catalog plate (light) or CRT window (dark). Same DOM, color +
+ * border + shadow tokens flip the metaphor. Used on homepage and every
+ * spot/landing page as the title block.
+ *
+ * Slot is the title content (a string, or a fragment with <br/>).
+ */
+
+interface Props {
+  /** Top-left accession code, e.g. "REC. TX-AND-0047" or "REC. INDEX · 1,163 ACTIVE" */
+  accession?: string;
+  /** Sub-classification line below the title (uppercase, dot-separated meta) */
+  classification?: string;
+  /** Optional stamp label rendered top-right */
+  stampLabel?: string;
+  /** Stamp visual variant */
+  stampVariant?: 'verified' | 'approximate' | 'new';
+  /** Hero variant scales the title up dramatically (homepage only) */
+  hero?: boolean;
+  /** View-transition name to share across pages */
+  transitionName?: string;
+}
+
+const {
+  accession,
+  classification,
+  stampLabel,
+  stampVariant = 'verified',
+  hero = false,
+  transitionName,
+} = Astro.props;
+---
+
+<div class:list={['plate', hero && 'plate-hero']}>
+  {(accession || stampLabel) && (
+    <div class="plate-header">
+      {accession && <span class="plate-accession">{accession}</span>}
+      {stampLabel && (
+        <span class:list={['plate-stamp', `plate-stamp-${stampVariant}`]}>
+          {stampLabel}
+        </span>
+      )}
+    </div>
+  )}
+  <h1
+    class="plate-title"
+    style={transitionName ? `view-transition-name: ${transitionName};` : undefined}
+  >
+    <slot />
+  </h1>
+  {classification && (
+    <p class="plate-classification">{classification}</p>
+  )}
+</div>

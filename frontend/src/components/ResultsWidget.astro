@@ -48,7 +48,9 @@ const chipLabelMap: Record<string, string> = {
   river_access: 'Rivers',
   public_water: 'Public Waters',
   state_park: 'State Parks',
-  fishing_pier: 'Piers',
+  community_park: 'Community Parks',
+  pier: 'Piers',
+  boat_ramp: 'Boat Ramps',
 };
 ---
 
@@ -406,9 +408,12 @@ const chipLabelMap: Record<string, string> = {
       const distanceHtml = county.distance
         ? `<div class="distance-indicator">${Math.round(county.distance)} mi</div>`
         : '';
-  
+      // Multi-state aware: prefer the county's own state_route. Fall back to
+      // 'texas' for legacy payloads. (County landing pages aren't currently
+      // generated — this card is rendered only by reserved future callers.)
+      const stateRoute = county.state_route || 'texas';
       return `
-        <a href="/texas/${county.slug}" class="spot-card county-card" data-county-name="${county.name}">
+        <a href="/${stateRoute}/${county.slug}" class="spot-card county-card" data-county-name="${county.name}">
           <div class="card-header">
             <h3>${county.name} County</h3>
             ${distanceHtml}
@@ -421,7 +426,7 @@ const chipLabelMap: Record<string, string> = {
     }
   
     function renderSpotCard(spot) {
-      const amenities = spot.amenities ? (typeof spot.amenities === 'string' ? JSON.parse(spot.amenities) : spot.amenities) : {};
+      const amenities = spot.amenities ?? {};
       const prominentAmenities = [];
       const amenityIcons = {
         'boat_ramp': '🚤 Boat Ramp',
@@ -430,27 +435,23 @@ const chipLabelMap: Record<string, string> = {
         'restrooms': '🚻 Restrooms',
         'parking': '🅿️ Parking',
       };
-  
+
       for (const [key, label] of Object.entries(amenityIcons)) {
         if (amenities[key] === true) {
           prominentAmenities.push(`<span class="card-meta-item">${label}</span>`);
         }
       }
-  
+
       const amenitiesHtml = prominentAmenities.length > 0
         ? prominentAmenities.join('')
         : `<span class="amenity-placeholder">No amenities listed</span>`;
-  
+
       const distanceHtml = spot.distance
         ? `<div class="distance-indicator">${Math.round(spot.distance)} mi</div>`
         : '';
-  
-      // Construct URL safely
-      const countySlug = spot.county_slug || spot.county?.toLowerCase().replace(/\s+/g, '-') || 'unknown';
-      const spotSlug = spot.slug || spot.name.toLowerCase().replace(/\s+/g, '-');
-  
+
       return `
-        <a href="/texas/${countySlug}/${spotSlug}" class="spot-card" data-spot-type="${spot.spot_type}">
+        <a href="/${spot.state_route}/${spot.county_slug}/${spot.canonical_id}" class="spot-card" data-spot-type="${spot.spot_type}">
           <div class="card-header">
             <h3>${spot.name}</h3>
             ${distanceHtml}

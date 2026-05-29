@@ -1,0 +1,46 @@
+---
+/**
+ * Agency strip — top identification band on every page.
+ * Reads as a 1960s catalog masthead in light, a CRT title bar in dark.
+ * Mobile: shows only the wordmark; agency code hides at narrow widths.
+ */
+const year = new Date().getFullYear();
+---
+
+<header class="agency-strip">
+  <div class="agency-strip-inner">
+    <a href="/" class="agency-mark" aria-label="WhereCanIFish — back to index">
+      <span class="agency-mark-glyph" aria-hidden="true">&gt;&lt;&gt;</span>
+      <span class="agency-mark-text">WhereCanIFish<span class="agency-mark-tld">.com</span></span>
+    </a>
+    <div class="agency-strip-tail">
+      <div class="agency-meta" aria-hidden="true">
+        <span class="agency-meta-segment">PFD</span>
+        <span class="agency-meta-divider">·</span>
+        <span class="agency-meta-segment">Field Edition</span>
+        <span class="agency-meta-divider">·</span>
+        <span class="agency-meta-segment">{year}</span>
+      </div>
+      <div class="theme-switcher" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switcher-btn" data-theme-target="light" aria-label="Switch to light mode">
+          <svg class="theme-switcher-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/>
+            <path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/>
+            <path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+        </button>
+        <button type="button" class="theme-switcher-btn" data-theme-target="dark" aria-label="Switch to dark mode">
+          <svg class="theme-switcher-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
