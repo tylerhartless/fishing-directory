@@ -1574,6 +1574,30 @@
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-community) 40%, transparent);
 }
 
+/* --- Boat Ramps (copper) --- */
+.filter-chip-boat_ramp.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-boat-ramp) 18%, transparent);
+  border-color: color-mix(in srgb, var(--badge-boat-ramp) 55%, transparent);
+  color: var(--badge-boat-ramp);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--badge-boat-ramp) 25%, transparent);
+}
+.filter-chip-boat_ramp.filter-chip-active:hover {
+  background: color-mix(in srgb, var(--badge-boat-ramp) 28%, transparent);
+  border-color: color-mix(in srgb, var(--badge-boat-ramp) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-boat-ramp) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-boat_ramp.filter-chip-active {
+  background: color-mix(in srgb, var(--badge-boat-ramp) 25%, white);
+  border: 2px solid var(--badge-boat-ramp);
+  color: var(--badge-boat-ramp-light);
+  font-weight: 600;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--badge-boat-ramp) 40%, transparent);
+}
+[data-theme="light"] .filter-chip-boat_ramp.filter-chip-active:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--badge-boat-ramp) 40%, transparent);
+}
+
 /* No License Required badge */
 .no-license-sup {
   font-size: 0.6rem;
@@ -2070,6 +2094,11 @@
   box-shadow: 0 0 12px color-mix(in srgb, var(--badge-community) 25%, transparent);
 }
 
+.spot-card[data-spot-type="boat_ramp"] {
+  border-color: color-mix(in srgb, var(--badge-boat-ramp) 40%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--badge-boat-ramp) 25%, transparent);
+}
+
 /* Light Mode spot type colors (using CSS variables) */
 [data-theme="light"] .spot-card[data-spot-type="lake"] {
   border-color: var(--badge-lake-light);
@@ -2099,6 +2128,11 @@
 [data-theme="light"] .spot-card[data-spot-type="community_park"] {
   border-color: var(--badge-community-light);
   box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-community-light) 20%, transparent);
+}
+
+[data-theme="light"] .spot-card[data-spot-type="boat_ramp"] {
+  border-color: var(--badge-boat-ramp-light);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--badge-boat-ramp-light) 20%, transparent);
 }
 
 /* Note: Amenities are now displayed inline using .card-meta-item in .card-body */

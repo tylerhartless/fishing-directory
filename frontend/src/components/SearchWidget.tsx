@@ -40,8 +40,12 @@ interface Spot {
   count?: number;                     // County mode: number of spots in county
 }
 
-// boat_ramp excluded site-wide (see getSpots() in database.ts); not in this list so no chip is rendered.
-const ALL_SPOT_TYPES = ['lake', 'river_access', 'public_water', 'state_park', 'community_park', 'pier'] as const;
+const ALL_SPOT_TYPES = ['lake', 'river_access', 'public_water', 'state_park', 'community_park', 'pier', 'boat_ramp'] as const;
+
+// Bump this whenever ALL_SPOT_TYPES (or other restored fields) changes shape.
+// Saved sessionStorage state with an older version is discarded on restore so
+// users don't get stuck with a stale chip Set that filters out new spot types.
+const SEARCH_STATE_VERSION = 2;
 
 export default function SearchWidget({
   nominatimEmail = 'contact@wherecanifish.com',
@@ -153,6 +157,13 @@ export default function SearchWidget({
         try {
           const state = JSON.parse(savedState);
 
+          // Schema mismatch (e.g., a chip type was added) — drop the stale state
+          // rather than restore a filter Set that omits newly-introduced spot types.
+          if (state.version !== SEARCH_STATE_VERSION) {
+            sessionStorage.removeItem('searchWidgetState');
+            return;
+          }
+
           // Ensure all loading states are cleared
           setIsLoadingLocation(false);
           setIsSearching(false);
@@ -201,6 +212,7 @@ export default function SearchWidget({
     if (isPreloadedMode) return;
     if (typeof window !== 'undefined' && showResults && allSpots.length > 0) {
       const state = {
+        version: SEARCH_STATE_VERSION,
         userLocation,
         searchContext,
         allSpots,

@@ -93,6 +93,10 @@
   --badge-community-light: #b85a3e;        /* Deep coral (light mode card/badge) */
   --badge-community-border-light: #9a4a32; /* Darker coral border (light mode) */
 
+  --badge-boat-ramp: #c87854;              /* Copper for boat ramps (matches MapView marker) */
+  --badge-boat-ramp-light: #7a4030;        /* Deep copper-brown (light mode card/badge) */
+  --badge-boat-ramp-border-light: #5a3020; /* Darker copper border (light mode) */
+
   /* ===== COMMONLY USED RGBA VALUES ===== */
   /* These are the most frequently duplicated color values across the site.
      Converting these to variables for consistency and easy theme updates. */

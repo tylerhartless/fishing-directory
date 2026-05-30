@@ -249,9 +249,6 @@ export async function getSpots(): Promise<FishingSpot[]> {
     for (const r of raw) {
       const spot = normalize(r);
       if (!spot) continue;
-      // TPWD's standalone boat ramp dataset is unreliable — many entries aren't real ramps.
-      // Hide them site-wide until the pipeline filters them or TPWD updates the list.
-      if (spot.spot_type === 'boat_ramp') continue;
       if (seen.has(spot.canonical_id)) {
         console.warn(`[getSpots] Duplicate canonical_id collision: ${spot.canonical_id}`);
         continue;
