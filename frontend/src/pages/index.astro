@@ -35,19 +35,19 @@ const updatedLabel = new Date().toLocaleString('en-US', { month: 'long', year: '
       </div>
     </div>
 
-    {/* Conditional ad slots:
-        - Rectangle (300x250-ish) shows in the initial empty state.
-        - Banner (horizontal) shows after the user searches and results render.
-        CSS in the <style> block toggles visibility via :has() on the SearchWidget. */}
-    <AdSlot format="rectangle" class="ad-slot-inline home-ad-rectangle" />
-    <AdSlot format="horizontal" class="ad-slot-inline home-ad-banner" />
-
     <ul class="home-stats" aria-label="Directory statistics">
       <li><span class="home-stat-num">{recordCount.toLocaleString()}</span><span class="home-stat-label">Records</span></li>
       <li><span class="home-stat-num">{countyCount}</span><span class="home-stat-label">Counties</span></li>
       <li><span class="home-stat-num">{stateCount}</span><span class="home-stat-label">{stateCount === 1 ? 'State' : 'States'}</span></li>
       <li><span class="home-stat-num">{updatedLabel}</span><span class="home-stat-label">Updated</span></li>
     </ul>
+
+    {/* Conditional ad slots:
+        - Rectangle (300x250-ish) shows in the initial empty state.
+        - Banner (horizontal) shows after the user searches and results render.
+        CSS in the <style> block toggles visibility via :has() on the SearchWidget. */}
+    <AdSlot format="rectangle" class="ad-slot-inline home-ad-rectangle" />
+    <AdSlot format="horizontal" class="ad-slot-inline home-ad-banner" />
   </section>
 </Layout>
 
