@@ -41,21 +41,47 @@ jobs:
         env:
           MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
         run: |
+          set -x
+          echo "=== Ping the server (no DB selected) ==="
+          mysql \
+            -h "${{ secrets.STAGING_DB_HOST }}" \
+            -u "${{ secrets.STAGING_DB_USER }}" \
+            -e "SELECT VERSION(), CURRENT_USER(), DATABASE();" \
+            || echo "[ping] mysql exit=$?"
+          echo
+          echo "=== SHOW DATABASES ==="
+          mysql \
+            -h "${{ secrets.STAGING_DB_HOST }}" \
+            -u "${{ secrets.STAGING_DB_USER }}" \
+            -e "SHOW DATABASES;" \
+            || echo "[show-dbs] mysql exit=$?"
+          echo
           echo "=== Tables in ${{ secrets.STAGING_DB_NAME }} (before) ==="
           mysql \
             -h "${{ secrets.STAGING_DB_HOST }}" \
             -u "${{ secrets.STAGING_DB_USER }}" \
             "${{ secrets.STAGING_DB_NAME }}" \
-            -e "SHOW TABLES;" 2>&1 | grep -v "^mysql:"
+            -e "SHOW TABLES;" \
+            || echo "[show-tables] mysql exit=$?"
           echo
-          echo "=== Row counts ==="
+          echo "=== Row counts (errors NOT suppressed) ==="
           for tbl in fishing_spots counties spot_counties potential_species fishing_reports catch_reports master_species; do
-            count=$(mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -sN -e "SELECT COUNT(*) FROM \`$tbl\`;" 2>/dev/null || echo "n/a")
-            echo "  $tbl: $count"
+            echo "--- $tbl ---"
+            mysql \
+              -h "${{ secrets.STAGING_DB_HOST }}" \
+              -u "${{ secrets.STAGING_DB_USER }}" \
+              "${{ secrets.STAGING_DB_NAME }}" \
+              -sN -e "SELECT COUNT(*) FROM \`$tbl\`;" \
+              || echo "[$tbl] mysql exit=$?"
           done
           echo
           echo "=== catch_reports columns (if exists) ==="
-          mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -e "DESCRIBE catch_reports;" 2>&1 | grep -v "^mysql:" || echo "(catch_reports does not exist yet)"
+          mysql \
+            -h "${{ secrets.STAGING_DB_HOST }}" \
+            -u "${{ secrets.STAGING_DB_USER }}" \
+            "${{ secrets.STAGING_DB_NAME }}" \
+            -e "DESCRIBE catch_reports;" \
+            || echo "[describe] mysql exit=$?"
 
       - name: Apply migration
         if: ${{ github.event.inputs.dry_run == 'false' }}
