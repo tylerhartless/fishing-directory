@@ -59,6 +59,16 @@ const updatedLabel = new Date().toLocaleString('en-US', { month: 'long', year: '
   /* Search section — the widget brings its own chrome */
   .home-search {
     margin-top: 1.2rem;
+    /* Override .search-section's 3rem bottom so the ad below sits at the same
+       2rem distance as the stats below it (symmetric framing). */
+    margin-bottom: 0;
+  }
+
+  /* Match the ad's vertical gap to the stats' 2rem top margin so the ad
+     is equally spaced from the search widget above and the stats below. */
+  :global(.field-record--home .ad-slot-inline) {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .home-search .search-container {
