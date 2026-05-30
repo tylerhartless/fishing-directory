@@ -113,6 +113,8 @@ jobs:
           DROP TABLE IF EXISTS `spot_counties`;
           DROP TABLE IF EXISTS `counties`;
           DROP TABLE IF EXISTS `fishing_spots`;
+          DROP TABLE IF EXISTS `fish_habitat_structures`;
+          DROP TABLE IF EXISTS `spot_votes`;
           SET FOREIGN_KEY_CHECKS = 1;
 
           CREATE TABLE IF NOT EXISTS `master_species` (
