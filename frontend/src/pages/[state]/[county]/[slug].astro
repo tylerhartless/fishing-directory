@@ -50,13 +50,10 @@ const waterBodyDisplay = formatWaterBodies(spot.water_body_names);
 const showWaterBody = waterBodyDisplay && !spot._synthetic_water_body;
 const spotTypeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-const addressDisplay = spot.address
-  ? [
-      spot.address,
-      spot.city,
-      [spot.state, spot.zip_code].filter(Boolean).join(' '),
-    ].filter(Boolean).join(', ')
-  : null;
+// spot.address from the pipeline already includes ", City, State ZIP".
+// Render it as-is to avoid doubling city/state/zip when those structured
+// fields are also populated. Falls back to coords below when address is absent.
+const addressDisplay = spot.address ? spot.address : null;
 
 const countyTag = spot.county_slug.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3) || spot.state;
 const idTail = spot.canonical_id.replace(/-/g, '').slice(-4).toUpperCase();
