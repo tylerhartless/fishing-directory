@@ -13,8 +13,8 @@ const DEFAULT_SPECIES_SVG = `
   </svg>
 `.trim();
 
-// Track current spot ID (updated on each init)
-let spotId = null;
+// Track current canonical_id (updated on each init)
+let canonicalId = null;
 
 // Tier configuration - using CSS color variables
 // Note: Tier thresholds are configured in backend/api/get-heat-list.php
@@ -53,22 +53,15 @@ async function loadHeatList() {
   const container = document.getElementById('heat-list-container');
 
   try {
-    const response = await fetch(`${API_BASE}/get-heat-list.php?spot_id=${spotId}`);
+    const response = await fetch(`${API_BASE}/get-heat-list.php?canonical_id=${encodeURIComponent(canonicalId)}`);
     const data = await response.json();
 
     if (!data.success) {
       throw new Error('Failed to load heat list');
     }
 
+    // Endpoint only returns species with at least one report. Empty array = no catches logged yet.
     if (data.species.length === 0) {
-      container.innerHTML = '<p class="no-data">No species data available for this location.</p>';
-      return;
-    }
-
-    // Separate reported species
-    const reportedSpecies = data.species.filter(s => s.has_reports);
-
-    if (reportedSpecies.length === 0) {
       container.innerHTML = `
         <div class="heat-list">
           <p class="no-reports-message">No catches reported yet. Log a catch to help other anglers.</p>
@@ -78,9 +71,9 @@ async function loadHeatList() {
     }
 
     const SHOWCASE_LIMIT = 3;
-    const showcaseSpecies = reportedSpecies.slice(0, SHOWCASE_LIMIT);
-    const moreSpecies = reportedSpecies.length > SHOWCASE_LIMIT
-      ? reportedSpecies.slice(SHOWCASE_LIMIT)
+    const showcaseSpecies = data.species.slice(0, SHOWCASE_LIMIT);
+    const moreSpecies = data.species.length > SHOWCASE_LIMIT
+      ? data.species.slice(SHOWCASE_LIMIT)
       : [];
 
     // Render the heat list
@@ -233,7 +226,8 @@ function openLogCatchModal(preselectedSpeciesId = null, preselectedSpeciesName =
  */
 async function loadSpeciesForModal(preselectedSpeciesId = null, preselectedSpeciesName = null) {
   try {
-    const response = await fetch(`${API_BASE}/get-heat-list.php?spot_id=${spotId}`);
+    // Modal always shows the full master species picker, independent of what's been logged here.
+    const response = await fetch(`${API_BASE}/get-master-species.php`);
     const data = await response.json();
 
     if (!data.success) {
@@ -353,7 +347,7 @@ async function handleLogCatchSubmit(e) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        spot_id: parseInt(spotId),
+        canonical_id: canonicalId,
         species_id: speciesId,
         catch_date: catchDate
       })
@@ -435,15 +429,15 @@ if (!document.getElementById('heat-list-animations')) {
 const logCatchHandler = () => openLogCatchModal();
 
 function initHeatList() {
-  const spotElement = document.querySelector('[data-spot-id]');
-  const newSpotId = spotElement?.dataset.spotId;
+  const spotElement = document.querySelector('[data-canonical-id]');
+  const newCanonicalId = spotElement?.dataset.canonicalId;
 
-  if (!newSpotId) {
-    console.error('Spot ID missing; unable to load heat list.');
+  if (!newCanonicalId) {
+    console.error('canonical_id missing; unable to load heat list.');
     return;
   }
 
-  spotId = newSpotId;
+  canonicalId = newCanonicalId;
 
   const container = document.getElementById('heat-list-container');
   if (container) {

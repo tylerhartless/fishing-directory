@@ -9,15 +9,15 @@ services:
     container_name: fishing_directory_db
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "3307:3306"  # Host 3307 to avoid conflict with fishing-data-pipeline's MySQL on 3306; internal port unchanged
     environment:
       - MYSQL_ROOT_PASSWORD=root_password
       - MYSQL_DATABASE=fishing_directory
       - MYSQL_USER=fishing_user
       - MYSQL_PASSWORD=fishing_password
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./database/init:/docker-entrypoint-initdb.d  # Optional: auto-run SQL scripts on first start
+      - db_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d  # Auto-runs SQL scripts on first start (fresh volume)
     networks:
       - fishing_network
     healthcheck:
@@ -98,7 +98,7 @@ services:
         condition: service_healthy
 
 volumes:
-  mysql_data:
+  db_data:
     driver: local
 
 networks:

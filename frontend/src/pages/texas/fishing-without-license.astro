@@ -1,63 +1,62 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Plate from '../../components/Plate.astro';
 import SearchWidget from '../../components/SearchWidget.tsx';
 import AdSlot from '../../components/AdSlot.astro';
 import { getSpots } from '../../lib/database';
 
-const pageTitle = "Where Can I Fish Without a License in Texas? - State Parks Guide";
-const pageDescription = "Fish without a fishing license in Texas state parks! Complete guide to all Texas state parks where you can fish license-free, including locations, amenities, and what you need to know.";
+const pageTitle = 'Fishing Without a License in Texas · Public Fishing Directory';
+const pageDescription = 'Fish license-free at any Texas state park. Complete index of TPWD state parks with public fishing access — locations, amenities, and what you need to know.';
 
 const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN || '';
 
-// Get all Texas state park spots
 const allSpots = await getSpots();
-const stateParks = allSpots.filter(spot =>
-  (spot.state === 'TX' || spot.state === 'Texas') &&
-  spot.spot_type === 'state_park'
-);
+const stateParks = allSpots.filter(spot => spot.state === 'TX' && spot.spot_type === 'state_park');
 
-// Serialize for client component
 const serializedParks = stateParks.map(spot => ({
-  id: spot.id,
-  slug: spot.slug,
+  canonical_id: spot.canonical_id,
   name: spot.name,
-  state: spot.state || 'TX',
+  state: spot.state,
+  state_route: spot.state_route,
   county: spot.county,
   county_slug: spot.county_slug,
-  latitude: String(spot.latitude),
-  longitude: String(spot.longitude),
+  latitude: spot.latitude,
+  longitude: spot.longitude,
   spot_type: spot.spot_type,
-  water_body_name: spot.water_body_name,
+  water_body_names: spot.water_body_names,
   amenities: spot.amenities,
 }));
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <section class="retro-page-header">
-    <div class="container">
-      <a href="/texas" class="page-back-link">← Texas</a>
-      <h1>Fishing Without a License in Texas</h1>
-      <p class="subtitle">Texas State Parks Don't Require Fishing Licenses</p>
-    </div>
-  </section>
+  <article class="field-record">
+    <a href="/" class="field-record-back">Back to index</a>
 
-  <section class="retro-container">
-    <div class="no-license-page">
-      <!-- Introduction -->
-      <div class="intro-section retro-section">
-        <h2>Free Fishing in Texas State Parks</h2>
-        <p class="lead">
-          You can fish without a fishing license at any Texas state park! This exemption applies to all state parks in the Texas State Park system, making it a great option for casual anglers, visitors, and families.
-        </p>
-        <div class="highlight-box">
-          <strong>Important:</strong> While you don't need a fishing license, you still need to pay park entrance fees. Daily passes typically cost $3-8 per person (ages 13+).
-        </div>
+    <Plate
+      accession="REC. SPECIAL · TX-STATE-PARKS"
+      classification="LICENSE-FREE FISHING · TPWD STATE PARK SYSTEM"
+      stampLabel="Free to Fish"
+      stampVariant="verified"
+    >
+      Fishing Without a License in Texas
+    </Plate>
+
+    <section class="field-section">
+      <h2 class="field-section-heading">What This Means</h2>
+      <p class="lead">
+        You can fish without a fishing license inside any Texas state park. The exemption applies statewide
+        across the TPWD park system — no permit needed if you stay inside park boundaries.
+      </p>
+      <div class="callout-box">
+        <strong>Note:</strong> A fishing license isn't required, but you still pay the park's daily entrance fee
+        ($3–$8 per adult). Bag limits, size limits, and gear regulations all still apply.
       </div>
+    </section>
 
-      <!-- Ad: between intro and results (mobile) -->
-      <AdSlot format="horizontal" class="ad-slot-inline" />
+    <AdSlot format="horizontal" class="ad-slot-inline" />
 
-      <!-- State Parks Search -->
+    <section class="field-section">
+      <h2 class="field-section-heading">State Parks Index</h2>
       <div class="spots-list-section">
         <SearchWidget
           mapboxToken={mapboxToken}
@@ -68,256 +67,236 @@ const serializedParks = stateParks.map(spot => ({
           showSortToggle={true}
           defaultCenter={[31.9686, -99.9018]}
           defaultZoom={6}
-          backButtonUrl="/texas"
-          backButtonText="Texas"
+          backButtonUrl="/"
+          backButtonText="Index"
           client:idle
         />
       </div>
+    </section>
 
+    <AdSlot format="horizontal" class="ad-slot-inline" />
 
-      <!-- Ad: between results and FAQ (mobile) -->
-      <AdSlot format="horizontal" class="ad-slot-inline" />
+    <section class="field-section">
+      <h2 class="field-section-heading">FAQ</h2>
 
-      <!-- FAQ Section -->
-      <div class="faq-section retro-section">
-        <h2>Frequently Asked Questions</h2>
-
-        <div class="faq-item">
-          <h3>Does this apply to all Texas waters?</h3>
-          <p>
-            No. The no-license exemption only applies when fishing within Texas state parks. If you fish at lakes, rivers, or coastal areas outside of state parks, you will need a valid Texas fishing license.
-          </p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Do I need any other permits?</h3>
-          <p>
-            You don't need a fishing license, but you do need to pay the state park entrance fee. Additionally, all standard fishing regulations (bag limits, size limits, fishing methods) still apply.
-          </p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What about saltwater fishing?</h3>
-          <p>
-            For saltwater fishing in Texas, different rules apply. While the no-license rule applies in state parks, you should check specific regulations for coastal fishing. Visit the <a href="https://tpwd.texas.gov/" target="_blank" rel="noopener">Texas Parks & Wildlife Department website</a> for current saltwater fishing regulations.
-          </p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Can I fish at all state parks?</h3>
-          <p>
-            Most Texas state parks have fishing opportunities, but not all. The spots listed above are state parks with documented fishing access. Always check with the specific park before your visit to confirm fishing is available and to learn about any park-specific rules.
-          </p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What fishing regulations still apply?</h3>
-          <p>
-            All state fishing regulations apply, including:
-          </p>
-          <ul>
-            <li>Bag limits (how many fish you can keep)</li>
-            <li>Size limits (minimum or maximum size of fish)</li>
-            <li>Seasonal restrictions</li>
-            <li>Allowed fishing methods</li>
-            <li>Species-specific regulations</li>
-          </ul>
-        </div>
+      <div class="faq-item">
+        <h3>Does this apply to all Texas waters?</h3>
+        <p>
+          No — the exemption only applies <em>inside</em> Texas state parks. Lakes, rivers, and coastal
+          waters outside park boundaries require a valid Texas fishing license.
+        </p>
       </div>
 
-      <!-- Additional Resources -->
-      <div class="resources-section retro-section">
-        <h2>Additional Resources</h2>
+      <div class="faq-item">
+        <h3>Do I need any other permits?</h3>
+        <p>
+          You don't need a fishing license, but you do need to pay the state park entrance fee.
+          All standard fishing regulations (bag limits, size limits, methods) still apply.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What about saltwater fishing?</h3>
+        <p>
+          Coastal park rules differ. The no-license exemption applies inside park boundaries, but
+          additional saltwater rules may apply — check the
+          <a href="https://tpwd.texas.gov/" target="_blank" rel="noopener">TPWD website</a> for specifics.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Can I fish at every state park?</h3>
+        <p>
+          Most have fishing access, but not all. The index above lists every TPWD park with documented
+          fishing access. Always check the specific park before your trip to confirm.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What rules still apply?</h3>
+        <p>All Texas fishing regulations remain in effect:</p>
         <ul>
-          <li>
-            <a href="https://tpwd.texas.gov/regulations/outdoor-annual/fishing" target="_blank" rel="noopener">
-              Texas Fishing Regulations (TPWD)
-            </a>
-          </li>
-          <li>
-            <a href="https://tpwd.texas.gov/state-parks/" target="_blank" rel="noopener">
-              Texas State Parks Directory
-            </a>
-          </li>
-          <li>
-            <a href="https://tpwd.texas.gov/fishboat/fish/" target="_blank" rel="noopener">
-              Texas Fishing Reports & Forecasts
-            </a>
-          </li>
+          <li>Bag limits (how many fish you can keep)</li>
+          <li>Size limits (minimum or maximum)</li>
+          <li>Seasonal restrictions</li>
+          <li>Allowed methods and gear</li>
+          <li>Species-specific regulations</li>
         </ul>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="field-section">
+      <h2 class="field-section-heading">References</h2>
+      <ul class="references-list">
+        <li>
+          <a href="https://tpwd.texas.gov/regulations/outdoor-annual/fishing/" target="_blank" rel="noopener">
+            TPWD Outdoor Annual · Fishing Regulations →
+          </a>
+        </li>
+        <li>
+          <a href="https://tpwd.texas.gov/state-parks/" target="_blank" rel="noopener">
+            TPWD State Parks Directory →
+          </a>
+        </li>
+        <li>
+          <a href="https://tpwd.texas.gov/fishboat/fish/" target="_blank" rel="noopener">
+            TPWD Fishing Reports & Forecasts →
+          </a>
+        </li>
+      </ul>
+    </section>
+  </article>
 </Layout>
 
 <style>
-  .no-license-page {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  /* Spots list section - reuse search widget styles */
-  .spots-list-section {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .retro-section {
-    margin-bottom: 3rem;
-  }
-
   .lead {
     font-family: var(--font-body-text);
-    font-size: 1.3rem;
-    line-height: 1.6;
-    color: var(--theme-text-secondary);
-    margin-bottom: 1.5rem;
-    font-weight: 400;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    margin: 0 0 1.25rem 0;
+    color: var(--theme-text);
   }
 
   :global([data-theme="light"]) .lead {
-    font-weight: 600;
-    color: var(--neutral-black);
+    color: var(--boat-black);
+    font-weight: 500;
   }
 
-  .highlight-box {
-    background: var(--rgba-sage-15);
-    border: 2px solid var(--rgba-sage-50);
-    padding: 1.25rem;
-    margin: 1.5rem 0;
+  .callout-box {
+    padding: 1rem 1.15rem;
+    margin: 1.25rem 0 0 0;
     font-family: var(--font-body-text);
-    font-size: 1.15rem;
-    color: var(--theme-text-sage);
-    box-shadow: 0 0 10px var(--rgba-sage-30);
+    font-size: 1.02rem;
+    line-height: 1.55;
+    background: var(--rgba-sage-08);
+    border-left: 3px solid var(--accent-sage);
+    color: var(--theme-text);
   }
 
-  :global([data-theme="light"]) .highlight-box {
+  :global([data-theme="light"]) .callout-box {
     background: var(--accent-cream);
-    border: 3px solid var(--boat-orange);
-    color: var(--neutral-black);
-    box-shadow: 4px 4px 0 var(--rgba-orange-20);
-    font-weight: 700;
+    border-left: 5px solid var(--boat-orange);
+    color: var(--boat-black);
+    font-weight: 500;
+  }
+
+  .spots-list-section {
+    margin: 0;
   }
 
   .faq-item {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--rgba-sage-30);
+    margin: 0 0 1.6rem 0;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed var(--rgba-sage-25);
   }
 
   .faq-item:last-child {
     border-bottom: none;
   }
 
+  :global([data-theme="light"]) .faq-item {
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.18);
+  }
+
+  .faq-item h3 {
+    margin: 0 0 0.55rem 0;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--theme-text);
+  }
+
+  :global([data-theme="light"]) .faq-item h3 {
+    color: var(--boat-charcoal);
+  }
 
   .faq-item p,
   .faq-item ul {
     font-family: var(--font-body-text);
-    font-size: 1.15rem;
+    font-size: 1.02rem;
     line-height: 1.6;
-    color: var(--theme-text-secondary);
-    margin: 0.5rem 0;
-    font-weight: 400;
+    color: var(--theme-text);
+    margin: 0.4rem 0;
   }
 
   :global([data-theme="light"]) .faq-item p,
   :global([data-theme="light"]) .faq-item ul {
-    color: var(--theme-text-secondary);
-    font-weight: 600;
+    color: var(--boat-black);
+    font-weight: 500;
   }
 
   .faq-item ul {
-    padding-left: 2rem;
+    padding-left: 1.2rem;
   }
 
   .faq-item li {
-    margin: 0.5rem 0;
+    margin: 0.3rem 0;
   }
 
   .faq-item a {
-    color: var(--theme-text-sage);
+    color: var(--accent-sage);
     text-decoration: underline;
-  }
-
-  .faq-item a:hover {
-    text-shadow: 0 0 8px var(--rgba-sage-60);
+    text-underline-offset: 2px;
   }
 
   :global([data-theme="light"]) .faq-item a {
-    color: var(--boat-red);
+    color: var(--accent-dark-orange);
     font-weight: 700;
   }
 
   :global([data-theme="light"]) .faq-item a:hover {
-    color: var(--boat-orange);
-    text-shadow: none;
+    color: var(--boat-red);
   }
 
-  .features-list {
+  .references-list {
     list-style: none;
     padding: 0;
-    margin: 1.5rem 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
   }
 
-  .features-list li {
+  .references-list a {
+    display: block;
+    padding: 0.85rem 1rem;
     font-family: var(--font-body-text);
-    font-size: 1.15rem;
-    font-weight: 400;
-    color: var(--theme-text-secondary);
-    padding: 0.5rem 0;
-  }
-
-  :global([data-theme="light"]) .features-list li {
-    color: var(--theme-text-secondary);
-    font-weight: 600;
-  }
-
-  .resources-section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .resources-section li {
-    font-family: var(--font-body-text);
-    font-size: 1.15rem;
-    margin: 1rem 0;
-  }
-
-  .resources-section a {
-    color: var(--theme-text-sage);
+    font-size: 1rem;
+    background: var(--rgba-sage-08);
+    border: 1px solid var(--rgba-sage-50);
+    color: var(--accent-sage);
     text-decoration: none;
-    display: inline-block;
-    padding: 0.75rem 1rem;
-    background: var(--rgba-sage-15);
-    border: 2px solid var(--rgba-sage-50);
-    transition: all 0.2s;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .resources-section a:hover {
-    background: var(--rgba-sage-25);
-    border-color: var(--rgba-sage-80);
-    box-shadow: 0 0 15px var(--rgba-sage-50);
+  .references-list a:hover {
+    background: var(--rgba-sage-20);
+    transform: translateX(3px);
   }
 
-  :global([data-theme="light"]) .resources-section a {
+  :global([data-theme="light"]) .references-list a {
     background: var(--neutral-white);
-    border: 3px solid var(--neutral-black);
-    color: var(--neutral-black);
+    border: 3px solid var(--boat-black);
+    color: var(--boat-black);
     font-weight: 700;
-    box-shadow: 3px 3px 0 var(--rgba-black-20);
+    box-shadow: 4px 4px 0 var(--rgba-black-18);
   }
 
-  :global([data-theme="light"]) .resources-section a:hover {
+  :global([data-theme="light"]) .references-list a:hover {
     background: var(--boat-orange);
     color: var(--neutral-white);
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--rgba-black-30);
+    box-shadow: 6px 6px 0 var(--rgba-black-25);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 600px) {
     .lead {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
     }
 
+    .faq-item h3 {
+      font-size: 1.02rem;
+    }
   }
 </style>

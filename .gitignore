@@ -28,7 +28,8 @@ dist/
 data-pipeline/
 raw-data/
 processed-data/
-database/
+database/*
+!database/init/
 check_db_size.py
 export_production_db.py
 deploy_database.sql

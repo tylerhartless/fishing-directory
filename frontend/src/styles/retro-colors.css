@@ -77,9 +77,9 @@
   --badge-river-light: #6b4a9e;        /* Deep purple (light mode card/badge) */
   --badge-river-border-light: #5a3a8e; /* Darker purple border (light mode) */
 
-  --badge-public: #7ec97e;              /* Green for public water */
-  --badge-public-light: #4a6741;        /* Forest green (light mode card/badge) */
-  --badge-public-border-light: #3a5731; /* Darker forest border (light mode) */
+  --badge-public: #4fb8c2;              /* Teal for public water */
+  --badge-public-light: #2c7580;        /* Deep teal (light mode card/badge) */
+  --badge-public-border-light: #1f5c66; /* Darker teal border (light mode) */
 
   --badge-park: #a8d96e;              /* Yellow-green for state parks */
   --badge-park-light: #7a8450;        /* Olive green (light mode card/badge) */
@@ -88,6 +88,14 @@
   --badge-pier: #ffb84d;              /* Gold for fishing piers */
   --badge-pier-light: #d4a574;        /* Sandy tan (light mode card/badge) */
   --badge-pier-border-light: #c49564; /* Darker tan border (light mode) */
+
+  --badge-community: #f08c6e;              /* Coral / peach for community parks */
+  --badge-community-light: #b85a3e;        /* Deep coral (light mode card/badge) */
+  --badge-community-border-light: #9a4a32; /* Darker coral border (light mode) */
+
+  --badge-boat-ramp: #c87854;              /* Copper for boat ramps (matches MapView marker) */
+  --badge-boat-ramp-light: #7a4030;        /* Deep copper-brown (light mode card/badge) */
+  --badge-boat-ramp-border-light: #5a3020; /* Darker copper border (light mode) */
 
   /* ===== COMMONLY USED RGBA VALUES ===== */
   /* These are the most frequently duplicated color values across the site.
@@ -183,7 +191,8 @@
   /* Font families - semantic naming independent of design theme */
   --font-primary: 'Averia Serif Libre', serif;   /* Primary font used for body text site-wide */
   --font-heading: 'Averia Serif Libre', serif;      /* Secondary font used for headings */
-  --font-accent: 'Press Start 2P', monospace;   /* Accent font for special elements (logo, etc) */
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace; /* Data/codes/IDs — typewriter & terminal */
+  --font-accent: 'Press Start 2P', monospace;   /* Brand mark only (logo glyph + wordmark) */
   --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* System font fallback */
   
   /* Variable Font Settings (if using a variable font) */
@@ -241,6 +250,27 @@
   /* Container padding - Desktop */
   --container-padding-desktop: 2rem;
   --container-padding-desktop-inner: 2rem;
+
+  /* ===== FIELD RECORD TOKENS ===== */
+  /* Reusable structural treatments — light renders as catalog page, dark as CRT */
+
+  /* Paper grain texture (light) — subtle noise, inlined SVG */
+  --paper-grain: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* Phosphor glow — sage outglow on text in dark mode */
+  --phosphor-glow: 0 0 8px rgba(168, 197, 168, 0.45);
+  --phosphor-glow-soft: 0 0 6px rgba(168, 197, 168, 0.3);
+  --phosphor-glow-strong: 0 0 14px rgba(168, 197, 168, 0.6);
+
+  /* Chromatic aberration — CRT RGB-misalignment fringe on key titles */
+  --chromatic-fringe: 1.5px 0 0 #ff4a4a, -1.5px 0 0 #4ad8ff;
+
+  /* Plate accent treatments */
+  --plate-stamp-rotate-light: -2deg;
+
+  /* Common rgba helpers used in field-record.css */
+  --rgba-black-18: rgba(0, 0, 0, 0.18);
+  --rgba-black-22: rgba(0, 0, 0, 0.22);
 }
 
 /* Dark Mode - Explicit declaration for equal specificity with light mode */

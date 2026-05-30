@@ -1,0 +1,24 @@
+---
+/**
+ * Status bar — single-line marginalia at the bottom of every page.
+ * Light: catalog footer with colophon-style metadata.
+ * Dark: CRT system status line.
+ *
+ * Spot count is approximated for the chrome only — not a live number.
+ * Update SPOT_COUNT when state data changes meaningfully.
+ */
+const SPOT_COUNT = '1,163';
+const year = new Date().getFullYear();
+---
+
+<footer class="status-bar">
+  <div class="status-bar-inner">
+    <span class="status-segment status-indicator">
+      <span class="status-led" aria-hidden="true"></span>
+      <span class="status-led-label">READY</span>
+    </span>
+    <span class="status-segment">REC. {SPOT_COUNT}</span>
+    <span class="status-segment">State-Certified</span>
+    <span class="status-segment status-issue">© {year} · PUBLIC FISHING DIRECTORY</span>
+  </div>
+</footer>

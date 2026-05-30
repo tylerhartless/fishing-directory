@@ -1,62 +1,202 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Plate from '../components/Plate.astro';
 import SearchWidget from '../components/SearchWidget.tsx';
-import DynamicSubtitle from '../components/DynamicSubtitle.tsx';
-import ValuePropositionBadges from '../components/ValuePropositionBadges.tsx';
-import SpecialLandingPageCallout from '../components/SpecialLandingPageCallout.tsx';
-import WhatEachListingIncludes from '../components/WhatEachListingIncludes.tsx';
-import CountyListing from '../components/CountyListing.tsx';
 import AdSlot from '../components/AdSlot.astro';
+import { getSpots } from '../lib/database';
 
 const nominatimEmail = import.meta.env.PUBLIC_NOMINATIM_EMAIL || 'contact@wherecanifish.com';
 const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN || '';
+
+const allSpots = await getSpots();
+const recordCount = allSpots.length;
+const countyCount = new Set(allSpots.map(s => `${s.state}-${s.county_slug}`)).size;
+const stateCount = new Set(allSpots.map(s => s.state)).size;
+const updatedLabel = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
 ---
 
 <Layout
-  title="Find Fishing Spots Near You - Public Fishing Directory"
-  description="Find public fishing spots near you. Thousands of boat ramps, piers, and bank fishing locations with GPS coordinates, amenities, and real catches."
+  title="Public Fishing Directory · Access Map"
+  description="Find public fishing access. Lakes, rivers, piers, and parks — mapped, classified, and maintained from state-agency records."
 >
-  <section class="retro-page-header">
-    <div class="container">
-      <h1>FISHING SPOT FINDER</h1>
-      <DynamicSubtitle client:load />
-    </div>
-  </section>
+  <section class="field-record field-record--home">
+    <Plate
+      hero={true}
+      accession="REC. INDEX"
+      classification="Public access water · mapped · maintained"
+      transitionName="page-plate"
+    >
+      Fishing Spot Finder
+    </Plate>
 
-  <section class="retro-container">
-    <div class="search-section">
+    <div class="search-section home-search">
       <div class="search-container">
         <SearchWidget nominatimEmail={nominatimEmail} mapboxToken={mapboxToken} client:idle />
       </div>
-
-      <!-- New Homepage Sections: Mobile-First Design -->
-      <div class="homepage-content">
-        <!-- Scroll Prompt - Interstitial Element -->
-        <div class="scroll-prompt">
-          <span class="scroll-arrow">↓</span>
-          <span class="scroll-text">WHY USE THIS DIRECTORY?</span>
-          <span class="scroll-arrow">↓</span>
-        </div>
-
-        <!-- Value Proposition Badges -->
-        <ValuePropositionBadges client:load />
-
-        <!-- Ad: between value props and landing page callout (mobile) -->
-        <AdSlot format="horizontal" class="ad-slot-inline" />
-
-        <!-- State Parks No-License Callout (conditional, dynamic by state) -->
-        <SpecialLandingPageCallout geolocateOnly={true} client:load />
-
-        <!-- What Each Listing Includes -->
-        <WhatEachListingIncludes client:load />
-
-        <!-- Ad: between listing features and county listing (mobile) -->
-        <AdSlot format="horizontal" class="ad-slot-inline" />
-
-        <!-- County Listing (dynamic by IP-detected state) -->
-        <CountyListing client:load />
-      </div>
     </div>
+
+    {/* Conditional ad slots:
+        - Rectangle (300x250-ish) shows in the initial empty state.
+        - Banner (horizontal) shows after the user searches and results render.
+        CSS in the <style> block toggles visibility via :has() on the SearchWidget. */}
+    <AdSlot format="rectangle" class="ad-slot-inline home-ad-rectangle" />
+    <AdSlot format="horizontal" class="ad-slot-inline home-ad-banner" />
+
+    <ul class="home-stats" aria-label="Directory statistics">
+      <li><span class="home-stat-num">{recordCount.toLocaleString()}</span><span class="home-stat-label">Records</span></li>
+      <li><span class="home-stat-num">{countyCount}</span><span class="home-stat-label">Counties</span></li>
+      <li><span class="home-stat-num">{stateCount}</span><span class="home-stat-label">{stateCount === 1 ? 'State' : 'States'}</span></li>
+      <li><span class="home-stat-num">{updatedLabel}</span><span class="home-stat-label">Updated</span></li>
+    </ul>
   </section>
 </Layout>
 
+<style>
+  .field-record--home {
+    max-width: 1100px;
+  }
+
+  /* Search section — the widget brings its own chrome */
+  .home-search {
+    margin-top: 1.2rem;
+    /* Override .search-section's 3rem bottom so the ad below sits at the same
+       2rem distance as the stats below it (symmetric framing). */
+    margin-bottom: 0;
+  }
+
+  /* Match the ad's vertical gap to the stats' 2rem top margin so the ad
+     is equally spaced from the search widget above and the stats below. */
+  :global(.field-record--home .ad-slot-inline) {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .home-search .search-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  :global([data-theme="light"]) .home-search .search-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Conditional ads: rectangle visible in initial state, banner after results.
+     :has() targets the SearchWidget's data-show-results attribute.
+     Both ad slots load on page load (so AdSense fills both); only one is ever
+     visible at a time, which is the impression that gets counted.
+     Wrapped in :global() because AdSlot is a child component and Astro's
+     default-scoped CSS doesn't reach child elements. */
+  :global(.home-ad-rectangle) {
+    display: block;
+  }
+
+  :global(.home-ad-banner) {
+    display: none;
+  }
+
+  :global(.field-record--home:has(.search-widget[data-show-results="true"]) .home-ad-rectangle) {
+    display: none;
+  }
+
+  :global(.field-record--home:has(.search-widget[data-show-results="true"]) .home-ad-banner) {
+    display: block;
+  }
+
+  /* Stats strip — editorial colophon below the search widget */
+  .home-stats {
+    list-style: none;
+    padding: 0;
+    margin: 2rem auto 0 auto;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem 1rem;
+    border-top: 2px solid var(--rgba-sage-40);
+    border-bottom: 2px solid var(--rgba-sage-40);
+    padding: 0.95rem 0;
+  }
+
+  :global([data-theme="light"]) .home-stats {
+    border-top: 3px solid var(--boat-black);
+    border-bottom: 3px solid var(--boat-black);
+  }
+
+  .home-stats li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.2rem;
+    padding: 0 0.4rem;
+    border-right: 1px dashed var(--rgba-sage-25);
+  }
+
+  :global([data-theme="light"]) .home-stats li {
+    border-right: 1px dashed rgba(0, 0, 0, 0.2);
+  }
+
+  .home-stats li:last-child {
+    border-right: none;
+  }
+
+  .home-stat-num {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    color: var(--theme-text);
+    line-height: 1.1;
+  }
+
+  :global([data-theme="light"]) .home-stat-num {
+    color: var(--boat-charcoal);
+  }
+
+  .home-stat-label {
+    font-family: var(--font-body-text);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--theme-text-sage);
+    opacity: 0.75;
+  }
+
+  :global([data-theme="light"]) .home-stat-label {
+    color: var(--boat-orange);
+    opacity: 1;
+  }
+
+  @media (max-width: 600px) {
+    .home-search {
+      margin-top: 0.85rem;
+    }
+
+    .home-stats {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem 0.25rem;
+      margin-top: 1.5rem;
+      padding: 0.85rem 0;
+    }
+
+    .home-stats li:nth-child(2) {
+      border-right: none;
+    }
+
+    .home-stat-num {
+      font-size: 1rem;
+    }
+
+    .home-stat-label {
+      font-size: 0.64rem;
+      letter-spacing: 0.16em;
+    }
+  }
+</style>
