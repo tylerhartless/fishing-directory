@@ -3,18 +3,21 @@ name: Migrate Staging Database
 on:
   workflow_dispatch:
     inputs:
-      migration_file:
-        description: "Migration SQL file in migrations/ to apply"
-        required: true
-        type: choice
-        options:
-          - "004_canonical_id_refactor.sql"
-        default: "004_canonical_id_refactor.sql"
       dry_run:
-        description: "Dry run: connect + show table state, but do NOT execute the migration"
+        description: "Dry run: upload runner + report current state, but do NOT execute the destructive migration"
         required: true
         type: boolean
         default: true
+
+# This workflow can't talk to Hostinger's MySQL directly — it's socket-only
+# from the staging box itself. Instead we:
+#   1. Generate a one-shot PHP runner with a random nonce + secret token.
+#   2. Upload it via FTP next to the existing API files (where config.php lives,
+#      so the runner can reuse the same DB constants).
+#   3. Hit it over HTTPS with the secret token. The PHP runs on the staging
+#      host, where the MySQL socket is reachable.
+#   4. Delete the runner immediately, even if execution failed.
+# The runner reports JSON with before/after table state so we can verify.
 
 jobs:
   migrate:
@@ -23,101 +26,237 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install MySQL client
+      - name: Install lftp + jq
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-mysql-client
+          sudo apt-get install -y lftp jq
 
-      - name: Sanity check migration file exists
+      - name: Generate nonce and token
+        id: nonce
         run: |
-          if [ ! -f "migrations/${{ github.event.inputs.migration_file }}" ]; then
-            echo "ERROR: migrations/${{ github.event.inputs.migration_file }} not found"
+          NONCE=$(openssl rand -hex 16)
+          TOKEN=$(openssl rand -hex 32)
+          echo "nonce=$NONCE" >> "$GITHUB_OUTPUT"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+          echo "filename=__migrate_${NONCE}.php" >> "$GITHUB_OUTPUT"
+          # Mask the token in logs
+          echo "::add-mask::$TOKEN"
+
+      - name: Build PHP runner
+        env:
+          TOKEN: ${{ steps.nonce.outputs.token }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          cat > runner.php <<'PHP_EOF'
+          <?php
+          // One-shot migration runner. Uploaded by GitHub Actions, hit once
+          // with ?token=..., then deleted. Reuses /api/config.php's DB consts.
+          declare(strict_types=1);
+          header('Content-Type: application/json');
+
+          $expected = '__TOKEN__';
+          $provided = isset($_GET['token']) ? (string) $_GET['token'] : '';
+          if (!hash_equals($expected, $provided)) {
+              http_response_code(403);
+              echo json_encode(['error' => 'forbidden']);
+              exit;
+          }
+
+          $dryRun = ('__DRY_RUN__' === 'true');
+
+          $configPath = __DIR__ . '/config.php';
+          if (!is_file($configPath)) {
+              http_response_code(500);
+              echo json_encode(['error' => 'config.php not found at ' . $configPath]);
+              exit;
+          }
+          require_once $configPath;
+
+          $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+          if ($conn->connect_error) {
+              http_response_code(500);
+              echo json_encode(['error' => 'connection failed', 'detail' => $conn->connect_error]);
+              exit;
+          }
+          $conn->set_charset('utf8mb4');
+
+          $snapshot = function (mysqli $c): array {
+              $tables = [];
+              $res = $c->query('SHOW TABLES');
+              while ($res && $row = $res->fetch_row()) { $tables[] = $row[0]; }
+              $counts = [];
+              foreach (['fishing_spots','counties','spot_counties','potential_species','fishing_reports','catch_reports','master_species'] as $t) {
+                  $r = @$c->query("SELECT COUNT(*) AS n FROM `{$t}`");
+                  $counts[$t] = $r ? (int) $r->fetch_assoc()['n'] : null;
+              }
+              $catchCols = [];
+              $r = @$c->query('DESCRIBE catch_reports');
+              if ($r) { while ($row = $r->fetch_assoc()) { $catchCols[] = $row['Field']; } }
+              return ['tables' => $tables, 'counts' => $counts, 'catch_reports_columns' => $catchCols];
+          };
+
+          $before = $snapshot($conn);
+
+          if ($dryRun) {
+              echo json_encode(['success' => true, 'dry_run' => true, 'before' => $before], JSON_PRETTY_PRINT);
+              $conn->close();
+              exit;
+          }
+
+          // The migration: drop legacy tables, ensure master_species exists +
+          // seeded, then create catch_reports with the canonical_id schema.
+          $sql = <<<'SQL'
+          SET FOREIGN_KEY_CHECKS = 0;
+          DROP TABLE IF EXISTS `catch_reports`;
+          DROP TABLE IF EXISTS `fishing_reports`;
+          DROP TABLE IF EXISTS `potential_species`;
+          DROP TABLE IF EXISTS `spot_counties`;
+          DROP TABLE IF EXISTS `counties`;
+          DROP TABLE IF EXISTS `fishing_spots`;
+          SET FOREIGN_KEY_CHECKS = 1;
+
+          CREATE TABLE IF NOT EXISTS `master_species` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `common_name` VARCHAR(100) NOT NULL,
+            `scientific_name` VARCHAR(100) DEFAULT NULL,
+            `region` VARCHAR(50) NOT NULL,
+            `priority_order` INT NOT NULL,
+            `icon` VARCHAR(10) DEFAULT '🐟',
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY `unique_species_per_region` (`common_name`, `region`),
+            INDEX `idx_region_priority` (`region`, `priority_order`)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+          INSERT INTO `master_species` (`common_name`, `scientific_name`, `region`, `priority_order`, `icon`) VALUES
+          ('Largemouth Bass', 'Micropterus salmoides', 'TX', 1, '🎣'),
+          ('Channel Catfish', 'Ictalurus punctatus', 'TX', 2, '🐡'),
+          ('Bluegill', 'Lepomis macrochirus', 'TX', 3, '🐟'),
+          ('White Crappie', 'Pomoxis annularis', 'TX', 4, '🐠'),
+          ('Redear Sunfish', 'Lepomis microlophus', 'TX', 5, '🐟'),
+          ('White Bass', 'Morone chrysops', 'TX', 6, '🎣'),
+          ('Striped Bass', 'Morone saxatilis', 'TX', 7, '🎣'),
+          ('Blue Catfish', 'Ictalurus furcatus', 'TX', 8, '🐡'),
+          ('Black Crappie', 'Pomoxis nigromaculatus', 'TX', 9, '🐠'),
+          ('Flathead Catfish', 'Pylodictis olivaris', 'TX', 10, '🐡'),
+          ('Longear Sunfish', 'Lepomis megalotis', 'TX', 11, '🐟'),
+          ('Green Sunfish', 'Lepomis cyanellus', 'TX', 12, '🐟'),
+          ('Warmouth', 'Lepomis gulosus', 'TX', 13, '🐟'),
+          ('Hybrid Striped Bass', 'Morone saxatilis × chrysops', 'TX', 14, '🎣'),
+          ('Yellow Bass', 'Morone mississippiensis', 'TX', 15, '🐟'),
+          ('Spotted Bass', 'Micropterus punctulatus', 'TX', 16, '🎣'),
+          ('Smallmouth Bass', 'Micropterus dolomieu', 'TX', 17, '🎣'),
+          ('Guadalupe Bass', 'Micropterus treculii', 'TX', 18, '🎣'),
+          ('Common Carp', 'Cyprinus carpio', 'TX', 20, '🐟'),
+          ('Freshwater Drum', 'Aplodinotus grunniens', 'TX', 21, '🐟'),
+          ('Alligator Gar', 'Atractosteus spatula', 'TX', 22, '🦈'),
+          ('Longnose Gar', 'Lepisosteus osseus', 'TX', 23, '🦈'),
+          ('Spotted Gar', 'Lepisosteus oculatus', 'TX', 24, '🦈'),
+          ('Gizzard Shad', 'Dorosoma cepedianum', 'TX', 25, '🐟'),
+          ('Threadfin Shad', 'Dorosoma petenense', 'TX', 26, '🐟'),
+          ('Rio Grande Cichlid', 'Herichthys cyanoguttatus', 'TX', 27, '🐠'),
+          ('Bowfin', 'Amia calva', 'TX', 28, '🐟'),
+          ('Buffalo Species', 'Ictiobus spp.', 'TX', 29, '🐟'),
+          ('Rainbow Trout', 'Oncorhynchus mykiss', 'TX', 30, '🐟')
+          ON DUPLICATE KEY UPDATE
+            `priority_order` = VALUES(`priority_order`),
+            `icon` = VALUES(`icon`);
+
+          CREATE TABLE IF NOT EXISTS `catch_reports` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `canonical_id` VARCHAR(64) NOT NULL,
+            `master_species_id` INT NOT NULL,
+            `user_ip_hash` VARCHAR(64) NOT NULL,
+            `catch_date` DATE NOT NULL,
+            `base_score` DECIMAL(10,2) DEFAULT 10.00,
+            `current_score` DECIMAL(10,2) DEFAULT 10.00,
+            `last_decay_date` DATE NOT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (`master_species_id`) REFERENCES `master_species`(`id`) ON DELETE CASCADE,
+            INDEX `idx_canonical_species` (`canonical_id`, `master_species_id`),
+            INDEX `idx_decay_date` (`last_decay_date`)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+          SQL;
+
+          if (!$conn->multi_query($sql)) {
+              http_response_code(500);
+              echo json_encode(['error' => 'multi_query rejected', 'detail' => $conn->error, 'before' => $before]);
+              exit;
+          }
+          $stmt = 0;
+          do {
+              if ($r = $conn->store_result()) { $r->free(); }
+              $stmt++;
+              if ($conn->errno) {
+                  http_response_code(500);
+                  echo json_encode(['error' => 'statement failed', 'stmt_index' => $stmt, 'detail' => $conn->error, 'before' => $before]);
+                  exit;
+              }
+          } while ($conn->more_results() && $conn->next_result());
+
+          $after = $snapshot($conn);
+          $conn->close();
+
+          echo json_encode([
+              'success' => true,
+              'statements_executed' => $stmt,
+              'before' => $before,
+              'after' => $after,
+          ], JSON_PRETTY_PRINT);
+          PHP_EOF
+          # Inject token + dry_run flag
+          sed -i "s|__TOKEN__|${TOKEN}|g" runner.php
+          sed -i "s|__DRY_RUN__|${DRY_RUN}|g" runner.php
+          echo "Built runner.php ($(wc -l < runner.php) lines)"
+
+      - name: Upload runner via FTP
+        env:
+          FILENAME: ${{ steps.nonce.outputs.filename }}
+        run: |
+          lftp -c "
+          set ssl:verify-certificate no;
+          open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }};
+          cd /public_html/staging/api;
+          put runner.php -o ${FILENAME};
+          ls -l ${FILENAME};
+          bye
+          "
+          echo "Uploaded ${FILENAME}"
+
+      - name: Invoke runner over HTTPS
+        env:
+          FILENAME: ${{ steps.nonce.outputs.filename }}
+          TOKEN: ${{ steps.nonce.outputs.token }}
+        id: invoke
+        run: |
+          URL="https://staging.wherecanifish.com/api/${FILENAME}?token=${TOKEN}"
+          echo "Calling runner (URL withheld; filename: ${FILENAME})"
+          HTTP_CODE=$(curl -s -o response.json -w "%{http_code}" "$URL" || echo "000")
+          echo "HTTP $HTTP_CODE"
+          echo "--- response ---"
+          if jq . response.json > /dev/null 2>&1; then
+            jq . response.json
+          else
+            cat response.json
+          fi
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Runner returned HTTP $HTTP_CODE"
             exit 1
           fi
-          echo "Migration file present:"
-          wc -l "migrations/${{ github.event.inputs.migration_file }}"
-
-      - name: Show staging table state (BEFORE)
-        env:
-          MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
-        run: |
-          set -x
-          echo "=== Ping the server (no DB selected) ==="
-          mysql \
-            -h "${{ secrets.STAGING_DB_HOST }}" \
-            -u "${{ secrets.STAGING_DB_USER }}" \
-            -e "SELECT VERSION(), CURRENT_USER(), DATABASE();" \
-            || echo "[ping] mysql exit=$?"
-          echo
-          echo "=== SHOW DATABASES ==="
-          mysql \
-            -h "${{ secrets.STAGING_DB_HOST }}" \
-            -u "${{ secrets.STAGING_DB_USER }}" \
-            -e "SHOW DATABASES;" \
-            || echo "[show-dbs] mysql exit=$?"
-          echo
-          echo "=== Tables in ${{ secrets.STAGING_DB_NAME }} (before) ==="
-          mysql \
-            -h "${{ secrets.STAGING_DB_HOST }}" \
-            -u "${{ secrets.STAGING_DB_USER }}" \
-            "${{ secrets.STAGING_DB_NAME }}" \
-            -e "SHOW TABLES;" \
-            || echo "[show-tables] mysql exit=$?"
-          echo
-          echo "=== Row counts (errors NOT suppressed) ==="
-          for tbl in fishing_spots counties spot_counties potential_species fishing_reports catch_reports master_species; do
-            echo "--- $tbl ---"
-            mysql \
-              -h "${{ secrets.STAGING_DB_HOST }}" \
-              -u "${{ secrets.STAGING_DB_USER }}" \
-              "${{ secrets.STAGING_DB_NAME }}" \
-              -sN -e "SELECT COUNT(*) FROM \`$tbl\`;" \
-              || echo "[$tbl] mysql exit=$?"
-          done
-          echo
-          echo "=== catch_reports columns (if exists) ==="
-          mysql \
-            -h "${{ secrets.STAGING_DB_HOST }}" \
-            -u "${{ secrets.STAGING_DB_USER }}" \
-            "${{ secrets.STAGING_DB_NAME }}" \
-            -e "DESCRIBE catch_reports;" \
-            || echo "[describe] mysql exit=$?"
-
-      - name: Apply migration
-        if: ${{ github.event.inputs.dry_run == 'false' }}
-        env:
-          MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
-        run: |
-          echo "Applying migrations/${{ github.event.inputs.migration_file }} to ${{ secrets.STAGING_DB_NAME }}..."
-          mysql \
-            -h "${{ secrets.STAGING_DB_HOST }}" \
-            -u "${{ secrets.STAGING_DB_USER }}" \
-            "${{ secrets.STAGING_DB_NAME }}" \
-            < "migrations/${{ github.event.inputs.migration_file }}"
-          echo "Migration applied."
-
-      - name: Show staging table state (AFTER)
-        if: ${{ github.event.inputs.dry_run == 'false' }}
-        env:
-          MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
-        run: |
-          echo "=== Tables in ${{ secrets.STAGING_DB_NAME }} (after) ==="
-          mysql \
-            -h "${{ secrets.STAGING_DB_HOST }}" \
-            -u "${{ secrets.STAGING_DB_USER }}" \
-            "${{ secrets.STAGING_DB_NAME }}" \
-            -e "SHOW TABLES;" 2>&1 | grep -v "^mysql:"
-          echo
-          echo "=== catch_reports columns ==="
-          mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -e "DESCRIBE catch_reports;" 2>&1 | grep -v "^mysql:"
-          echo
-          echo "=== master_species row count ==="
-          mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -sN -e "SELECT COUNT(*) FROM master_species;" 2>&1 | grep -v "^mysql:"
-
-      - name: Reminder
-        run: |
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            echo "::notice::Dry run only. Re-run with dry_run = false to apply the migration."
-          else
-            echo "::notice::Migration applied. Verify catch_reports has 'canonical_id' column above."
+          if ! jq -e '.success == true' response.json > /dev/null; then
+            echo "::error::Runner JSON did not report success"
+            exit 1
           fi
+
+      - name: Delete runner via FTP (always)
+        if: always()
+        env:
+          FILENAME: ${{ steps.nonce.outputs.filename }}
+        run: |
+          lftp -c "
+          set ssl:verify-certificate no;
+          open ftp://${{ secrets.STAGING_FTP_USERNAME }}:${{ secrets.STAGING_FTP_PASSWORD }}@${{ secrets.STAGING_FTP_SERVER }};
+          cd /public_html/staging/api;
+          rm -f ${FILENAME};
+          bye
+          " || echo "::warning::Cleanup may have failed — verify ${FILENAME} is gone from /api/"
+          echo "Cleanup attempt complete for ${FILENAME}"
