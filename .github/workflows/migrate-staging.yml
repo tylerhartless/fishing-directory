@@ -95,6 +95,11 @@ jobs:
           require_once $configPath;
           $progress['stage'] = 'config_loaded';
 
+          // PHP 8.1+ mysqli throws exceptions by default; @ doesn't suppress
+          // them. Revert to return-false-on-error so missing tables in the
+          // snapshot don't blow up the whole runner.
+          mysqli_report(MYSQLI_REPORT_OFF);
+
           $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
           if ($conn->connect_error) {
               http_response_code(500);
