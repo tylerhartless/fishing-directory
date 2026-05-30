@@ -1,0 +1,97 @@
+name: Migrate Staging Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      migration_file:
+        description: "Migration SQL file in migrations/ to apply"
+        required: true
+        type: choice
+        options:
+          - "004_canonical_id_refactor.sql"
+        default: "004_canonical_id_refactor.sql"
+      dry_run:
+        description: "Dry run: connect + show table state, but do NOT execute the migration"
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-mysql-client
+
+      - name: Sanity check migration file exists
+        run: |
+          if [ ! -f "migrations/${{ github.event.inputs.migration_file }}" ]; then
+            echo "ERROR: migrations/${{ github.event.inputs.migration_file }} not found"
+            exit 1
+          fi
+          echo "Migration file present:"
+          wc -l "migrations/${{ github.event.inputs.migration_file }}"
+
+      - name: Show staging table state (BEFORE)
+        env:
+          MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
+        run: |
+          echo "=== Tables in ${{ secrets.STAGING_DB_NAME }} (before) ==="
+          mysql \
+            -h "${{ secrets.STAGING_DB_HOST }}" \
+            -u "${{ secrets.STAGING_DB_USER }}" \
+            "${{ secrets.STAGING_DB_NAME }}" \
+            -e "SHOW TABLES;" 2>&1 | grep -v "^mysql:"
+          echo
+          echo "=== Row counts ==="
+          for tbl in fishing_spots counties spot_counties potential_species fishing_reports catch_reports master_species; do
+            count=$(mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -sN -e "SELECT COUNT(*) FROM \`$tbl\`;" 2>/dev/null || echo "n/a")
+            echo "  $tbl: $count"
+          done
+          echo
+          echo "=== catch_reports columns (if exists) ==="
+          mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -e "DESCRIBE catch_reports;" 2>&1 | grep -v "^mysql:" || echo "(catch_reports does not exist yet)"
+
+      - name: Apply migration
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        env:
+          MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
+        run: |
+          echo "Applying migrations/${{ github.event.inputs.migration_file }} to ${{ secrets.STAGING_DB_NAME }}..."
+          mysql \
+            -h "${{ secrets.STAGING_DB_HOST }}" \
+            -u "${{ secrets.STAGING_DB_USER }}" \
+            "${{ secrets.STAGING_DB_NAME }}" \
+            < "migrations/${{ github.event.inputs.migration_file }}"
+          echo "Migration applied."
+
+      - name: Show staging table state (AFTER)
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        env:
+          MYSQL_PWD: ${{ secrets.STAGING_DB_PASS }}
+        run: |
+          echo "=== Tables in ${{ secrets.STAGING_DB_NAME }} (after) ==="
+          mysql \
+            -h "${{ secrets.STAGING_DB_HOST }}" \
+            -u "${{ secrets.STAGING_DB_USER }}" \
+            "${{ secrets.STAGING_DB_NAME }}" \
+            -e "SHOW TABLES;" 2>&1 | grep -v "^mysql:"
+          echo
+          echo "=== catch_reports columns ==="
+          mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -e "DESCRIBE catch_reports;" 2>&1 | grep -v "^mysql:"
+          echo
+          echo "=== master_species row count ==="
+          mysql -h "${{ secrets.STAGING_DB_HOST }}" -u "${{ secrets.STAGING_DB_USER }}" "${{ secrets.STAGING_DB_NAME }}" -sN -e "SELECT COUNT(*) FROM master_species;" 2>&1 | grep -v "^mysql:"
+
+      - name: Reminder
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "::notice::Dry run only. Re-run with dry_run = false to apply the migration."
+          else
+            echo "::notice::Migration applied. Verify catch_reports has 'canonical_id' column above."
+          fi
