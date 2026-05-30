@@ -50,10 +50,14 @@ const waterBodyDisplay = formatWaterBodies(spot.water_body_names);
 const showWaterBody = waterBodyDisplay && !spot._synthetic_water_body;
 const spotTypeLabel = spot.spot_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-// spot.address from the pipeline already includes ", City, State ZIP".
-// Render it as-is to avoid doubling city/state/zip when those structured
-// fields are also populated. Falls back to coords below when address is absent.
-const addressDisplay = spot.address ? spot.address : null;
+// spot.address from the pipeline already includes ", City, State ZIP" when
+// it's real. Some rows have a pipeline-generated fallback like "X, United
+// States" with no street/zip — skip those so the page falls back to coords
+// instead of showing a useless "Address" row.
+const rawAddress = (spot.address ?? '').trim();
+const hasStreetLevelInfo = rawAddress !== ''
+  && !/^[^,]+,\s*United States$/i.test(rawAddress);
+const addressDisplay = hasStreetLevelInfo ? rawAddress : null;
 
 const countyTag = spot.county_slug.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3) || spot.state;
 const idTail = spot.canonical_id.replace(/-/g, '').slice(-4).toUpperCase();
@@ -96,7 +100,25 @@ const schema = {
 };
 
 const hasAmenities = spot.amenities && Object.values(spot.amenities).some(v => v === true);
-const hasPois = spot.points_of_interest && spot.points_of_interest.length > 0;
+
+// Drop POIs that just restate the parent spot (same name) — they're duplicates,
+// not features. Drop the water_body badge on remaining POIs if it duplicates
+// one of the parent's water bodies (already shown in the Water row).
+const parentName = spot.name.trim().toLowerCase();
+const parentWaters = new Set(
+  (spot.water_body_names ?? []).map(w => w.trim().toLowerCase())
+);
+const displayPois = (spot.points_of_interest ?? [])
+  .filter(p => p.name.trim().toLowerCase() !== parentName)
+  .map(p => ({
+    ...p,
+    showWaterBody:
+      !!p.water_body_name && !parentWaters.has(p.water_body_name.trim().toLowerCase()),
+  }));
+const hasPois = displayPois.length > 0;
+const poiHeading = spot.spot_type === 'state_park' || spot.spot_type === 'community_park'
+  ? 'Inside The Park'
+  : 'Within This Spot';
 ---
 
 <Layout
@@ -191,16 +213,16 @@ const hasPois = spot.points_of_interest && spot.points_of_interest.length > 0;
           )}
         </section>
 
-        <!-- Things Here / POIs -->
+        <!-- Sub-features (boat ramps inside a park, piers on a lake, etc.) -->
         {hasPois && (
           <section class="field-section">
-            <h2 class="field-section-heading">Things Here</h2>
+            <h2 class="field-section-heading">{poiHeading}</h2>
             <ul class="poi-list">
-              {spot.points_of_interest.map(poi => (
+              {displayPois.map(poi => (
                 <li class="poi-item">
                   <strong>{poi.name}</strong>
                   <span class="poi-type">{poi.spot_type.replace(/_/g, ' ')}</span>
-                  {poi.water_body_name && <span class="poi-water"> · {poi.water_body_name}</span>}
+                  {poi.showWaterBody && <span class="poi-water"> · {poi.water_body_name}</span>}
                 </li>
               ))}
             </ul>
