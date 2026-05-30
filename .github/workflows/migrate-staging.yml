@@ -52,7 +52,29 @@ jobs:
           // One-shot migration runner. Uploaded by GitHub Actions, hit once
           // with ?token=..., then deleted. Reuses /api/config.php's DB consts.
           declare(strict_types=1);
+          ini_set('display_errors', '1');
+          ini_set('log_errors', '1');
+          error_reporting(E_ALL);
+          set_time_limit(120);
           header('Content-Type: application/json');
+
+          // Track progress so a fatal mid-flight still tells us where it died.
+          $progress = ['stage' => 'init', 'last_sql' => null, 'statements_executed' => 0];
+
+          register_shutdown_function(function () use (&$progress) {
+              $err = error_get_last();
+              if ($err && in_array($err['type'] ?? 0, [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, 1, 4, 16, 64, 256], true)) {
+                  // Only react to fatal-class errors; non-fatals are noise.
+                  if (!headers_sent()) {
+                      http_response_code(500);
+                  }
+                  echo json_encode([
+                      'error' => 'fatal',
+                      'php_error' => $err,
+                      'progress' => $progress,
+                  ]);
+              }
+          });
 
           $expected = '__TOKEN__';
           $provided = isset($_GET['token']) ? (string) $_GET['token'] : '';
@@ -71,6 +93,7 @@ jobs:
               exit;
           }
           require_once $configPath;
+          $progress['stage'] = 'config_loaded';
 
           $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
           if ($conn->connect_error) {
@@ -79,6 +102,7 @@ jobs:
               exit;
           }
           $conn->set_charset('utf8mb4');
+          $progress['stage'] = 'connected';
 
           $snapshot = function (mysqli $c): array {
               $tables = [];
@@ -96,6 +120,7 @@ jobs:
           };
 
           $before = $snapshot($conn);
+          $progress['stage'] = 'snapshot_before';
 
           if ($dryRun) {
               echo json_encode(['success' => true, 'dry_run' => true, 'before' => $before], JSON_PRETTY_PRINT);
@@ -103,104 +128,104 @@ jobs:
               exit;
           }
 
-          // The migration: drop legacy tables, ensure master_species exists +
-          // seeded, then create catch_reports with the canonical_id schema.
-          $sql = <<<'SQL'
-          SET FOREIGN_KEY_CHECKS = 0;
-          DROP TABLE IF EXISTS `catch_reports`;
-          DROP TABLE IF EXISTS `fishing_reports`;
-          DROP TABLE IF EXISTS `potential_species`;
-          DROP TABLE IF EXISTS `spot_counties`;
-          DROP TABLE IF EXISTS `counties`;
-          DROP TABLE IF EXISTS `fishing_spots`;
-          DROP TABLE IF EXISTS `fish_habitat_structures`;
-          DROP TABLE IF EXISTS `spot_votes`;
-          SET FOREIGN_KEY_CHECKS = 1;
+          // Run statements individually so we get granular error reporting.
+          $statements = [
+              "SET FOREIGN_KEY_CHECKS = 0",
+              "DROP TABLE IF EXISTS `catch_reports`",
+              "DROP TABLE IF EXISTS `fishing_reports`",
+              "DROP TABLE IF EXISTS `potential_species`",
+              "DROP TABLE IF EXISTS `spot_counties`",
+              "DROP TABLE IF EXISTS `counties`",
+              "DROP TABLE IF EXISTS `fishing_spots`",
+              "DROP TABLE IF EXISTS `fish_habitat_structures`",
+              "DROP TABLE IF EXISTS `spot_votes`",
+              "SET FOREIGN_KEY_CHECKS = 1",
+              "CREATE TABLE IF NOT EXISTS `master_species` (
+                  `id` INT AUTO_INCREMENT PRIMARY KEY,
+                  `common_name` VARCHAR(100) NOT NULL,
+                  `scientific_name` VARCHAR(100) DEFAULT NULL,
+                  `region` VARCHAR(50) NOT NULL,
+                  `priority_order` INT NOT NULL,
+                  `icon` VARCHAR(10) DEFAULT '🐟',
+                  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  UNIQUE KEY `unique_species_per_region` (`common_name`, `region`),
+                  INDEX `idx_region_priority` (`region`, `priority_order`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+              "INSERT INTO `master_species` (`common_name`, `scientific_name`, `region`, `priority_order`, `icon`) VALUES
+                  ('Largemouth Bass', 'Micropterus salmoides', 'TX', 1, '🎣'),
+                  ('Channel Catfish', 'Ictalurus punctatus', 'TX', 2, '🐡'),
+                  ('Bluegill', 'Lepomis macrochirus', 'TX', 3, '🐟'),
+                  ('White Crappie', 'Pomoxis annularis', 'TX', 4, '🐠'),
+                  ('Redear Sunfish', 'Lepomis microlophus', 'TX', 5, '🐟'),
+                  ('White Bass', 'Morone chrysops', 'TX', 6, '🎣'),
+                  ('Striped Bass', 'Morone saxatilis', 'TX', 7, '🎣'),
+                  ('Blue Catfish', 'Ictalurus furcatus', 'TX', 8, '🐡'),
+                  ('Black Crappie', 'Pomoxis nigromaculatus', 'TX', 9, '🐠'),
+                  ('Flathead Catfish', 'Pylodictis olivaris', 'TX', 10, '🐡'),
+                  ('Longear Sunfish', 'Lepomis megalotis', 'TX', 11, '🐟'),
+                  ('Green Sunfish', 'Lepomis cyanellus', 'TX', 12, '🐟'),
+                  ('Warmouth', 'Lepomis gulosus', 'TX', 13, '🐟'),
+                  ('Hybrid Striped Bass', 'Morone saxatilis × chrysops', 'TX', 14, '🎣'),
+                  ('Yellow Bass', 'Morone mississippiensis', 'TX', 15, '🐟'),
+                  ('Spotted Bass', 'Micropterus punctulatus', 'TX', 16, '🎣'),
+                  ('Smallmouth Bass', 'Micropterus dolomieu', 'TX', 17, '🎣'),
+                  ('Guadalupe Bass', 'Micropterus treculii', 'TX', 18, '🎣'),
+                  ('Common Carp', 'Cyprinus carpio', 'TX', 20, '🐟'),
+                  ('Freshwater Drum', 'Aplodinotus grunniens', 'TX', 21, '🐟'),
+                  ('Alligator Gar', 'Atractosteus spatula', 'TX', 22, '🦈'),
+                  ('Longnose Gar', 'Lepisosteus osseus', 'TX', 23, '🦈'),
+                  ('Spotted Gar', 'Lepisosteus oculatus', 'TX', 24, '🦈'),
+                  ('Gizzard Shad', 'Dorosoma cepedianum', 'TX', 25, '🐟'),
+                  ('Threadfin Shad', 'Dorosoma petenense', 'TX', 26, '🐟'),
+                  ('Rio Grande Cichlid', 'Herichthys cyanoguttatus', 'TX', 27, '🐠'),
+                  ('Bowfin', 'Amia calva', 'TX', 28, '🐟'),
+                  ('Buffalo Species', 'Ictiobus spp.', 'TX', 29, '🐟'),
+                  ('Rainbow Trout', 'Oncorhynchus mykiss', 'TX', 30, '🐟')
+                  ON DUPLICATE KEY UPDATE
+                    `priority_order` = VALUES(`priority_order`),
+                    `icon` = VALUES(`icon`)",
+              "CREATE TABLE IF NOT EXISTS `catch_reports` (
+                  `id` INT AUTO_INCREMENT PRIMARY KEY,
+                  `canonical_id` VARCHAR(64) NOT NULL,
+                  `master_species_id` INT NOT NULL,
+                  `user_ip_hash` VARCHAR(64) NOT NULL,
+                  `catch_date` DATE NOT NULL,
+                  `base_score` DECIMAL(10,2) DEFAULT 10.00,
+                  `current_score` DECIMAL(10,2) DEFAULT 10.00,
+                  `last_decay_date` DATE NOT NULL,
+                  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  FOREIGN KEY (`master_species_id`) REFERENCES `master_species`(`id`) ON DELETE CASCADE,
+                  INDEX `idx_canonical_species` (`canonical_id`, `master_species_id`),
+                  INDEX `idx_decay_date` (`last_decay_date`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+          ];
 
-          CREATE TABLE IF NOT EXISTS `master_species` (
-            `id` INT AUTO_INCREMENT PRIMARY KEY,
-            `common_name` VARCHAR(100) NOT NULL,
-            `scientific_name` VARCHAR(100) DEFAULT NULL,
-            `region` VARCHAR(50) NOT NULL,
-            `priority_order` INT NOT NULL,
-            `icon` VARCHAR(10) DEFAULT '🐟',
-            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE KEY `unique_species_per_region` (`common_name`, `region`),
-            INDEX `idx_region_priority` (`region`, `priority_order`)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-          INSERT INTO `master_species` (`common_name`, `scientific_name`, `region`, `priority_order`, `icon`) VALUES
-          ('Largemouth Bass', 'Micropterus salmoides', 'TX', 1, '🎣'),
-          ('Channel Catfish', 'Ictalurus punctatus', 'TX', 2, '🐡'),
-          ('Bluegill', 'Lepomis macrochirus', 'TX', 3, '🐟'),
-          ('White Crappie', 'Pomoxis annularis', 'TX', 4, '🐠'),
-          ('Redear Sunfish', 'Lepomis microlophus', 'TX', 5, '🐟'),
-          ('White Bass', 'Morone chrysops', 'TX', 6, '🎣'),
-          ('Striped Bass', 'Morone saxatilis', 'TX', 7, '🎣'),
-          ('Blue Catfish', 'Ictalurus furcatus', 'TX', 8, '🐡'),
-          ('Black Crappie', 'Pomoxis nigromaculatus', 'TX', 9, '🐠'),
-          ('Flathead Catfish', 'Pylodictis olivaris', 'TX', 10, '🐡'),
-          ('Longear Sunfish', 'Lepomis megalotis', 'TX', 11, '🐟'),
-          ('Green Sunfish', 'Lepomis cyanellus', 'TX', 12, '🐟'),
-          ('Warmouth', 'Lepomis gulosus', 'TX', 13, '🐟'),
-          ('Hybrid Striped Bass', 'Morone saxatilis × chrysops', 'TX', 14, '🎣'),
-          ('Yellow Bass', 'Morone mississippiensis', 'TX', 15, '🐟'),
-          ('Spotted Bass', 'Micropterus punctulatus', 'TX', 16, '🎣'),
-          ('Smallmouth Bass', 'Micropterus dolomieu', 'TX', 17, '🎣'),
-          ('Guadalupe Bass', 'Micropterus treculii', 'TX', 18, '🎣'),
-          ('Common Carp', 'Cyprinus carpio', 'TX', 20, '🐟'),
-          ('Freshwater Drum', 'Aplodinotus grunniens', 'TX', 21, '🐟'),
-          ('Alligator Gar', 'Atractosteus spatula', 'TX', 22, '🦈'),
-          ('Longnose Gar', 'Lepisosteus osseus', 'TX', 23, '🦈'),
-          ('Spotted Gar', 'Lepisosteus oculatus', 'TX', 24, '🦈'),
-          ('Gizzard Shad', 'Dorosoma cepedianum', 'TX', 25, '🐟'),
-          ('Threadfin Shad', 'Dorosoma petenense', 'TX', 26, '🐟'),
-          ('Rio Grande Cichlid', 'Herichthys cyanoguttatus', 'TX', 27, '🐠'),
-          ('Bowfin', 'Amia calva', 'TX', 28, '🐟'),
-          ('Buffalo Species', 'Ictiobus spp.', 'TX', 29, '🐟'),
-          ('Rainbow Trout', 'Oncorhynchus mykiss', 'TX', 30, '🐟')
-          ON DUPLICATE KEY UPDATE
-            `priority_order` = VALUES(`priority_order`),
-            `icon` = VALUES(`icon`);
-
-          CREATE TABLE IF NOT EXISTS `catch_reports` (
-            `id` INT AUTO_INCREMENT PRIMARY KEY,
-            `canonical_id` VARCHAR(64) NOT NULL,
-            `master_species_id` INT NOT NULL,
-            `user_ip_hash` VARCHAR(64) NOT NULL,
-            `catch_date` DATE NOT NULL,
-            `base_score` DECIMAL(10,2) DEFAULT 10.00,
-            `current_score` DECIMAL(10,2) DEFAULT 10.00,
-            `last_decay_date` DATE NOT NULL,
-            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (`master_species_id`) REFERENCES `master_species`(`id`) ON DELETE CASCADE,
-            INDEX `idx_canonical_species` (`canonical_id`, `master_species_id`),
-            INDEX `idx_decay_date` (`last_decay_date`)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-          SQL;
-
-          if (!$conn->multi_query($sql)) {
-              http_response_code(500);
-              echo json_encode(['error' => 'multi_query rejected', 'detail' => $conn->error, 'before' => $before]);
-              exit;
-          }
-          $stmt = 0;
-          do {
-              if ($r = $conn->store_result()) { $r->free(); }
-              $stmt++;
-              if ($conn->errno) {
+          $progress['stage'] = 'executing';
+          foreach ($statements as $i => $stmt) {
+              $progress['last_sql'] = substr(preg_replace('/\s+/', ' ', $stmt), 0, 200);
+              if (!$conn->query($stmt)) {
                   http_response_code(500);
-                  echo json_encode(['error' => 'statement failed', 'stmt_index' => $stmt, 'detail' => $conn->error, 'before' => $before]);
+                  echo json_encode([
+                      'error' => 'statement failed',
+                      'stmt_index' => $i,
+                      'stmt_preview' => $progress['last_sql'],
+                      'mysql_error' => $conn->error,
+                      'mysql_errno' => $conn->errno,
+                      'before' => $before,
+                  ]);
+                  $conn->close();
                   exit;
               }
-          } while ($conn->more_results() && $conn->next_result());
+              $progress['statements_executed']++;
+          }
+          $progress['stage'] = 'done';
 
           $after = $snapshot($conn);
           $conn->close();
 
           echo json_encode([
               'success' => true,
-              'statements_executed' => $stmt,
+              'statements_executed' => $progress['statements_executed'],
               'before' => $before,
               'after' => $after,
           ], JSON_PRETTY_PRINT);
